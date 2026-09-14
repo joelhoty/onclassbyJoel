@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注意力優先閉環視覺互動系統 — 四週學習進度與資源規劃</title>
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --primary-light: #3b82f6;
+            --secondary-color: #0d9488;
+            --accent-color: #f59e0b;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --border-color: #e2e8f0;
+            --code-bg: #1e293b;
+            --code-text: #38bdf8;
+            --success-color: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+            color: white;
+            padding: 40px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.3);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            color: #94a3b8;
+            font-size: 1.05rem;
+            max-width: 900px;
+        }
+
+        .header-meta {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background-color: #e2e8f0;
+            color: var(--text-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .week-header {
+            background: white;
+            border-left: 5px solid var(--primary-light);
+            padding: 20px 25px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .week-header h2 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 6px;
+        }
+
+        .week-header p {
+            color: var(--text-secondary);
+        }
+
+        .timeline-item {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .day-tag {
+            display: inline-block;
+            background-color: #dbeafe;
+            color: #1e40af;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .section-subtitle {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 15px 0 8px 0;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        ul, ol {
+            padding-left: 20px;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        .resource-box {
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 10px;
+            border: 1px dashed #cbd5e1;
+        }
+
+        .resource-link {
+            color: var(--primary-light);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .resource-link:hover {
+            text-decoration: underline;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        code {
+            background-color: #f1f5f9;
+            color: #0f172a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 0.9em;
+        }
+
+        pre code {
+            display: block;
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            line-height: 1.45;
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            position: relative;
+            padding-left: 30px;
+            cursor: pointer;
+            user-select: none;
+            margin-bottom: 10px;
+        }
+
+        .checklist li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #cbd5e1;
+            border-radius: 4px;
+            background-color: white;
+        }
+
+        .checklist li.checked::before {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+
+        .checklist li.checked::after {
+            content: '✓';
+            position: absolute;
+            left: 5px;
+            top: 2px;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .checklist li.checked {
+            text-decoration: line-through;
+            color: #94a3b8;
+        }
+
+        .flow-diagram {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 40px;
+        }
+
+        .highlight-box {
+            background-color: #eff6ff;
+            border-left: 4px solid var(--primary-light);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            header {
+                padding: 25px 20px;
+            }
+            header h1 {
+                font-size: 1.7rem;
+            }
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <header>
+        <h1>注意力優先閉環視覺互動系統</h1>
+        <p>基於研究提案 (research_proposal_b02.md) 設計之四周紮實學習進度表與線上學習資源庫</p>
+        <div class="header-meta">
+            <span class="badge">🎯 核心技術：Computer Vision + LLM Closed-loop</span>
+            <span class="badge">⏱️ 課程週期：4 週 (28 天)</span>
+            <span class="badge">📍 實作對象：揮手 (Wave) / 握手歧義 (Handshake Candidate)</span>
+            <span class="badge">📄 參考文獻版本：b02</span>
+        </div>
+    </header>
+
+    <!-- Project Blueprint & Core Architecture -->
+    <div class="grid">
+        <div class="card">
+            <div class="card-title">💡 計畫核心理念 (Attention-First)</div>
+            <p>傳統手勢辨識系統依賴「預設已知手勢類別」，而本計畫主張<b>「先注意與聚焦，之後才形成事件名稱」</b>。系統在未知事件名稱前，先利用動作、新奇性與姿態變化選擇焦點，累積跨影格證據後再形成可觀察事件與 LLM 互動決策。</p>
+        </div>
+        <div class="card">
+            <div class="card-title">🔄 雙時間尺度 (Fast / Slow Loop)</div>
+            <p><b>快速迴圈 (Fast Loop)</b>：逐影格處理線索、焦點維持與追蹤，絕不因 LLM 延遲而阻塞。<br><b>慢速迴圈 (Slow Loop)</b>：由視覺事件觸發 LLM 進行語意整合與文字決策，並回饋結構化指令 (<code>AttentionDirective</code>) 影響未來觀察。</p>
+        </div>
+        <div class="card">
+            <div class="card-title">📜 資料契約與證據不可變性</div>
+            <p>嚴格區分<b>「視覺事件領域」</b>(描述客觀事實，如手部週期動作) 與<b>「綜合判斷領域」</b>(假設與意圖推論)。所有歷史觀測紀錄 (<code>VisualEvent</code>) 採僅附加 (Append-only) 原則，禁止 LLM 改寫歷史觀測。</p>
+        </div>
+    </div>
+
+    <!-- Data Contracts Architecture Diagram -->
+    <div class="highlight-box">
+        <strong>🔍 系統五大關鍵資料契約 (Data Contracts) 摘要：</strong>
+        <div class="flow-diagram">
+連續影像影格 (RGB Frame)
+   │
+   ▼
+[1] AttentionCue        (低階線索: 動作/新奇性/預測誤差/朝向，不預設事件名稱)
+   │
+   ▼
+[2] FocusRecord & TrackState (注意力排序/維持/切換/遲滯管理 + 跨影格目標軌跡)
+   │
+   ▼
+[3] VisualEvent         (累積時序證據: periodic_hand_motion / arm_extension)
+   │
+   ├───> [4] InterpretationHypothesis (語意整合: S0確定性規則 / S1-S3 LLM語意推測)
+   │        │
+   │        ├───> [5] InteractionDecision  (文字決策: respond / clarify / wait / no_response)
+   │        │
+   └────────└───> [6] AttentionDirective (Top-down 回饋指令: 指定未來觀察焦點與時效 TTL)
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('week1')">第 1 週：視覺感知與線索提取</button>
+        <button class="tab-btn" onclick="switchTab('week2')">第 2 週：目標追蹤與注意力管理</button>
+        <button class="tab-btn" onclick="switchTab('week3')">第 3 週：雙迴圈與 LLM 閉環機制</button>
+        <button class="tab-btn" onclick="switchTab('week4')">第 4 週：端到端整合、消融與評估</button>
+        <button class="tab-btn" onclick="switchTab('resources')">📚 精選資源與論文庫</button>
+        <button class="tab-btn" onclick="switchTab('checklist')">✅ 自我檢核與驗證點</button>
+    </div>
+
+    <!-- Week 1 Content -->
+    <div id="week1" class="tab-content active">
+        <div class="week-header">
+            <h2>第 1 週：基礎視覺感知、人體姿態估計與注意力線索提取 (Attention Cue Extraction)</h2>
+            <p>學習目標：掌握固定 RGB 攝影機的影像處理基礎、姿態與手部關鍵點偵測（YOLO / MediaPipe），並實現無語意標籤的低階注意力線索生成機制（<code>AttentionCue</code>）。</p>
+        </div>
+
+        <div class="timeline-item">
+            <span class="day-tag">Day 1 - Day 2</span>
+            <h3>固定 RGB 視覺基礎與 OpenCV/MediaPipe 環境搭建</h3>
+            <ul>
+                <li>熟悉固定視角的視覺擷取管線、影像串流處理與影格率 (FPS) 控制。</li>
+                <li>學習使用 <b>MediaPipe Holistic / Pose / Hands</b> 或 <b>YOLOv8/v11-Pose</b> 進行即時人體姿態與手部關鍵點標記。</li>
+                <li>建立數據結構傳遞單影格關鍵點座標、信心度與邊界框 (Bounding Box)。</li>
+            </ul>
+            <div class="resource-box">
+                🛠️ <b>推薦資源：</b>
+                <a href="https://github.com/google-ai-edge/mediapipe" target="_blank" class="resource-link">MediaPipe 官方文件</a> | 
+                <a href="https://docs.ultralytics.com/tasks/pose/" target="_blank" class="resource-link">Ultralytics YOLO Pose 文件</a>
+            </div>
+        </div>
+
+        <div class="timeline-item">
+            <span class="day-tag">Day 3 - Day 4</span>
+            <h3>低階視覺特徵與一般性注意力線索 (Generic Attention Cues) 計算</h3>
+            <ul>
+                <li>實作光流法 (Optical Flow) 或前後影格差異 (Frame Differencing) 計算局部動作強度 (Motion Intensity)。</li>
+                <li>計算特徵區域的空間新奇性 (Novelty) 與預測誤差 (Prediction Error)。</li>
+                <li>設計不依賴手勢類別名稱的 <code>AttentionCue</code> 資料結構（包含 <code>cue_id</code>, <code>strength</code>, <code>spatial_extent</code>, <code>cue_type</code>）。</li>
+            </ul>
+            <div class="resource-box">
+                📖 <b>重點閱讀概念：</b> Visual Saliency (視覺顯著性)、Motion Salience、Optical Flow (Farneback算法)。
+            </div>
+        </div>
+
+        <div class="timeline-item">
+            <span class="day-tag">Day 5 - Day 7</span>
+            <h3>實作 Lab 1：無預設標籤的 AttentionCue 產生器與單元測試</h3>
+            <p>編寫 Python 模組：從鏡頭讀取影像，當畫面上出現顯著運動或區域變化時，生成 <code>AttentionCue</code> 物件，並以繪圖方式顯示於畫面中，嚴禁將其標記為 "wave" 或 "handshake"。</p>
+            <pre><code># 範例數據格式：AttentionCue
+{
+    "cue_id": "cue_20260901_001",
+    "observed_at": "2026-09-01T10:00:00.120Z",
+    "cue_type": "motion_burst",
+    "strength": 0.85,
+    "spatial_extent": {"x_min": 0.3, "y_min": 0.2, "x_max": 0.5, "y_max": 0.6},
+    "measurement_quality": 0.92
+}</code></pre>
+        </div>
+    </div>
+
+    <!-- Week 2 Content -->
+    <div id="week2" class="tab-content">
+        <div class="week-header">
+            <h2>第 2 週：跨影格目標追蹤、注意力管理與時序事件形成 (Temporal Event Formation)</h2>
+            <p>學習目標：掌握多目標追蹤 (MOT)、遲滯與最短停留時間機制，設計注意力管理器 (Attention Manager) 並將跨影格變化轉化為 <code>VisualEvent</code>。</p>
+        </div>
+
+        <div class="timeline-item">
+            <span class="day-tag">Day 8 - Day 10</span>
+            <h3>跨影格多目標追蹤 (Multi-Object Tracking) 與 TrackState 維持</h3>
+            <ul>
+                <li>學習卡爾曼波波器 (Kalman Filter) 與 Hungarian 演算法在目標關聯中的應用。</li>
+                <li>使用 ByteTrack / DeepSORT 管理跨影格目標，建立 <code>TrackState</code>。</li>
+                <li>處理短暫遮擋 (Occlusion) 寬限期，確保目標消失時不會無限猜測，重新出現時建立新軌跡。</li>
+            </ul>
+            <div class="resource-box">
+                🛠️ <b>推薦資源：</b> 
+                <a href="https://github.com/ifzhang/ByteTrack" target="_blank" class="resource-link">ByteTrack GitHub 庫</a> | 
+                <a href="https://arxiv.org/abs/2110.06864" target="_blank" class="resource-link">ByteTrack Paper</a>
+            </div>
+        </div>
+
+        <div class="timeline-item">
+            <span class="day-tag">Day 11 - Day 12</span>
+            <h3>注意力管理器 (Attention Manager) 排序與遲滯 (Hysteresis) 機制</h3>
+            <ul>
+                <li>設計注意力排序演算法：結合線索強度、時間持續度與任務權重。</li>
+                <li>引入<b>遲滯 (Hysteresis)</b>、<b>切換成本 (Switching Cost)</b> 與 <b>最短停留時間 (Minimum Dwell Time)</b>，防止焦點劇烈抖動。</li>
+                <li>輸出 <code>FocusRecord</code> 記錄焦點選擇、維持與切換決策。</li>
+            </ul>
+        </div>
+
+        <div class="timeline-item">
+            <span class="day-tag">Day 13 - Day 14</span>
+            <h3>實作 Lab 2：時序事件形成器 (VisualEvent Extractor)</h3>
+            <p>從持續聚焦的影格軌跡中，累積時序特徵並發布客觀可觀察事件 <code>VisualEvent</code>（如 <code>periodic_hand_motion_above_torso</code> 或 <code>arm_extension_open_palm</code>）。</p>
+            <pre><code># 範例數據格式：VisualEvent (嚴禁使用 wants_handshake 作為 event_type)
+{
+    "visual_event_id": "evt_wave_001",
+    "event_type": "periodic_hand_motion_above_torso",
+    "start_at": "2026-09-01T10:00:01.000Z",
+    "end_at": "2026-09-01T10:00:03.500Z",
+    "temporal_pattern": "frequency_2.5hz_duration_2500ms",
+    "observation_quality": 0.88
+}</code></pre>
+        </div>
+    </div>
+
+    <!-- Week 3 Content -->
+    <div id="week3" class="tab-content">
+        <div class="week-header">
+            <h2>第 3 週：雙時間尺度架構、確定性基線與 LLM 閉環回饋機制 (Closed-Loop Feedback)</h2>
+            <p>學習目標：理解 Fast/Slow Loop 解耦架構，實作 S0 確定性狀態機基線，並透過 Pydantic / JSON Schema 實作 LLM 結構化語意推論與 Top-down 注意力回饋（<code>AttentionDirective</code>）。</p>
+        </div>
+
+        <div class="timeline-item">
+            <span class="day-tag">Day 15 - Day 17</span>
+            <h3>Fast Loop 與 Slow Loop 解耦架構 & S0 確定性基線實作</h3>
+            <ul>
+                <li>實作雙時間尺度架構：快速迴圈 (30 FPS) 不同步等待 LLM 回覆，確保不卡頓。</li>
+                <li>設計 <b>S0 (Deterministic Baseline)</b>：透過品質閘門 (Quality Gate)、狀態機與衝突路由器 (Conflict Router)，在無 LLM 下輸出確定性回應 (白名單式回應)。</li>
+                <li>針對 <code>arm_extension_open_palm</code> 事件，路由器同時保留 <code>handshake_candidate</code>, <code>object_reach</code>, <code>object_pass</code> 等競態假設。</li>
+            </ul>
+        </div>
+
+        <div class="timeline-item">
+            <span class="day-tag">Day 18 - Day 19</span>
+            <h3>LLM 結構化輸出 (Structured Outputs) 與 InterpretationHypothesis</h3>
+            <ul>
+                <li>使用 <b>Pydantic</b> 或 <b>Instructor API</b> 限制 LLM 輸出為 JSON Schema 格式。</li>
+                <li>生成 <code>InterpretationHypothesis</code>，要求 LLM 保留不確定性與替代解釋。</li>
+                <li>設計 S1 (自然語言擴充) 與 S2 (歧義澄清問答)。</li>
+            </ul>
+            <div class="resource-box">
+                🛠️ <b>推薦工具：</b>
+                <a href="https://docs.pydantic.dev/" target="_blank" class="resource-link">Pydantic 文件</a> | 
+                <a href="https://python.useinstructor.com/" target="_blank" class="resource-link">Instructor Python Library</a>
+            </div>
+        </div>
+
+        <div class="timeline-item">
+            <span class="day-tag">Day 20 - Day 21</span>
+            <h3>實作 Lab 3：S3 閉環注意力指令 (AttentionDirective) 回傳與降級處理</h3>
+            <p>當語意層缺少區分假設的證據時（例如無法判定是握手還是取物），產生有時效性 (TTL) 的 <code>AttentionDirective</code> 給快速迴圈，指定提升特定目標區域的觀測優先度。若 LLM 逾時或格式錯誤，自動安全降級為 S0。</p>
+            <pre><code># 範例數據格式：AttentionDirective (Top-down 回饋)
+{
+    "directive_id": "dir_focus_hand_001",
+    "issued_at": "2026-09-01T10:00:04.000Z",
+    "target": {"track_id": "track_person_02"},
+    "watch": "hand_to_object_distance_change",
+    "reason": "distinguish_handshake_vs_object_reach",
+    "ttl": 3.0,  # 3秒後自動失效
+    "priority": 0.8
+}</code></pre>
+        </div>
+    </div>
+
+    <!-- Week 4 Content -->
+    <div id="week4" class="tab-content">
+        <div class="week-header">
+            <h2>第 4 週：端到端系統整合、消融實驗比較與客觀評估指標 (Evaluation & Ablation)</h2>
+            <p>學習目標：完成 P0-P3 感知軸與 S0-S3 語意軸的消融矩陣實驗，錄製包含高難度反例 (Hard Negatives) 的測試資料，執行端到端性能評估與失敗歸因分析。</p>
+        </div>
+
+        <div class="timeline-item">
+            <span class="day-tag">Day 22 - Day 24</span>
+            <h3>測試場景設計與高難度反例 (Hard Negatives) 資料集採集</h3>
+            <ul>
+                <li>錄製 3 大類測試影片：(1) 正確揮手打招呼 (2) 歧義伸手握手 (3) 高難度反例。</li>
+                <li><b>高難度反例涵蓋：</b>調整眼鏡、抓癢、摸頭、指向、伸手取物、遞物、對旁人揮手、多人交錯與背景干擾。</li>
+                <li>標註六大層級：影格、追蹤軌跡、焦點區間、視覺事件、解讀與決策。</li>
+            </ul>
+        </div>
+
+        <div class="timeline-item">
+            <span class="day-tag">Day 25 - Day 26</span>
+            <h3>消融實驗 (Ablation Study) 矩陣執行</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>感知 / 注意力軸 (P)</th>
+                        <th>語意控制軸 (S)</th>
+                        <th>評估重點與比較假設</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>P0 — single-frame</code></td>
+                        <td><code>S0 — deterministic</code></td>
+                        <td>單影格無記憶基線 vs 時間記憶必要性 (H1 驗證)</td>
+                    </tr>
+                    <tr>
+                        <td><code>P2 — gesture-specific</code></td>
+                        <td><code>S0 — deterministic</code></td>
+                        <td>手勢專屬觸發 vs 注意力優先 P3 的聚焦延遲 (H2 驗證)</td>
+                    </tr>
+                    <tr>
+                        <td><code>P3 — attention-first</code></td>
+                        <td><code>S0 / S1 / S2</code></td>
+                        <td>在相同凍結事件串流下，離線比較 LLM 澄清與確定性規則 (H4 驗證)</td>
+                    </tr>
+                    <tr>
+                        <td><code>P3 — attention-first</code></td>
+                        <td><code>S3 — LLM feedback</code></td>
+                        <td>配對情境種子下的閉環比較，驗證語意回饋是否帶來真實效益 (H5 驗證)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="timeline-item">
+            <span class="day-tag">Day 27 - Day 28</span>
+            <h3>實作 Lab 4：評估報表生成與 Stop Gate (停止關卡) 判斷</h3>
+            <p>計算核心指標：<b>Time to Focus (聚焦延遲)</b>, <b>Event F1 Score</b>, <b>False Activations (誤觸發率)</b>, <b>ID Switches</b>, <b>Fast/Slow Loop Latency</b> 與 <b>Model Compute Cost</b>。進行失敗歸因 (Failure Attribution)，並依提案第 18.4 節進行 Stop Gate 審查。</p>
+        </div>
+    </div>
+
+    <!-- Resources Content -->
+    <div id="resources" class="tab-content">
+        <div class="week-header">
+            <h2>📚 系統性學習資源庫與建議閱讀文獻</h2>
+            <p>精選電腦視覺、目標追蹤、Agent 架構與 LLM 結構化輸出之經典課程、論文與開源套件。</p>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">🎥 開放課程 (Online Courses)</div>
+                <ul>
+                    <li><a href="https://cs231n.stanford.edu/" target="_blank" class="resource-link">Stanford CS231n</a>: Deep Learning for Computer Vision</li>
+                    <li><a href="https://fullstackdeeplearning.com/" target="_blank" class="resource-link">Full Stack Deep Learning</a>: LLM Systems & Deployment</li>
+                    <li><a href="https://www.deeplearning.ai/short-courses/functions-tools-agents-langchain/" target="_blank" class="resource-link">DeepLearning.AI</a>: Functions, Tools and Agents</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="card-title">📄 關鍵論文 (Key Literature)</div>
+                <ul>
+                    <li><b>YOLOv8 / Pose:</b> Real-Time Object Detection & Keypoint Estimation</li>
+                    <li><b>ByteTrack:</b> Multi-Object Tracking by Associating Every Detection Box</li>
+                    <li><b>Active Perception:</b> Bajcsy et al., "Active Perception Revisited"</li>
+                    <li><b>Visual Saliency:</b> Itti, Koch, & Niebur, "A Model of Saliency-Based Visual Attention"</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="card-title">🧰 開源框架與程式庫 (Libraries)</div>
+                <ul>
+                    <li><b>OpenCV / MediaPipe:</b> 即時影像處理與肢體手勢關鍵點</li>
+                    <li><b>ByteTrack / LapTrack:</b> 跨影格軌跡追蹤</li>
+                    <li><b>Pydantic / Instructor:</b> 強型別 JSON Schema LLM 結構化輸出</li>
+                    <li><b>FastAPI / Asyncio:</b> 異步非阻塞雙迴圈 Fast/Slow Loop 系統搭建</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checklist Content -->
+    <div id="checklist" class="tab-content">
+        <div class="week-header">
+            <h2>✅ 四週學習與驗證自我檢核表 (Self-Assessment Checklist)</h2>
+            <p>點擊核取方塊以追蹤您的學習進度與專案實作完成度：</p>
+        </div>
+
+        <div class="timeline-item">
+            <h3>W1: 視覺感知與 AttentionCue 階段</h3>
+            <ul class="checklist" id="cl-w1">
+                <li onclick="toggleCheck(this)">已成功從固定 RGB 攝影機擷取 30 FPS 畫面並提取 2D 姿態/手部關鍵點。</li>
+                <li onclick="toggleCheck(this)">理解並實作無語意標籤的低階動作強度與區域變化計算。</li>
+                <li onclick="toggleCheck(this)">實作符合提案格式的 <code>AttentionCue</code> 資料結構，並完成單元測試。</li>
+            </ul>
+        </div>
+
+        <div class="timeline-item">
+            <h3>W2: 目標追蹤與 VisualEvent 階段</h3>
+            <ul class="checklist" id="cl-w2">
+                <li onclick="toggleCheck(this)">成功整合 ByteTrack/DeepSORT，實現暫時性跨影格軌跡追蹤 (<code>TrackState</code>)。</li>
+                <li onclick="toggleCheck(this)">實作注意力管理器，包含排序、遲滯 (Hysteresis) 與最短停留時間 (Dwell Time)。</li>
+                <li onclick="toggleCheck(this)">從焦點軌跡中累積證據，發布客觀可觀察事件 <code>VisualEvent</code> (不寫入意圖標籤)。</li>
+            </ul>
+        </div>
+
+        <div class="timeline-item">
+            <h3>W3: 雙迴圈與 LLM 閉環階段</h3>
+            <ul class="checklist" id="cl-w3">
+                <li onclick="toggleCheck(this)">完成 Fast Loop (視覺追蹤) 與 Slow Loop (LLM 語意推論) 非阻塞異步架構。</li>
+                <li onclick="toggleCheck(this)">完成 S0 確定性基線 (狀態機 + 衝突路由器 + 白名單範本)。</li>
+                <li onclick="toggleCheck(this)">使用 Pydantic/Instructor 實作 S3 LLM 有界 Top-down <code>AttentionDirective</code> 回饋與 TTL 降級。</li>
+            </ul>
+        </div>
+
+        <div class="timeline-item">
+            <h3>W4: 消融實驗與系統評估階段</h3>
+            <ul class="checklist" id="cl-w4">
+                <li onclick="toggleCheck(this)">錄製包含揮手、握手歧義與 11 種高難度反例 (Hard Negatives) 的測試資料集。</li>
+                <li onclick="toggleCheck(this)">完成 P0-P3 感知軸與 S0-S3 語意軸消融實驗，產出比較報表。</li>
+                <li onclick="toggleCheck(this)">計算 Time to Focus, Event F1, ID Switches, Latency 等客觀指標，完成 Stop Gate 審查。</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>基於 《從視覺注意到互動決策：注意力優先閉環研究提案》(research_proposal_b02.md) 設計</p>
+        <p>© 2026 Antigravity Learning Roadmap | Designed for Closed-Loop Vision-LLM Research</p>
+    </footer>
+</div>
+
+<script>
+    function switchTab(tabId) {
+        // Hide all tab contents
+        const contents = document.querySelectorAll('.tab-content');
+        contents.forEach(content => content.classList.remove('active'));
+
+        // Deactivate all tab buttons
+        const buttons = document.querySelectorAll('.tab-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+
+        // Show selected tab content
+        document.getElementById(tabId).classList.add('active');
+
+        // Activate selected button
+        event.currentTarget.classList.add('active');
+    }
+
+    function toggleCheck(element) {
+        element.classList.toggle('checked');
+        saveChecklistState();
+    }
+
+    function saveChecklistState() {
+        const checkedStates = {};
+        const items = document.querySelectorAll('.checklist li');
+        items.forEach((item, index) => {
+            checkedStates[index] = item.classList.contains('checked');
+        });
+        localStorage.setItem('attention_learning_checklist', JSON.stringify(checkedStates));
+    }
+
+    function loadChecklistState() {
+        const saved = localStorage.getItem('attention_learning_checklist');
+        if (saved) {
+            const checkedStates = JSON.parse(saved);
+            const items = document.querySelectorAll('.checklist li');
+            items.forEach((item, index) => {
+                if (checkedStates[index]) {
+                    item.classList.add('checked');
+                }
+            });
+        }
+    }
+
+    // Load saved checklist state on initialization
+    window.onload = loadChecklistState;
+</script>
+
+</body>
+</html>

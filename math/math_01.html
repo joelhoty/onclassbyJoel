@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>輕鬆搞懂 C5取2 ($C_5^2$)：從生活範例到機率分布</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- MathJax for Math Equations -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Chart.js for Probability Distribution Visuals -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .gradient-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 50%, #1e40af 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+        .interactive-node {
+            transition: all 0.2s ease-in-out;
+        }
+        .interactive-node:hover {
+            transform: scale(1.15);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+    <!-- Header Section -->
+    <header class="gradient-header text-white py-12 px-4 sm:px-6 lg:px-8 shadow-lg relative overflow-hidden">
+        <div class="max-w-5xl mx-auto relative z-10">
+            <div class="inline-flex items-center gap-2 bg-blue-400/30 backdrop-blur-md px-3 py-1 rounded-full text-blue-100 text-sm font-medium mb-4">
+                <i class="fa-solid fa-graduation-cap"></i> 高中數學 / 機率與統計 視覺化教材
+            </div>
+            <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">
+                輕鬆搞懂 <span class="text-amber-300">\(C_5^2\)</span> （5取2）
+            </h1>
+            <p class="text-blue-100 text-lg sm:text-xl max-w-3xl leading-relaxed">
+                今天數學課教到機率分布，覺得 $C_5^2$ 很抽象嗎？這篇講義帶你從<strong class="text-white underline decoration-amber-400 decoration-2">生活範例</strong>、<strong class="text-white underline decoration-amber-400 decoration-2">圖形連連看</strong>到<strong class="text-white underline decoration-amber-400 decoration-2">二項分布機率模型</strong>，一次徹底搞懂！
+            </p>
+        </div>
+        <!-- Background Decorative Elements -->
+        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-blue-400/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute right-1/3 -top-10 w-48 h-48 bg-indigo-400/20 rounded-full blur-2xl pointer-events-none"></div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+
+        <!-- SECTION 1: 觀念釐清 -->
+        <section class="bg-white rounded-2xl p-6 sm:p-8 card-shadow border border-slate-100">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl">
+                    1
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800">觀念拆解：什麼是「組合」\(C_5^2\)？</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- 排列 vs 組合 對比區 -->
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 relative">
+                    <span class="absolute -top-3 right-4 bg-amber-500 text-white text-xs px-2.5 py-0.5 rounded-full font-bold">重視順序</span>
+                    <h3 class="font-bold text-lg text-amber-900 mb-2">
+                        <i class="fa-solid fa-list-ol mr-2"></i>排列 (Permutation) \(P_5^2\)
+                    </h3>
+                    <p class="text-amber-800 text-sm mb-3">
+                        從 5 個人中選出 <strong>1 位班長</strong> 與 <strong>1 位副班長</strong>。
+                    </p>
+                    <div class="bg-white/80 p-3 rounded-lg text-xs font-mono text-amber-950 space-y-1 border border-amber-200">
+                        <div>(小明=班長, 小華=副班長) <span class="text-emerald-600 font-bold">≠</span> (小華=班長, 小明=副班長)</div>
+                        <div class="text-slate-500">→ 順序不同算不同情況！</div>
+                    </div>
+                    <div class="mt-4 text-amber-900 font-semibold text-right">
+                        計算：\(P_5^2 = 5 \times 4 = 20\) 種
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 relative">
+                    <span class="absolute -top-3 right-4 bg-blue-600 text-white text-xs px-2.5 py-0.5 rounded-full font-bold">不理順序</span>
+                    <h3 class="font-bold text-lg text-blue-900 mb-2">
+                        <i class="fa-solid fa-users mr-2"></i>組合 (Combination) \(C_5^2\)
+                    </h3>
+                    <p class="text-blue-800 text-sm mb-3">
+                        從 5 個人中挑選 <strong>2 個人一起去掃地</strong>。
+                    </p>
+                    <div class="bg-white/80 p-3 rounded-lg text-xs font-mono text-blue-950 space-y-1 border border-blue-200">
+                        <div>選到 (小明, 小華) <span class="text-blue-600 font-bold">＝</span> 選到 (小華, 小明)</div>
+                        <div class="text-slate-500">→ 都是同一對掃除夥伴，順序沒差！</div>
+                    </div>
+                    <div class="mt-4 text-blue-900 font-semibold text-right">
+                        計算：\(C_5^2 = \frac{5 \times 4}{2 \times 1} = 10\) 種
+                    </div>
+                </div>
+            </div>
+
+            <!-- 公式解析 -->
+            <div class="bg-slate-50 rounded-xl p-6 border border-slate-200">
+                <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-calculator text-blue-600"></i> 為何公式要「除以 \(2!\)」？
+                </h3>
+                <div class="flex flex-col sm:flex-row items-center justify-around gap-4 text-center sm:text-left">
+                    <div class="text-lg font-serif">
+                        \[ C_5^2 = \binom{5}{2} = \frac{P_5^2}{2!} = \frac{5 \times 4}{2 \times 1} = 10 \]
+                    </div>
+                    <div class="text-sm text-slate-600 max-w-md space-y-1 bg-white p-3 rounded-lg border border-slate-200">
+                        <p>1. 分子 \(5 \times 4\)：代表第一個人有 5 種選擇，第二個人有 4 種選擇（排列數）。</p>
+                        <p>2. 分母 \(2 \times 1\)：因為選出來的 2 個人順序顛倒（AB 和 BA）屬於同一組，每一組都被<strong>重複算了 2 次</strong>，所以必須除以 \(2!\) 剔除重複！</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 2: 生活四大範例與互動圖解 -->
+        <section class="bg-white rounded-2xl p-6 sm:p-8 card-shadow border border-slate-100">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xl">
+                    2
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800">生活中的 \(C_5^2\) 經典四大範例</h2>
+            </div>
+
+            <!-- 範例卡片 Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+
+                <!-- 範例 1: 派對握手 (含互動畫板) -->
+                <div class="border border-slate-200 rounded-xl p-5 bg-slate-50 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-lg text-slate-800">
+                                <i class="fa-solid fa-handshake text-indigo-500 mr-2"></i> 範例 1：5 人派對握手問題
+                            </h3>
+                            <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded">最經典</span>
+                        </div>
+                        <p class="text-slate-600 text-sm mb-4">
+                            5 位好友聚會，每兩個人都要握手一次，請問總共握手幾次？
+                            <br><span class="text-xs text-slate-500">（因為 A 與 B 握手 = B 與 A 握手，這是典型的組合問題！）</span>
+                        </p>
+                    </div>
+
+                    <!-- SVG 互動幾何畫板 -->
+                    <div class="bg-white rounded-lg p-4 border border-slate-200 text-center">
+                        <div class="text-xs text-slate-500 mb-2">👇 點擊下方按鈕可切換顯示 10 條握手連線</div>
+                        <div class="relative w-48 h-48 mx-auto">
+                            <svg id="handshake-svg" class="w-full h-full" viewBox="0 0 200 200">
+                                <!-- Lines will be rendered by JS -->
+                            </svg>
+                        </div>
+                        <div class="mt-3 flex justify-between items-center text-xs">
+                            <button id="btn-toggle-all" onclick="toggleHandshakeLines()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md transition-colors">
+                                顯示/隱藏全部 10 條線
+                            </button>
+                            <span id="handshake-count" class="font-bold text-indigo-700 text-sm">已選: 10/10 條線</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 範例 2: 飲料配料 (互動選擇) -->
+                <div class="border border-slate-200 rounded-xl p-5 bg-slate-50 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-lg text-slate-800">
+                                <i class="fa-solid fa-mug-hot text-amber-600 mr-2"></i> 範例 2：手搖飲任選 2 種配料
+                            </h3>
+                            <span class="bg-amber-100 text-amber-700 text-xs font-bold px-2 py-1 rounded">超生活化</span>
+                        </div>
+                        <p class="text-slate-600 text-sm mb-4">
+                            飲料店提供 5 種配料：<strong>珍珠、波霸、椰果、仙草、布丁</strong>。做一杯「雙拼奶茶」有幾種組合？
+                        </p>
+                    </div>
+
+                    <div class="bg-white rounded-lg p-4 border border-slate-200 space-y-3">
+                        <div class="text-xs text-slate-500">點選 2 個配料親自組合（5 選 2）：</div>
+                        <div class="flex flex-wrap gap-2 justify-center" id="topping-container">
+                            <!-- JS Generated buttons -->
+                        </div>
+                        <div id="topping-result" class="p-2.5 bg-amber-50 text-amber-900 rounded-md text-xs font-medium text-center border border-amber-200">
+                            請選擇 2 種配料...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 範例 3: 正五邊形線段 -->
+                <div class="border border-slate-200 rounded-xl p-5 bg-slate-50">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-lg text-slate-800">
+                            <i class="fa-solid fa-draw-polygon text-emerald-600 mr-2"></i> 範例 3：幾何點與線段
+                        </h3>
+                        <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-1 rounded">幾何應用</span>
+                    </div>
+                    <p class="text-slate-600 text-sm mb-3">
+                        平面上有 5 個點（任意三點不共線），任取兩點連成一條線段，共可連成幾條線段？
+                    </p>
+                    <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span>總線段數（\(C_5^2\)）：</span>
+                            <span class="font-bold text-slate-900">10 條</span>
+                        </div>
+                        <div class="flex justify-between items-center text-slate-500">
+                            <span>└ 外圍周界邊數：</span>
+                            <span>5 條</span>
+                        </div>
+                        <div class="flex justify-between items-center text-emerald-600 font-semibold">
+                            <span>└ 內部對角線數（\(C_5^2 - 5\)）：</span>
+                            <span>5 條</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 範例 4: 體育賽事單循環 -->
+                <div class="border border-slate-200 rounded-xl p-5 bg-slate-50">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-lg text-slate-800">
+                            <i class="fa-solid fa-basketball text-orange-600 mr-2"></i> 範例 4：5 隊體育單循環賽
+                        </h3>
+                        <span class="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-1 rounded">賽事安排</span>
+                    </div>
+                    <p class="text-slate-600 text-sm mb-3">
+                        班際籃球賽有 5 個隊伍參加，採「單循環賽制」（每兩隊都要打恰好一場比賽），總共需要安排幾場賽事？
+                    </p>
+                    <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs space-y-2">
+                        <p class="text-slate-600">
+                            從 5 隊中任意選擇 2 隊對決：
+                        </p>
+                        <div class="p-2 bg-orange-50 rounded border border-orange-200 text-orange-950 font-mono text-center font-bold">
+                            比賽總數 = \(C_5^2 = \frac{5 \times 4}{2} = 10\) 場
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 所有 10 種組合的完整列舉列表 -->
+            <div class="bg-indigo-50/60 rounded-xl p-5 border border-indigo-100">
+                <h3 class="font-bold text-indigo-950 mb-3 text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-table-cells"></i> 完整地把這 10 種組合列出來（假設 5 個元素為 A, B, C, D, E）：
+                </h3>
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center text-xs font-mono">
+                    <div class="bg-white p-2 rounded border border-indigo-200 shadow-sm text-indigo-900 font-bold">1. {A, B}</div>
+                    <div class="bg-white p-2 rounded border border-indigo-200 shadow-sm text-indigo-900 font-bold">2. {A, C}</div>
+                    <div class="bg-white p-2 rounded border border-indigo-200 shadow-sm text-indigo-900 font-bold">3. {A, D}</div>
+                    <div class="bg-white p-2 rounded border border-indigo-200 shadow-sm text-indigo-900 font-bold">4. {A, E}</div>
+                    <div class="bg-white p-2 rounded border border-indigo-200 shadow-sm text-indigo-900 font-bold">5. {B, C}</div>
+                    <div class="bg-white p-2 rounded border border-indigo-200 shadow-sm text-indigo-900 font-bold">6. {B, D}</div>
+                    <div class="bg-white p-2 rounded border border-indigo-200 shadow-sm text-indigo-900 font-bold">7. {B, E}</div>
+                    <div class="bg-white p-2 rounded border border-indigo-200 shadow-sm text-indigo-900 font-bold">8. {C, D}</div>
+                    <div class="bg-white p-2 rounded border border-indigo-200 shadow-sm text-indigo-900 font-bold">9. {C, E}</div>
+                    <div class="bg-white p-2 rounded border border-indigo-200 shadow-sm text-indigo-900 font-bold">10. {D, E}</div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 3: 機率 distributions 中的應用 (二項分布) -->
+        <section class="bg-white rounded-2xl p-6 sm:p-8 card-shadow border border-slate-100">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xl">
+                    3
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800">重點！\(C_5^2\) 在「機率分布」中扮演什麼角色？</h2>
+            </div>
+
+            <p class="text-slate-600 mb-6 leading-relaxed">
+                在數學課的「<strong>二項分布（Binomial Distribution）</strong>」中，\(C_5^2\) 是計算機率的核心！<br>
+                想像一個情境：<strong>投籃 5 次，每次進球機率為 \(p\)，沒進機率為 \((1-p)\)。請問「恰好進球 2 次」的機率是多少？</strong>
+            </p>
+
+            <!-- 3步驟拆解 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div class="bg-purple-50 p-4 rounded-xl border border-purple-200">
+                    <div class="text-xs font-bold text-purple-600 uppercase mb-1">Step 1：單一路徑機率</div>
+                    <h4 class="font-bold text-slate-800 text-sm mb-2">算一種「2進3沒進」的情況</h4>
+                    <p class="text-xs text-slate-600 mb-2">
+                        假設前 2 次進球（S），後 3 次沒進（F）：<br>
+                        順序：<code class="bg-white px-1.5 py-0.5 rounded border border-purple-200 font-bold text-purple-900">S S F F F</code>
+                    </p>
+                    <div class="text-xs font-mono font-bold text-purple-900 bg-white p-2 rounded border border-purple-200 text-center">
+                        機率 = \(p \cdot p \cdot (1-p) \cdot (1-p) \cdot (1-p) = p^2 (1-p)^3\)
+                    </div>
+                </div>
+
+                <div class="bg-purple-50 p-4 rounded-xl border border-purple-200">
+                    <div class="text-xs font-bold text-purple-600 uppercase mb-1">Step 2：計算路徑總數</div>
+                    <h4 class="font-bold text-slate-800 text-sm mb-2">出現 2 進球有幾種排列順序？</h4>
+                    <p class="text-xs text-slate-600 mb-2">
+                        在 5 次投籃位置中，挑選 2 次成功（S）的位置：
+                    </p>
+                    <div class="text-xs font-mono font-bold text-purple-900 bg-white p-2 rounded border border-purple-200 text-center">
+                        路徑數 = \(C_5^2 = 10\) 種排列方法！
+                    </div>
+                </div>
+
+                <div class="bg-purple-600 text-white p-4 rounded-xl shadow-md">
+                    <div class="text-xs font-bold text-purple-200 uppercase mb-1">Step 3：總機率公式</div>
+                    <h4 class="font-bold text-white text-sm mb-2">組合數 × 單路徑機率</h4>
+                    <p class="text-xs text-purple-100 mb-2">
+                        把 10 種可能路徑的機率加起來：
+                    </p>
+                    <div class="text-xs font-mono font-bold bg-purple-800 p-2 rounded border border-purple-400 text-center text-amber-300">
+                        \(P(X=2) = C_5^2 \cdot p^2 \cdot (1-p)^3\)
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10種二項式排列展開展示 -->
+            <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 mb-8">
+                <h4 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-diagram-project text-purple-600"></i>
+                    這 \(C_5^2 = 10\) 種進球（S）與沒進（F）的出現順序列表：
+                </h4>
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center text-xs font-mono">
+                    <div class="bg-white p-2 rounded border border-slate-200"><span class="text-emerald-600 font-bold">S S</span> <span class="text-rose-400">F F F</span></div>
+                    <div class="bg-white p-2 rounded border border-slate-200"><span class="text-emerald-600 font-bold">S</span> <span class="text-rose-400">F</span> <span class="text-emerald-600 font-bold">S</span> <span class="text-rose-400">F F</span></div>
+                    <div class="bg-white p-2 rounded border border-slate-200"><span class="text-emerald-600 font-bold">S</span> <span class="text-rose-400">F F</span> <span class="text-emerald-600 font-bold">S</span> <span class="text-rose-400">F</span></div>
+                    <div class="bg-white p-2 rounded border border-slate-200"><span class="text-emerald-600 font-bold">S</span> <span class="text-rose-400">F F F</span> <span class="text-emerald-600 font-bold">S</span></div>
+                    <div class="bg-white p-2 rounded border border-slate-200"><span class="text-rose-400">F</span> <span class="text-emerald-600 font-bold">S S</span> <span class="text-rose-400">F F</span></div>
+                    <div class="bg-white p-2 rounded border border-slate-200"><span class="text-rose-400">F</span> <span class="text-emerald-600 font-bold">S</span> <span class="text-rose-400">F</span> <span class="text-emerald-600 font-bold">S</span> <span class="text-rose-400">F</span></div>
+                    <div class="bg-white p-2 rounded border border-slate-200"><span class="text-rose-400">F</span> <span class="text-emerald-600 font-bold">S</span> <span class="text-rose-400">F F</span> <span class="text-emerald-600 font-bold">S</span></div>
+                    <div class="bg-white p-2 rounded border border-slate-200"><span class="text-rose-400">F F</span> <span class="text-emerald-600 font-bold">S S</span> <span class="text-rose-400">F</span></div>
+                    <div class="bg-white p-2 rounded border border-slate-200"><span class="text-rose-400">F F</span> <span class="text-emerald-600 font-bold">S</span> <span class="text-rose-400">F</span> <span class="text-emerald-600 font-bold">S</span></div>
+                    <div class="bg-white p-2 rounded border border-slate-200"><span class="text-rose-400">F F F</span> <span class="text-emerald-600 font-bold">S S</span></div>
+                </div>
+            </div>
+
+            <!-- 動態二項分布互動模擬器器 -->
+            <div class="bg-slate-900 text-white rounded-xl p-6 shadow-xl">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-purple-300 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-column"></i> 5次試驗二項分布機率模擬器
+                        </h3>
+                        <p class="text-slate-400 text-xs mt-1">拖動下方滑桿改變單次成功機率 \(p\)，觀察各個成功次數 \(X\) 的機率分布</p>
+                    </div>
+                    <!-- Slider -->
+                    <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex items-center gap-3 w-full md:w-auto">
+                        <label for="p-slider" class="text-xs text-slate-300 whitespace-nowrap">單次成功率 \(p\): <span id="p-value-display" class="text-amber-400 font-bold font-mono">0.50</span></label>
+                        <input id="p-slider" type="range" min="0.1" max="0.9" step="0.05" value="0.5" class="w-32 accent-purple-500 cursor-pointer" oninput="updateBinomialChart(this.value)">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+                    <!-- Chart Canvas -->
+                    <div class="lg:col-span-2 bg-slate-800 p-4 rounded-lg border border-slate-700 h-64">
+                        <canvas id="binomialChart"></canvas>
+                    </div>
+
+                    <!-- Highlight Info -->
+                    <div class="space-y-4">
+                        <div class="bg-purple-900/50 border border-purple-500/30 p-4 rounded-lg">
+                            <div class="text-xs text-purple-300 font-semibold mb-1">當前聚焦：恰好成功 2 次 (\(X=2\))</div>
+                            <div class="text-2xl font-bold text-amber-300 font-mono" id="prob-x2-display">31.25%</div>
+                            <div class="text-xs text-slate-300 mt-2 space-y-1">
+                                <div>組合係數：<span class="text-amber-400 font-bold font-mono">\(C_5^2 = 10\)</span></div>
+                                <div>單路徑機率：<span class="font-mono text-purple-200" id="single-path-display">0.03125</span></div>
+                            </div>
+                        </div>
+
+                        <div class="text-xs text-slate-400 leading-relaxed bg-slate-800/80 p-3 rounded border border-slate-700">
+                            💡 <strong>為什麼成功 2 次與成功 3 次機率常是一致的？</strong><br>
+                            當 \(p = 0.5\) 時，因為 \(C_5^2 = C_5^3 = 10\)，且成功與失敗機率相同，所以兩者的二項分布機率完全對稱相等！
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 4: 隨堂快問快答 測驗 -->
+        <section class="bg-white rounded-2xl p-6 sm:p-8 card-shadow border border-slate-100">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xl">
+                    4
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800">隨堂觀念自我檢測</h2>
+            </div>
+
+            <div class="space-y-6">
+                <!-- 題目 1 -->
+                <div class="border border-slate-200 rounded-xl p-5 bg-slate-50">
+                    <h3 class="font-bold text-slate-800 text-sm mb-3">
+                        Q1: 班上有 5 位同學，如果要從中選出 3 個人代表班級參加大合唱，共有幾種選法？
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs mb-3">
+                        <button onclick="checkQuiz(1, 'A', this)" class="p-3 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-left font-medium transition-colors">
+                            (A) \(P_5^3 = 60\) 種
+                        </button>
+                        <button onclick="checkQuiz(1, 'B', this)" class="p-3 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-left font-medium transition-colors">
+                            (B) \(C_5^3 = 10\) 種
+                        </button>
+                        <button onclick="checkQuiz(1, 'C', this)" class="p-3 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-left font-medium transition-colors">
+                            (C) \(5 \times 3 = 15\) 種
+                        </button>
+                    </div>
+                    <div id="quiz-feedback-1" class="hidden text-xs p-3 rounded-lg"></div>
+                </div>
+
+                <!-- 題目 2 -->
+                <div class="border border-slate-200 rounded-xl p-5 bg-slate-50">
+                    <h3 class="font-bold text-slate-800 text-sm mb-3">
+                        Q2: 為什麼在計算組合時，\(C_5^2\) 的結果會和 \(C_5^3\) 一模一樣？
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mb-3">
+                        <button onclick="checkQuiz(2, 'A', this)" class="p-3 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-left font-medium transition-colors">
+                            (A) 因為純屬巧合，其他數字不會有這個規律
+                        </button>
+                        <button onclick="checkQuiz(2, 'B', this)" class="p-3 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-left font-medium transition-colors">
+                            (B) 因為選出 2 個要去的人，等於選出 3 個「留下來」的人，兩者一對一對應！(\(C_n^k = C_n^{n-k}\))
+                        </button>
+                    </div>
+                    <div id="quiz-feedback-2" class="hidden text-xs p-3 rounded-lg"></div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 px-4 text-center text-xs border-t border-slate-800">
+        <div class="max-w-5xl mx-auto space-y-2">
+            <p class="text-slate-300 font-medium">高中數學 - 機率與統計 視覺化學習講義</p>
+            <p>Designed for Interactive Learning | Created with HTML, Tailwind CSS & Chart.js</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript logic -->
+    <script>
+        // ----------------------------------------------------
+        // 1. Handshake SVG Interactive Visualizer
+        // ----------------------------------------------------
+        const nodes = [
+            { id: 'A', x: 100 + 75 * Math.sin(0), y: 100 - 75 * Math.cos(0) },
+            { id: 'B', x: 100 + 75 * Math.sin(2*Math.PI/5), y: 100 - 75 * Math.cos(2*Math.PI/5) },
+            { id: 'C', x: 100 + 75 * Math.sin(4*Math.PI/5), y: 100 - 75 * Math.cos(4*Math.PI/5) },
+            { id: 'D', x: 100 + 75 * Math.sin(6*Math.PI/5), y: 100 - 75 * Math.cos(6*Math.PI/5) },
+            { id: 'E', x: 100 + 75 * Math.sin(8*Math.PI/5), y: 100 - 75 * Math.cos(8*Math.PI/5) }
+        ];
+
+        let linesAllVisible = true;
+
+        function renderHandshakeSVG() {
+            const svg = document.getElementById('handshake-svg');
+            svg.innerHTML = '';
+
+            // Draw 10 line pairs
+            let lineIndex = 0;
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', nodes[i].x);
+                    line.setAttribute('y1', nodes[i].y);
+                    line.setAttribute('x2', nodes[j].x);
+                    line.setAttribute('y2', nodes[j].y);
+                    line.setAttribute('stroke', '#6366f1');
+                    line.setAttribute('stroke-width', '2.5');
+                    line.setAttribute('stroke-dasharray', '0');
+                    line.setAttribute('id', `handshake-line-${i}-${j}`);
+                    line.setAttribute('class', 'transition-all duration-300');
+                    svg.appendChild(line);
+                    lineIndex++;
+                }
+            }
+
+            // Draw Nodes
+            nodes.forEach(node => {
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', node.x);
+                circle.setAttribute('cy', node.y);
+                circle.setAttribute('r', '14');
+                circle.setAttribute('fill', '#4f46e5');
+                circle.setAttribute('class', 'cursor-pointer hover:fill-indigo-500 transition-colors');
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', node.x);
+                text.setAttribute('y', node.y + 4);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('fill', '#ffffff');
+                text.setAttribute('font-size', '12');
+                text.setAttribute('font-weight', 'bold');
+                text.textContent = node.id;
+
+                g.appendChild(circle);
+                g.appendChild(text);
+                svg.appendChild(g);
+            });
+        }
+
+        function toggleHandshakeLines() {
+            linesAllVisible = !linesAllVisible;
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const line = document.getElementById(`handshake-line-${i}-${j}`);
+                    if (line) {
+                        line.setAttribute('opacity', linesAllVisible ? '1' : '0.1');
+                    }
+                }
+            }
+            document.getElementById('handshake-count').textContent = linesAllVisible ? '已選: 10/10 條線' : '已選: 0/10 條線';
+        }
+
+
+        // ----------------------------------------------------
+        // 2. Topping Combinations Interactive
+        // ----------------------------------------------------
+        const toppings = ['🧋 珍珠', '⚪ 波霸', '🥥 椰果', '🌿 仙草', '🍮 布丁'];
+        let selectedToppings = [];
+
+        function renderToppings() {
+            const container = document.getElementById('topping-container');
+            container.innerHTML = '';
+            toppings.forEach((top, index) => {
+                const isSelected = selectedToppings.includes(top);
+                const btn = document.createElement('button');
+                btn.className = `px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                    isSelected 
+                        ? 'bg-amber-500 text-white shadow-md scale-105' 
+                        : 'bg-slate-100 text-slate-700 hover:bg-amber-100'
+                }`;
+                btn.textContent = top;
+                btn.onclick = () => selectTopping(top);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectTopping(top) {
+            if (selectedToppings.includes(top)) {
+                selectedToppings = selectedToppings.filter(t => t !== top);
+            } else {
+                if (selectedToppings.length < 2) {
+                    selectedToppings.push(top);
+                } else {
+                    selectedToppings = [selectedToppings[1], top];
+                }
+            }
+            renderToppings();
+            updateToppingResult();
+        }
+
+        function updateToppingResult() {
+            const res = document.getElementById('topping-result');
+            if (selectedToppings.length === 2) {
+                res.className = "p-2.5 bg-emerald-50 text-emerald-900 rounded-md text-xs font-medium text-center border border-emerald-300 font-bold";
+                res.innerHTML = `🎉 成功組合雙拼：【${selectedToppings[0]} + ${selectedToppings[1]}】<br><span class="text-emerald-700 font-normal">（這是 C5取2 = 10 種可能中的其中 1 種組合！）</span>`;
+            } else {
+                res.className = "p-2.5 bg-amber-50 text-amber-900 rounded-md text-xs font-medium text-center border border-amber-200";
+                res.textContent = `請再選擇 ${2 - selectedToppings.length} 種配料...`;
+            }
+        }
+
+
+        // ----------------------------------------------------
+        // 3. Chart.js Binomial Distribution Simulation
+        // ----------------------------------------------------
+        let binomialChart;
+
+        function combinations(n, k) {
+            if (k < 0 || k > n) return 0;
+            if (k === 0 || k === n) return 1;
+            let res = 1;
+            for (let i = 1; i <= k; i++) {
+                res = res * (n - i + 1) / i;
+            }
+            return res;
+        }
+
+        function calculateBinomialProbabilities(p) {
+            const n = 5;
+            const probs = [];
+            for (let k = 0; k <= n; k++) {
+                const comb = combinations(n, k);
+                const prob = comb * Math.pow(p, k) * Math.pow(1 - p, n - k);
+                probs.push(prob);
+            }
+            return probs;
+        }
+
+        function initBinomialChart() {
+            const ctx = document.getElementById('binomialChart').getContext('2d');
+            const probs = calculateBinomialProbabilities(0.5);
+
+            binomialChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['X=0 (0勝)', 'X=1 (1勝)', 'X=2 (2勝)', 'X=3 (3勝)', 'X=4 (4勝)', 'X=5 (5勝)'],
+                    datasets: [{
+                        label: '發生機率',
+                        data: probs,
+                        backgroundColor: [
+                            'rgba(148, 163, 184, 0.5)',
+                            'rgba(148, 163, 184, 0.5)',
+                            'rgba(245, 158, 11, 0.9)', // Highlight X=2
+                            'rgba(148, 163, 184, 0.5)',
+                            'rgba(148, 163, 184, 0.5)',
+                            'rgba(148, 163, 184, 0.5)'
+                        ],
+                        borderColor: [
+                            '#94a3b8',
+                            '#94a3b8',
+                            '#f59e0b',
+                            '#94a3b8',
+                            '#94a3b8',
+                            '#94a3b8'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `機率: ${(context.raw * 100).toFixed(2)}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 0.5,
+                            ticks: {
+                                color: '#94a3b8',
+                                callback: function(value) { return (value * 100) + '%'; }
+                            },
+                            grid: { color: '#334155' }
+                        },
+                        x: {
+                            ticks: { color: '#e2e8f0', font: { weight: 'bold' } },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            updateBinomialChart(0.5);
+        }
+
+        function updateBinomialChart(pVal) {
+            const p = parseFloat(pVal);
+            document.getElementById('p-value-display').textContent = p.toFixed(2);
+
+            const probs = calculateBinomialProbabilities(p);
+            
+            if (binomialChart) {
+                binomialChart.data.datasets[0].data = probs;
+                binomialChart.update();
+            }
+
+            // Update info displays
+            const probX2 = probs[2];
+            document.getElementById('prob-x2-display').textContent = (probX2 * 100).toFixed(2) + '%';
+            
+            const singlePath = Math.pow(p, 2) * Math.pow(1 - p, 3);
+            document.getElementById('single-path-display').textContent = singlePath.toFixed(5);
+        }
+
+
+        // ----------------------------------------------------
+        // 4. Quiz Logic
+        // ----------------------------------------------------
+        function checkQuiz(qNum, choice, btnElem) {
+            const feedbackElem = document.getElementById(`quiz-feedback-${qNum}`);
+            feedbackElem.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-900', 'bg-rose-100', 'text-rose-900', 'border-emerald-300', 'border-rose-300');
+
+            if (qNum === 1) {
+                if (choice === 'B') {
+                    feedbackElem.classList.add('bg-emerald-100', 'text-emerald-900', 'border', 'border-emerald-300');
+                    feedbackElem.innerHTML = '<strong>✅ 答對了！</strong> 因為選出來的三位同學職務相同（都是大合唱代表），不分順序，所以使用組合公式 \(C_5^3 = \frac{5 \times 4 \times 3}{3 \times 2 \times 1} = 10\) 種！';
+                } else {
+                    feedbackElem.classList.add('bg-rose-100', 'text-rose-900', 'border', 'border-rose-300');
+                    feedbackElem.innerHTML = '<strong>❌ 再想想看～</strong> 這三個代表選出來有分先後職務嗎？沒有的話就不能用排列 \(P_5^3\) 喔！';
+                }
+            } else if (qNum === 2) {
+                if (choice === 'B') {
+                    feedbackElem.classList.add('bg-emerald-100', 'text-emerald-900', 'border', 'border-emerald-300');
+                    feedbackElem.innerHTML = '<strong>✅ 完全正確！</strong> 這叫「對稱性質」！從 5 個人中挑 2 個人去掃地，剩下的 3 個人自然就是留下來的人。因此選 2 個人的方法數必然等於選 3 個人的方法數：\(C_5^2 = C_5^3 = 10\)！';
+                } else {
+                    feedbackElem.classList.add('bg-rose-100', 'text-rose-900', 'border', 'border-rose-300');
+                    feedbackElem.innerHTML = '<strong>❌ 不太對喔～</strong> 這並非巧合，而是組合的重要對稱性質 \(C_n^k = C_n^{n-k}\)！';
+                }
+            }
+        }
+
+
+        // Initialize Page
+        window.addEventListener('DOMContentLoaded', () => {
+            renderHandshakeSVG();
+            renderToppings();
+            initBinomialChart();
+        });
+    </script>
+</body>
+</html>

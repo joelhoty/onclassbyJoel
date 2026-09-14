@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>機器人專題課程筆記 - LEGO Mindstorms EV3 硬體與聲音積木 (2026/09/07)</title>
+    <style>
+        :root {
+            --primary-color: #d01012; /* LEGO Red */
+            --secondary-color: #0055bf; /* LEGO Blue */
+            --dark-color: #212529;
+            --light-color: #f8f9fa;
+            --accent-yellow: #ffcf00;
+            --gray-bg: #e9ecef;
+            --border-color: #dee2e6;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            line-height: 1.7;
+            color: var(--dark-color);
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+            color: #ffffff;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            border-bottom: 5px solid var(--primary-color);
+        }
+
+        header h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+        }
+
+        header .subtitle {
+            font-size: 1.1rem;
+            color: var(--accent-yellow);
+            margin-bottom: 1rem;
+        }
+
+        header .meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            color: #ccc;
+            flex-wrap: wrap;
+        }
+
+        header .meta-info span {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        nav.toc {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        nav.toc h2 {
+            margin-top: 0;
+            font-size: 1.3rem;
+            color: var(--secondary-color);
+        }
+
+        nav.toc ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 0.5rem 1rem;
+        }
+
+        nav.toc a {
+            color: #495057;
+            text-decoration: none;
+            transition: color 0.2s;
+            font-weight: 500;
+        }
+
+        nav.toc a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+        section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            color: #111;
+            border-bottom: 2px solid var(--gray-bg);
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h2::before {
+            content: "";
+            display: inline-block;
+            width: 8px;
+            height: 1.4rem;
+            background-color: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin-top: 1.5rem;
+            font-size: 1.25rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .card {
+            background: var(--light-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.2rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow);
+        }
+
+        .card h4 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: white;
+        }
+
+        th, td {
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        th {
+            background-color: #f1f3f5;
+            color: #333;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .highlight-box {
+            background-color: #e7f5ff;
+            border-left: 4px solid var(--secondary-color);
+            padding: 1rem 1.2rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.2rem 0;
+        }
+
+        .highlight-box.tip {
+            background-color: #fff9db;
+            border-left-color: var(--accent-yellow);
+        }
+
+        .highlight-box.important {
+            background-color: #ffe3e3;
+            border-left-color: var(--primary-color);
+        }
+
+        .highlight-box h5 {
+            margin: 0 0 0.4rem 0;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25em 0.6em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+            color: white;
+            background-color: #6c757d;
+        }
+
+        .badge-red { background-color: var(--primary-color); }
+        .badge-blue { background-color: var(--secondary-color); }
+        .badge-green { background-color: #2b8a3e; }
+        .badge-orange { background-color: #e67700; }
+
+        code {
+            background-color: #e9ecef;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.9em;
+            color: #d63384;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: #6c757d;
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.75rem; }
+            .container { padding: 0 1rem; }
+            section { padding: 1.25rem; }
+        }
+    </style>
+    <!-- 引入 Mermaid 圖型渲染引擎 -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (window.mermaid) {
+                mermaid.initialize({
+                    startOnLoad: true,
+                    theme: 'default',
+                    securityLevel: 'loose'
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+
+    <header>
+        <h1>機器人專題課程筆記</h1>
+        <div class="subtitle">LEGO Mindstorms EV3 硬體架構與第一個輸出積木 (聲音 Sound)</div>
+        <div class="meta-info">
+            <span>📅 上課日期：2026 年 09 月 07 日</span>
+            <span>🤖 設備：LEGO Mindstorms EV3</span>
+            <span>📝 課程單元：硬體概論 & 聲音輸出積木</span>
+            <span>🕒 產生時間：2026-09-07 16:13:36 (UTC+8)</span>
+            <span>🧠 模型代號：Gemini 3.8 Flash</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- 目錄導覽 -->
+        <nav class="toc">
+            <h2>📑 目錄導覽</h2>
+            <ul>
+                <li><a href="#section-1">1. EV3 主機硬體架構與介面</a></li>
+                <li><a href="#section-2">2. 第一個輸出積木 — 聲音積木 (Sound)</a></li>
+                <li><a href="#section-3">3. 聲音積木 4 大控制模式</a></li>
+                <li><a href="#section-4">4. 核心參數：播放控制 (Play Type)</a></li>
+                <li><a href="#section-5">5. 實作範例與程式邏輯</a></li>
+                <li><a href="#section-6">6. 專題實作：距離反饋蜂鳴器 (Distance Audio Feedback)</a></li>
+                <li><a href="#section-7">7. 延伸想法與創新應用</a></li>
+                <li><a href="#section-8">8. 延伸專題：EV3 播放 MP3 的限制與做法</a></li>
+                <li><a href="#section-9">9. EV3 官方軟體版本對照與線上資源連結</a></li>
+            </ul>
+        </nav>
+
+        <!-- 第一部分：硬體介紹 -->
+        <section id="section-1">
+            <h2>1. EV3 主機硬體架構與介面</h2>
+            <p>LEGO Mindstorms EV3 主機（Intelligent Brick）是機器人的大腦，負責接收感測器訊號、運算邏輯並驅動輸出設備。</p>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h4>🧠 核心硬體規格</h4>
+                    <ul>
+                        <li><strong>處理器：</strong>ARM9 處理器 (300 MHz)，運行 Linux 作業系統。</li>
+                        <li><strong>記憶體：</strong>64 MB RAM + 16 MB Flash 記憶體。</li>
+                        <li><strong>顯示螢幕：</strong>178 x 128 像素單色 LCD 螢幕。</li>
+                        <li><strong>發聲元件：</strong>內建 8 歐姆喇叭 (Speaker)，可發出不同頻率與單音。</li>
+                        <li><strong>狀態指示燈：</strong>按鈕下方設有雙色/三色 LED 指示燈（綠/紅/橘），用以顯示運作、下載或錯誤狀態。</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🔌 連接埠配置 (Ports Layout)</h4>
+                    <ul>
+                        <li><strong>輸出埠 (Output Ports A, B, C, D)：</strong>位於主機頂部，專門連接馬達 (大型馬達、中型馬達)。</li>
+                        <li><strong>輸入埠 (Input Ports 1, 2, 3, 4)：</strong>位於主機底部，專門連接感測器 (觸控、超音波、顏色、陀螺儀等)。</li>
+                        <li><strong>PC USB 埠：</strong>Mini-USB 介面，用於連接電腦進行程式編譯與燒錄。</li>
+                        <li><strong>USB Host 埠：</strong>擴充 Wi-Fi 網卡、藍牙或主機串接 (Daisy-Chain)。</li>
+                        <li><strong>SD 卡擴充槽：</strong>支援最高 32GB Micro SD 卡（可用於擴充系統或載入外置作業系統如 ev3dev）。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>🔘 主機控制按鈕介紹</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>按鈕名稱</th>
+                        <th>圖示 / 位置</th>
+                        <th>主要功能</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>中央按鈕 (Enter)</strong></td>
+                        <td>正中央暗紅色/灰色區域</td>
+                        <td>開機、確認選擇、執行程式。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>左上按鈕 (Back/Cancel)</strong></td>
+                        <td>左上方獨立按鈕</td>
+                        <td>返回上一頁、取消操作、關機（長按）或終止正在執行的程式。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>方向鍵 (Up/Down/Left/Right)</strong></td>
+                        <td>中央按鈕四周的四個鍵</td>
+                        <td>選單導覽、切換分頁、調整數值設定。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 第二部分：聲音積木介紹 -->
+        <section id="section-2">
+            <h2>2. 第一個輸出積木 — 聲音積木 (Sound Block)</h2>
+            <p>聲音積木（Sound Block）是 EV3 程式設計中最直觀且具備即時回饋的<strong>綠色輸出積木（Action Blocks）</strong>之一。透過聲音反饋，我們可以快速驗證程式執行進度與機器人狀態。</p>
+
+            <div class="highlight-box">
+                <h5>💡 為什麼聲音積木是最佳入門輸出設備？</h5>
+                <ul>
+                    <li>不需要複雜的機械結構即可直接觀察輸出結果。</li>
+                    <li>是進行機器人<strong>狀態偵錯（Debugging）</strong>最方便的工具（例如：執行到特定程式區塊時發出聲音提示）。</li>
+                    <li>能為機器人增加人性化的互動與情感表達。</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 第三部分：4 大控制模式 -->
+        <section id="section-3">
+            <h2>3. 聲音積木 4 大控制模式</h2>
+            <p>聲音積木點選左下角的模式切換按鈕後，提供以下 4 種運作模式：</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>模式種類</th>
+                        <th>圖示與名稱</th>
+                        <th>說明與用途</th>
+                        <th>主要參數</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge badge-red">Mode 1</span></td>
+                        <td><strong>Play File (播放檔案)</strong></td>
+                        <td>播放 EV3 內建的語音檔或自訂聲音檔（如動物聲、數字、招呼語等）。</td>
+                        <td>檔名 (File Name)、音量 (Volume)、播放方式 (Play Type)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-blue">Mode 2</span></td>
+                        <td><strong>Play Tone (播放單音)</strong></td>
+                        <td>指定特定的聲音頻率 (Hz) 與發聲持續時間 (秒)，常用於製作簡易警報聲。</td>
+                        <td>頻率 (Frequency: 250~10000 Hz)、持續時間 (Duration)、音量、播放方式</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-green">Mode 3</span></td>
+                        <td><strong>Play Note (播放樂音/音階)</strong></td>
+                        <td>使用標準音樂鋼琴音階 (如 C4, D4, E4) 與音樂拍子 (Beat) 來設定，適合演奏歌曲。</td>
+                        <td>音符 (Note)、持續時間 (Duration/Beats)、音量、播放方式</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-orange">Mode 4</span></td>
+                        <td><strong>Stop (停止聲音)</strong></td>
+                        <td>立即切斷與停止目前正在播放的任何聲音。</td>
+                        <td>無參數</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 第四部分：播放控制 (Play Type) 深度解析 -->
+        <section id="section-4">
+            <h2>4. 核心參數：播放控制 (Play Type) 深度解析</h2>
+            <p>在「Play File」、「Play Tone」與「Play Note」模式中，有一個極為關鍵的控制參數——<strong>Play Type（播放控制方式）</strong>。這決定了程式執行流程是「阻塞（Blocking）」還是「非阻塞（Non-blocking）」。</p>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h4>1. Wait for Completion (等待播放完成) <span class="badge badge-red">預設</span></h4>
+                    <p><strong>行為：</strong>程式會暫停在此積木，直到聲音完全播放完畢後，才會繼續執行下一個積木。</p>
+                    <p><strong>適用場景：</strong>提示語、播放完整音樂片段、確定前置聲音結束才開始移動。</p>
+                </div>
+                <div class="card">
+                    <h4>2. Play Once (播放一次即往下執行)</h4>
+                    <p><strong>行為：</strong>聲音開始播放的瞬間，程式會<b>檔即向下執行</b>下一個積木，聲音會在背景繼續發聲。</p>
+                    <p><strong>適用場景：</strong>機器人一邊向前移動、一邊發出警報聲或開機音效。</p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 1rem;">
+                <h4>3. Repeat (重複循環播放)</h4>
+                <p><strong>行為：</strong>聲音會不斷循環播放，程式不會被阻塞，會持續向下執行其他積木，直到遇到 <code>Stop</code> 聲音積木或程式結束。</p>
+                <p><strong>適用場景：</strong>連續警示燈/警報聲、背景背景音樂。</p>
+            </div>
+
+            <div class="highlight-box tip">
+                <h5>⚠️ 觀念觀測重點：併行處理 (Parallel Execution)</h5>
+                <p>若希望機器人<strong>同時移動又同時發聲</strong>，必須將 Sound Block 設定為 <code>Play Once</code>，或者利用 EV3 的多執行緒（Parallel Beam / 多重分流管道）同時驅動馬達與聲音。若設為 <code>Wait for Completion</code>，馬達將會等待聲音播完後才開始轉動！</p>
+            </div>
+        </section>
+
+        <!-- 第五部分：實作範例 -->
+        <section id="section-5">
+            <h2>5. 實作範例與程式邏輯</h2>
+
+            <h3>範例 1：開機歡迎與狀態指示</h3>
+            <p><strong>邏輯說明：</strong>螢幕顯示並發出 Hello 語音，接著發出高音階確定系統準備完成。</p>
+            <div class="highlight-box">
+                <code>[Sound Block: Play File -> "Hello"] (Wait for Completion)</code> ➔ 
+                <code>[Sound Block: Play Note -> C5, 0.5s] (Wait for Completion)</code>
+            </div>
+
+            <h3>範例 2：倒車警報器 (Frequency Sweep Siren)</h3>
+            <p><strong>邏輯說明：</strong>模擬車輛倒車時，利用迴圈頻率變化的逼逼聲。</p>
+            <div class="highlight-box">
+                <code>Loop (重複 5 次) ➔ [Sound Block: Play Tone -> 1000Hz, 0.2s] (Wait for Completion) ➔ [Wait Block -> 0.2s]</code>
+            </div>
+
+            <h3>範例 3：簡易樂曲演奏（「小星星」開頭）</h3>
+            <p><strong>音階設定：</strong>Do Do Sol Sol La La Sol</p>
+            <div class="highlight-box">
+                <code>[Play Note: C4, 0.5s]</code> ➔ <code>[Play Note: C4, 0.5s]</code> ➔ <code>[Play Note: G4, 0.5s]</code> ➔ <code>[Play Note: G4, 0.5s]</code> ➔ <code>[Play Note: A4, 0.5s]</code> ➔ <code>[Play Note: A4, 0.5s]</code> ➔ <code>[Play Note: G4, 1.0s]</code>
+            </div>
+
+            <h3>範例 4：經典搖滾樂曲 — Europe《The Final Countdown》前奏合成器旋律</h3>
+            <p><strong>樂理與節奏設計：</strong>《The Final Countdown》前奏以極具爆發力的 Synth 旋律著稱。在 EV3 的 <code>Play Note</code> 積木中，我們可以將音符長度與節拍做如下換算（單位：秒）：</p>
+            <ul>
+                <li><strong>短拍 (八分音符 1/8 Beat)：</strong>設定為 <code>0.15 秒</code></li>
+                <li><strong>中拍 (四分音符 1/4 Beat)：</strong>設定為 <code>0.30 秒</code></li>
+                <li><strong>長拍 (半音符 1/2 Beat)：</strong>設定為 <code>0.60 秒</code></li>
+                <li><strong>所有積木 Play Type：</strong>均設定為 <code>Wait for Completion (0)</code> 確保拍子準確不重疊。</li>
+            </ul>
+
+            <h4>🎼 前奏旋律積木排列順序表</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>小節 / 句型</th>
+                        <th>積木順序</th>
+                        <th>音符 (Note)</th>
+                        <th>持續時間 (Duration)</th>
+                        <th>樂理拍子</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="4"><strong>第一句 (上升句)</strong></td>
+                        <td>積木 1</td>
+                        <td><code>B4</code> (Si)</td>
+                        <td>0.15s</td>
+                        <td>八分音符</td>
+                    </tr>
+                    <tr>
+                        <td>積木 2</td>
+                        <td><code>A4</code> (La)</td>
+                        <td>0.15s</td>
+                        <td>八分音符</td>
+                    </tr>
+                    <tr>
+                        <td>積木 3</td>
+                        <td><code>B4</code> (Si)</td>
+                        <td>0.30s</td>
+                        <td>四分音符</td>
+                    </tr>
+                    <tr>
+                        <td>積木 4</td>
+                        <td><code>E4</code> (Mi)</td>
+                        <td>0.60s</td>
+                        <td>半音符 (拉長)</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="5"><strong>第二句 (高音轉折)</strong></td>
+                        <td>積木 5</td>
+                        <td><code>C5</code> (高音 Do)</td>
+                        <td>0.15s</td>
+                        <td>八分音符</td>
+                    </tr>
+                    <tr>
+                        <td>積木 6</td>
+                        <td><code>B4</code> (Si)</td>
+                        <td>0.15s</td>
+                        <td>八分音符</td>
+                    </tr>
+                    <tr>
+                        <td>積木 7</td>
+                        <td><code>C5</code> (高音 Do)</td>
+                        <td>0.30s</td>
+                        <td>四分音符</td>
+                    </tr>
+                    <tr>
+                        <td>積木 8</td>
+                        <td><code>B4</code> (Si)</td>
+                        <td>0.30s</td>
+                        <td>四分音符</td>
+                    </tr>
+                    <tr>
+                        <td>積木 9</td>
+                        <td><code>A4</code> (La)</td>
+                        <td>0.30s</td>
+                        <td>四分音符</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="4"><strong>第三句 (再上升句)</strong></td>
+                        <td>積木 10</td>
+                        <td><code>C5</code> (高音 Do)</td>
+                        <td>0.15s</td>
+                        <td>八分音符</td>
+                    </tr>
+                    <tr>
+                        <td>積木 11</td>
+                        <td><code>B4</code> (Si)</td>
+                        <td>0.15s</td>
+                        <td>八分音符</td>
+                    </tr>
+                    <tr>
+                        <td>積木 12</td>
+                        <td><code>C5</code> (高音 Do)</td>
+                        <td>0.30s</td>
+                        <td>四分音符</td>
+                    </tr>
+                    <tr>
+                        <td>積木 13</td>
+                        <td><code>E4</code> (Mi)</td>
+                        <td>0.60s</td>
+                        <td>半音符 (拉長)</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="5"><strong>第四句 (經典下行收尾)</strong></td>
+                        <td>積木 14</td>
+                        <td><code>A4</code> (La)</td>
+                        <td>0.15s</td>
+                        <td>八分音符</td>
+                    </tr>
+                    <tr>
+                        <td>積木 15</td>
+                        <td><code>G4</code> (Sol)</td>
+                        <td>0.15s</td>
+                        <td>八分音符</td>
+                    </tr>
+                    <tr>
+                        <td>積木 16</td>
+                        <td><code>A4</code> (La)</td>
+                        <td>0.30s</td>
+                        <td>四分音符</td>
+                    </tr>
+                    <tr>
+                        <td>積木 17</td>
+                        <td><code>G4</code> (Sol)</td>
+                        <td>0.30s</td>
+                        <td>四分音符</td>
+                    </tr>
+                    <tr>
+                        <td>積木 18</td>
+                        <td><code>F#4 / F4</code> (升 Fa / Fa)</td>
+                        <td>0.30s</td>
+                        <td>四分音符</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="highlight-box tip">
+                <h5>💡 積木編程最佳化技巧 (Array & Loop 樂曲陣列發聲)</h5>
+                <p>若積木數量過多導致程式看板拉太長，可以使用 EV3 軟體中的 <strong>Array (陣列) + Loop (迴圈) + Index 變數</strong>，將音符頻率與時間寫入數值陣列中，透過迴圈讀取播放，程式碼會極為簡潔！</p>
+            </div>
+
+            <h3>範例 5：使用 Block Builder (My Block 自訂積木建立器) 封裝樂曲積木</h3>
+            <p>當我們在 EV3 中編寫《The Final Countdown》這類包含十幾個音符的長曲時，主程式面板會變得極為冗長雜亂。利用 EV3 的 <strong>My Block Builder (自訂積木建立器)</strong>，可以將這一長串聲音積木封裝成一個乾淨的青綠色自訂積木（例如：<code>Play_FinalCountdown</code>），甚至能加入動態控制參數！</p>
+
+            <h4>🛠️ Block Builder 自訂積木建立步驟教學：</h4>
+            <ol>
+                <li><strong>框選積木 (Select Blocks)：</strong>用滑鼠拉出選取框，選取剛剛排好的 18 個 Sound Note 積木。</li>
+                <li><strong>啟動 Block Builder：</strong>點擊頂部選單 <code>Tools (工具)</code> ➔ 點選 <code>My Block Builder (我的積木建立器)</code>。</li>
+                <li><strong>設定積木資訊 (Block Information)：</strong>
+                    <ul>
+                        <li><strong>Block Name (積木名稱)：</strong>填入 <code>Play_Countdown_Riff</code></li>
+                        <li><strong>Description (說明)：</strong>播放 Europe - The Final Countdown 前奏旋律</li>
+                        <li><strong>Icon (自訂圖示)：</strong>挑選樂符 🎵 或喇叭 🔊 圖示，方便視覺化辨識。</li>
+                    </ul>
+                </li>
+                <li><strong>新增參數 (Add Parameters)：</strong>為自訂積木建立輸入介面 (Input Ports)：
+                    <ul>
+                        <li><strong>參數 1：<code>Volume</code> (音量)</strong> — 設定型態為數字 (Number)，預設值 <code>100</code>。內部將此參數接線至所有 Sound Block 的 Volume 連接埠。</li>
+                        <li><strong>參數 2：<code>Speed_Factor</code> (演奏速度)</strong> — 設定型態為數字 (Number)，預設值 <code>1.0</code>。內部使用除法積木 (Divide Block) 控制 Duration 秒數。</li>
+                    </ul>
+                </li>
+                <li><strong>完成與調用：</strong>點擊 <code>Finish</code>。自訂積木會自動加入青綠色標籤頁（My Blocks），之後在主程式中只需拉出一個 <code>[Play_Countdown_Riff]</code> 積木即可一鍵播放整首前奏！</li>
+            </ol>
+
+            <div class="highlight-box">
+                <h5>🎨 Block Builder 自訂積木內部封裝架構</h5>
+                <code>[My Block: Play_Countdown_Riff (Input: Volume, Speed)]</code><br>
+                └─➔ 內部連線：<code>Volume 接至 Sound Block 音量埠</code> | <code>Speed 控制音符時間</code><br>
+                └─➔ 順序執行 18 個音符積木，提供模組化（Modular）與高重用性（Reusability）。
+            </div>
+        </section>
+
+        <!-- 第六部分：專題實作 — 距離反饋蜂鳴器 -->
+        <section id="section-6">
+            <h2>6. 專題實作：距離反饋蜂鳴器 (Distance Audio Feedback System)</h2>
+            <p>距離反饋蜂鳴器是結合<strong>輸入感測器（超音波感測器 Ultrasonic Sensor）</strong>與<strong>輸出設備（聲音積木 Sound Block）</strong>的經典動態互動專題。透過即時量測障礙物距離，並經由數據對映（Data Mapping）動態調整聲音頻率 (Frequency) 與蜂鳴間隔 (Beeping Interval)，完美模擬汽車倒車雷達 (Parking Sensors) 與視障無障礙導引系統。</p>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h4>📡 1. 系統硬體與感測原理</h4>
+                    <ul>
+                        <li><strong>輸入感測器：</strong>EV3 超音波感測器 (Ultrasonic Sensor)，連接至 <code>Input Port 4</code>。</li>
+                        <li><strong>量測原理：</strong>發射 40kHz 高頻超音波並接收反射波，計算時間差得出距離數值 <code>D</code>（單位：cm，有效範圍 3 ~ 250 cm）。</li>
+                        <li><strong>反饋邏輯：</strong>距離越近 &rarr; 聲音頻率越高、逼逼聲間隔越短、警示越急促。</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🧮 2. 數據對映數學模型 (Data Mapping Math)</h4>
+                    <p>將感測距離 <code>D</code> (cm) 轉換為聲音發聲頻率 <code>f</code> (Hz) 的動態線性對映公式：</p>
+                    <div class="highlight-box">
+                        <code>f(D) = f_max - [ (D - D_min) / (D_max - D_min) ] × (f_max - f_min)</code>
+                    </div>
+                    <p>設定感測區間 <code>D ∈ [5, 100] cm</code>，頻率範圍 <code>f ∈ [250, 2000] Hz</code>：</p>
+                    <ul>
+                        <li><strong>極近距離 (D = 5 cm)：</strong> 輸出 <code>2000 Hz</code>（高音急促警報）</li>
+                        <li><strong>遠距離 (D = 100 cm)：</strong> 輸出 <code>250 Hz</code>（低音緩慢聲音）</li>
+                        <li><strong>超遠安全距離 (D > 100 cm)：</strong> 靜音 (Mute / Safe Range)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>📊 倒車雷達分段發聲與警示等級對照表</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>距離區間 (Distance)</th>
+                        <th>警示等級 (Alert Level)</th>
+                        <th>聲音頻率 (Frequency)</th>
+                        <th>發聲間隔時間 (Wait Interval)</th>
+                        <th>蜂鳴器行為特徵 (Beeper Pattern)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>D < 10 cm</code></td>
+                        <td><span class="badge badge-red">極度危險 (Danger)</span></td>
+                        <td>2500 Hz (極高音)</td>
+                        <td>0.0 秒 (無間隔)</td>
+                        <td><strong>持續長鳴 (Continuous Alarm Siren)</strong></td>
+                    </tr>
+                    <tr>
+                        <td><code>10 cm ≤ D < 30 cm</code></td>
+                        <td><span class="badge badge-orange">警告 (Warning)</span></td>
+                        <td>1800 Hz (高音)</td>
+                        <td>0.1 秒</td>
+                        <td><strong>極急促蜂鳴 (Fast Beeping - 約 5 次/秒)</strong></td>
+                    </tr>
+                    <tr>
+                        <td><code>30 cm ≤ D < 60 cm</code></td>
+                        <td><span class="badge badge-blue">接近 (Caution)</span></td>
+                        <td>1000 Hz (中音)</td>
+                        <td>0.3 秒</td>
+                        <td><strong>中速蜂鳴 (Medium Beeping - 約 2 次/秒)</strong></td>
+                    </tr>
+                    <tr>
+                        <td><code>60 cm ≤ D < 100 cm</code></td>
+                        <td><span class="badge badge-green">注意 (Notice)</span></td>
+                        <td>500 Hz (低音)</td>
+                        <td>0.6 秒</td>
+                        <td><strong>慢速蜂鳴 (Slow Beeping - 約 1 次/秒)</strong></td>
+                    </tr>
+                    <tr>
+                        <td><code>D ≥ 100 cm</code></td>
+                        <td><span class="badge">安全範圍 (Safe)</span></td>
+                        <td>— (靜音)</td>
+                        <td>—</td>
+                        <td><strong>不發聲 (Silent Mode)</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>🧩 EV3 積木程式邏輯實現 (Block Implementation)</h3>
+
+            <h4>做法 A：動態頻率連續對映 (Continuous Frequency Control)</h4>
+            <p><strong>積木邏輯：</strong>使用 <code>Loop (無限迴圈)</code> 不斷讀取超音波數值，透過算術積木 (Math Block) 計算出對映頻率，直接餵入 Sound Block 的 <code>Frequency</code> 數據埠。</p>
+            <div class="highlight-box">
+                <code>[Loop Block: Infinite]</code><br>
+                &nbsp;&nbsp;├─➔ <code>[Ultrasonic Block: Measure - Distance Centimeters (Port 4)]</code> &rarr; 輸出 <code>D</code><br>
+                &nbsp;&nbsp;├─➔ <code>[Math Block (Advanced): "2000 - (D - 5) * 18.4"]</code> &rarr; 輸出頻率 <code>f</code><br>
+                &nbsp;&nbsp;└─➔ <code>[Sound Block: Play Tone (Freq = f, Duration = 0.1s, Play Type = Play Once)]</code>
+            </div>
+
+            <h4>做法 B：多階條件判斷蜂鳴器 (Switch Staged Beeping)</h4>
+            <p><strong>積木邏輯：</strong>使用條件判斷積木 <code>Switch Block</code> 根據距離區間進行分級，實現傳統汽車倒車雷達的不同急促等級逼逼聲。</p>
+            <div class="highlight-box tip">
+                <h5>💡 關鍵設定技巧 (Avoid Latency Blocking)：</h5>
+                <p>在實作急促嗶嗶聲時，Sound Block 的 <code>Play Type</code> 必須設定為 <code>Play Once (1)</code> 或設定極短發聲時間 (如 0.08 秒)，後面緊接相應的 Wait Block。若設為 <code>Wait for Completion</code> 且聲音時間過長，會導致迴圈響應遲鈍、反應嚴重延遲！</p>
+            </div>
+
+            <h3>🚀 延伸設計：進階數學轉換公式與複合積木數據架構 (Extended Formula & Block Architecture)</h3>
+            <p>在實際車用工程與機器人防撞設計中，單一線性對映往往無法完美突顯「距離越近、危險等級呈指數級暴增」的生理警示效果。以下延伸設計 4 種進階數學轉換模型與相應的 EV3 數據線 (Data Wires) 接線積木架構：</p>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h4>1. 雙重調變模型 (Dual Modulation Model)</h4>
+                    <p><strong>原理：</strong>同時對<strong>聲音頻率 \(f\)</strong> 與<strong>發聲等待間隔 \(T_{\text{wait}}\)</strong> 進行雙重動態調變。距離越近，音調越尖銳，且逼逼聲停頓越短。</p>
+                    <ul>
+                        <li><strong>頻率對映：</strong><code>f(D) = 2600 - 23.5 × (D - 5)</code> (Hz)</li>
+                        <li><strong>間隔對映：</strong><code>T_wait(D) = max(0.04, 0.006 × D)</code> (秒)</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>2. 反比雙曲急迫曲線 (Inverse Hyperbolic Emergency Curve)</h4>
+                    <p><strong>原理：</strong>線性公式在近距離變化不夠陡峭。改用反比雙曲公式，使距離在 \(< 20\text{ cm}\) 時頻率呈飆升狀態，極具衝擊感！</p>
+                    <div class="highlight-box">
+                        <code>f(D) = 300 + [ 18000 / (D + 2) ]</code> (Hz)
+                    </div>
+                    <p>例：\(D=50\text{cm} \rightarrow f=646\text{Hz}\)；\(D=15\text{cm} \rightarrow f=1358\text{Hz}\)；\(D=5\text{cm} \rightarrow f=2871\text{Hz}\)（極陡急升警報）。</p>
+                </div>
+            </div>
+
+            <div class="grid-2" style="margin-top: 1rem;">
+                <div class="card">
+                    <h4>3. 指數縮放嗶聲間隔 (Exponential Interval Curve)</h4>
+                    <p><strong>原理：</strong>發聲間隔採用二次方指數縮放，遠距離時音速減慢變化平緩，越接近障礙物則頻率間隔縮短越劇烈。</p>
+                    <div class="highlight-box">
+                        <code>T_interval(D) = 0.03 + 0.8 × ( D / 100 )²</code> (秒)
+                    </div>
+                </div>
+                <div class="card">
+                    <h4>4. 數位低通平滑濾波 (Low-Pass Filter)</h4>
+                    <p><strong>原理：</strong>解決超音波感測器反射角產生的雜訊突波 (Jitter Spike)，避免蜂鳴器發出突然刺耳的雜音。</p>
+                    <div class="highlight-box">
+                        <code>D_filtered(k) = 0.3 × D_raw(k) + 0.7 × D_filtered(k-1)</code>
+                    </div>
+                </div>
+            </div>
+
+            <h4>🎨 完整積木配置圖型與數據線走線視圖 (Graphical Block Diagram)</h4>
+            <p>下圖採用 EV3 官方標準色系（黃色感測器、紅色數據運算、綠色發聲動作、橘色控制流）展示積木與數據線 (Data Wires) 之拓撲結構：</p>
+            
+            <!-- SVG 高解析向量積木配置與數據線拓撲圖 -->
+            <div style="width: 100%; overflow-x: auto; background: #ffffff; padding: 1.5rem; border-radius: 12px; border: 1px solid #dee2e6; box-shadow: inset 0 2px 6px rgba(0,0,0,0.04); margin: 1.5rem 0;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" style="width: 100%; min-width: 800px; height: auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+                    <defs>
+                        <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+                            <feDropShadow dx="2" dy="4" stdDeviation="3" flood-opacity="0.12"/>
+                        </filter>
+                        <linearGradient id="wireYellow" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#FFC107"/>
+                            <stop offset="100%" stop-color="#FF9800"/>
+                        </linearGradient>
+                        <linearGradient id="wireRed" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#DC3545"/>
+                            <stop offset="100%" stop-color="#B02A37"/>
+                        </linearGradient>
+                        <linearGradient id="wireBlue" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#0D6EFD"/>
+                            <stop offset="100%" stop-color="#0A58CA"/>
+                        </linearGradient>
+                        <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 L0,6 L9,3 z" fill="#6C757D"/>
+                        </marker>
+                    </defs>
+
+                    <!-- 外圍 Loop 積木容器 -->
+                    <rect x="10" y="10" width="940" height="410" rx="16" fill="#FFF9F0" stroke="#FF9800" stroke-width="3" stroke-dasharray="10 5" filter="url(#shadow)"/>
+                    <rect x="10" y="10" width="940" height="40" rx="14" fill="#FF9800"/>
+                    <text x="30" y="36" fill="#FFFFFF" font-size="16" font-weight="bold">🔄 Loop Block (無限迴圈程式看板)</text>
+
+                    <!-- 1. 超音波感測器積木 (黃色 Sensor) -->
+                    <g filter="url(#shadow)">
+                        <rect x="35" y="70" width="220" height="320" rx="10" fill="#FFF3CD" stroke="#FFC107" stroke-width="2.5"/>
+                        <rect x="35" y="70" width="220" height="40" rx="9" fill="#FFC107"/>
+                        <text x="50" y="96" fill="#000000" font-size="14" font-weight="bold">📡 Ultrasonic Sensor</text>
+                        <text x="50" y="130" fill="#495057" font-size="13" font-weight="600">Port: Input 4</text>
+                        <text x="50" y="155" fill="#495057" font-size="13">Mode: Measure (cm)</text>
+                        
+                        <rect x="48" y="180" width="194" height="90" rx="6" fill="#FFFFFF" stroke="#FFE082"/>
+                        <text x="60" y="205" fill="#856404" font-size="12" font-weight="bold">目前量測數值：</text>
+                        <text x="60" y="240" fill="#D97706" font-size="24" font-weight="bold">D (cm)</text>
+
+                        <!-- Pin 輸出引腳 -->
+                        <circle cx="230" cy="330" r="14" fill="#FFC107" stroke="#B45309" stroke-width="2"/>
+                        <text x="230" y="335" fill="#000" font-size="11" font-weight="bold" text-anchor="middle">Out</text>
+                        <text x="140" y="335" fill="#856404" font-size="12" font-weight="bold">距離 (D) 數據引腳 ➔</text>
+                    </g>
+
+                    <!-- 數據線 1: 從超音波輸出分流至 Math1 與 Math2 -->
+                    <path d="M 244 330 C 275 330, 275 160, 310 160" fill="none" stroke="url(#wireYellow)" stroke-width="6" stroke-linecap="round"/>
+                    <path d="M 244 330 C 275 330, 275 330, 310 330" fill="none" stroke="url(#wireYellow)" stroke-width="6" stroke-linecap="round"/>
+
+                    <!-- 2. Math Block 1: 頻率對映 (紅色 Data) -->
+                    <g filter="url(#shadow)">
+                        <rect x="315" y="70" width="280" height="150" rx="10" fill="#F8D7DA" stroke="#DC3545" stroke-width="2.5"/>
+                        <rect x="315" y="70" width="280" height="40" rx="9" fill="#DC3545"/>
+                        <text x="330" y="96" fill="#FFFFFF" font-size="14" font-weight="bold">🧮 Math Block 1 (Frequency)</text>
+                        <text x="330" y="130" fill="#842029" font-size="12" font-weight="600">Mode: Advanced Expression</text>
+                        
+                        <rect x="328" y="140" width="254" height="35" rx="5" fill="#FFFFFF" stroke="#F5C2C7"/>
+                        <text x="338" y="162" fill="#B02A37" font-size="13" font-weight="bold">300 + 18000 / (a + 2)</text>
+
+                        <!-- Input Pin a -->
+                        <circle cx="315" cy="160" r="12" fill="#DC3545" stroke="#842029" stroke-width="2"/>
+                        <text x="315" y="164" fill="#FFF" font-size="10" font-weight="bold" text-anchor="middle">a</text>
+                        
+                        <!-- Output Pin Result -->
+                        <circle cx="595" cy="160" r="14" fill="#DC3545" stroke="#842029" stroke-width="2"/>
+                        <text x="595" y="165" fill="#FFF" font-size="10" font-weight="bold" text-anchor="middle">Out</text>
+                    </g>
+
+                    <!-- 3. Math Block 2: 間隔對映 (紅色 Data) -->
+                    <g filter="url(#shadow)">
+                        <rect x="315" y="240" width="280" height="150" rx="10" fill="#F8D7DA" stroke="#DC3545" stroke-width="2.5"/>
+                        <rect x="315" y="240" width="280" height="40" rx="9" fill="#DC3545"/>
+                        <text x="330" y="266" fill="#FFFFFF" font-size="14" font-weight="bold">🧮 Math Block 2 (Interval)</text>
+                        <text x="330" y="300" fill="#842029" font-size="12" font-weight="600">Mode: Advanced Expression</text>
+
+                        <rect x="328" y="310" width="254" height="35" rx="5" fill="#FFFFFF" stroke="#F5C2C7"/>
+                        <text x="338" y="332" fill="#B02A37" font-size="13" font-weight="bold">max(0.04, a * 0.006)</text>
+
+                        <!-- Input Pin a -->
+                        <circle cx="315" cy="330" r="12" fill="#DC3545" stroke="#842029" stroke-width="2"/>
+                        <text x="315" y="334" fill="#FFF" font-size="10" font-weight="bold" text-anchor="middle">a</text>
+
+                        <!-- Output Pin Result -->
+                        <circle cx="595" cy="330" r="14" fill="#DC3545" stroke="#842029" stroke-width="2"/>
+                        <text x="595" y="335" fill="#FFF" font-size="10" font-weight="bold" text-anchor="middle">Out</text>
+                    </g>
+
+                    <!-- 數據線 2: 頻率 f -> Sound Freq Pin -->
+                    <path d="M 609 160 L 645 160" fill="none" stroke="url(#wireRed)" stroke-width="6" stroke-linecap="round"/>
+
+                    <!-- 數據線 3: 間隔 t -> Wait Seconds Pin -->
+                    <path d="M 609 330 L 645 330" fill="none" stroke="url(#wireBlue)" stroke-width="6" stroke-linecap="round"/>
+
+                    <!-- 4. Sound Block (綠色 Action) -->
+                    <g filter="url(#shadow)">
+                        <rect x="655" y="70" width="270" height="150" rx="10" fill="#D1E7DD" stroke="#198754" stroke-width="2.5"/>
+                        <rect x="655" y="70" width="270" height="40" rx="9" fill="#198754"/>
+                        <text x="670" y="96" fill="#FFFFFF" font-size="14" font-weight="bold">🔊 Sound Block (Play Tone)</text>
+                        <text x="670" y="130" fill="#0F5132" font-size="12" font-weight="600">Duration: 0.08s</text>
+                        <text x="670" y="152" fill="#0F5132" font-size="12">Play Type: Play Once (1)</text>
+
+                        <!-- Input Pin Freq -->
+                        <circle cx="655" cy="160" r="12" fill="#198754" stroke="#0F5132" stroke-width="2"/>
+                        <text x="655" y="164" fill="#FFF" font-size="9" font-weight="bold" text-anchor="middle">Freq</text>
+                    </g>
+
+                    <!-- 5. Wait Block (橘色 Flow) -->
+                    <g filter="url(#shadow)">
+                        <rect x="655" y="240" width="270" height="150" rx="10" fill="#FFE5D0" stroke="#FD7E14" stroke-width="2.5"/>
+                        <rect x="655" y="240" width="270" height="40" rx="9" fill="#FD7E14"/>
+                        <text x="670" y="266" fill="#FFFFFF" font-size="14" font-weight="bold">⏱️ Wait Block (Time Seconds)</text>
+                        <text x="670" y="300" fill="#984C0C" font-size="12" font-weight="600">Mode: Time (Seconds)</text>
+                        <text x="670" y="322" fill="#984C0C" font-size="12">動態接收 Math 2 算出之停頓秒數</text>
+
+                        <!-- Input Pin Sec -->
+                        <circle cx="655" cy="330" r="12" fill="#FD7E14" stroke="#984C0C" stroke-width="2"/>
+                        <text x="655" y="334" fill="#FFF" font-size="9" font-weight="bold" text-anchor="middle">Sec</text>
+                    </g>
+
+                    <!-- 積木執行順序連線 -->
+                    <path d="M 790 220 L 790 240" stroke="#6C757D" stroke-width="3" stroke-dasharray="4 2" marker-end="url(#arrow)"/>
+                </svg>
+            </div>
+
+            <h4>📊 系統控制邏輯與決策流程圖 (System Control Flowchart)</h4>
+            <p>下圖展示從超音波採樣、數位濾波、數值限幅到三階警報分流判斷的完整控制邏輯：</p>
+
+            <!-- 向量高解析度決策流程圖 (100% 原生 SVG，免載入外部 JS，保證離線與跨瀏覽器完美顯示) -->
+            <div style="width: 100%; overflow-x: auto; background: #ffffff; padding: 1.5rem; border-radius: 12px; border: 1px solid #dee2e6; box-shadow: inset 0 2px 6px rgba(0,0,0,0.04); margin: 1.5rem 0;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 680" style="width: 100%; min-width: 800px; height: auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+                    <defs>
+                        <filter id="cardShadowFlow" x="-5%" y="-5%" width="110%" height="110%">
+                            <feDropShadow dx="1" dy="3" stdDeviation="2.5" flood-opacity="0.12"/>
+                        </filter>
+                        <marker id="flowArrowGray" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                            <path d="M1,1 L7,4 L1,7 Z" fill="#495057"/>
+                        </marker>
+                        <marker id="flowArrowGreen" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                            <path d="M1,1 L7,4 L1,7 Z" fill="#2E7D32"/>
+                        </marker>
+                        <marker id="flowArrowRed" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                            <path d="M1,1 L7,4 L1,7 Z" fill="#C62828"/>
+                        </marker>
+                    </defs>
+
+                    <!-- 1. 系統啟動 Start Pill -->
+                    <rect x="360" y="15" width="200" height="38" rx="19" fill="#212529" filter="url(#cardShadowFlow)"/>
+                    <text x="460" y="39" fill="#FFFFFF" font-size="14" font-weight="bold" text-anchor="middle">🚀 系統啟動 (Start)</text>
+
+                    <!-- 連線 1: Start -> Init -->
+                    <path d="M 460 53 L 460 75" stroke="#495057" stroke-width="2.5" marker-end="url(#flowArrowGray)"/>
+
+                    <!-- 2. 初始化 Init Rect -->
+                    <rect x="290" y="75" width="340" height="50" rx="8" fill="#E2E3E5" stroke="#6C757D" stroke-width="2" filter="url(#cardShadowFlow)"/>
+                    <text x="460" y="96" fill="#212529" font-size="13" font-weight="bold" text-anchor="middle">⚙️ 初始化超音波感測器 (Port 4)</text>
+                    <text x="460" y="115" fill="#495057" font-size="12" text-anchor="middle">設定低通濾波變數 D_filtered = 100 cm</text>
+
+                    <!-- 連線 2: Init -> Loop -->
+                    <path d="M 460 125 L 460 150" stroke="#495057" stroke-width="2.5" marker-end="url(#flowArrowGray)"/>
+
+                    <!-- 3. Loop Block 容器 -->
+                    <rect x="20" y="150" width="880" height="510" rx="14" fill="#FFFBF5" stroke="#FF9800" stroke-width="2.5" stroke-dasharray="8 4" filter="url(#cardShadowFlow)"/>
+                    <rect x="20" y="150" width="260" height="32" rx="8" fill="#FF9800"/>
+                    <text x="35" y="172" fill="#FFFFFF" font-size="13" font-weight="bold">🔄 Loop Block (無限循環監控看板)</text>
+
+                    <!-- 4. 讀取超音波 ReadUS -->
+                    <rect x="340" y="180" width="240" height="42" rx="8" fill="#FFF3CD" stroke="#FFC107" stroke-width="2" filter="url(#cardShadowFlow)"/>
+                    <text x="460" y="206" fill="#856404" font-size="13" font-weight="bold" text-anchor="middle">📡 讀取距離數值 D_raw (cm)</text>
+
+                    <!-- 連線 3: ReadUS -> CheckValid -->
+                    <path d="M 460 222 L 460 245" stroke="#495057" stroke-width="2.5" marker-end="url(#flowArrowGray)"/>
+
+                    <!-- 5. 菱形 CheckValid: D_raw < 250 cm? -->
+                    <polygon points="460,245 570,280 460,315 350,280" fill="#FFF8E1" stroke="#FFA000" stroke-width="2" filter="url(#cardShadowFlow)"/>
+                    <text x="460" y="276" fill="#D97706" font-size="12" font-weight="bold" text-anchor="middle">D_raw &lt; 250 cm ?</text>
+                    <text x="460" y="293" fill="#6C757D" font-size="11" text-anchor="middle">(有效反射信號)</text>
+
+                    <!-- 分支：Yes (左) 與 No (右) -->
+                    <path d="M 350 280 L 260 280 L 260 330" stroke="#2E7D32" stroke-width="2" marker-end="url(#flowArrowGreen)"/>
+                    <text x="300" y="272" fill="#2E7D32" font-size="12" font-weight="bold">是 (Yes)</text>
+
+                    <path d="M 570 280 L 660 280 L 660 330" stroke="#C62828" stroke-width="2" marker-end="url(#flowArrowRed)"/>
+                    <text x="615" y="272" fill="#C62828" font-size="12" font-weight="bold">否 (No)</text>
+
+                    <!-- 6. LowPass 節點 (左) -->
+                    <rect x="150" y="330" width="220" height="44" rx="8" fill="#E8F5E9" stroke="#4CAF50" stroke-width="2" filter="url(#cardShadowFlow)"/>
+                    <text x="260" y="348" fill="#1B5E20" font-size="12" font-weight="bold" text-anchor="middle">🧹 一階低通數位濾波</text>
+                    <text x="260" y="364" fill="#2E7D32" font-size="11" text-anchor="middle">D_filt = 0.3*D_raw + 0.7*D_prev</text>
+
+                    <!-- 7. KeepPrev 節點 (右) -->
+                    <rect x="550" y="330" width="220" height="44" rx="8" fill="#FFEBEE" stroke="#EF5350" stroke-width="2" filter="url(#cardShadowFlow)"/>
+                    <text x="660" y="348" fill="#B71C1C" font-size="12" font-weight="bold" text-anchor="middle">⚠️ 排除突波雜訊</text>
+                    <text x="660" y="364" fill="#C62828" font-size="11" text-anchor="middle">保持先前數值 D_filtered</text>
+
+                    <!-- 匯合到 Clamp -->
+                    <path d="M 260 374 L 260 405 L 340 405" stroke="#495057" stroke-width="2" marker-end="url(#flowArrowGray)"/>
+                    <path d="M 660 374 L 660 405 L 580 405" stroke="#495057" stroke-width="2" marker-end="url(#flowArrowGray)"/>
+
+                    <!-- 8. Clamp 數值限幅 -->
+                    <rect x="340" y="390" width="240" height="35" rx="8" fill="#E3F2FD" stroke="#2196F3" stroke-width="2" filter="url(#cardShadowFlow)"/>
+                    <text x="460" y="412" fill="#0D47A1" font-size="12" font-weight="bold" text-anchor="middle">✂️ Clamp 限幅: min(100, max(5, D))</text>
+
+                    <!-- 連線至 3 階 Switch -->
+                    <path d="M 460 425 L 460 445" stroke="#495057" stroke-width="2.5" marker-end="url(#flowArrowGray)"/>
+
+                    <!-- 9. 3 階條件判斷菱形 -->
+                    <polygon points="460,445 570,475 460,505 350,475" fill="#FFE0B2" stroke="#FB8C00" stroke-width="2" filter="url(#cardShadowFlow)"/>
+                    <text x="460" y="472" fill="#E65100" font-size="12" font-weight="bold" text-anchor="middle">距離 D 警示區間判斷</text>
+                    <text x="460" y="488" fill="#6C757D" font-size="11" text-anchor="middle">(Switch 條件分流)</text>
+
+                    <!-- 3 向分支連線 -->
+                    <!-- 左分支: D < 10cm -->
+                    <path d="M 350 475 L 160 475 L 160 520" stroke="#D32F2F" stroke-width="2" marker-end="url(#flowArrowRed)"/>
+                    <text x="240" y="468" fill="#D32F2F" font-size="12" font-weight="bold">D &lt; 10 cm</text>
+
+                    <!-- 中分支: 10 <= D < 100cm -->
+                    <path d="M 460 505 L 460 520" stroke="#F57C00" stroke-width="2" marker-end="url(#flowArrowGray)"/>
+                    <text x="468" y="515" fill="#F57C00" font-size="11" font-weight="bold">10 ≤ D &lt; 100 cm</text>
+
+                    <!-- 右分支: D >= 100cm -->
+                    <path d="M 570 475 L 750 475 L 750 520" stroke="#388E3C" stroke-width="2" marker-end="url(#flowArrowGreen)"/>
+                    <text x="640" y="468" fill="#388E3C" font-size="12" font-weight="bold">D ≥ 100 cm</text>
+
+                    <!-- 10. 三大情境動作卡片 -->
+                    <!-- 卡片 1: 極度危險區 (左) -->
+                    <rect x="50" y="520" width="220" height="90" rx="8" fill="#FFEBEE" stroke="#E53935" stroke-width="2" filter="url(#cardShadowFlow)"/>
+                    <text x="160" y="542" fill="#B71C1C" font-size="13" font-weight="bold" text-anchor="middle">🚨 極度危險 (Danger)</text>
+                    <text x="160" y="562" fill="#D32F2F" font-size="11" text-anchor="middle">🔊 Sound: 2800 Hz 長鳴 (0.12s)</text>
+                    <text x="160" y="580" fill="#D32F2F" font-size="11" text-anchor="middle">⏱️ Wait: 0.04s 急促間隔</text>
+                    <text x="160" y="598" fill="#B71C1C" font-size="11" font-weight="bold" text-anchor="middle">模擬車輛碰觸前連續長嗶聲</text>
+
+                    <!-- 卡片 2: 動態警告區 (中) -->
+                    <rect x="330" y="520" width="260" height="90" rx="8" fill="#FFFDE7" stroke="#FBC02D" stroke-width="2" filter="url(#cardShadowFlow)"/>
+                    <text x="460" y="542" fill="#F57F17" font-size="13" font-weight="bold" text-anchor="middle">⚠️ 動態警告 (Warning)</text>
+                    <text x="460" y="562" fill="#795548" font-size="11" text-anchor="middle">🧮 頻率: f = 300 + 18000 / (D + 2)</text>
+                    <text x="460" y="580" fill="#795548" font-size="11" text-anchor="middle">⏱️ 間隔: t = max(0.04, 0.006 * D)</text>
+                    <text x="460" y="598" fill="#E65100" font-size="11" font-weight="bold" text-anchor="middle">🔊 Play Tone (f) ➔ ⏱️ 等待 (t)</text>
+
+                    <!-- 卡片 3: 安全範圍 (右) -->
+                    <rect x="640" y="520" width="220" height="90" rx="8" fill="#E8F5E9" stroke="#43A047" stroke-width="2" filter="url(#cardShadowFlow)"/>
+                    <text x="750" y="542" fill="#1B5E20" font-size="13" font-weight="bold" text-anchor="middle">🟢 安全範圍 (Safe)</text>
+                    <text x="750" y="565" fill="#2E7D32" font-size="12" text-anchor="middle">🔇 靜音不發聲 (Mute)</text>
+                    <text x="750" y="585" fill="#2E7D32" font-size="11" text-anchor="middle">⏱️ Wait: 0.15s 休眠省電</text>
+                    <text x="750" y="602" fill="#1B5E20" font-size="11" font-weight="bold" text-anchor="middle">節省 EV3 ARM9 CPU 運算資源</text>
+
+                    <!-- 迴圈返回線條 (Loop Back) -->
+                    <path d="M 160 610 L 160 635 L 35 635 L 35 200 L 330 200" fill="none" stroke="#FF9800" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#flowArrowGray)"/>
+                    <path d="M 460 610 L 460 635" fill="none" stroke="#FF9800" stroke-width="2" stroke-dasharray="5 3"/>
+                    <path d="M 750 610 L 750 635 L 460 635" fill="none" stroke="#FF9800" stroke-width="2" stroke-dasharray="5 3"/>
+                    <text x="60" y="628" fill="#E65100" font-size="11" font-weight="bold">🔁 迴圈重覆監控 (Next Cycle)</text>
+                </svg>
+            </div>
+
+            <details style="margin: 1rem 0; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 0.8rem 1.2rem;">
+                <summary style="font-weight: bold; cursor: pointer; color: #0055bf;">📋 點擊展開檢視 Mermaid 原生代碼 (Mermaid Code)</summary>
+                <div class="mermaid" style="margin-top: 1rem;">
+flowchart TD
+    Start([🚀 系統啟動 / Start]) --> Init["⚙️ 初始化超音波感測器 (Port 4)<br/>設定低通濾波變數 D_filtered = 100"]
+    Init --> LoopStart["🔄 Loop Block 循環開始"]
+    
+    LoopStart --> ReadUS["📡 讀取超音波距離 D_raw cm"]
+    ReadUS --> CheckValid{"D_raw &lt; 250 cm?<br/>(有效反射信號)"}
+    
+    CheckValid -->|"是 (Yes)"| LowPass["🧹 低通數位濾波<br/>D_filtered = 0.3 * D_raw + 0.7 * D_filtered"]
+    CheckValid -->|"否 (No)"| KeepPrev["⚠️ 保持先前濾波值 D_filtered"]
+    
+    LowPass --> Clamp["✂️ 數據數值 Clamp 限幅<br/>D = min(100.0, max(5.0, D_filtered))"]
+    KeepPrev --> Clamp
+    
+    Clamp --> LevelCheck{"距離 D 區間判斷"}
+    
+    LevelCheck -->|"D &lt; 10 cm"| DangerZone["🚨 極度危險區<br/>Continuous High Alarm"]
+    DangerZone --> SoundDanger["🔊 Sound Block: 2800 Hz, 0.12s"]
+    SoundDanger --> WaitDanger["⏱️ Wait Block: 0.04s"]
+    WaitDanger --> LoopBack["🔁 循環重覆"]
+    
+    LevelCheck -->|"10 cm ≤ D &lt; 100 cm"| WarnZone["⚠️ 動態警告區<br/>Dynamic Audio Feedback"]
+    WarnZone --> CalcFreq["🧮 Math Block 1: 雙曲頻率<br/>f = 300 + 18000 / (D + 2)"]
+    WarnZone --> CalcTime["🧮 Math Block 2: 動態間隔<br/>t = max(0.04, 0.006 * D)"]
+    CalcFreq --> SoundWarn["🔊 Sound Block: Play Tone (f Hz, 0.08s)"]
+    CalcTime --> WaitWarn["⏱️ Wait Block: Time (t 秒)"]
+    SoundWarn --> WaitWarn
+    WaitWarn --> LoopBack
+    
+    LevelCheck -->|"D ≥ 100 cm"| SafeZone["🟢 安全範圍<br/>Safe Range Silent"]
+    SafeZone --> Mute["🔇 靜音不發聲 (Silent)"]
+    Mute --> WaitSafe["⏱️ Wait Block: 0.15s (節省 CPU)"]
+    WaitSafe --> LoopBack
+
+    LoopBack --> LoopStart
+
+    classDef initStyle fill:#e2e3e5,stroke:#383d41,stroke-width:2px,color:#000;
+    classDef sensorStyle fill:#fff3cd,stroke:#ffc107,stroke-width:2px,color:#000;
+    classDef mathStyle fill:#f8d7da,stroke:#dc3545,stroke-width:2px,color:#000;
+    classDef soundStyle fill:#d1e7dd,stroke:#198754,stroke-width:2px,color:#000;
+    classDef waitStyle fill:#ffe5d0,stroke:#fd7e14,stroke-width:2px,color:#000;
+    classDef dangerStyle fill:#ffe3e3,stroke:#d01012,stroke-width:2px,color:#d01012;
+
+    class Start,Init initStyle;
+    class ReadUS,CheckValid,LowPass,Clamp sensorStyle;
+    class CalcFreq,CalcTime mathStyle;
+    class SoundDanger,SoundWarn soundStyle;
+    class WaitDanger,WaitWarn,WaitSafe waitStyle;
+    class DangerZone dangerStyle;
+                </div>
+            </details>
+
+            <h4>🔌 EV3 官方積木數據線 (Data Wires) 接線與引腳對照明細表</h4>
+            
+            <div class="highlight-box tip">
+                <h5>💡 軟體操作觀念澄清 (Software Interface Clarification)：</h5>
+                <p>在 LEGO MINDSTORMS EV3 Education 官方軟體中，<b>並沒有名為「接線與引腳對照明細表」的按鈕或獨立功能視圖</b>。此表格為課堂教學與工程筆記中，為了幫助學生理解<b>數據線流向與 Pin 腳對應關係</b>所整理的解析表。</p>
+                <ul>
+                    <li><strong>EV3 Lab (經典 LabVIEW 圖型版)：</strong>無文字表單。實際操作時需點擊積木最底部的<strong>數據接線埠 (Data Plug Hub)</strong>，用滑鼠直接拉出彩色數據線（黃色代表數字 Number）。</li>
+                    <li><strong>EV3 Classroom (新版 Scratch 拼圖版)：</strong>採用嵌套運算塊（如將綠色 <code>( ) / ( )</code> 運算積木直接拖入發聲積木的參數輸入框中），不需拉實體數據線。</li>
+                </ul>
+            </div>
+
+            <p>下表為 EV3 Lab 拉線時的引腳對照與數值流向明細：</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>步驟 / 積木名稱</th>
+                        <th>積木模式 (Block Mode)</th>
+                        <th>輸入數據線來源 (Input Data Plug)</th>
+                        <th>輸出數據線去向 (Output Data Plug)</th>
+                        <th>內部運算 / 參數設定內容</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>積木 1：Ultrasonic Sensor</strong></td>
+                        <td>Measure &rarr; Distance (cm)</td>
+                        <td>硬體 Port 4 讀取</td>
+                        <td><code>Distance Output Pin</code> &rarr; 接至積木 2 <code>Plug A</code> & 積木 3 <code>Plug A</code></td>
+                        <td>即時讀取障礙物距離數值 <code>D</code> (cm)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>積木 2：Math Block (頻率)</strong></td>
+                        <td>Advanced (進階表達式)</td>
+                        <td><code>Plug A</code> (接收距離 <code>D</code>)</td>
+                        <td><code>Result Output Pin</code> &rarr; 接至積木 4 <code>Frequency Pin</code></td>
+                        <td>表達式：<code>2600 - (a - 5) * 23.5</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>積木 3：Math Block (間隔)</strong></td>
+                        <td>Advanced (進階表達式)</td>
+                        <td><code>Plug A</code> (接收距離 <code>D</code>)</td>
+                        <td><code>Result Output Pin</code> &rarr; 接至積木 5 <code>Seconds Pin</code></td>
+                        <td>表達式：<code>max(0.04, a * 0.006)</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>積木 4：Sound Block</strong></td>
+                        <td>Play Tone Mode</td>
+                        <td><code>Frequency Pin</code> (接積木 2 Result)</td>
+                        <td>發聲執行，程式不被阻塞</td>
+                        <td><code>Duration = 0.08s</code>, <code>Play Type = Play Once (1)</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>積木 5：Wait Block</strong></td>
+                        <td>Time (秒) Mode</td>
+                        <td><code>Seconds Pin</code> (接積木 3 Result)</td>
+                        <td>控制迴圈下一次發聲暫停時間</td>
+                        <td>動態等待時間 <code>T_wait</code> 秒</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>📦 My Block 自訂積木封裝設計 (Custom Block Packaging)</h4>
+            <p>將上述複合動態計算與聲音輸出邏輯封裝為一個青綠色 My Block 積木 <code>Distance_Radar_Pro</code>：</p>
+            <div class="highlight-box">
+                <code>[My Block: Distance_Radar_Pro]</code><br>
+                &nbsp;&nbsp;├── <strong>輸入參數 1 (Port)：</strong><code>Port_In</code> (預設 4) &rarr; 選擇超音波連接埠<br>
+                &nbsp;&nbsp;├── <strong>輸入參數 2 (Range)：</strong><code>Max_Detect_CM</code> (預設 100) &rarr; 設定雷達偵測距離上限<br>
+                &nbsp;&nbsp;├── <strong>輸入參數 3 (Mode)：</strong><code>Formula_Type</code> (1: 線性調變, 2: 雙曲急迫, 3: 雙重調變)<br>
+                &nbsp;&nbsp;└── <strong>內部機制：</strong>內建 Clamp 門檻截斷與無反射訊號 <code>255</code> 過濾，高模組化且易於重用。
+            </div>
+
+            <h3>🐍 進階擴充：ev3dev Python 雙重動態調變演算法範例</h3>
+            <p>在 Linux ev3dev 系統環境下，使用 Python 實現雙重動態調變與雙曲緊急曲線：</p>
+            <div class="highlight-box">
+<pre><code>#!/usr/bin/env python3
+import time
+from ev3dev2.sensor.lego import UltrasonicSensor
+from ev3dev2.sound import Sound
+
+# 初始化超音波感測器 (Port 4) 與聲音系統
+us = UltrasonicSensor('in4')
+sound = Sound()
+
+print("Distance Audio Feedback (Extended Radar) Started...")
+
+d_filtered = 100.0  # 初始化低通濾波變數
+
+while True:
+    d_raw = us.distance_centimeters
+    
+    # 1. 低通濾波 (Low-pass Filter) 平滑訊號
+    if d_raw < 250.0:
+        d_filtered = 0.3 * d_raw + 0.7 * d_filtered
+    
+    # 2. 數值截斷 Clamp [5.0, 100.0]
+    dist = min(100.0, max(5.0, d_filtered))
+    
+    if dist < 10.0:
+        # 3. 超近危險區 (< 10cm)：持續長鳴高頻警報
+        sound.tone(2800, 120)
+        time.sleep(0.04)
+    elif dist < 100.0:
+        # 4. 雙曲對映頻率 + 雙重調變發聲間隔
+        freq = int(300 + (18000 / (dist + 2.0)))       # 雙曲急迫頻率曲線
+        interval = max(0.04, 0.006 * dist)            # 動態縮短間隔
+        
+        sound.tone(freq, 60)
+        time.sleep(interval)
+    else:
+        # 5. 安全距離靜音
+        time.sleep(0.15)
+</code></pre>
+            </div>
+
+            <div class="highlight-box important">
+                <h5>⚠️ 實務工程開發注意事項 (Engineering & Debugging Tips)</h5>
+                <ul>
+                    <li><strong>無反射訊號與無窮大處理 (Invalid Readings)：</strong>超音波量測無反射波時可能傳回 <code>255 cm</code>。程式中務必加入截斷門檻 (Clamping Filter)，避免異常數據導致數學算術溢位或異常音頻。</li>
+                    <li><strong>感測器盲區 (Dead Zone)：</strong>超音波感測器低於 3 cm 時讀數容易飄移，建議在邏輯中將 <code>< 10 cm</code> 統一判定為最高警示層級。</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 第七部分：延伸想法與創新應用 -->
+        <section id="section-7">
+            <h2>7. 延伸想法與創新應用 (Extended Ideas)</h2>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h4>🔍 1. 聲音做為「機器人狀態診斷器」(Audio Debugger)</h4>
+                    <p>在複雜程式中（如循線或避障），當感測器讀值異常或程式走到未預期的分支時，輸出特定音頻（如高音 BEEP 表示讀到黑色，低音 BEEP 表示讀到白色）。這比每次都停下來看 LCD 螢幕更有效率。</p>
+                </div>
+                <div class="card">
+                    <h4>🔊 2. 距離反饋蜂鸣器 (Distance Audio Feedback)</h4>
+                    <p>結合超音波感測器 (Ultrasonic Sensor)，將測得的距離數值經由數學公式轉換為聲音頻率 (Frequency) 或發聲間隔（距離越近，音調越高、嗶嗶聲越急促），模擬汽車倒車雷達。（詳細完整實作請參閱第 6 章專題）</p>
+                </div>
+                <div class="card">
+                    <h4>🎼 3. 自訂樂曲與聲音檔編輯 (Custom Sound WAV Converter)</h4>
+                    <p>利用 EV3 Software 內建的 <em>Sound Editor</em> 工具，將自製的 WAV 語音檔轉為 EV3 格式 (.rsf)，讓機器人說出客製化語音（例如：「請幫我開門」、「警告！前面有障礙物」）。</p>
+                </div>
+                <div class="card">
+                    <h4>🤝 4. 視障導引與無障礙設計 (Accessibility Assistance)</h4>
+                    <p>設計一款針對視障人士的導盲機器人，透過聲音的長短、高低與語音播報，將周遭環境訊息視覺轉聽覺，發揮科技人文關懷。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第八部分：延伸說明 MP3 音樂播放 -->
+        <section id="section-8">
+            <h2>8. 延伸專題：如何在 EV3 播放 MP3 音樂？（限制與解法）</h2>
+            
+            <h3>❓ 為什麼 EV3 官方預設「無法直接播放 MP3 檔」？</h3>
+            <p>LEGO EV3 官方韌體（Official Firmware）與原廠積木軟體<strong>不支援直接播放 MP3 格式</strong>，主要原因如下：</p>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h4>1. 硬體 CPU 與記憶體開銷 (Codec Limitation)</h4>
+                    <p>EV3 採用 <strong>ARM9 處理器 (300 MHz)</strong> 與 64MB RAM。硬體無獨立 MP3 編解碼晶片，純軟體解碼 MP3 會消耗大量 CPU 運算資源，影響馬達控制與感測器即時反應。</p>
+                </div>
+                <div class="card">
+                    <h4>2. 內部 Flash 儲存空間極小 (16MB)</h4>
+                    <p>主機內建快閃記憶體僅 16MB，扣除 Linux 作業系統後僅剩數 MB。一首 3~5 分鐘的 MP3 檔即需 3~5MB，極易塞滿系統儲存空間。</p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 1rem;">
+                <h4>3. 官方音訊格式標準：.RSF / Uncompressed WAV</h4>
+                <p>EV3 官方僅原生支援 <code>.rsf</code> (Robot Sound File) 專用格式與低採樣率 WAV 檔（規格限制：<strong>8-bit / 16-bit, 單聲道 Mono, 採樣率 8kHz~16kHz</strong>）。</p>
+            </div>
+
+            <h3>🛠️ 解決方案：如何在 EV3 上實現播放 MP3 / 音樂？</h3>
+
+            <h4>方案 A：官方軟體途徑 — 轉檔為低採樣率 WAV/RSF 檔 (適用官方積木)</h4>
+            <div class="highlight-box">
+                <h5>實作步驟：</h5>
+                <ol>
+                    <li><strong>轉檔：</strong>使用 Audacity、Format Factory 等工具，將 MP3 轉為 <code>WAV 格式 (16-bit, 16000 Hz 採樣率, 單聲道 Mono)</code>。</li>
+                    <li><strong>裁切：</strong>因容量限制，建議將音樂截取為 5~15 秒精簡片段。</li>
+                    <li><strong>匯入：</strong>打開 EV3 Software 標籤選單 ➔ 選擇 <strong>Sound Editor (聲音編輯器)</strong> ➔ 匯入 WAV 檔並轉換儲存為 <code>.rsf</code> 格式匯入專案。</li>
+                    <li><strong>播放：</strong>使用 Sound Block 的 <code>Play File</code> 模式調用該音檔。</li>
+                </ol>
+                <p>⚠️ <strong>限制：</strong>音質會因採樣率降至 16kHz 而變低（類似電話語音音質），且無法播放數分鐘的完整長曲。</p>
+            </div>
+
+            <h4>方案 B：進階玩家途徑 — 使用 Linux 第三方系統 ev3dev + Python (打破容量與格式限制)</h4>
+            <div class="highlight-box tip">
+                <h5>實作步驟：</h5>
+                <ol>
+                    <li><strong>準備 SD 卡：</strong>將 Micro SD 卡格式化並寫入 <a href="https://www.ev3dev.org/" target="_blank">ev3dev</a> (基於 Debian Linux 的 EV3 專用作業系統)。</li>
+                    <li><strong>安裝音訊工具：</strong>開機登入 ev3dev 後，透過 Linux 終端機安裝 MP3 播放工具：
+                        <br><code>sudo apt-get update && sudo apt-get install mpg123</code>
+                    </li>
+                    <li><strong>存放 MP3 檔：</strong>將完整 MP3 音檔放在 Micro SD 卡中（SD 卡容量可達 32GB，徹底解決 16MB Flash 限制）。</li>
+                    <li><strong>Python 程式播放：</strong>撰寫 Python 程式呼叫系統命令或音訊庫播放：
+                        <pre><code>import subprocess
+
+# 背景播放 MP3 音效/背景音樂
+subprocess.Popen(["mpg123", "-q", "/home/robot/music/bgm.mp3"])
+</code></pre>
+                    </li>
+                </ol>
+                <p>✅ <strong>優點：</strong>可播放長度不限、完整高品質的 MP3 音樂，且不佔用主機內部 Flash 記憶體！</p>
+            </div>
+
+            <h4>方案 C：藍牙通訊外接裝置 (Bluetooth Bridge)</h4>
+            <p>EV3 主機僅作為控制器，當觸發條件成立時，透過藍牙發送訊號給電腦或手機，由電腦/手機上的 Python/App 播放高品質 MP3 音效。</p>
+        </section>
+
+        <!-- 第九部分：EV3 軟體版本與線上資源 -->
+        <section id="section-9">
+            <h2>9. EV3 官方軟體版本、歷史演進與線上資源連結 (Software Versions & Links)</h2>
+            <p>LEGO Mindstorms EV3 自發布以來主要經歷了兩代官方編程軟體架構，下表彙整各版本規格與官方下載/說明資源：</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>軟體版本名稱</th>
+                        <th>核心引擎與技術</th>
+                        <th>最新/最後版本</th>
+                        <th>支援作業系統與平台</th>
+                        <th>主要技術特徵</th>
+                        <th>官方線上下載與說明連結</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>EV3 Lab (經典桌面版)</strong><br><span class="badge badge-orange">Retired 已退役</span></td>
+                        <td>NI LabVIEW G-code 圖型化語言</td>
+                        <td>v1.4.5 / v1.5.0</td>
+                        <td>Windows 7/8/10, macOS (僅 10.14 以前)</td>
+                        <td>拉線式數據線 (Data Wires)、My Block Builder、Sound Editor、Data Logging</td>
+                        <td><a href="https://education.lego.com/en-us/downloads/retiredproducts/mindstorms-ev3-lab/software" target="_blank">EV3 Lab 官方退役產品下載頁</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>EV3 Classroom (跨平台 App)</strong><br><span class="badge badge-green">現行跨平台版</span></td>
+                        <td>Scratch 3.0 積木引擎</td>
+                        <td>v1.5.3+</td>
+                        <td>Windows 10/11, macOS, iOS (iPad), Android, Chromebook</td>
+                        <td>積木拼接、無數據線、全平台一致體驗、支援嵌入式 Python</td>
+                        <td><a href="https://education.lego.com/en-us/downloads/mindstorms-ev3/software" target="_blank">EV3 Classroom 官方下載頁</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>EV3 MicroPython</strong><br><span class="badge badge-blue">進階 Python 版</span></td>
+                        <td>Pybricks / MicroPython</td>
+                        <td>v2.0+</td>
+                        <td>跨平台 (使用 VS Code + SD 卡)</td>
+                        <td>純程式碼文字編程、高執行速度、支援複雜物件導向與數學運算</td>
+                        <td><a href="https://pybricks.com/" target="_blank">Pybricks 官方線上文件庫</a></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>🔗 官方韌體與教學支援連結</h3>
+            <ul>
+                <li><strong>官方產品資源與指南：</strong><a href="https://education.lego.com/en-us/product-resources/mindstorms-ev3/" target="_blank">LEGO Education EV3 Product Resources</a></li>
+                <li><strong>官方韌體更新 (Firmware Update)：</strong><a href="https://education.lego.com/en-us/product-resources/mindstorms-ev3/downloads/firmware-update" target="_blank">EV3 Brick Firmware Update Guide</a></li>
+                <li><strong>ev3dev Linux 開放原始碼系統：</strong><a href="https://www.ev3dev.org/" target="_blank">ev3dev.org Official Portal</a></li>
+            </ul>
+        </section>
+    </div>
+
+    <footer>
+        <p>機器人專題課程筆記 &copy; 2026 | 記錄於 LEGO Mindstorms EV3 專題課</p>
+        <p style="font-size: 0.85rem; color: #868e96; margin-top: 0.5rem;">
+            🕒 戳記時間：<code>2026-09-07 16:13:36 (UTC+8)</code> &nbsp;|&nbsp; 🤖 模型代號：<code>Gemini 3.8 Flash</code>
+        </p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>紅色 LED 限流電阻工程手冊與計算工具</title>
+    <style>
+        :root {
+            --primary-color: #dc2626;
+            --primary-dark: #991b1b;
+            --primary-light: #fef2f2;
+            --accent-blue: #2563eb;
+            --accent-green: #16a34a;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --code-bg: #0f172a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.65;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 920px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 14px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+            padding: 2.5rem;
+        }
+
+        /* 標題與導航 */
+        header {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            color: var(--primary-dark);
+            font-size: 1.85rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .nav-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .nav-btn {
+            background-color: #f1f5f9;
+            color: #334155;
+            padding: 0.4rem 0.85rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            background-color: #e2e8f0;
+            color: var(--primary-dark);
+        }
+
+        /* 章節結構 */
+        .section-block {
+            margin-bottom: 2.8rem;
+        }
+
+        .section-title {
+            font-size: 1.35rem;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .section-num {
+            background: var(--primary-color);
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        /* 卡片與容器 */
+        .card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.3rem;
+            margin-bottom: 1.3rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .card-highlight {
+            background-color: var(--primary-light);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .card-blue {
+            background-color: #f0f7ff;
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .card-green {
+            background-color: #f0fdf4;
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .card h4 {
+            margin-bottom: 0.6rem;
+            color: #1e293b;
+            font-size: 1.05rem;
+        }
+
+        /* 公式與代碼展示 */
+        .formula-box {
+            background-color: #fff;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .formula {
+            font-family: "Courier New", Courier, monospace;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #b91c1c;
+            letter-spacing: 0.5px;
+        }
+
+        .circuit-pre {
+            background-color: var(--code-bg);
+            color: #38bdf8;
+            padding: 1.1rem;
+            border-radius: 8px;
+            font-family: "Courier New", Consolas, monospace;
+            font-size: 0.95rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            line-height: 1.45;
+        }
+
+        /* 表格樣式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.2rem 0;
+            font-size: 0.92rem;
+        }
+
+        th, td {
+            padding: 0.8rem 0.9rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* 標籤徽章 */
+        .badge-recommend {
+            background-color: #dcfce7;
+            color: #15803d;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #b45309;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .badge {
+            background-color: #e2e8f0;
+            color: #475569;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.78rem;
+        }
+
+        /* 步驟列表 */
+        .step-list {
+            list-style: none;
+            counter-reset: step-counter;
+            margin: 1rem 0;
+        }
+
+        .step-item {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-item::before {
+            counter-increment: step-counter;
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 2px;
+            width: 22px;
+            height: 22px;
+            background-color: var(--accent-blue);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* 計算器區塊 */
+        .calc-section {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.8rem;
+            margin-top: 1rem;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: #475569;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.65rem 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            background-color: #fff;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+        }
+
+        .result-panel {
+            background: #ffffff;
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .result-main {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+            margin: 0.3rem 0;
+        }
+
+        .result-sub {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .calc-warn {
+            color: #dc2626;
+            font-size: 1.15rem;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* PDF 輸出按鈕與列印樣式 */
+        .pdf-btn {
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            color: #ffffff;
+            border: none;
+            padding: 0.45rem 1.1rem;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .pdf-btn:hover {
+            background: linear-gradient(135deg, #b91c1c, #7f1d1d);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.4);
+        }
+
+        .pdf-btn:active {
+            transform: translateY(0);
+        }
+
+        @media print {
+            body {
+                background-color: #ffffff !important;
+                padding: 0 !important;
+                color: #000000 !important;
+            }
+            .container {
+                box-shadow: none !important;
+                padding: 0 !important;
+                max-width: 100% !important;
+            }
+            .nav-bar, .pdf-btn {
+                display: none !important;
+            }
+            .section-block {
+                page-break-inside: avoid;
+            }
+            .card {
+                border: 1px solid #cbd5e1 !important;
+                box-shadow: none !important;
+            }
+            .circuit-pre {
+                border: 1px solid #334155 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 頁面頂部導航 -->
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+                <div>
+                    <h1>🔴 紅色 LED 限流電阻工程手冊與計算工具</h1>
+                    <p class="subtitle">涵蓋半導體規格、標準 3V 單燈設計、多燈拓撲（串聯 vs 並聯深度對比）及動態試算</p>
+                </div>
+                <button onclick="window.print()" class="pdf-btn" title="列印或另存為 PDF 文件">
+                    📄 輸出 PDF 手冊 / 列印
+                </button>
+            </div>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; font-size: 0.85rem; color: var(--text-muted);">
+                <span>📅 <strong>生成時間戳記：</strong>2026-09-08 15:21:20 (UTC+8)</span>
+                <span>🤖 <strong>輔助模型：</strong>Gemini 3.6 Flash</span>
+            </div>
+            <nav class="nav-bar">
+                <a href="#sec1" class="nav-btn">1. 元件規格與特性</a>
+                <a href="#sec2" class="nav-btn">2. 基本單燈設計 (3V 基準)</a>
+                <a href="#sec3" class="nav-btn">3. 串聯拓撲與 3V 限制</a>
+                <a href="#sec4" class="nav-btn">4. LED 並聯專題討論與設計</a>
+                <a href="#sec5" class="nav-btn">5. 兩顆 LED 電壓/電流/現象比較</a>
+                <a href="#sec6" class="nav-btn">6. 多功能互動計算器</a>
+                <a href="#sec7" class="nav-btn" style="background-color: #fee2e2; color: #991b1b; font-weight: bold;">7. 2026-09-08 實作電路圖討論</a>
+            </nav>
+        </header>
+
+        <!-- 第一章：元件基礎與規格參數 -->
+        <section id="sec1" class="section-block">
+            <h2 class="section-title"><span class="section-num">1</span> 元件基礎與規格參數 (Specifications)</h2>
+            
+            <div class="card card-highlight">
+                <h4>💡 為什麼 LED 必須串聯限流電阻？</h4>
+                <p style="font-size: 0.95rem;">
+                    發光二極體 (LED) 具備指數型伏安特性 (I-V Curve)。當外加順向偏壓超過導通門檻 V<sub>F</sub> 後，<strong>電壓只要微幅增加 0.1V，通過的電流便會成倍暴增</strong>。若直接跨接於固定電壓源，將迅速引發熱崩潰 (Thermal Runaway) 而燒毀。限流電阻的作用即在於吸收多餘電壓並穩定工作電流。
+                </p>
+            </div>
+
+            <div class="card">
+                <h4>📋 常見紅色 LED 電氣與光學規格參數表 (Datasheet Typical Specs)</h4>
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                    基準對象：通用 3mm / 5mm 直插式 (DIP) 與 0805 SMD 紅色發光二極體（材料通常為 AlGaInP 或 GaAsP）
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>規格參數</th>
+                            <th>符號</th>
+                            <th>典型值 (Typical)</th>
+                            <th>極限範圍</th>
+                            <th>電路設計工程考量</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>順向工作電壓</strong></td>
+                            <td><code>V<sub>F</sub></code></td>
+                            <td><strong style="color: var(--primary-dark);">1.8 V ~ 2.0 V</strong></td>
+                            <td>1.6 V ~ 2.2 V</td>
+                            <td>紅光波長長、能階差小，故 VF 低於藍/白光 (3.0~3.3V)。工程計算常以 2.0V 作為標準值。</td>
+                        </tr>
+                        <tr>
+                            <td><strong>建議工作電流</strong></td>
+                            <td><code>I<sub>F</sub></code></td>
+                            <td><strong>10 mA ~ 15 mA</strong></td>
+                            <td>5 mA ~ 20 mA</td>
+                            <td>一般狀態指示燈取 10 mA 即可獲得極佳亮度，且省電低溫。</td>
+                        </tr>
+                        <tr>
+                            <td><strong>最大連續額定電流</strong></td>
+                            <td><code>I<sub>F(max)</sub></code></td>
+                            <td>20 mA</td>
+                            <td>25 mA ~ 30 mA</td>
+                            <td>絕對上限值。長時操作不得超出此值，否則會造成快速光衰與永久損毀。</td>
+                        </tr>
+                        <tr>
+                            <td><strong>逆向崩潰耐壓</strong></td>
+                            <td><code>V<sub>R</sub></code></td>
+                            <td>5.0 V</td>
+                            <td>最大 5 V</td>
+                            <td>LED 的逆向耐壓極低（約 5V）。不可承受過大反向電壓，否則易擊穿。</td>
+                        </tr>
+                        <tr>
+                            <td><strong>發光主波長</strong></td>
+                            <td><code>&lambda;<sub>D</sub></code></td>
+                            <td>625 nm</td>
+                            <td>620 nm ~ 635 nm</td>
+                            <td>標準純紅色（660 nm 則為深紅 / 超高亮紅光）。</td>
+                        </tr>
+                        <tr>
+                            <td><strong>發光視角 (半值角)</strong></td>
+                            <td><code>2&theta;<sub>1/2</sub></code></td>
+                            <td>60° ~ 120° (霧面)<br>20° ~ 30° (透明)</td>
+                            <td>-</td>
+                            <td>霧狀膠體適合寬視角狀態指示；高透聚光膠體適合定向照明。</td>
+                        </tr>
+                        <tr>
+                            <td><strong>工作溫度範圍</strong></td>
+                            <td><code>T<sub>opr</sub></code></td>
+                            <td>-25°C ~ +85°C</td>
+                            <td>-40°C ~ +100°C</td>
+                            <td>具負溫度係數（溫度升高約 -2mV/°C，高溫時 VF 會略微降低）。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 第二章：基本單燈設計 (3V 基準) -->
+        <section id="sec2" class="section-block">
+            <h2 class="section-title"><span class="section-num">2</span> 基本單燈電路設計（基準：3V 電源 + 紅色 LED）</h2>
+
+            <div class="circuit-pre">
+[單顆 LED 基礎電路]
+V+ (3.0V 電源) ──── [ 限流電阻 R ] ──── (陽極 A) 紅色 LED (陰極 K) ──── GND (負極)
+                                             │
+                                         VF ≈ 2.0V
+            </div>
+
+            <div class="formula-box">
+                <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.3rem;">核心設計公式（歐姆定律）</div>
+                <div class="formula">R = (V<sub>電源</sub> - V<sub>F</sub>) / I<sub>F</sub></div>
+                <div style="font-size: 0.9rem; color: #555; margin-top: 0.5rem;">
+                    分壓分配：<code>V<sub>R</sub> = 3.0V - 2.0V = 1.0V</code>，由電阻承擔剩餘的 1.0V 電壓。
+                </div>
+            </div>
+
+            <h3 style="margin: 1.5rem 0 0.8rem 0; font-size: 1.1rem;">📊 3V 紅色 LED 常見工作情境推薦電阻表</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>應用情境模式</th>
+                        <th>目標電流 (I<sub>F</sub>)</th>
+                        <th>理論阻值</th>
+                        <th>市售標準電阻 (E24)</th>
+                        <th>四環色碼標示</th>
+                        <th>工程評估</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background-color: #f0fdf4;">
+                        <td><strong>標準節能 / 狀態指示</strong></td>
+                        <td>10 mA</td>
+                        <td>100.0 &Omega;</td>
+                        <td><strong>100 &Omega;</strong></td>
+                        <td>棕 黑 棕 金</td>
+                        <td><span class="badge-recommend">最佳平衡 ★★★</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>清晰高亮模式</strong></td>
+                        <td>15 mA</td>
+                        <td>66.7 &Omega;</td>
+                        <td><strong>68 &Omega;</strong></td>
+                        <td>藍 灰 黑 金</td>
+                        <td><span class="badge">日間清晰 ★★</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>極限高亮模式</strong></td>
+                        <td>20 mA</td>
+                        <td>50.0 &Omega;</td>
+                        <td><strong>51 &Omega;</strong></td>
+                        <td>綠 棕 黑 金</td>
+                        <td><span class="badge-warning">發熱偏高 ★</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+                <div class="card">
+                    <h4>⚡ 功率瓦數檢查 (Power Rating)</h4>
+                    <p style="font-size: 0.9rem;">
+                        以 10mA、分壓 1.0V 計算：<br>
+                        <code>P = V<sub>R</sub> &times; I<sub>F</sub> = 1.0V &times; 0.01A = 0.01W (10 mW)</code><br>
+                        市面上最常見的 <strong>1/4W (0.25W = 250mW)</strong> 或 <strong>1/8W (125mW)</strong> 碳膜電阻負載率僅 4%~8%，發熱極微，安全耐久。
+                    </p>
+                </div>
+                <div class="card">
+                    <h4>🔋 電池供電內阻特性</h4>
+                    <p style="font-size: 0.9rem;">
+                        • <strong>2 顆乾電池 (AA/AAA 串聯, ~3V)</strong>：內阻極小 (&lt;1&Omega;)，嚴格依照 <strong>100 &Omega;</strong> 設計。<br>
+                        • <strong>CR2032 鈕扣鋰電池 (3V)</strong>：自身內阻較大（約 10~30&Omega;），會分擔部分電壓，接 100&Omega; 依然可亮，若嫌偏暗可降為 47&Omega;~68&Omega;。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第三章：串聯拓撲與 3V 限制 -->
+        <section id="sec3" class="section-block">
+            <h2 class="section-title"><span class="section-num">3</span> 串聯拓撲與 3V 電源限制 (Series Connection)</h2>
+
+            <div class="card card-highlight">
+                <h4 style="color: var(--primary-dark);">⚠️ 核心工程盲點：為什麼 3V 電源無法直接串聯 2 顆紅色 LED？</h4>
+                <p style="font-size: 0.95rem; margin-top: 0.4rem;">
+                    • <strong>串聯總順向導通電壓：</strong><br>
+                    兩顆紅色 LED 串聯，總壓降為 <code>V<sub>LED_總</sub> = V<sub>F1</sub> + V<sub>F2</sub> = 2.0V + 2.0V = 4.0V</code>（即使以極限低壓 1.8V 估計，亦需 <code>3.6V</code>）。<br>
+                    • <strong>電壓不足困境：</strong><br>
+                    若電源維持原本的 <code>3.0V</code>，因 <code>3.0V &lt; 3.6V ~ 4.0V</code>，<strong>電源電壓小於 LED 導通電位障壁，兩顆 LED 完全無法點亮！</strong>
+                </p>
+            </div>
+
+            <div class="card card-blue">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <h4 style="color: var(--accent-blue); margin: 0;">串聯解決方案：提高電源電壓至 5.0V（USB 5V 或 4 顆電池 6V）</h4>
+                    <span class="badge" style="background-color: #dbeafe; color: #1d4ed8;">升壓串聯</span>
+                </div>
+
+                <div class="circuit-pre">
+[2 顆 LED 串聯架構 (5V 供電)]
+V+ (5.0V) ──── [ 限流電阻 R ] ──── (A) LED 1 (K) ──── (A) LED 2 (K) ──── GND
+                                      │                     │
+                                  VF1 = 2.0V            VF2 = 2.0V
+                </div>
+
+                <ol class="step-list">
+                    <li class="step-item">
+                        <strong>確認已知參數：</strong> <code>V<sub>CC</sub> = 5.0V</code>，<code>V<sub>F_total</sub> = 4.0V</code>，目標電流 <code>I<sub>F</sub> = 10 mA = 0.01 A</code>。
+                    </li>
+                    <li class="step-item">
+                        <strong>計算電阻分壓 (KVL)：</strong> <code>V<sub>R</sub> = 5.0V - 4.0V = 1.0V</code>。
+                    </li>
+                    <li class="step-item">
+                        <strong>歐姆定律阻值：</strong> <code>R = 1.0V / 0.01A = 100 &Omega;</code>（E24 標準阻值：<strong>100 &Omega;</strong>，棕黑棕金）。
+                    </li>
+                    <li class="step-item">
+                        <strong>電阻功耗：</strong> <code>P<sub>R</sub> = 1.0V &times; 0.01A = 10 mW</code>（選用 1/4W 碳膜電阻極度安全）。
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- 第四章：LED 並聯專題討論與電路設計 -->
+        <section id="sec4" class="section-block">
+            <h2 class="section-title"><span class="section-num">4</span> LED 並聯專題討論與電路設計 (Parallel Connection)</h2>
+
+            <div class="card card-green">
+                <h4 style="color: #15803d;">💡 為什麼「並聯 (Parallel)」是 3V 電源驅動多顆 LED 的唯一解答？</h4>
+                <p style="font-size: 0.95rem; margin-top: 0.4rem;">
+                    在並聯電路中，<strong>所有支路跨接相同電源電壓 (V<sub>CC</sub> = 3.0V)</strong>。由於單顆紅色 LED 導通電壓僅 2.0V，只要 V<sub>CC</sub> &gt; V<sub>F</sub> (3.0V &gt; 2.0V)，無論並聯 2 顆、3 顆甚至 10 顆 LED，每條支路都能獲得足夠電壓順利導通！
+                </p>
+            </div>
+
+            <!-- 核心問題：共用電阻的致命陷阱 -->
+            <div class="card card-highlight">
+                <h4 style="color: #b91c1c;">⚠️ 嚴肅警示：共用單一限流電阻的「熱失控 (Thermal Runaway)」陷阱</h4>
+                <p style="font-size: 0.93rem; margin-bottom: 0.8rem;">
+                    初學者常試圖將兩顆 LED 直接並聯，然後只串聯「一顆」50&Omega; 電阻。<strong>這在電子工程中屬於嚴重失誤！</strong>
+                </p>
+                <div class="circuit-pre" style="background-color: #450a0a; color: #fca5a5;">
+[❌ 錯誤並聯做法 - 共用單一電阻 (高風險熱失控)]
+               ┌─── (A) LED 1 (K) ───┐
+V+ (3V) ── [ 50Ω 共用電阻 ] ──┼                     ├─── GND
+               └─── (A) LED 2 (K) ───┘
+                </div>
+                <ul style="margin-left: 1.5rem; font-size: 0.92rem; line-height: 1.7;">
+                    <li><strong>製程微小壓降公差：</strong>即便同型號 LED，導通電壓 V<sub>F</sub> 仍有微小差異（如 LED1 = 1.95V, LED2 = 2.05V）。</li>
+                    <li><strong>指數型搶電流：</strong>由於二極體 I-V 特性呈指數陡升，V<sub>F</sub> 較低的 LED 1 會搶走 80% 以上電流，造成兩顆亮度嚴重不均。</li>
+                    <li><strong>負溫度係數惡性循環：</strong>LED 1 因電流大而發熱，其 V<sub>F</sub> 隨溫度升高進一步降低 (約 -2mV/°C)，進一步吸收更多電流，最終<strong>過熱擊穿燒毀！</strong>LED 1 燒毀開路後，所有電流湧入 LED 2，造成連鎖燒毀！</li>
+                </ul>
+            </div>
+
+            <!-- 正確設計：獨立限流電阻 -->
+            <div class="card card-blue">
+                <h4 style="color: var(--accent-blue);">✅ 工程標準做法：獨立限流電阻並聯架構 (Independent Branch Resistors)</h4>
+                <p style="font-size: 0.92rem; color: var(--text-muted); margin-bottom: 0.8rem;">
+                    工程黃金法則：<strong>「每條 LED 支路必須擁有自己專屬的限流電阻」</strong>。
+                </p>
+
+                <div class="circuit-pre">
+[✅ 正確工程並聯架構 (3.0V 電源推動 2 顆或 N 顆 LED)]
+               ┌──── [ R1: 100Ω ] ──── (A) LED 1 (K) ────┐
+               ├──── [ R2: 100Ω ] ──── (A) LED 2 (K) ────┤
+V+ (3.0V) ─────┼──── [ R3: 100Ω ] ──── (A) LED 3 (K) ────┼───── GND
+               │                                         │
+               └──── [ Rn: 100Ω ] ──── (A) LED n (K) ────┘
+                </div>
+
+                <div style="background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 1rem; margin-top: 0.8rem;">
+                    <h5 style="margin-bottom: 0.5rem; color: #1e293b;">📐 獨立並聯計算公式與範例（3V 電源推動 3 顆紅色 LED）：</h5>
+                    <ul style="margin-left: 1.3rem; font-size: 0.92rem; line-height: 1.7;">
+                        <li><strong>每支路電阻計算：</strong> <code>R<sub>1</sub> = R<sub>2</sub> = R<sub>3</sub> = (3.0V - 2.0V) / 0.01A = 100 &Omega;</code>（市售 100&Omega;，色碼：棕黑棕金）。</li>
+                        <li><strong>每支路電流 (I<sub>branch</sub>)：</strong> 保持為獨立的 <code>10 mA</code>，亮度完全均勻一致。</li>
+                        <li><strong>電源總輸出電流 (I<sub>total</sub>)：</strong> 根據克希荷夫電流定律 (KCL)：<br>
+                            <code>I<sub>total</sub> = I<sub>F1</sub> + I<sub>F2</sub> + I<sub>F3</sub> = 10mA + 10mA + 10mA = 30 mA (0.03A)</code>
+                        </li>
+                        <li><strong>電源總功耗 (P<sub>total</sub>)：</strong> <code>P<sub>total</sub> = V<sub>CC</sub> &times; I<sub>total</sub> = 3.0V &times; 0.03A = 90 mW (0.09W)</code>。</li>
+                        <li><strong>電池續航試算：</strong> 以 2 顆 AA 乾電池 (容量約 2000 mAh) 供電：<br>
+                            <code>續航時間 &approx; 2000 mAh / 30 mA &approx; 66.7 小時</code>。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第五章：兩顆 LED 假設下：串聯 vs 並聯之電壓、電流與實測現象詳細比較 -->
+        <section id="sec5" class="section-block">
+            <h2 class="section-title"><span class="section-num">5</span> 兩顆 LED 假設下：串聯 vs 並聯之電壓、電流與現象比較</h2>
+
+            <div class="card card-highlight">
+                <h4>🔬 標竿測試條件設定</h4>
+                <p style="font-size: 0.92rem;">
+                    假設採用 <strong>2 顆同型號紅色 LED</strong>（單顆標稱順向壓降 V<sub>F</sub> = 2.0V，設計工作電流 I<sub>F</sub> = 10mA），對比下述三種電路接法在<strong>電壓、電流與實際物理現象</strong>上的根本差異：
+                </p>
+            </div>
+
+            <h3 style="margin: 1.5rem 0 0.8rem 0; font-size: 1.1rem;">📊 2 顆紅色 LED 在三種電路拓撲下的參數與現象對照表</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>比較維度 / 項目</th>
+                        <th>🅰️ 2 顆 LED 串聯<br>(5.0V 供電, 100Ω 電阻)</th>
+                        <th>🅱️ 2 顆 LED 獨立並聯 (正確)<br>(3.0V 供電, 雙 100Ω 電阻)</th>
+                        <th>🆂 2 顆 LED 共用並聯 (錯誤)<br>(3.0V 供電, 單 50Ω 電阻)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>電源電壓 (V<sub>CC</sub>)</strong></td>
+                        <td><code>5.0 V</code> (需高於 4.0V)</td>
+                        <td><code>3.0 V</code> (高於 2.0V 即可)</td>
+                        <td><code>3.0 V</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>LED 1 兩端跨壓 (V<sub>L1</sub>)</strong></td>
+                        <td><code>2.0 V</code></td>
+                        <td><code>2.0 V</code></td>
+                        <td>被拉低至 <code>~1.95 V</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>LED 2 兩端跨壓 (V<sub>L2</sub>)</strong></td>
+                        <td><code>2.0 V</code></td>
+                        <td><code>2.0 V</code></td>
+                        <td>被強迫跨接 <code>~1.95 V</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>限流電阻分壓 (V<sub>R</sub>)</strong></td>
+                        <td><code>V<sub>R</sub> = 5.0V - 4.0V = 1.0 V</code></td>
+                        <td><code>V<sub>R1</sub> = V<sub>R2</sub> = 3.0V - 2.0V = 1.0 V</code></td>
+                        <td><code>V<sub>R</sub> = 3.0V - 1.95V = 1.05 V</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>流經 LED 1 電流 (I<sub>L1</sub>)</strong></td>
+                        <td><code>10.0 mA</code></td>
+                        <td><code>10.0 mA</code></td>
+                        <td><strong style="color: #b91c1c;">~17.0 mA (搶走大部分電流)</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>流經 LED 2 電流 (I<sub>L2</sub>)</strong></td>
+                        <td><code>10.0 mA</code></td>
+                        <td><code>10.0 mA</code></td>
+                        <td><strong style="color: #b45309;">~3.0 mA (分配極微電流)</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>電源提供總電流 (I<sub>total</sub>)</strong></td>
+                        <td><code>10.0 mA</code> (迴路電流相同)</td>
+                        <td><code>20.0 mA</code> (兩支路 10mA 相加)</td>
+                        <td><code>20.0 mA</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>總系統功耗 (P<sub>total</sub>)</strong></td>
+                        <td><code>50.0 mW</code> (5V &times; 10mA)</td>
+                        <td><code>60.0 mW</code> (3V &times; 20mA)</td>
+                        <td><code>60.0 mW</code> (3V &times; 20mA)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>💡 視覺發光現象</strong></td>
+                        <td><span class="badge-recommend">兩顆亮度極度均勻且穩定</span></td>
+                        <td><span class="badge-recommend">兩顆亮度穩定且均勻</span></td>
+                        <td><span class="badge-danger">LED1 過亮發熱，LED2 昏暗或不亮</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>⚠️ 單顆開路燒毀影響</strong></td>
+                        <td>LED1 燒毀，<strong>兩顆同時熄滅</strong></td>
+                        <td>LED1 燒毀，<strong>LED2 正常恆亮</strong></td>
+                        <td><span class="badge-danger">LED1 燒毀後，LED2 在幾秒內連鎖過載燒毀</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>🔋 電源降至 3.0V 現象</strong></td>
+                        <td>因 3V &lt; 4V，<strong>兩顆同時熄滅</strong></td>
+                        <td><span class="badge-recommend">完全正常發光</span></td>
+                        <td>高機率發熱失控</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+                <div class="card card-blue">
+                    <h4>📌 串聯現象總結（Series Key Takeaways）</h4>
+                    <p style="font-size: 0.9rem;">
+                        • <strong>好處：</strong> 節省總電流（只需 10mA），能效極高，且兩顆電流絕對相等，亮度百分百一致。<br>
+                        • <strong>代價：</strong> 電壓需求高（2 &times; 2.0V = 4.0V），在 3V 電源下必定熄滅。
+                    </p>
+                </div>
+                <div class="card card-green">
+                    <h4>📌 正確並聯現象總結（Parallel Key Takeaways）</h4>
+                    <p style="font-size: 0.9rem;">
+                        • <strong>好處：</strong> 3.0V 低壓即可完美點亮兩顆，且獨立支路互不干擾，一顆壞掉另一顆依然正常工作。<br>
+                        • <strong>代價：</strong> 電源總電流倍增為 20mA（耗電翻倍），且需使用 2 顆獨立電阻。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第六章：多功能互動計算器 -->
+        <section id="sec6" class="section-block">
+            <h2 class="section-title"><span class="section-num">6</span> 多功能即時互動計算器 (Supports Series & Parallel)</h2>
+            <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1rem;">
+                支援自訂電源、順向電壓、LED 顆數及「串聯 / 並聯」拓撲切換，自動匹配 E24 市售電阻與色碼：
+            </p>
+
+            <div class="calc-section">
+                <div class="input-grid">
+                    <div>
+                        <label for="vSupply">電源電壓 V<sub>CC</sub> (V)</label>
+                        <input type="number" id="vSupply" value="3.0" step="0.1" min="0">
+                    </div>
+                    <div>
+                        <label for="vLed">單顆 LED 順向壓降 V<sub>F</sub> (V)</label>
+                        <input type="number" id="vLed" value="2.0" step="0.1" min="0">
+                    </div>
+                    <div>
+                        <label for="nLed">LED 數量 N (顆)</label>
+                        <input type="number" id="nLed" value="2" step="1" min="1">
+                    </div>
+                    <div>
+                        <label for="iLed">單顆目標電流 I<sub>F</sub> (mA)</label>
+                        <input type="number" id="iLed" value="10" step="1" min="1">
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <label for="circuitType">電路拓撲連接模式 (Topology)</label>
+                        <select id="circuitType">
+                            <option value="parallel" selected>✅ 並聯模式 (Parallel - 3V 低壓多燈首選)</option>
+                            <option value="series">🔗 串聯模式 (Series - 需較高電源電壓)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="result-panel">
+                    <div style="font-size: 0.9rem; color: #475569; font-weight: 600;" id="calcTitle">建議限流電阻規格：</div>
+                    <div class="result-main" id="calcRes">100.0 Ω</div>
+                    <div class="result-sub" id="calcE24">市售標準 E24 推薦：<strong>100 Ω</strong>（色碼：棕 黑 棕 金）</div>
+                    <div class="result-sub" id="calcDetails" style="margin-top: 0.5rem;">
+                        並聯模式 ｜ 每條支路配 100Ω 獨立電阻 ｜ 總輸出電流：20.0 mA ｜ 總功耗：60.0 mW
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第七章：實作電路圖討論與分析 (2026-09-08 麵包板實作) -->
+        <section id="sec7" class="section-block">
+            <h2 class="section-title"><span class="section-num">7</span> 實作電路圖討論與工程分析 (2026-09-08 麵包板專案)</h2>
+
+            <div class="card card-highlight">
+                <h4 style="color: var(--primary-dark);">📷 今日完成之電路圖實作記錄 (Tinkercad 模擬)</h4>
+                <p style="font-size: 0.95rem; margin-top: 0.4rem;">
+                    下圖為 <strong>2026-09-08</strong> 完成的 4-AA 電池驅動雙紅色 LED 獨立並聯麵包板電路實作圖：
+                </p>
+                <div style="text-align: center; margin: 1.2rem 0;">
+                    <img src="20260908.jpg" alt="2026-09-08 完成的紅色 LED 並聯電路圖" style="max-width: 100%; height: auto; border-radius: 10px; border: 2px solid var(--border-color); box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">
+                        ▲ 圖 7.1：4 顆 AA 電池 (6V) 驅動雙紅色 LED 之獨立限流電阻並聯麵包板電路 (檔案：<code>20260908.jpg</code>)
+                    </p>
+                </div>
+            </div>
+
+            <div class="card card-green">
+                <h4 style="color: #15803d;">🔍 電路架構與原理深度剖析</h4>
+                <ul style="margin-left: 1.3rem; font-size: 0.93rem; line-height: 1.75; color: #1e293b;">
+                    <li><strong>電源配置 (V<sub>CC</sub> = 6.0V)：</strong> 採用 4 顆 1.5V AA 乾電池串聯電池盒，提供總電壓 <code>V<sub>CC</sub> = 4 &times; 1.5V = 6.0V</code>。正極 (紅線) 與負極 (棕/黑線) 分別接入麵包板上方之公用電源軌 (+ / -)。</li>
+                    <li><strong>拓撲結構 (Topology)：</strong> 採用<b>獨立限流電阻並聯架構 (Independent Parallel Branches)</b>。每顆 LED 都有專屬的限流電阻與 GND 跳線迴路。</li>
+                    <li><strong>第一支路路徑 (LED 1)：</strong> 電源正軌 (+) &rarr; 限流電阻 R1 (15列 e/f) &rarr; LED 1 陽極 (15列 h) &rarr; LED 1 陰極 (16列 h) &rarr; 跳線至電源負軌 (-) (16列 b)。</li>
+                    <li><strong>第二支路路徑 (LED 2)：</strong> 電源正軌 (+) &rarr; 限流電阻 R2 (18列 e/f) &rarr; LED 2 陽極 (18列 h) &rarr; LED 2 陰極 (19列 h) &rarr; 跳線至電源負軌 (-) (19列 b)。</li>
+                </ul>
+            </div>
+
+            <div class="card card-blue">
+                <h4 style="color: var(--accent-blue);">⚡ 電氣參數與計算試算表 (V<sub>CC</sub> = 6.0V)</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>參數項目</th>
+                            <th>公式與計算</th>
+                            <th>實測/理論數值</th>
+                            <th>工程評估與建議</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>電源電壓 (V<sub>CC</sub>)</strong></td>
+                            <td>4 &times; 1.5V 電池盒</td>
+                            <td><code>6.0 V</code></td>
+                            <td>電壓充裕，即使電池電壓衰減至 4.5V 仍能維持穩定亮度。</td>
+                        </tr>
+                        <tr>
+                            <td><strong>LED 順向壓降 (V<sub>F</sub>)</strong></td>
+                            <td>紅色 LED 標稱壓降</td>
+                            <td><code>2.0 V</code></td>
+                            <td>標準半導體順向導通電位障壁。</td>
+                        </tr>
+                        <tr>
+                            <td><strong>限流電阻壓降 (V<sub>R</sub>)</strong></td>
+                            <td>V<sub>CC</sub> - V<sub>F</sub> = 6.0V - 2.0V</td>
+                            <td><code>4.0 V</code></td>
+                            <td>電阻分擔 4.0V 電壓。</td>
+                        </tr>
+                        <tr>
+                            <td><strong>限流電阻值 (R)</strong></td>
+                            <td>圖中色碼（棕黑紅金）</td>
+                            <td><code>1 k&Omega; (1000 &Omega;)</code></td>
+                            <td>若使用 1k&Omega;，支路電流約 <code>4.0 mA</code> (發光清晰且極度省電)。</td>
+                        </tr>
+                        <tr>
+                            <td><strong>高亮模式推薦電阻</strong></td>
+                            <td>目標 I<sub>F</sub> = 10mA (4.0V / 0.01A)</td>
+                            <td><code>390 &Omega; ~ 470 &Omega;</code></td>
+                            <td>若需標準高亮指示，可更換為 390&Omega; (E24) 或 470&Omega; 電阻。</td>
+                        </tr>
+                        <tr>
+                            <td><strong>電源總需求電流</strong></td>
+                            <td>I<sub>total</sub> = I<sub>L1</sub> + I<sub>L2</sub></td>
+                            <td><code>8.0 mA</code> (以 1k&Omega; 計)</td>
+                            <td>2000mAh AA 電池續航可達約 250 小時！</td>
+                        </tr>
+                        <tr>
+                            <td><strong>電阻單顆功耗</strong></td>
+                            <td>P<sub>R</sub> = 4.0V &times; 4.0mA</td>
+                            <td><code>16 mW (0.016 W)</code></td>
+                            <td>遠低於 1/4W (250mW) 碳膜電阻極限，低溫無發熱隱患。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h4>🌟 工程點評與優缺點總結</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 0.8rem;">
+                    <div>
+                        <h5 style="color: #16a34a; margin-bottom: 0.4rem;">👍 優秀設計亮點</h5>
+                        <ol style="margin-left: 1.2rem; font-size: 0.9rem; line-height: 1.6;">
+                            <li><strong>完全符合黃金規範：</strong>兩顆 LED 各自擁有獨立限流電阻，避免熱失控與搶電流。</li>
+                            <li><strong>接線清晰規範：</strong>極性 (長腳陽極 / 短腳陰極) 插接正確，跳線分佈合理。</li>
+                            <li><strong>模組化擴充性高：</strong>若要增加第 3 顆 LED，只需在空餘列重複相同配線即可。</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <h5 style="color: #2563eb; margin-bottom: 0.4rem;">💡 進一步優化建議</h5>
+                        <ol style="margin-left: 1.2rem; font-size: 0.9rem; line-height: 1.6;">
+                            <li>若覺亮度偏低，可將阻值由 1 k&Omega; 降至 <strong>390&Omega; 或 470&Omega;</strong>。</li>
+                            <li>麵包板電源軌建議加上標籤或使用不同顏色 jumper 區分正負極。</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>紅色 LED 限流電阻工程手冊 ｜ 適用於各類標準 3V / 5V / 12V 嵌入式與創客硬體專案</p>
+            <p style="margin-top: 0.4rem; font-size: 0.82rem; color: #94a3b8;">
+                版本紀錄：2026-09-08 15:21:20 (UTC+8) ｜ 輔助生成模型：<strong>Gemini 3.6 Flash</strong>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // E24 標準電阻基本係數表
+        const E24_BASE = [
+            1.0, 1.1, 1.2, 1.3, 1.5, 1.6, 1.8, 2.0, 2.2, 2.4, 2.7, 3.0,
+            3.3, 3.6, 3.9, 4.3, 4.7, 5.1, 5.6, 6.2, 6.8, 7.5, 8.2, 9.1
+        ];
+
+        // 電阻色碼顏色對照表
+        const COLOR_MAP = ["黑", "棕", "紅", "橙", "黃", "綠", "藍", "紫", "灰", "白"];
+
+        // 計算最近的 E24 標準阻值
+        function findNearestE24(val) {
+            if (val <= 0) return 0;
+            const exponent = Math.floor(Math.log10(val));
+            const norm = val / Math.pow(10, exponent);
+            
+            let closest = E24_BASE[0];
+            let minDiff = Math.abs(norm - closest);
+            for (let b of E24_BASE) {
+                let diff = Math.abs(norm - b);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closest = b;
+                }
+            }
+            return Math.round(closest * Math.pow(10, exponent) * 10) / 10;
+        }
+
+        // 計算 4 色環標示字串
+        function getColorBands(val) {
+            if (val < 1) return "特殊微電阻標示";
+            const exp = Math.floor(Math.log10(val));
+            const firstTwo = Math.round(val / Math.pow(10, exp - 1));
+            const digit1 = Math.floor(firstTwo / 10);
+            const digit2 = firstTwo % 10;
+            const multiplierExp = exp - 1;
+
+            if (digit1 < 0 || digit1 > 9 || digit2 < 0 || digit2 > 9 || multiplierExp < 0 || multiplierExp > 7) {
+                return "-";
+            }
+            return `${COLOR_MAP[digit1]} ${COLOR_MAP[digit2]} ${COLOR_MAP[multiplierExp]} 金 (±5%)`;
+        }
+
+        function runCalculation() {
+            const vSupply = parseFloat(document.getElementById('vSupply').value) || 0;
+            const vLed = parseFloat(document.getElementById('vLed').value) || 0;
+            const nLed = parseInt(document.getElementById('nLed').value) || 1;
+            const iLed = parseFloat(document.getElementById('iLed').value) || 0;
+            const circuitType = document.getElementById('circuitType').value;
+
+            const resBox = document.getElementById('calcRes');
+            const e24Box = document.getElementById('calcE24');
+            const detailsBox = document.getElementById('calcDetails');
+            const titleBox = document.getElementById('calcTitle');
+
+            if (iLed <= 0) {
+                resBox.innerHTML = '<span class="calc-warn">請輸入有效電流</span>';
+                e24Box.innerText = "-";
+                detailsBox.innerText = "-";
+                return;
+            }
+
+            if (circuitType === 'series') {
+                // 串聯模式
+                titleBox.innerText = "串聯模式：所需單一限流電阻值";
+                const totalVled = vLed * nLed;
+                const vDrop = vSupply - totalVled;
+
+                if (vDrop <= 0) {
+                    resBox.innerHTML = '<span class="calc-warn">⚠️ 無法點亮（電源電壓不足）</span>';
+                    e24Box.innerHTML = `<span style="color: #dc2626;">電源電壓 (${vSupply.toFixed(1)}V) &le; ${nLed} 顆 LED 串聯總壓降 (${totalVled.toFixed(1)}V)</span>`;
+                    detailsBox.innerHTML = `請提高電源電壓（例如升壓至 ${(totalVled + 1.0).toFixed(1)}V 以上）或切換為「並聯模式」。`;
+                    return;
+                }
+
+                const currentAmp = iLed / 1000.0;
+                const resistance = vDrop / currentAmp;
+                const powerMw = vDrop * iLed;
+                const powerW = powerMw / 1000.0;
+
+                const nearestE24 = findNearestE24(resistance);
+                const bands = getColorBands(nearestE24);
+
+                let currentWarning = "";
+                if (iLed > 20) {
+                    currentWarning = `<br><span class="badge-danger">⚠️ 注意：單顆電流 ${iLed}mA 超過紅色 LED 連續額定上限 (20mA)！</span>`;
+                }
+
+                resBox.innerText = resistance.toFixed(1) + " Ω";
+                e24Box.innerHTML = `市售標準 E24 推薦：<strong>${nearestE24} Ω</strong>（四色碼：<strong>${bands}</strong>）`;
+                detailsBox.innerHTML = `串聯總壓降：${totalVled.toFixed(1)} V ｜ 電阻分壓：${vDrop.toFixed(1)} V ｜ 迴路電流：${iLed} mA ｜ 電阻功耗：${powerMw.toFixed(1)} mW (${powerW.toFixed(4)} W)${currentWarning}`;
+
+            } else {
+                // 並聯模式
+                titleBox.innerHTML = `並聯模式：<strong>每條支路所需獨立限流電阻</strong> (共需 ${nLed} 顆)`;
+                const vDrop = vSupply - vLed;
+
+                if (vDrop <= 0) {
+                    resBox.innerHTML = '<span class="calc-warn">⚠️ 無法導通（電源電壓低於 LED 壓降）</span>';
+                    e24Box.innerHTML = `<span style="color: #dc2626;">電源電壓 (${vSupply.toFixed(1)}V) &le; 單顆 LED 壓降 (${vLed.toFixed(1)}V)</span>`;
+                    detailsBox.innerHTML = `請提高電源電壓至高於 ${vLed.toFixed(1)}V。`;
+                    return;
+                }
+
+                const currentAmp = iLed / 1000.0;
+                const resistance = vDrop / currentAmp;
+
+                const totalCurrentMa = iLed * nLed;
+                const totalPowerMw = vSupply * totalCurrentMa;
+
+                const nearestE24 = findNearestE24(resistance);
+                const bands = getColorBands(nearestE24);
+
+                let currentWarning = "";
+                if (iLed > 20) {
+                    currentWarning = `<br><span class="badge-danger">⚠️ 注意：單支路電流 ${iLed}mA 已超過紅色 LED 額定上限 (20mA)！</span>`;
+                }
+
+                resBox.innerText = resistance.toFixed(1) + " Ω / 每支路";
+                e24Box.innerHTML = `每支路 E24 電阻推薦：<strong>${nearestE24} Ω</strong>（四色碼：<strong>${bands}</strong>，共需 ${nLed} 顆）`;
+                detailsBox.innerHTML = `支路分壓：${vDrop.toFixed(1)} V ｜ 單支路電流：${iLed} mA ｜ <strong>電源總需求電流：${totalCurrentMa.toFixed(1)} mA</strong> ｜ 總系統功耗：${totalPowerMw.toFixed(1)} mW${currentWarning}`;
+            }
+        }
+
+        // 綁定輸入事件監聽
+        document.getElementById('vSupply').addEventListener('input', runCalculation);
+        document.getElementById('vLed').addEventListener('input', runCalculation);
+        document.getElementById('nLed').addEventListener('input', runCalculation);
+        document.getElementById('iLed').addEventListener('input', runCalculation);
+        document.getElementById('circuitType').addEventListener('change', runCalculation);
+
+        // 初始化執行一次
+        runCalculation();
+    </script>
+</body>
+</html>

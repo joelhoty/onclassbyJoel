@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 課程專題筆記：GPT, LLMs, Fine-Tuning 與 Diffusion Model 訓練與生成原理全解密</title>
+    
+    <!-- KaTeX CSS & JavaScript for LaTeX Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #eff6ff;
+            --secondary: #0f172a;
+            --accent-purple: #7c3aed;
+            --accent-teal: #0d9488;
+            --accent-amber: #d97706;
+            --accent-rose: #e11d48;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --code-bg: #0f172a;
+            --code-text: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.7;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Metadata & Header */
+        header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #311b92 100%);
+            color: #ffffff;
+            padding: 45px 35px;
+            border-bottom: 4px solid var(--accent-purple);
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 14px;
+            letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #ffffff 0%, #c4b5fd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p.subtitle {
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            max-width: 900px;
+        }
+
+        .metadata-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .meta-badge {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(8px);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.88rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #e2e8f0;
+        }
+
+        .meta-badge strong {
+            color: #a78bfa;
+        }
+
+        /* Content Layout */
+        .content {
+            padding: 40px 35px;
+        }
+
+        section {
+            margin-bottom: 55px;
+        }
+
+        h2 {
+            font-size: 1.65rem;
+            color: var(--secondary);
+            border-bottom: 3px solid #f1f5f9;
+            padding-bottom: 12px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2::before {
+            content: "";
+            display: inline-block;
+            width: 6px;
+            height: 24px;
+            background-color: var(--accent-purple);
+            border-radius: 3px;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            color: #334155;
+            margin: 26px 0 14px 0;
+        }
+
+        p {
+            margin-bottom: 14px;
+            color: #334155;
+            text-align: justify;
+        }
+
+        ul, ol {
+            margin: 12px 0 18px 24px;
+            color: #334155;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        /* Cards and Grids */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+            margin: 20px 0;
+        }
+
+        .concept-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 22px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .concept-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+            border-color: #cbd5e1;
+        }
+
+        .concept-card .card-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .concept-card h4 {
+            font-size: 1.15rem;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+
+        /* Alert boxes */
+        .callout {
+            padding: 18px 22px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid;
+        }
+
+        .callout-info {
+            background-color: #eff6ff;
+            border-color: var(--primary);
+            color: #1e40af;
+        }
+
+        .callout-purple {
+            background-color: #f5f3ff;
+            border-color: var(--accent-purple);
+            color: #5b21b6;
+        }
+
+        .callout-warning {
+            background-color: #fff7ed;
+            border-color: var(--accent-amber);
+            color: #9a3412;
+        }
+
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: var(--secondary);
+            font-weight: 700;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        /* Formulas & Math */
+        .formula-box {
+            background: #0f172a;
+            color: #38bdf8;
+            padding: 18px 22px;
+            border-radius: 10px;
+            font-family: "KaTeX_Math", "Fira Code", Consolas, Monaco, monospace;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.15rem;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
+            overflow-x: auto;
+        }
+
+        /* Dynamic Interactive Demo Playground */
+        .demo-playground {
+            background: #ffffff;
+            border: 2px solid #3b82f6;
+            border-radius: 16px;
+            padding: 28px;
+            margin: 30px 0;
+            box-shadow: 0 12px 30px -10px rgba(59, 130, 246, 0.15);
+        }
+
+        .demo-playground.diffusion-theme {
+            border-color: var(--accent-purple);
+            box-shadow: 0 12px 30px -10px rgba(124, 58, 237, 0.18);
+        }
+
+        .demo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .demo-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge-live {
+            background: #ef4444;
+            color: white;
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: 700;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        .input-select-wrapper {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        select, input[type="text"] {
+            padding: 10px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus, input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        input[type="text"] {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        /* Tokenization Visualizer */
+        .tokens-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 14px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            min-height: 54px;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .token-badge {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .token-badge .token-id {
+            font-size: 0.68rem;
+            opacity: 0.85;
+            font-weight: normal;
+        }
+
+        /* Hyperparameters sliders */
+        .params-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            background: #f8fafc;
+            padding: 18px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid #e2e8f0;
+        }
+
+        .param-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .param-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .param-value {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .param-value.purple {
+            color: var(--accent-purple);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        input[type="range"].purple {
+            accent-color: var(--accent-purple);
+        }
+
+        /* Probabilities bars */
+        .prob-bars-container {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .prob-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.95rem;
+        }
+
+        .prob-label {
+            width: 110px;
+            font-weight: 600;
+            font-family: monospace;
+            text-align: right;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .prob-bar-wrapper {
+            flex: 1;
+            background: #e2e8f0;
+            height: 26px;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .prob-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6 0%, #6366f1 100%);
+            border-radius: 6px;
+            transition: width 0.4s ease;
+        }
+
+        .prob-bar-fill.filtered {
+            background: #cbd5e1 !important;
+            opacity: 0.6;
+        }
+
+        .prob-percent {
+            width: 65px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #334155;
+            text-align: right;
+        }
+
+        .tag-filtered {
+            font-size: 0.72rem;
+            color: #ef4444;
+            border: 1px solid #fca5a5;
+            padding: 1px 5px;
+            border-radius: 4px;
+            margin-left: 4px;
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-primary:hover { background: var(--primary-dark); }
+
+        .btn-purple {
+            background: var(--accent-purple);
+            color: white;
+        }
+        .btn-purple:hover { background: #6d28d9; }
+
+        .btn-secondary {
+            background: #64748b;
+            color: white;
+        }
+        .btn-secondary:hover { background: #475569; }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+        }
+        .btn-outline:hover { background: #f1f5f9; }
+
+        /* Generated output box */
+        .generated-output-box {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: "Fira Code", Consolas, Monaco, monospace;
+            font-size: 1.05rem;
+            min-height: 100px;
+            margin-top: 20px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-break: break-word;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
+        }
+
+        .new-token-highlight {
+            background: #2563eb;
+            color: #ffffff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { background: #f59e0b; }
+            to { background: #2563eb; }
+        }
+
+        /* Diffusion Canvas Playground Layout */
+        .diffusion-canvas-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+            align-items: center;
+        }
+
+        .canvas-card {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .canvas-card h5 {
+            font-size: 0.95rem;
+            color: #475569;
+            margin-bottom: 12px;
+        }
+
+        canvas {
+            background: #000;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            max-width: 100%;
+            height: auto;
+        }
+
+        .step-progress-bar {
+            width: 100%;
+            background: #e2e8f0;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .step-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7c3aed 0%, #3b82f6 100%);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        /* Training pipeline step diagram */
+        .pipeline-flow {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .flow-step {
+            background: white;
+            border: 1px solid var(--border-color);
+            padding: 12px 18px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1e293b;
+            flex: 1;
+            min-width: 140px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+
+        .flow-arrow {
+            font-size: 1.2rem;
+            color: var(--accent-purple);
+            font-weight: bold;
+        }
+
+        /* Footer & Prompt Archive */
+        footer {
+            background: #0f172a;
+            color: #94a3b8;
+            padding: 35px;
+            border-top: 1px solid #1e293b;
+        }
+
+        .archive-section h3 {
+            color: #f8fafc;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 10px;
+            margin-bottom: 16px;
+        }
+
+        .archive-entry {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+            font-size: 0.9rem;
+        }
+
+        .archive-entry pre {
+            background: #090d16;
+            color: #38bdf8;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-top: 8px;
+            font-family: Consolas, monospace;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <header>
+        <h1>🤖 GPT、LLMs、Fine-Tuning 與 Diffusion Model 圖像生成全解密</h1>
+        <p class="subtitle">詳細原理剖析、下一個詞預測機制 (Next-Token Prediction) 與 Diffusion Model 加噪去噪生成動態展示</p>
+        
+        <div class="metadata-box">
+            <div class="meta-badge">📅 <strong>最後更新時間:</strong> 2026-09-11 09:49:32 (UTC+8)</div>
+            <div class="meta-badge">🧠 <strong>使用模型:</strong> Gemini 3.6 Flash</div>
+            <div class="meta-badge">⚡ <strong>執行 Agent:</strong> Antigravity Agent</div>
+        </div>
+    </header>
+
+    <div class="content">
+        <!-- 第一單元：GPT, ChatGPT, LLMs, Fine-tuning -->
+        <section>
+            <h2>單元一：GPT、ChatGPT、大語言模型 (LLMs) 與 Fine-Tuning 核心剖析</h2>
+            
+            <p>在人工智慧的發展史上，從傳統的機器學習演進至目前的生成式 AI，最關鍵的突破莫過於 Transformer 架構的問世與大語言模型（LLMs）的崛起。以下針對四大核心概念進行詳細定義與底層原理剖析：</p>
+
+            <div class="grid-2">
+                <div class="concept-card">
+                    <div class="card-icon">⚡</div>
+                    <h4>1. GPT (Generative Pre-trained Transformer)</h4>
+                    <p><strong>核心定義：</strong> 由 OpenAI 提出的自迴歸（Autoregressive）語言模型架構，基於 Transformer 的 <em>Decoder-only</em> 解碼器模組。</p>
+                    <p><strong>三大關鍵元素：</strong></p>
+                    <ul>
+                        <li><strong>Generative (生成式)：</strong> 能根據輸入上下文，逐字/逐詞產生新的文本。</li>
+                        <li><strong>Pre-trained (預訓練)：</strong> 在未標註的海量網路文字庫上進行無監督學習，學習語言結構與世界知識。</li>
+                        <li><strong>Transformer：</strong> 採用 Self-Attention (自注意力機制) 解決長距離依賴問題。</li>
+                    </ul>
+                </div>
+
+                <div class="concept-card">
+                    <div class="card-icon">💬</div>
+                    <h4>2. ChatGPT (對話式優化 AI)</h4>
+                    <p><strong>核心定義：</strong> 以 GPT 基底模型為基礎，經過人類意圖對齊（Alignment）與對話優化後產生的對話產品。</p>
+                    <p><strong>關鍵差異：</strong> 未經對齊的 Base GPT 只會「接續文字」；而 ChatGPT 則能理解「指令與對話語境」，並具備安全拒絕與多輪對話能力。</p>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="concept-card">
+                    <div class="card-icon">🧠</div>
+                    <h4>3. LLMs (Large Language Models, 大語言模型)</h4>
+                    <p><strong>核心定義：</strong> 擁有數十億至數千億級別參數的巨型神經網路模型（如 GPT-4, Llama 3, Gemini, Claude）。</p>
+                    <p><strong>湧現能力 (Emergent Abilities)：</strong> 當模型參數規模與訓練資料量突破臨界值時，模型會突發性具備邏輯推理、跨語言翻譯與程式碼寫作能力。</p>
+                </div>
+
+                <div class="concept-card">
+                    <div class="card-icon">🎯</div>
+                    <h4>4. Fine-Tuning (微調技術)</h4>
+                    <p><strong>核心定義：</strong> 將預訓練好的通用大模型，利用特定領域數據集進行二次訓練，適應特定場景。</p>
+                    <p><strong>微調主流類型：</strong></p>
+                    <ul>
+                        <li><strong>SFT (Supervised Fine-Tuning)：</strong> 指令微調，學習高質量的問答對。</li>
+                        <li><strong>PEFT / LoRA (低秩適應)：</strong> 凍結原模型 99% 參數，僅訓練低秩矩陣，極大降低顯存門檻。</li>
+                        <li><strong>RLHF / DPO：</strong> 結合人類偏好反饋進行強化學習對齊。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第二單元：下一個詞預測機制 -->
+        <section>
+            <h2>單元二：GPT 如何實現「下一個詞預測 (Next-Token Prediction)」？</h2>
+            
+            <p>現代 GPT 模型表面上展現出驚人的對話能力，其底層核心數學本質極其純粹：<strong>「給定前面已出現的所有文字 Sequence，預測下一個最可能出現的 Token 的機率分布」</strong>。</p>
+
+            <div class="formula-box">
+                $$ P(x_1, x_2, \dots, x_T) = \prod_{t=1}^{T} P(x_t \mid x_1, x_2, \dots, x_{t-1}) $$
+            </div>
+
+            <p>經由 <strong>Tokenization (BPE)</strong> 轉為 Token ID，傳入包含 <strong>Positional Encoding</strong> 與 <strong>Causal Self-Attention</strong> 的 Transformer Decoder 層，最後通過 Softmax 輸出 Logits 概率：</p>
+
+            <div class="formula-box">
+                $$ P(y_i) = \frac{\exp(z_i / T)}{\sum_{j} \exp(z_j / T)} $$
+            </div>
+        </section>
+
+        <!-- 第三單元：動態互動展示 一 (GPT Generator) -->
+        <section>
+            <h2>單元三：🎮 互動展示 一 — GPT 下一個詞預測與採樣模擬器</h2>
+            
+            <div class="demo-playground">
+                <div class="demo-header">
+                    <div class="demo-title">
+                        <span>⚡ GPT Next-Token Generation Simulator</span>
+                        <span class="badge-live">LIVE DEMO</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>選擇預設提示詞 Prompt 上下文（或自由輸入）：</label>
+                    <div class="input-select-wrapper">
+                        <select id="presetSelect" onchange="loadPresetPrompt()">
+                            <option value="ai">人工智慧在未來產業發展將會...</option>
+                            <option value="food">台灣夜市最知名的美食小吃是...</option>
+                            <option value="code">寫一段 Python 程式碼用來處理...</option>
+                        </select>
+                        <input type="text" id="customInput" value="人工智慧在未來產業發展將會" oninput="updateSimulation()">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>詞符化狀態 (Tokenization Visualizer)：</label>
+                    <div class="tokens-display" id="tokensDisplay"></div>
+                </div>
+
+                <div class="params-grid">
+                    <div class="param-item">
+                        <div class="param-header">
+                            <span>Temperature (溫度 T)</span>
+                            <span class="param-value" id="valTemp">0.7</span>
+                        </div>
+                        <input type="range" id="sliderTemp" min="0.1" max="2.0" step="0.1" value="0.7" oninput="updateSimulation()">
+                    </div>
+
+                    <div class="param-item">
+                        <div class="param-header">
+                            <span>Top-K 篩選</span>
+                            <span class="param-value" id="valTopK">5</span>
+                        </div>
+                        <input type="range" id="sliderTopK" min="1" max="5" step="1" value="5" oninput="updateSimulation()">
+                    </div>
+
+                    <div class="param-item">
+                        <div class="param-header">
+                            <span>Top-P (Nucleus 核採樣)</span>
+                            <span class="param-value" id="valTopP">0.90</span>
+                        </div>
+                        <input type="range" id="sliderTopP" min="0.30" max="1.00" step="0.05" value="0.90" oninput="updateSimulation()">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>下一個 Token 預測概率分布 (Next-Token Probabilities)：</label>
+                    <div class="prob-bars-container" id="probContainer"></div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="stepGenerateToken()">👉 逐字產生 (Step 1 Token)</button>
+                    <button class="btn btn-secondary" id="btnAuto" onclick="toggleAutoGenerate()">▶️ 自動連續生成 (Auto Play)</button>
+                    <button class="btn btn-outline" onclick="resetGenerator()">🔄 重置 (Reset)</button>
+                </div>
+
+                <div class="control-group" style="margin-top: 20px;">
+                    <label>模組即時自迴歸生成結果 (Generated Output Window)：</label>
+                    <div class="generated-output-box" id="outputBox"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第四單元：Diffusion Model 訓練與生成原理 -->
+        <section>
+            <h2>單元四：🎨 擴散模型 (Diffusion Models) 訓練與生成圖像原理深度解析</h2>
+            
+            <p>與 GPT 這種「自迴歸文字生成模型」不同，<strong>擴散模型 (Diffusion Models, 如 DDPM, Stable Diffusion, Flux, Midjourney)</strong> 是當前圖像、影片生成領域的絕對霸主。其核心物理與數學直覺來自於熱力學的分子擴散現象。</p>
+
+            <div class="callout callout-purple">
+                <strong>💡 擴散模型的核心直覺：毀滅與創新的對偶性</strong><br>
+                1. <strong>前向破壞 (Forward Process)：</strong> 像是一滴墨水滴入水中逐漸擴散，把一張清晰的照片一步步加入高斯雜訊，直到完全變成看不出任何結構的純雪花噪音。<br>
+                2. <strong>反向創造 (Reverse Process)：</strong> 訓練神經網路（U-Net）學會「時光倒流」，學會如何在任意雜訊狀態下預測出剛才加進去的噪聲，從純白噪聲中一步步去噪，還原並創作出震撼的圖像！
+            </div>
+
+            <h3>1. 前向擴散過程 (Forward Process / Noise Addition)</h3>
+            <p>給定一張原始真實圖像 \(x_0\)，前向過程在時間步 \(t = 1, 2, \dots, T\)（通常 \(T = 1000\)）中，按照預先設定的噪聲排程（Beta Schedule, \(\beta_t\)）逐步加入高斯噪聲：</p>
+
+            <div class="formula-box">
+                $$ q(x_t \mid x_{t-1}) = \mathcal{N}\left(x_t; \sqrt{1-\beta_t} x_{t-1}, \beta_t \mathbf{I}\right) $$
+            </div>
+
+            <p><strong>重參數化技巧 (Reparameterization Trick)：</strong> 透過數學導引，我們不需要真的做 1000 次加噪疊加，可以直接一步從原圖 \(x_0\) 計算出任意時間步 \(t\) 的帶噪圖片 \(x_t\)：</p>
+
+            <div class="formula-box">
+                $$ x_t = \sqrt{\bar{\alpha}_t} x_0 + \sqrt{1 - \bar{\alpha}_t} \boldsymbol{\epsilon}, \quad \text{where } \boldsymbol{\epsilon} \sim \mathcal{N}(0, \mathbf{I}) $$
+            </div>
+
+            <h3>2. 反向去噪與神經網路預測 (Reverse Denoising Process & U-Net)</h3>
+            <p>反向過程 \(p_\theta(x_{t-1} \mid x_t)\) 是生成圖像的核心。模型無法直接預測整張照片，因此訓練目標被簡化為：<strong>「讓 U-Net 神經網路在給定帶噪圖片 \(x_t\) 與時間步 \(t\) 下，精準預測出當時加進去的噪聲 \(\boldsymbol{\epsilon}_\theta(x_t, t)\)」</strong>。</p>
+
+            <div class="pipeline-flow">
+                <div class="flow-step">帶噪圖片 \(x_t\) + 時間步 \(t\)</div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-step" style="background:#f3e8ff; border-color:#c084fc;">U-Net / Transformer<br>(預測噪聲模型)</div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-step">預測噪聲 \(\boldsymbol{\epsilon}_\theta\)</div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-step">減去噪聲得到一步去噪圖 \(x_{t-1}\)</div>
+            </div>
+
+            <h3>3. 擴散模型的訓練損失函數 (Training Loss Function)</h3>
+            <p>擴散模型的訓練演算法極其簡潔且高效，損失函數即為預測噪聲與實際高斯噪聲之間的<strong>均方誤差 (MSE Loss)</strong>：</p>
+
+            <div class="formula-box">
+                $$ \mathcal{L}_{\text{simple}}(\theta) = \mathbb{E}_{t, x_0, \boldsymbol{\epsilon}} \left[ \left\| \boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta\left(\sqrt{\bar{\alpha}_t} x_0 + \sqrt{1 - \bar{\alpha}_t} \boldsymbol{\epsilon}, \; t\right) \right\|^2 \right] $$
+            </div>
+
+            <p><strong>訓練 4 大步驟：</strong></p>
+            <ol>
+                <li>從訓練集中隨機挑選一張高清圖片 \(x_0\)。</li>
+                <li>隨機抽取一個時間步 \(t \in [1, T]\) 與高斯噪聲向量 \(\boldsymbol{\epsilon}\)。</li>
+                <li>利用公式計算出帶噪圖片 \(x_t\)。</li>
+                <li>將 \(x_t\) 與 \(t\) 餵入 U-Net，計算預測噪聲與真實噪聲 \(\boldsymbol{\epsilon}\) 的 MSE Loss 並更新 U-Net 權重。</li>
+            </ol>
+
+            <h3>4. 文字控制生成：Classifier-Free Guidance (CFG)</h3>
+            <p>為了讓文字 Prompt（如「太空中的柴犬」）控制圖像生成，將文字經由 <strong>CLIP Text Encoder</strong> 轉為向量條件 \(c\)，經由 Cross-Attention 注入 U-Net。在推論時利用 <strong>CFG 引導係數 (\(s\))</strong> 強調 Prompt 的影響：</p>
+
+            <div class="formula-box">
+                $$ \tilde{\boldsymbol{\epsilon}}_\theta(x_t, c) = \boldsymbol{\epsilon}_\theta(x_t, \emptyset) + s \cdot \left( \boldsymbol{\epsilon}_\theta(x_t, c) - \boldsymbol{\epsilon}_\theta(x_t, \emptyset) \right) $$
+            </div>
+
+            <h3>5. Latent Diffusion Models (LDM / Stable Diffusion)</h3>
+            <p>直接在高清像素空間（如 \(1024 \times 1024 \times 3\)）做擴散計算極慢。Stable Diffusion 採用 <strong>VAE (變分自編碼器)</strong> 將圖片壓縮至隱空間 (Latent Space, 例如 \(64 \times 64 \times 4\))，在 Latent 空間進行加噪與去噪，計算速度提升幾十倍！</p>
+        </section>
+
+        <!-- 第五單元：動態互動展示 二 (Diffusion Simulator) -->
+        <section>
+            <h2>單元五：🎨 互動展示 二 — 擴散模型前向加噪與反向去噪生成模擬器</h2>
+            
+            <div class="demo-playground diffusion-theme">
+                <div class="demo-header">
+                    <div class="demo-title">
+                        <span style="color: var(--accent-purple);">✨ Diffusion Model Dynamic Visualizer</span>
+                        <span class="badge-live" style="background: var(--accent-purple);">REALTIME CANVAS</span>
+                    </div>
+                    <div style="font-size: 0.9rem; color: #64748b;">實時像素級高斯加噪與 U-Net 逐步去噪動畫</div>
+                </div>
+
+                <!-- 選擇圖片主題與文字 Prompt -->
+                <div class="control-group">
+                    <label>1. 選擇條件 Prompt（控制生成目標風格）：</label>
+                    <div class="input-select-wrapper">
+                        <select id="diffPromptSelect" onchange="initDiffusionCanvas()">
+                            <option value="cyberpunk">Cyberpunk Neon City (賽博朋克霓虹都市)</option>
+                            <option value="shiba">Cute Astronaut Shiba Inu (太空人柴犬)</option>
+                            <option value="nebula">Cosmic Galaxy & Starlight (浩瀚星雲宇宙)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Canvas 圖層矩陣 -->
+                <div class="diffusion-canvas-layout">
+                    <div class="canvas-card">
+                        <h5>原始圖片 / 去噪目標 \(x_0\)</h5>
+                        <canvas id="canvasX0" width="200" height="200"></canvas>
+                    </div>
+
+                    <div class="canvas-card" style="border-color: var(--accent-purple); background: #f3e8ff;">
+                        <h5 style="color: var(--accent-purple); font-weight:700;">當前擴散狀態 \(x_t\) (Timestep \(t\))</h5>
+                        <canvas id="canvasXt" width="200" height="200"></canvas>
+                    </div>
+
+                    <div class="canvas-card">
+                        <h5>U-Net 預測噪聲圖層 \(\boldsymbol{\epsilon}_\theta\)</h5>
+                        <canvas id="canvasNoise" width="200" height="200"></canvas>
+                    </div>
+                </div>
+
+                <!-- 擴散步數進度條 -->
+                <div style="margin: 15px 0;">
+                    <div style="display:flex; justify-content:space-between; font-weight:600; font-size:0.9rem; color:#475569;">
+                        <span>時間步 Timestep \(t\): <strong id="lblTimestep" style="color:var(--accent-purple);">0</strong> (純淨影像)</span>
+                        <span>\(t = 1000\) (純高斯雜訊)</span>
+                    </div>
+                    <div class="step-progress-bar">
+                        <div class="step-progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+
+                <!-- 超參數控制拉桿 -->
+                <div class="params-grid">
+                    <div class="param-item">
+                        <div class="param-header">
+                            <span>前向加噪時間步 Slider (\(t\))</span>
+                            <span class="param-value purple" id="valForwardT">t = 0</span>
+                        </div>
+                        <input type="range" class="purple" id="sliderForwardT" min="0" max="1000" step="10" value="0" oninput="onForwardSliderChange()">
+                        <div style="font-size:0.75rem; color:#64748b;">手動拖動觀察圖像加噪破壞過程</div>
+                    </div>
+
+                    <div class="param-item">
+                        <div class="param-header">
+                            <span>CFG Scale 引導係數 (\(s\))</span>
+                            <span class="param-value purple" id="valCFG">7.5</span>
+                        </div>
+                        <input type="range" class="purple" id="sliderCFG" min="1.0" max="20.0" step="0.5" value="7.5" oninput="updateCFGLabel()">
+                        <div style="font-size:0.75rem; color:#64748b;">高 CFG 強化符合 Prompt，但過高易過飽和</div>
+                    </div>
+                </div>
+
+                <!-- 控制按鈕 -->
+                <div class="btn-group">
+                    <button class="btn btn-purple" id="btnStartDenoise" onclick="startReverseDenoising()">🚀 開始反向去噪生成 (Reverse Denoising)</button>
+                    <button class="btn btn-outline" onclick="initDiffusionCanvas()">🔄 重置 (Reset)</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第六單元：進階比較與演進 -->
+        <section>
+            <h2>單元六：LLMs (自迴歸) vs Diffusion (擴散模型) 核心差異比較</h2>
+            
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>比較維度</th>
+                            <th>LLMs / GPT (自迴歸模型)</th>
+                            <th>Diffusion Models (擴散模型)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>主要應用領域</strong></td>
+                            <td>文字生成、對話、程式碼寫作、邏輯推理</td>
+                            <td>圖像生成、影片合成、語音合成、3D 資材生成</td>
+                        </tr>
+                        <tr>
+                            <td><strong>生成機制</strong></td>
+                            <td><strong>Autoregressive (自迴歸)：</strong> 逐個 Token 依照機率從左至右生成</td>
+                            <td><strong>Iterative Denoising (迭代去噪)：</strong> 從全局雜訊開始，同時對所有像素進行多輪去噪還原</td>
+                        </tr>
+                        <tr>
+                            <td><strong>訓練核心目標</strong></td>
+                            <td>預測下一個 Token 的交叉熵損失 (Cross-Entropy Loss)</td>
+                            <td>預測高斯噪聲向量的均方誤差 (MSE Noise Loss)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>條件引導方式</strong></td>
+                            <td>In-Context Prompt (前置上下文 Prompt)</td>
+                            <td>CLIP Cross-Attention + CFG (Classifier-Free Guidance)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>最新演進趨勢</strong></td>
+                            <td>Reasoning LLMs (思考鏈 o1/R1), MoE 混合專家架構</td>
+                            <td>DiT (Diffusion Transformer), Rectified Flow (Flux.1 / SD3)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 第七單元：心得與總結 -->
+        <section>
+            <h2>單元七：課後學習心得與總結</h2>
+            <ol>
+                <li><strong>AI 生成技術的兩大支柱：</strong> 文字的世界由自迴歸的 Next-Token Prediction 統治，而視覺與多模態的世界則由迭代去噪的 Diffusion Model 霸佔。理解兩者本質數學模型的差異，是掌握現代 AI 的鑰匙。</li>
+                <li><strong>高維噪聲中的秩序：</strong> 擴散模型展示了如何從完全無序的白噪聲（Entropy 最高狀態）中，透過 U-Net 逐步提取特徵構造出高品質藝術作品，完美體現了深度學習的擬合能力。</li>
+                <li><strong>實務應用的跨界融合：</strong> 現代頂級生成系統（如 Flux, Dall-E 3, Sora）正將 LLM（理解複雜 Prompt 指令）與 DiT/Diffusion（生成高解析度圖像影片）深度的結合在一起。</li>
+            </ol>
+        </section>
+    </div>
+
+    <!-- Footer & Prompt Archive -->
+    <footer>
+        <div class="archive-section">
+            <h3>📝 提示詞歷史與變更記錄 (Prompt Archive)</h3>
+            
+            <div class="archive-entry">
+                <div style="font-weight: 700; color: #38bdf8; margin-bottom: 6px;">
+                    🔹 [2026-09-11 09:46:07] [Antigravity Agent / Gemini 3.6 Flash] 第一次創建紀錄
+                </div>
+                <div>- <strong>模型/Agent:</strong> Gemini 3.6 Flash / Antigravity Agent</div>
+                <div>- <strong>Prompt 原文:</strong></div>
+                <pre><code>今天上課介紹了gpt, chatgpt,大語言模型與fine-tuninn ，以及目前gpt<ctrl42>是如何讓文字可以預設下一個詞的概念，將以上重點整理成詳細的原理說明與動態展示範例 存成ai_0910.html</code></pre>
+                <div style="margin-top: 8px;">
+                    - <strong>變更摘要:</strong> 建立詳細的 HTML 課程筆記檔案 `ai_0910.html`。涵蓋 GPT、ChatGPT、LLMs、Fine-Tuning (SFT/LoRA/RLHF) 核心觀念、Next-Token Prediction 數學原理與採樣超參數對比，並實作具備 Tokenizer 視覺化與機率條形圖的動態展示模擬器。
+                </div>
+            </div>
+
+            <div class="archive-entry" style="margin-top: 20px; border-color: #a78bfa;">
+                <div style="font-weight: 700; color: #c4b5fd; margin-bottom: 6px;">
+                    🔹 [2026-09-11 09:47:55] [Antigravity Agent / Gemini 3.6 Flash] 第二次擴充紀錄
+                </div>
+                <div>- <strong>模型/Agent:</strong> Gemini 3.6 Flash / Antigravity Agent</div>
+                <div>- <strong>Prompt 原文:</strong></div>
+                <pre><code>另外還有關於diffusion model的訓練過程與生成圖像原理，需要更詳細的解釋與動態展示訓練與生成過程</code></pre>
+                <div style="margin-top: 8px;">
+                    - <strong>變更摘要:</strong> 於 `ai_0910.html` 增補 Diffusion Model (擴散模型) 專題章節。包含前向加噪、反向 U-Net 噪聲預測、均方誤差 Loss 訓練流程、CFG 與 Latent Diffusion 原理，並新增 HTML5 Canvas 動態模擬器。
+                </div>
+            </div>
+
+            <div class="archive-entry" style="margin-top: 20px; border-color: #38bdf8;">
+                <div style="font-weight: 700; color: #38bdf8; margin-bottom: 6px;">
+                    🔹 [2026-09-11 09:49:32] [Antigravity Agent / Gemini 3.6 Flash] 第三次修復紀錄
+                </div>
+                <div>- <strong>模型/Agent:</strong> Gemini 3.6 Flash / Antigravity Agent</div>
+                <div>- <strong>Prompt 原文:</strong></div>
+                <pre><code>檢查latex語法 目前無法正卻顯示</code></pre>
+                <div style="margin-top: 8px;">
+                    - <strong>變更摘要:</strong> 修復頁面中的 LaTeX 數學公式渲染機制。引入 KaTeX 數學函式庫 CDN，修正包含自迴歸條件機率 \(P(x_t|x_{<t})\)、Softmax 公式、前向加噪高斯分布 \(q(x_t|x_{t-1})\)、重參數化公式 \(x_t = \sqrt{\bar{\alpha}_t}x_0 + \sqrt{1-\bar{\alpha}_t}\epsilon\)、U-Net MSE 損失函數 \(\mathcal{L}_{\text{simple}}(\theta)\) 及 CFG 公式之語法標記，並加上離線備用 (Fallback) 排版渲染 logic。
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px; font-size: 0.85rem; color: #64748b;">
+            D:\CLASS_NOTE\ai_0910.html • 課程總結與多模態動態模擬筆記
+        </div>
+    </footer>
+</div>
+
+<!-- Dynamic Interactive JavaScript Simulation Logic -->
+<script>
+    // KaTeX Auto-render initialization with fallback math renderer
+    document.addEventListener("DOMContentLoaded", function() {
+        if (typeof renderMathInElement === 'function') {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '\\[', right: '\\]', display: true},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '$', right: '$', display: false}
+                ],
+                throwOnError: false
+            });
+        }
+    });
+
+    // -------------------------------------------------------------
+    // PART 1: GPT Next-Token Simulator Logic
+    // -------------------------------------------------------------
+    const database = {
+        "ai": {
+            prompt: "人工智慧在未來產業發展將會",
+            tokens: ["人工", "智慧", "在", "未來", "產業", "發展", "將會"],
+            candidates: [
+                { token: "帶來", baseScore: 4.8 },
+                { token: "改變", baseScore: 4.2 },
+                { token: "引領", baseScore: 3.5 },
+                { token: "成為", baseScore: 2.9 },
+                { token: "創造", baseScore: 2.1 }
+            ],
+            autoChain: ["帶來", "巨大的", "產業", "變革", "與", "創新", "機遇", "。"]
+        },
+        "food": {
+            prompt: "台灣夜市最知名的美食小吃是",
+            tokens: ["台灣", "夜市", "最", "知名", "的", "美食", "小吃", "是"],
+            candidates: [
+                { token: "珍珠奶茶", baseScore: 4.9 },
+                { token: "雞排", baseScore: 4.6 },
+                { token: "臭豆腐", baseScore: 4.1 },
+                { token: "滷肉飯", baseScore: 3.4 },
+                { token: "蚵仔煎", baseScore: 2.8 }
+            ],
+            autoChain: ["珍珠奶茶", "和", "香雞排", "，", "吸引", "無數", "饕客", "。"]
+        },
+        "code": {
+            prompt: "寫一段 Python 程式碼用來處理",
+            tokens: ["寫一段", " Python", " 程式碼", "用來", "處理"],
+            candidates: [
+                { token: "數據", baseScore: 4.7 },
+                { token: "文件", baseScore: 4.1 },
+                { token: "圖像", baseScore: 3.6 },
+                { token: " API", baseScore: 3.2 },
+                { token: "文字", baseScore: 2.7 }
+            ],
+            autoChain: ["數據", "分析", "並", "繪製", "視覺化", "圖表", "。"]
+        }
+    };
+
+    const colors = ["#ef4444", "#f97316", "#8b5cf6", "#06b6d4", "#10b981", "#6366f1", "#ec4899"];
+    let currentChainIndex = 0;
+    let autoTimer = null;
+
+    function loadPresetPrompt() {
+        const key = document.getElementById("presetSelect").value;
+        const data = database[key];
+        document.getElementById("customInput").value = data.prompt;
+        currentChainIndex = 0;
+        updateSimulation();
+    }
+
+    function updateSimulation() {
+        const text = document.getElementById("customInput").value;
+        const temp = parseFloat(document.getElementById("sliderTemp").value);
+        const topK = parseInt(document.getElementById("sliderTopK").value);
+        const topP = parseFloat(document.getElementById("sliderTopP").value);
+
+        document.getElementById("valTemp").innerText = temp.toFixed(1);
+        document.getElementById("valTopK").innerText = topK;
+        document.getElementById("valTopP").innerText = topP.toFixed(2);
+
+        renderTokens(text);
+
+        let activeCandidates = getCandidatesForText(text);
+        let expScores = activeCandidates.map(c => Math.exp(c.baseScore / temp));
+        let sumExp = expScores.reduce((a, b) => a + b, 0);
+        let probs = expScores.map(score => score / sumExp);
+
+        let mapped = activeCandidates.map((c, i) => ({ token: c.token, prob: probs[i] }));
+        mapped.sort((a, b) => b.prob - a.prob);
+
+        let cumProb = 0;
+        let finalDisplay = mapped.map((item, index) => {
+            cumProb += item.prob;
+            let isFiltered = false;
+            let filterReason = "";
+            if (index >= topK) { isFiltered = true; filterReason = "Top-K 濾除"; }
+            else if (cumProb - item.prob >= topP) { isFiltered = true; filterReason = "Top-P 濾除"; }
+            return { ...item, isFiltered, filterReason };
+        });
+
+        renderProbBars(finalDisplay);
+        document.getElementById("outputBox").innerHTML = escapeHtml(text);
+    }
+
+    function renderTokens(text) {
+        const display = document.getElementById("tokensDisplay");
+        display.innerHTML = "";
+        let tokenList = [];
+        for (let i = 0; i < text.length; i += 2) tokenList.push(text.substr(i, 2));
+
+        tokenList.forEach((tok, idx) => {
+            const badge = document.createElement("div");
+            badge.className = "token-badge";
+            badge.style.backgroundColor = colors[idx % colors.length];
+            let hash = 0;
+            for (let c = 0; c < tok.length; c++) hash = (hash * 31 + tok.charCodeAt(c)) % 9999;
+            badge.innerHTML = `<span>${escapeHtml(tok)}</span><span class="token-id">ID: ${hash + 1000}</span>`;
+            display.appendChild(badge);
+        });
+    }
+
+    function getCandidatesForText(text) {
+        for (let k in database) {
+            if (text.startsWith(database[k].prompt.substring(0, 4))) return database[k].candidates;
+        }
+        return [
+            { token: "發展", baseScore: 4.5 },
+            { token: "應用", baseScore: 4.1 },
+            { token: "可能性", baseScore: 3.6 },
+            { token: "影響", baseScore: 3.0 }
+        ];
+    }
+
+    function renderProbBars(candidates) {
+        const container = document.getElementById("probContainer");
+        container.innerHTML = "";
+        candidates.forEach(item => {
+            const row = document.createElement("div");
+            row.className = "prob-row";
+            const percent = (item.prob * 100).toFixed(1);
+            row.innerHTML = `
+                <div class="prob-label">${escapeHtml(item.token)}</div>
+                <div class="prob-bar-wrapper">
+                    <div class="prob-bar-fill ${item.isFiltered ? 'filtered' : ''}" style="width: ${percent}%;"></div>
+                </div>
+                <div class="prob-percent">${percent}% ${item.isFiltered ? `<span class="tag-filtered">${item.filterReason}</span>` : ''}</div>
+            `;
+            container.appendChild(row);
+        });
+    }
+
+    function stepGenerateToken() {
+        const key = document.getElementById("presetSelect").value;
+        const data = database[key];
+        const currentText = document.getElementById("customInput").value;
+
+        if (currentChainIndex < data.autoChain.length) {
+            const nextTok = data.autoChain[currentChainIndex++];
+            document.getElementById("customInput").value = currentText + nextTok;
+            updateSimulation();
+            document.getElementById("outputBox").innerHTML = escapeHtml(currentText) + `<span class="new-token-highlight">${escapeHtml(nextTok)}</span>`;
+        } else {
+            alert("已完成連續演示！");
+            stopAutoPlay();
+        }
+    }
+
+    function toggleAutoGenerate() {
+        const btn = document.getElementById("btnAuto");
+        if (autoTimer) { stopAutoPlay(); }
+        else {
+            btn.innerHTML = "⏸️ 暫停生成";
+            btn.style.background = "#e11d48";
+            autoTimer = setInterval(stepGenerateToken, 900);
+        }
+    }
+
+    function stopAutoPlay() {
+        if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+        const btn = document.getElementById("btnAuto");
+        btn.innerHTML = "▶️ 自動連續生成 (Auto Play)";
+        btn.style.background = "#64748b";
+    }
+
+    function resetGenerator() {
+        stopAutoPlay();
+        loadPresetPrompt();
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // -------------------------------------------------------------
+    // PART 2: Diffusion Model Canvas Simulator Logic
+    // -------------------------------------------------------------
+    let ctxX0, ctxXt, ctxNoise;
+    let baseImageData = null;
+    let denoiseTimer = null;
+    let currentTimestep = 0;
+
+    function initDiffusionCanvas() {
+        if (denoiseTimer) clearInterval(denoiseTimer);
+
+        const cX0 = document.getElementById("canvasX0");
+        const cXt = document.getElementById("canvasXt");
+        const cNoise = document.getElementById("canvasNoise");
+
+        ctxX0 = cX0.getContext("2d");
+        ctxXt = cXt.getContext("2d");
+        ctxNoise = cNoise.getContext("2d");
+
+        drawBasePattern();
+        document.getElementById("sliderForwardT").value = 0;
+        onForwardSliderChange();
+    }
+
+    function drawBasePattern() {
+        const theme = document.getElementById("diffPromptSelect").value;
+        const w = 200, h = 200;
+        ctxX0.clearRect(0, 0, w, h);
+
+        if (theme === "cyberpunk") {
+            let grad = ctxX0.createLinearGradient(0, 0, 0, h);
+            grad.addColorStop(0, "#0f172a");
+            grad.addColorStop(0.5, "#4c1d95");
+            grad.addColorStop(1, "#db2777");
+            ctxX0.fillStyle = grad;
+            ctxX0.fillRect(0, 0, w, h);
+
+            ctxX0.beginPath();
+            ctxX0.arc(w/2, h/2, 45, 0, Math.PI * 2);
+            ctxX0.fillStyle = "#facc15";
+            ctxX0.shadowColor = "#f43f5e";
+            ctxX0.shadowBlur = 20;
+            ctxX0.fill();
+            ctxX0.shadowBlur = 0;
+
+            ctxX0.strokeStyle = "#38bdf8";
+            ctxX0.lineWidth = 2;
+            for (let i = 10; i < w; i += 25) {
+                ctxX0.beginPath(); ctxX0.moveTo(i, h/2); ctxX0.lineTo(i, h); ctxX0.stroke();
+            }
+        } else if (theme === "shiba") {
+            ctxX0.fillStyle = "#1e1b4b";
+            ctxX0.fillRect(0, 0, w, h);
+
+            ctxX0.beginPath(); ctxX0.arc(w/2, h/2 + 10, 50, 0, Math.PI * 2);
+            ctxX0.fillStyle = "#f97316"; ctxX0.fill();
+
+            ctxX0.beginPath(); ctxX0.arc(w/2, h/2, 65, 0, Math.PI * 2);
+            ctxX0.strokeStyle = "#93c5fd"; ctxX0.lineWidth = 6; ctxX0.stroke();
+
+            ctxX0.fillStyle = "#ea580c";
+            ctxX0.beginPath(); ctxX0.moveTo(60, 60); ctxX0.lineTo(85, 90); ctxX0.lineTo(45, 95); ctxX0.fill();
+            ctxX0.beginPath(); ctxX0.moveTo(140, 60); ctxX0.lineTo(155, 95); ctxX0.lineTo(115, 90); ctxX0.fill();
+        } else {
+            let grad = ctxX0.createRadialGradient(w/2, h/2, 10, w/2, h/2, 100);
+            grad.addColorStop(0, "#c084fc");
+            grad.addColorStop(0.5, "#3b82f6");
+            grad.addColorStop(1, "#090d16");
+            ctxX0.fillStyle = grad;
+            ctxX0.fillRect(0, 0, w, h);
+
+            ctxX0.fillStyle = "#ffffff";
+            for (let i = 0; i < 40; i++) {
+                let rx = Math.random() * w, ry = Math.random() * h;
+                ctxX0.fillRect(rx, ry, 2, 2);
+            }
+        }
+
+        baseImageData = ctxX0.getImageData(0, 0, w, h);
+    }
+
+    function onForwardSliderChange() {
+        const t = parseInt(document.getElementById("sliderForwardT").value);
+        currentTimestep = t;
+        renderDiffusionAtStep(t);
+    }
+
+    function updateCFGLabel() {
+        document.getElementById("valCFG").innerText = parseFloat(document.getElementById("sliderCFG").value).toFixed(1);
+    }
+
+    function renderDiffusionAtStep(t) {
+        document.getElementById("lblTimestep").innerText = t;
+        document.getElementById("valForwardT").innerText = `t = ${t}`;
+        document.getElementById("progressFill").style.width = `${(t / 1000) * 100}%`;
+
+        if (!baseImageData) return;
+
+        const w = 200, h = 200;
+        const noisyImg = ctxXt.createImageData(w, h);
+        const noiseImg = ctxNoise.createImageData(w, h);
+
+        const alphaBar = Math.cos((t / 1000) * (Math.PI / 2));
+        const signalWeight = Math.sqrt(alphaBar);
+        const noiseWeight = Math.sqrt(1 - alphaBar);
+
+        const origData = baseImageData.data;
+        const noisyData = noisyImg.data;
+        const noiseData = noiseImg.data;
+
+        for (let i = 0; i < origData.length; i += 4) {
+            let rNoise = (Math.random() - 0.5) * 510;
+            let gNoise = (Math.random() - 0.5) * 510;
+            let bNoise = (Math.random() - 0.5) * 510;
+
+            noiseData[i]     = Math.min(255, Math.max(0, 128 + rNoise * 0.5));
+            noiseData[i + 1] = Math.min(255, Math.max(0, 128 + gNoise * 0.5));
+            noiseData[i + 2] = Math.min(255, Math.max(0, 128 + bNoise * 0.5));
+            noiseData[i + 3] = 255;
+
+            noisyData[i]     = Math.min(255, Math.max(0, origData[i] * signalWeight + rNoise * noiseWeight));
+            noisyData[i + 1] = Math.min(255, Math.max(0, origData[i + 1] * signalWeight + gNoise * noiseWeight));
+            noisyData[i + 2] = Math.min(255, Math.max(0, origData[i + 2] * signalWeight + bNoise * noiseWeight));
+            noisyData[i + 3] = 255;
+        }
+
+        ctxXt.putImageData(noisyImg, 0, 0);
+        ctxNoise.putImageData(noiseImg, 0, 0);
+    }
+
+    function startReverseDenoising() {
+        if (denoiseTimer) clearInterval(denoiseTimer);
+
+        let t = 1000;
+        document.getElementById("sliderForwardT").value = t;
+
+        denoiseTimer = setInterval(() => {
+            t -= 25;
+            if (t <= 0) {
+                t = 0;
+                clearInterval(denoiseTimer);
+                denoiseTimer = null;
+            }
+            document.getElementById("sliderForwardT").value = t;
+            renderDiffusionAtStep(t);
+        }, 50);
+    }
+
+    window.onload = function() {
+        updateSimulation();
+        initDiffusionCanvas();
+    };
+</script>
+
+</body>
+</html>

@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LED 限流電阻與多燈動態光度模擬報告 | LaTeX EE-0910</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- MathJax 3 CDN for Full LaTeX Math Rendering -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: {
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        latex: {
+                            bg: '#fcfcfc',
+                            card: '#ffffff',
+                            navy: '#003366',
+                            maroon: '#800000',
+                            dark: '#111111',
+                            subtle: '#555555',
+                            border: '#d0d0d0',
+                            accent: '#005588'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Times+New+Roman&display=swap');
+
+        body {
+            font-family: "Times New Roman", "Noto Serif TC", "Songti TC", "Cambria", serif;
+            background-color: #f4f4f6;
+            color: #111111;
+            line-height: 1.7;
+        }
+
+        .latex-paper {
+            background-color: #ffffff;
+            border: 1px solid #dcdcdc;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.07);
+        }
+
+        .latex-h1 {
+            font-family: "Times New Roman", "Noto Serif TC", serif;
+            font-weight: 700;
+            color: #003366;
+            letter-spacing: -0.01em;
+        }
+
+        .latex-h2 {
+            font-family: "Times New Roman", "Noto Serif TC", serif;
+            font-weight: 700;
+            color: #003366;
+            border-bottom: 2px solid #003366;
+            padding-bottom: 0.4rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .latex-h3 {
+            font-family: "Times New Roman", "Noto Serif TC", serif;
+            font-weight: 700;
+            color: #800000;
+        }
+
+        .latex-box {
+            background-color: #fcfcfc;
+            border: 1px solid #dcdcdc;
+            border-left: 4px solid #003366;
+        }
+
+        .latex-alert-box {
+            background-color: #fff9f9;
+            border: 1px solid #f0cdcd;
+            border-left: 4px solid #800000;
+        }
+
+        .latex-success-box {
+            background-color: #f6fff9;
+            border: 1px solid #ccecd6;
+            border-left: 4px solid #006633;
+        }
+
+        .formula-card {
+            background-color: #f8f9fa;
+            border: 1px dashed #b0b0b0;
+            font-family: "Cambria Math", "Times New Roman", serif;
+        }
+
+        /* LED Glow Dynamic Animations */
+        @keyframes pulse-overdrive {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.15); opacity: 1.0; }
+        }
+        .animate-overdrive {
+            animation: pulse-overdrive 0.6s infinite ease-in-out;
+        }
+
+        /* Print / PDF Export Styles */
+        @media print {
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                padding: 0 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .latex-paper {
+                box-shadow: none !important;
+                border: none !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+            .avoid-break {
+                page-break-inside: avoid;
+            }
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+    </style>
+</head>
+<body class="py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-5xl mx-auto space-y-8 latex-paper rounded-none sm:rounded-lg p-6 sm:p-12 my-4">
+        
+        <!-- Document Top Bar / PDF Export Controls (Hidden in Print) -->
+        <div class="no-print flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 border-b border-slate-200 gap-3">
+            <div class="inline-flex items-center space-x-2 text-xs font-mono text-slate-600">
+                <span class="px-2 py-0.5 bg-slate-100 text-slate-800 border border-slate-300 font-bold">LaTeX Engineering & Prompt Monograph</span>
+                <span>•</span>
+                <span>Document ID: EE-0910-PROMPTLOG</span>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button onclick="window.print()" class="px-5 py-2.5 bg-[#003366] hover:bg-[#002244] text-white text-sm font-semibold rounded shadow transition flex items-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                    <span>📄 輸出完整 PDF 報告</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Academic Document Title & Header -->
+        <header class="text-center space-y-3 pb-6 border-b-2 border-black">
+            <div class="text-xs uppercase tracking-widest text-slate-500 font-mono">Department of Electrical Engineering • Monograph & Prompt Archive</div>
+            <h1 class="text-3xl sm:text-4xl latex-h1">
+                LED 限流電阻與多燈拓撲動態發光強度分析報告
+            </h1>
+            <div class="text-sm italic text-slate-700">
+                Author: Antigravity Engineering & Photometrics Lab &nbsp;•&nbsp; Date: September 10, 2026 &nbsp;•&nbsp; Revision: v9.0 (Full Prompt Archive)
+            </div>
+            <div class="text-xs text-slate-600 font-mono space-x-2">
+                <span>最後更新時間: <span class="text-[#003366] font-bold">2026-09-10 14:57:10 (UTC+8)</span></span>
+                <span>•</span>
+                <span>使用模型: <span class="text-[#800000] font-bold">Gemini 3.6 Flash</span></span>
+                <span>•</span>
+                <span>執行 Agent: <span class="text-[#006633] font-bold">Antigravity Agent</span></span>
+                <span>•</span>
+                <span>Math Engine: <span class="font-bold">MathJax 3.2 Tex</span></span>
+            </div>
+        </header>
+
+        <!-- Executive Summary Box -->
+        <section class="latex-box p-6 space-y-3">
+            <h2 class="text-base font-bold uppercase tracking-wider text-[#003366] font-mono border-b border-slate-200 pb-1">
+                Executive Summary (執行摘要與核心結論)
+            </h2>
+            <p class="text-sm text-slate-800 leading-relaxed">
+                本報告針對以 2 顆 AA 電池（串聯標稱電壓 $V_{CC} = 3.0\text{V}$）驅動紅色發光二極體（Red LED，正向導通壓降 $V_F \approx 2.0\text{V}$）之電路系統進行深入的半導體物理分析與電路拓撲推導。重點結論摘要如下：
+            </p>
+            <ol class="list-decimal list-inside text-sm text-slate-800 space-y-2 pl-2">
+                <li>
+                    <strong>單顆紅光 LED 之最佳限流阻值</strong>：
+                    以目標電流 $I_F = 15\text{mA}$ 計算，理論電阻為 $R = \frac{3.0\text{V} - 2.0\text{V}}{0.015\text{A}} = 66.67\,\Omega$。最佳選用 E24 標準電阻 $\mathbf{68\,\Omega}$（實測電流 $14.71\text{mA}$）或 $\mathbf{100\,\Omega}$（省電模式，電流 $10\text{mA}$）。
+                </li>
+                <li>
+                    <strong>2 顆紅光 LED 串聯模型 ($\text{MODEL-LED-SER}$) 之物理限制</strong>：
+                    串聯要求總壓降 $V_{\text{total}} = 2 \times 2.0\text{V} = 4.0\text{V}$。由於 2 顆 AA 電池僅提供 $3.0\text{V}$，無法克服半導體導通電位障壁，$I = 0\text{mA}$，<span class="text-[#800000] font-bold">完全無法點亮</span>。
+                </li>
+                <li>
+                    <strong>2 顆紅光 LED 獨立並聯模型 ($\text{MODEL-LED-PAR-IND}$) 之工程最佳解</strong>：
+                    採用「獨立限流電阻並聯」，各支路跨接 $3.0\text{V}$ 電壓，每條支路個別串聯 $68\,\Omega$ 限流電阻。總輸出電流 $I_{\text{total}} = 29.42\text{mA}$，<span class="text-[#006633] font-bold">為低電壓驅動多燈的最佳方案</span>。
+                </li>
+                <li>
+                    <strong>共用單一電阻並聯模型 ($\text{MODEL-LED-PAR-SHR}$) 之致命缺陷</strong>：
+                    二極體具備負溫度係數特性（$\frac{dV_F}{dT} \approx -2\text{mV/}^\circ\text{C}$），共用電阻易誘發<span class="text-[#800000] font-bold">「電流熱搶奪 (Thermal Runaway)」正回授效應</span>，致使元件相繼過熱燒毀。
+                </li>
+            </ol>
+        </section>
+
+        <!-- Section 1: Dynamic Interactive Circuit Engine with Luminescence Simulation -->
+        <section class="space-y-4 avoid-break">
+            <h2 class="text-xl latex-h2 flex items-center justify-between">
+                <span>1. 多燈動態發光模擬引擎 (Dynamic Photometric Simulator)</span>
+                <span class="text-xs font-mono font-normal text-slate-500 no-print">[Live Canvas]</span>
+            </h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Controls (5 cols) -->
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold uppercase tracking-wider text-slate-700">選擇電路架構拓撲 (Circuit Topology)</label>
+                        <select id="select-mode" onchange="calculateMultiLED()" class="w-full bg-white border border-slate-400 rounded px-3 py-2 text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#003366]">
+                            <option value="par-ind">MODEL-LED-PAR-IND：獨立限流電阻並聯 [工程最佳推薦]</option>
+                            <option value="ser">MODEL-LED-SER：LED 直接串聯 [需高於總導通壓降]</option>
+                            <option value="par-shr">MODEL-LED-PAR-SHR：共用單一電阻並聯 [熱搶奪危險]</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center text-xs">
+                                <label class="font-bold uppercase tracking-wider text-slate-700">LED 數量 $N$</label>
+                                <span id="num-led-display" class="font-mono text-[#003366] font-bold">2 顆</span>
+                            </div>
+                            <input type="range" id="input-n" min="1" max="6" value="2" oninput="calculateMultiLED()" class="w-full accent-[#003366] h-2 bg-slate-200 rounded appearance-none cursor-pointer no-print">
+                        </div>
+
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center text-xs">
+                                <label class="font-bold uppercase tracking-wider text-slate-700">電源電壓 $V_{CC}$</label>
+                                <span id="vcc-display" class="font-mono text-[#003366] font-bold">3.0 V</span>
+                            </div>
+                            <input type="number" id="input-vcc" step="0.1" min="0.1" max="50" value="3.0" oninput="calculateMultiLED()" class="w-full bg-white border border-slate-400 rounded px-3 py-1 text-sm font-mono text-slate-900 focus:outline-none focus:border-[#003366]">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center text-xs">
+                                <label class="font-bold uppercase tracking-wider text-slate-700">單燈導通壓降 $V_F$</label>
+                                <span id="vf-display" class="font-mono text-[#003366] font-bold">2.0 V</span>
+                            </div>
+                            <input type="number" id="input-vf" step="0.1" min="0.1" max="20" value="2.0" oninput="calculateMultiLED()" class="w-full bg-white border border-slate-400 rounded px-3 py-1 text-sm font-mono text-slate-900 focus:outline-none focus:border-[#003366]">
+                        </div>
+
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center text-xs">
+                                <label class="font-bold uppercase tracking-wider text-slate-700">目標單燈電流 $I_F$</label>
+                                <span id="if-display" class="font-mono text-[#003366] font-bold">15 mA</span>
+                            </div>
+                            <input type="number" id="input-if" step="1" min="1" max="500" value="15" oninput="calculateMultiLED()" class="w-full bg-white border border-slate-400 rounded px-3 py-1 text-sm font-mono text-slate-900 focus:outline-none focus:border-[#003366]">
+                        </div>
+                    </div>
+
+                    <!-- Shared Resistor Thermal Runaway Slider -->
+                    <div id="thermal-slider-container" class="space-y-1 bg-amber-50 p-2.5 rounded border border-amber-300 hidden">
+                        <div class="flex justify-between items-center text-xs">
+                            <label class="font-bold text-amber-900">熱搶奪壓降偏置 ($\Delta V_F$)</label>
+                            <span id="vf-delta-display" class="font-mono text-amber-900 font-bold">0.00 V</span>
+                        </div>
+                        <input type="range" id="input-delta-vf" min="-0.15" max="0.15" step="0.01" value="0.00" oninput="calculateMultiLED()" class="w-full accent-amber-700 h-1.5 bg-amber-200 rounded appearance-none cursor-pointer">
+                        <div class="text-[11px] text-amber-800 italic">拖曳滑塊模擬第一顆 LED 溫升低壓降導致之發光與電流不對稱傾斜</div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-1.5 pt-1 no-print">
+                        <button onclick="setVcc(3.0); setVf(2.0, 'red');" class="text-xs px-2 py-1 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded font-mono">2×AA 鹼性 (3.0V / 紅光)</button>
+                        <button onclick="setVcc(4.5);" class="text-xs px-2 py-1 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded font-mono">3×AA (4.5V)</button>
+                        <button onclick="setVcc(5.0);" class="text-xs px-2 py-1 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded font-mono">USB (5.0V)</button>
+                    </div>
+                </div>
+
+                <!-- Display & SVG Live Photometrics (7 cols) -->
+                <div class="lg:col-span-7 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-700">實時光度向量 Canvas (Real-time Luminescence Render)</span>
+                        <span id="model-code-badge" class="text-xs font-mono font-bold text-[#003366] bg-slate-100 px-2 py-0.5 border border-slate-300">MODEL-LED-PAR-IND</span>
+                    </div>
+
+                    <!-- Canvas Box -->
+                    <div class="bg-slate-950 rounded border border-slate-800 p-3 flex flex-col items-center justify-center relative min-h-[220px] shadow-inner">
+                        <svg id="multi-circuit-svg" class="w-full h-52" viewBox="0 0 420 200">
+                            <!-- Dynamic SVG -->
+                        </svg>
+                    </div>
+
+                    <!-- Photometric Meter & Real-time Metrics -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                        <div class="bg-slate-50 p-2 rounded border border-slate-300">
+                            <div class="text-slate-500">總壓降需求</div>
+                            <div id="res-vtotal" class="font-mono font-bold text-[#003366] text-sm mt-0.5">2.0 V</div>
+                        </div>
+                        <div class="bg-slate-50 p-2 rounded border border-slate-300">
+                            <div class="text-slate-500">建議限流電阻</div>
+                            <div id="res-r-val" class="font-mono font-bold text-[#800000] text-sm mt-0.5">68 Ω × 2顆</div>
+                        </div>
+                        <div class="bg-slate-50 p-2 rounded border border-slate-300">
+                            <div class="text-slate-500">總輸出電流</div>
+                            <div id="res-total-i" class="font-mono font-bold text-emerald-800 text-sm mt-0.5">29.4 mA</div>
+                        </div>
+                        <div class="bg-slate-50 p-2 rounded border border-slate-300">
+                            <div class="text-slate-500">平均相對亮度</div>
+                            <div id="res-brightness-pct" class="font-mono font-bold text-amber-700 text-sm mt-0.5">98.1 %</div>
+                        </div>
+                    </div>
+
+                    <div id="status-warning" class="text-xs p-2.5 rounded latex-success-box text-center font-semibold">
+                        ✅ 狀態最佳：獨立限流電阻並聯，各 LED 光強均勻，發光穩定。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Detailed Luminescence Physics & Math Model -->
+        <section class="space-y-4 avoid-break">
+            <h2 class="text-xl latex-h2">2. 半導體物理與蕭克萊二極體方程式 (Semiconductor Physics)</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-800 leading-relaxed">
+                <div class="space-y-3">
+                    <h3 class="latex-h3 text-base">2.1 PN 接面與蕭克萊方程式 (Shockley Diode Equation)</h3>
+                    <p>
+                        發光二極體 (LED) 實質上為 III-V 族化合物半導體構成之 PN 接面。其伏安特性 (I-V Characteristic) 呈現極度非線性，遵循蕭克萊方程式：
+                    </p>
+                    <div class="formula-card p-3 rounded text-center text-xs space-y-1">
+                        <div class="font-bold text-[#003366]">$$I_D = I_S \left( e^{\frac{q V_D}{n k_B T}} - 1 \right)$$</div>
+                        <div class="text-slate-500 font-sans text-[11px]">其中 $I_S$ 為反向飽和電流，$q$ 為電子電量，$k_B$ 為玻爾茲曼常數，$T$ 為熱力學溫度。</div>
+                    </div>
+                    <p>
+                        當跨壓 $V_D < V_F$ 時，電流趨近於 0；當跨壓達到 $V_F$ (紅光約 $1.8\text{V} \sim 2.0\text{V}$) 時，指數項迅速擴大，<strong>動態等效電阻 $r_d = \frac{d V_D}{d I_D}$ 會驟降至數歐姆以下</strong>。若未串聯限流電阻，極小的電壓波動即可引發熱失控暴增電流。
+                    </p>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="latex-h3 text-base">2.2 克希荷夫電壓定律 (KVL) 與電阻功率裕度</h3>
+                    <p>
+                        依據克希荷夫電壓定律 (KVL)，迴路電壓升等於電壓降：
+                    </p>
+                    <div class="formula-card p-3 rounded text-center text-xs space-y-1">
+                        <div class="font-bold text-[#003366]">$$V_{CC} - I_F \cdot R - V_F = 0 \implies R = \frac{V_{CC} - V_F}{I_F}$$</div>
+                    </div>
+                    <p>
+                        <strong>功率消耗與熱設計：</strong> 電阻吸收之電功率為 $$P_R = (V_{CC} - V_F) \cdot I_F = I_F^2 \cdot R$$
+                        本案中 $P_R = (3.0\text{V} - 2.0\text{V}) \times 14.71\text{mA} = 14.71\text{mW}$。選用最常見之 $1/4\text{W} (250\text{mW})$ 碳膜電阻可提供高達 $17$ 倍之安全裕度 (Derating Margin)。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Topology Comparison Matrix -->
+        <section class="space-y-4 avoid-break">
+            <h2 class="text-xl latex-h2">3. 多燈拓撲物理模型與熱搶奪分析 (Thermal Runaway Analysis)</h2>
+
+            <div class="overflow-x-auto border border-slate-300">
+                <table class="w-full text-left text-xs text-slate-800">
+                    <thead class="bg-slate-100 text-slate-900 font-bold border-b border-slate-300">
+                        <tr>
+                            <th class="p-2.5 border-r border-slate-300">評比維度 (Metric)</th>
+                            <th class="p-2.5 text-[#800000] border-r border-slate-300">串聯模型 ($\text{MODEL-LED-SER}$)</th>
+                            <th class="p-2.5 text-[#003366] border-r border-slate-300">獨立電阻並聯 ($\text{MODEL-LED-PAR-IND}$)</th>
+                            <th class="p-2.5 text-amber-800">共用電阻並聯 ($\text{MODEL-LED-PAR-SHR}$)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 font-serif">
+                        <tr>
+                            <td class="p-2.5 font-bold bg-slate-50 border-r border-slate-300">總壓降需求 ($V_{\text{total}}$)</td>
+                            <td class="p-2.5 border-r border-slate-300">$N \times V_F$ (壓降倍增)</td>
+                            <td class="p-2.5 border-r border-slate-300">$V_F$ (維持單顆壓降)</td>
+                            <td class="p-2.5">$V_F$ (維持單顆壓降)</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2.5 font-bold bg-slate-50 border-r border-slate-300">2×AA電池(3.0V)視覺效果</td>
+                            <td class="p-2.5 text-[#800000] font-bold border-r border-slate-300">❌ 0% 黑暗熄滅 (電壓不足)</td>
+                            <td class="p-2.5 text-[#006633] font-bold border-r border-slate-300">✅ 100% 黃金明亮導通</td>
+                            <td class="p-2.5 text-amber-800 font-bold">⚠️ 光強不對稱且具燒燈風險</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2.5 font-bold bg-slate-50 border-r border-slate-300">熱搶奪抗敏性 ($\Delta V_F$)</td>
+                            <td class="p-2.5 border-r border-slate-300">極高 (強迫單一電流)</td>
+                            <td class="p-2.5 border-r border-slate-300">極高 (獨立負回授限流)</td>
+                            <td class="p-2.5 text-[#800000] font-bold">極差！熱搶奪致使骨牌燒毀</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mathematical Explanation of Thermal Runaway -->
+            <div class="latex-alert-box p-5 space-y-2">
+                <h3 class="latex-h3 text-base flex items-center space-x-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    <span>深度分析：共用電阻熱搶奪 (Thermal Runaway) 正回授機制</span>
+                </h3>
+                <p class="text-xs text-slate-800 leading-relaxed">
+                    半導體 PN 接面之正向導通壓降隨溫度變化具備<strong>負溫度係數 ($\frac{d V_F}{d T} \approx -2\text{mV/}^\circ\text{C}$)</strong>。
+                    當多顆 LED 直接並聯共用單一電阻時，壓降微小公差會使電流集中於壓降最低之 LED 粒，引發「電流增加 $\to$ 結溫 $T_j$ 上升 $\to$ 壓降 $V_F$ 降低 $\to$ 電流進一步增加」之<strong>正回授迴路 (Positive Feedback Loop)</strong>，最終燒毀該燈並將過載電流推向其餘 LED。
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 4: Universal Ohm's Law Solver -->
+        <section class="space-y-4 avoid-break">
+            <h2 class="text-xl latex-h2">4. 萬用歐姆定律求解器 (Ohm's Law Solver)</h2>
+            <p class="text-xs text-slate-600">任意輸入兩個物理量，系統自動演算出其餘兩個物理量 ($V, I, R, P$)。</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div class="bg-slate-50 p-3 rounded border border-slate-300 space-y-1">
+                    <label class="text-xs font-bold text-[#003366] uppercase">電壓 Voltage (V)</label>
+                    <div class="relative">
+                        <input type="number" id="ohm-v" step="any" placeholder="例如 3.0" oninput="calculateOhm('v')" class="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 text-sm font-mono focus:outline-none focus:border-[#003366]">
+                        <span class="absolute right-2 top-2 text-xs text-slate-400 font-mono">V</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-3 rounded border border-slate-300 space-y-1">
+                    <label class="text-xs font-bold text-emerald-800 uppercase">電流 Current (mA)</label>
+                    <div class="relative">
+                        <input type="number" id="ohm-i" step="any" placeholder="例如 15" oninput="calculateOhm('i')" class="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 text-sm font-mono focus:outline-none focus:border-emerald-700">
+                        <span class="absolute right-2 top-2 text-xs text-slate-400 font-mono">mA</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-3 rounded border border-slate-300 space-y-1">
+                    <label class="text-xs font-bold text-[#800000] uppercase">電阻 Resistance (Ω)</label>
+                    <div class="relative">
+                        <input type="number" id="ohm-r" step="any" placeholder="例如 68" oninput="calculateOhm('r')" class="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 text-sm font-mono focus:outline-none focus:border-[#800000]">
+                        <span class="absolute right-2 top-2 text-xs text-slate-400 font-mono">Ω</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-3 rounded border border-slate-300 space-y-1">
+                    <label class="text-xs font-bold text-purple-900 uppercase">功率 Power (mW)</label>
+                    <div class="relative">
+                        <input type="number" id="ohm-p" step="any" placeholder="例如 15" oninput="calculateOhm('p')" class="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 text-sm font-mono focus:outline-none focus:border-purple-900">
+                        <span class="absolute right-2 top-2 text-xs text-slate-400 font-mono">mW</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end no-print">
+                <button onclick="clearOhm()" class="text-xs px-3 py-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded border border-slate-300">
+                    清空萬用計算器
+                </button>
+            </div>
+        </section>
+
+        <!-- Section 5: User Prompts Archive & Iteration Log -->
+        <section class="space-y-4 avoid-break">
+            <h2 class="text-xl latex-h2 flex items-center justify-between">
+                <span>5. 使用者 Prompt 歷程日誌 (User Prompt Conversation Archive)</span>
+                <span class="text-xs font-mono text-slate-500 font-normal">[Historical Prompts Log]</span>
+            </h2>
+            <p class="text-xs text-slate-600">本區塊完整收錄本對話階段至今使用者發出的所有對話 Prompts，方便查閱需求演進歷程：</p>
+
+            <div class="space-y-3 font-mono text-xs">
+                <!-- Prompt 1 -->
+                <div class="bg-slate-50 border border-slate-300 rounded p-3.5 space-y-1">
+                    <div class="flex justify-between items-center text-slate-500 text-[11px]">
+                        <span class="font-bold text-[#003366]">Prompt #1</span>
+                        <span>Timestamp: 2026-09-10 13:54:38</span>
+                    </div>
+                    <div class="text-slate-900 font-sans font-semibold bg-white p-2 border border-slate-200 rounded">
+                        「目前使用兩個AA電池接紅色LED燈 電阻最佳的設定值應該是多少，解釋為什麼，列出計算公式，設計一個動態計算電阻 電壓 電流的計算機 儲存到桌面ee_0910.html」
+                    </div>
+                    <div class="text-slate-600 text-[11px] pt-1">
+                        ↳ <strong>功能實現</strong>：建立單燈限流電阻計算邏輯、歐姆定律求解器與桌面 HTML 檔案產出。
+                    </div>
+                </div>
+
+                <!-- Prompt 2 -->
+                <div class="bg-slate-50 border border-slate-300 rounded p-3.5 space-y-1">
+                    <div class="flex justify-between items-center text-slate-500 text-[11px]">
+                        <span class="font-bold text-[#003366]">Prompt #2</span>
+                        <span>Timestamp: 2026-09-10 14:25:10</span>
+                    </div>
+                    <div class="text-slate-900 font-sans font-semibold bg-white p-2 border border-slate-200 rounded">
+                        「接下討論增加紅色LED燈的數量，利用並聯與串聯會有什麼不一樣的變化，為什麼?把計算方式與電路模型展示，加入到檔案，加上時間戳記跟模型代號」
+                    </div>
+                    <div class="text-slate-600 text-[11px] pt-1">
+                        ↳ <strong>功能實現</strong>：加入多燈串並聯理論分析、模型代號 (MODEL-LED-SER / PAR-IND / PAR-SHR)、時間戳記與比較矩陣。
+                    </div>
+                </div>
+
+                <!-- Prompt 3 -->
+                <div class="bg-slate-50 border border-slate-300 rounded p-3.5 space-y-1">
+                    <div class="flex justify-between items-center text-slate-500 text-[11px]">
+                        <span class="font-bold text-[#003366]">Prompt #3</span>
+                        <span>Timestamp: 2026-09-10 14:26:52</span>
+                    </div>
+                    <div class="text-slate-900 font-sans font-semibold bg-white p-2 border border-slate-200 rounded">
+                        「調整辦面配色 用LATEX經典配色 增加pdf輸出按鈕」
+                    </div>
+                    <div class="text-slate-600 text-[11px] pt-1">
+                        ↳ <strong>功能實現</strong>：套用 LaTeX 經典學術襯線排版 (Times/Songti)、LaTeX Navy/Maroon 配色，並新增 @media print PDF 匯出按鈕。
+                    </div>
+                </div>
+
+                <!-- Prompt 4 -->
+                <div class="bg-slate-50 border border-slate-300 rounded p-3.5 space-y-1">
+                    <div class="flex justify-between items-center text-slate-500 text-[11px]">
+                        <span class="font-bold text-[#003366]">Prompt #4</span>
+                        <span>Timestamp: 2026-09-10 14:28:17</span>
+                    </div>
+                    <div class="text-slate-900 font-sans font-semibold bg-white p-2 border border-slate-200 rounded">
+                        「將內容敘述補充更詳細」
+                    </div>
+                    <div class="text-slate-600 text-[11px] pt-1">
+                        ↳ <strong>功能實現</strong>：補充 PN 接面半導體物理、蕭克萊二極體方程式、克希荷夫定律、熱搶奪正回授機制與 AA 電池放電曲線深度文字。
+                    </div>
+                </div>
+
+                <!-- Prompt 5 -->
+                <div class="bg-slate-50 border border-slate-300 rounded p-3.5 space-y-1">
+                    <div class="flex justify-between items-center text-slate-500 text-[11px]">
+                        <span class="font-bold text-[#003366]">Prompt #5</span>
+                        <span>Timestamp: 2026-09-10 14:29:56</span>
+                    </div>
+                    <div class="text-slate-900 font-sans font-semibold bg-white p-2 border border-slate-200 rounded">
+                        「多燈電路拓撲動態模擬引擎 可以動態模擬亮度變化」
+                    </div>
+                    <div class="text-slate-600 text-[11px] pt-1">
+                        ↳ <strong>功能實現</strong>：打造動態發光強度模擬引擎 (Photometric Engine)，動態縮放 SVG 光暈半徑、模擬 0mA 暗滅狀態與不對稱熱搶奪光強傾斜。
+                    </div>
+                </div>
+
+                <!-- Prompt 6 -->
+                <div class="bg-slate-50 border border-slate-300 rounded p-3.5 space-y-1">
+                    <div class="flex justify-between items-center text-slate-500 text-[11px]">
+                        <span class="font-bold text-[#003366]">Prompt #6</span>
+                        <span>Timestamp: 2026-09-10 14:30:35</span>
+                    </div>
+                    <div class="text-slate-900 font-sans font-semibold bg-white p-2 border border-slate-200 rounded">
+                        「LATEX語法需要修正 在網頁無法正確顯示」
+                    </div>
+                    <div class="text-slate-600 text-[11px] pt-1">
+                        ↳ <strong>功能實現</strong>：整合 MathJax 3.2 Tex 數學解析引擎與動態 typesetPromise 觸發器，使網頁完整正確渲染 LaTeX 數學公式。
+                    </div>
+                </div>
+
+                <!-- Prompt 7 -->
+                <div class="bg-slate-50 border border-slate-300 rounded p-3.5 space-y-1">
+                    <div class="flex justify-between items-center text-slate-500 text-[11px]">
+                        <span class="font-bold text-[#003366]">Prompt #7</span>
+                        <span>Timestamp: 2026-09-10 14:32:07</span>
+                    </div>
+                    <div class="text-slate-900 font-sans font-semibold bg-white p-2 border border-slate-200 rounded">
+                        「將我以上的PROMPTS整理到檔案的最下方」
+                    </div>
+                    <div class="text-slate-600 text-[11px] pt-1">
+                        ↳ <strong>功能實現</strong>：建立本區塊 (Section 5)，將對話中的所有 Prompts 及對應功能歷史記錄完整存檔至網頁報告最下方。
+                    </div>
+                </div>
+
+                <!-- Prompt 8 -->
+                <div class="bg-slate-50 border border-slate-300 rounded p-3.5 space-y-1">
+                    <div class="flex justify-between items-center text-slate-500 text-[11px]">
+                        <span class="font-bold text-[#003366]">Prompt #8</span>
+                        <span>Timestamp: 2026-09-10 14:56:06 | 模型/Agent: Gemini 3.6 Flash / Antigravity</span>
+                    </div>
+                    <div class="text-slate-900 font-sans font-semibold bg-white p-2 border border-slate-200 rounded">
+                        「@[ec/ee_0910.html]」
+                    </div>
+                    <div class="text-slate-600 text-[11px] pt-1">
+                        ↳ <strong>功能實現</strong>：檢閱專案報告檔案 [ee_0910.html](file:///D:/CLASS_NOTE/ec/ee_0910.html)，確認與更新對話歷史紀錄 (Prompt #8) 與元資料時間戳記。
+                    </div>
+                </div>
+
+                <!-- Prompt 9 -->
+                <div class="bg-slate-50 border border-slate-300 rounded p-3.5 space-y-1">
+                    <div class="flex justify-between items-center text-slate-500 text-[11px]">
+                        <span class="font-bold text-[#003366]">Prompt #9</span>
+                        <span>Timestamp: 2026-09-10 14:57:10 | 模型/Agent: Gemini 3.6 Flash / Antigravity</span>
+                    </div>
+                    <div class="text-slate-900 font-sans font-semibold bg-white p-2 border border-slate-200 rounded">
+                        「沒有標註模型代號」
+                    </div>
+                    <div class="text-slate-600 text-[11px] pt-1">
+                        ↳ <strong>功能實現</strong>：於網頁標頭 (Header) 與 Prompt 歷史紀錄中明確標註當前使用模型 (`Gemini 3.6 Flash`) 與執行 Agent (`Antigravity Agent`)。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Academic Footer -->
+        <footer class="text-center text-xs text-slate-500 pt-6 border-t border-slate-300 space-y-1">
+            <div>LaTeX Monograph & Full Prompt Archive • MathJax 3.2 Integrated</div>
+            <div>Saved to Workspace (ec/ee_0910.html) • Model: Gemini 3.6 Flash • Timestamp: 2026-09-10 14:57:10 UTC+8</div>
+        </footer>
+
+    </div>
+
+    <!-- JavaScript Logic with Dynamic Luminescence Simulation Engine & MathJax Typeset Trigger -->
+    <script>
+        const E24 = [
+            1.0, 1.1, 1.2, 1.3, 1.5, 1.6, 1.8, 2.0, 2.2, 2.4, 2.7, 3.0,
+            3.3, 3.6, 3.9, 4.3, 4.7, 5.1, 5.6, 6.2, 6.8, 7.5, 8.2, 9.1
+        ];
+
+        function getNearestE24(val) {
+            if (val <= 0) return 0;
+            const log10 = Math.floor(Math.log10(val));
+            const scale = Math.pow(10, log10);
+            const normalized = val / scale;
+            
+            let closest = E24[0];
+            let minDiff = Math.abs(normalized - E24[0]);
+            
+            for (let i = 1; i < E24.length; i++) {
+                const diff = Math.abs(normalized - E24[i]);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closest = E24[i];
+                }
+            }
+            if (Math.abs(normalized - 10) < minDiff) {
+                return 10 * scale;
+            }
+            return Math.round(closest * scale * 100) / 100;
+        }
+
+        let currentColorTheme = 'red';
+
+        function setVcc(val) {
+            document.getElementById('input-vcc').value = val;
+            calculateMultiLED();
+        }
+
+        function setVf(val, color) {
+            document.getElementById('input-vf').value = val;
+            currentColorTheme = color;
+            calculateMultiLED();
+        }
+
+        function triggerMathJax() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise().catch(err => console.log('MathJax typeset error', err));
+            }
+        }
+
+        function calculateMultiLED() {
+            const mode = document.getElementById('select-mode').value;
+            const n = parseInt(document.getElementById('input-n').value) || 1;
+            const vcc = parseFloat(document.getElementById('input-vcc').value) || 0;
+            const vf = parseFloat(document.getElementById('input-vf').value) || 0;
+            const targetIf_mA = parseFloat(document.getElementById('input-if').value) || 0;
+            const deltaVf = parseFloat(document.getElementById('input-delta-vf')?.value || 0);
+
+            document.getElementById('num-led-display').innerText = n + ' 顆';
+            document.getElementById('vcc-display').innerText = vcc.toFixed(1) + ' V';
+            document.getElementById('vf-display').innerText = vf.toFixed(1) + ' V';
+            document.getElementById('if-display').innerText = targetIf_mA.toFixed(0) + ' mA';
+            if (document.getElementById('vf-delta-display')) {
+                document.getElementById('vf-delta-display').innerText = (deltaVf >= 0 ? '+' : '') + deltaVf.toFixed(2) + ' V';
+            }
+
+            const thermalContainer = document.getElementById('thermal-slider-container');
+            if (mode === 'par-shr') {
+                thermalContainer.classList.remove('hidden');
+            } else {
+                thermalContainer.classList.add('hidden');
+            }
+
+            const badge = document.getElementById('model-code-badge');
+            const resVtotal = document.getElementById('res-vtotal');
+            const resRval = document.getElementById('res-r-val');
+            const resTotalI = document.getElementById('res-total-i');
+            const resBrightnessPct = document.getElementById('res-brightness-pct');
+            const statusWarn = document.getElementById('status-warning');
+
+            let modelCode = "MODEL-LED-PAR-IND";
+            if (mode === 'ser') modelCode = "MODEL-LED-SER";
+            else if (mode === 'par-shr') modelCode = "MODEL-LED-PAR-SHR";
+            badge.innerText = modelCode;
+
+            const targetIf_A = targetIf_mA / 1000;
+
+            if (mode === 'ser') {
+                const reqV = n * vf;
+                resVtotal.innerText = reqV.toFixed(1) + " V";
+
+                if (vcc <= reqV) {
+                    resRval.innerText = "無法導通";
+                    resTotalI.innerText = "0 mA";
+                    resBrightnessPct.innerText = "0.0 % (暗滅)";
+                    statusWarn.className = "text-xs p-2.5 rounded latex-alert-box text-center font-bold text-[#800000]";
+                    statusWarn.innerText = `❌ 臨界電位不足：${n} 顆串聯共需 ${reqV.toFixed(1)}V，目前電源 ${vcc.toFixed(1)}V 無法打破 PN 接面導通障壁，LED 完全暗滅 (0 mA)！`;
+                    renderSVGSeries(n, vcc, vf, 0, 0, 0);
+                } else {
+                    const r_ideal = (vcc - reqV) / targetIf_A;
+                    const r_e24 = getNearestE24(r_ideal);
+                    const actual_I_A = (vcc - reqV) / r_e24;
+                    const actual_I_mA = actual_I_A * 1000;
+                    const bPct = (actual_I_mA / targetIf_mA) * 100;
+
+                    resRval.innerText = r_e24 + " Ω (1顆共用)";
+                    resTotalI.innerText = actual_I_mA.toFixed(2) + " mA";
+                    resBrightnessPct.innerText = bPct.toFixed(1) + " %";
+                    statusWarn.className = "text-xs p-2.5 rounded latex-success-box text-center font-semibold text-emerald-900";
+                    statusWarn.innerText = `✅ 串聯導通正常：總電流 ${actual_I_mA.toFixed(1)}mA，各燈光強 100% 均勻。`;
+                    renderSVGSeries(n, vcc, vf, r_e24, actual_I_mA, bPct);
+                }
+            } else if (mode === 'par-ind') {
+                resVtotal.innerText = vf.toFixed(1) + " V";
+
+                if (vcc <= vf) {
+                    resRval.innerText = "N/A";
+                    resTotalI.innerText = "0 mA";
+                    resBrightnessPct.innerText = "0.0 % (暗滅)";
+                    statusWarn.className = "text-xs p-2.5 rounded latex-alert-box text-center font-bold text-[#800000]";
+                    statusWarn.innerText = "⚠️ 電壓不足：電源電壓必須大於 LED 導通壓降！";
+                    renderSVGParallelInd(n, vcc, vf, 0, 0, 0);
+                } else {
+                    const r_ideal = (vcc - vf) / targetIf_A;
+                    const r_e24 = getNearestE24(r_ideal);
+                    const actual_branch_I_A = (vcc - vf) / r_e24;
+                    const actual_total_I_mA = actual_branch_I_A * 1000 * n;
+                    const bPct = (actual_branch_I_A * 1000 / targetIf_mA) * 100;
+
+                    resRval.innerText = `${r_e24} Ω × ${n} 顆`;
+                    resTotalI.innerText = actual_total_I_mA.toFixed(2) + " mA";
+                    resBrightnessPct.innerText = bPct.toFixed(1) + " %";
+                    statusWarn.className = "text-xs p-2.5 rounded latex-success-box text-center font-semibold text-emerald-900";
+                    statusWarn.innerText = `✅ 最佳架構推薦：每支路獨立 ${r_e24}Ω 限流，總電流 ${actual_total_I_mA.toFixed(1)}mA，各燈亮度穩定均勻！`;
+                    renderSVGParallelInd(n, vcc, vf, r_e24, actual_total_I_mA, bPct);
+                }
+            } else if (mode === 'par-shr') {
+                resVtotal.innerText = vf.toFixed(1) + " V";
+
+                if (vcc <= vf) {
+                    resRval.innerText = "N/A";
+                    resTotalI.innerText = "0 mA";
+                    resBrightnessPct.innerText = "0.0 % (暗滅)";
+                    statusWarn.className = "text-xs p-2.5 rounded latex-alert-box text-center font-bold text-[#800000]";
+                    statusWarn.innerText = "⚠️ 電壓不足：電源電壓必須大於 LED 導通壓降！";
+                    renderSVGParallelShr(n, vcc, vf, 0, 0, [0]);
+                } else {
+                    const total_target_I_A = targetIf_A * n;
+                    const r_ideal = (vcc - vf) / total_target_I_A;
+                    const r_e24 = getNearestE24(r_ideal);
+                    
+                    let branchCurrents = [];
+                    let branchBrightnesses = [];
+
+                    const vf1 = Math.max(0.5, vf - deltaVf);
+                    const vf_others = vf + (n > 1 ? deltaVf / (n - 1) : 0);
+
+                    const rd = 3.0;
+                    let v_node = (vcc / r_e24 + vf1 / rd + (n - 1) * (vf_others / rd)) / (1 / r_e24 + n / rd);
+                    
+                    let i1 = Math.max(0, (v_node - vf1) / rd) * 1000;
+                    branchCurrents.push(i1);
+                    branchBrightnesses.push((i1 / targetIf_mA) * 100);
+
+                    for (let i = 1; i < n; i++) {
+                        let ii = Math.max(0, (v_node - vf_others) / rd) * 1000;
+                        branchCurrents.push(ii);
+                        branchBrightnesses.push((ii / targetIf_mA) * 100);
+                    }
+
+                    const sumI = branchCurrents.reduce((a, b) => a + b, 0);
+                    const avgB = (sumI / n / targetIf_mA) * 100;
+
+                    resRval.innerText = `${r_e24} Ω (共用1顆)`;
+                    resTotalI.innerText = sumI.toFixed(2) + " mA";
+                    resBrightnessPct.innerText = avgB.toFixed(1) + " % (不均勻)";
+
+                    if (Math.abs(deltaVf) > 0.03) {
+                        statusWarn.className = "text-xs p-2.5 rounded latex-alert-box text-center font-bold text-[#800000]";
+                        statusWarn.innerText = `⚠️ 熱搶奪發光傾斜：第一顆 LED 分配到 ${i1.toFixed(1)}mA (${branchBrightnesses[0].toFixed(0)}% 亮度)，其餘燈分流不均偏暗！`;
+                    } else {
+                        statusWarn.className = "text-xs p-2.5 rounded latex-alert-box text-center font-semibold text-amber-900";
+                        statusWarn.innerText = `⚠️ 警告 (共用電阻)：存在半導體溫升負反饋「電流熱搶奪 (Thermal Runaway)」燒毀風險！`;
+                    }
+
+                    renderSVGParallelShr(n, vcc, vf, r_e24, sumI, branchBrightnesses);
+                }
+            }
+            triggerMathJax();
+        }
+
+        // Photometric SVG Renderers
+        function renderSVGSeries(n, vcc, vf, rVal, iTotal, bPct) {
+            const svg = document.getElementById('multi-circuit-svg');
+            const isLit = iTotal > 0.5;
+
+            let html = `
+                <g transform="translate(20, 85)">
+                    <rect x="0" y="0" width="38" height="32" rx="2" fill="#111111" stroke="#38bdf8" stroke-width="1.5"/>
+                    <rect x="38" y="10" width="4" height="12" rx="1" fill="#38bdf8"/>
+                    <text x="8" y="21" fill="#38bdf8" font-size="11" font-weight="bold" font-family="serif">${vcc}V</text>
+                </g>
+                <path d="M 40 85 L 40 35 L 110 35 M ${110 + n*48 + 40} 35 L 390 35 L 390 155 L 40 155 L 40 117" fill="none" stroke="#475569" stroke-width="2"/>
+                <g transform="translate(110, 23)">
+                    <rect x="0" y="0" width="45" height="24" rx="2" fill="#d97706" stroke="#f59e0b" stroke-width="1.5"/>
+                    <text x="22" y="16" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle" font-family="serif">${rVal}Ω</text>
+                </g>
+                <line x1="155" y1="35" x2="170" y2="35" stroke="#475569" stroke-width="2"/>
+            `;
+
+            let startX = 170;
+            for (let i = 0; i < n; i++) {
+                let x = startX + i * 48;
+                let glowR = isLit ? Math.min(32, 14 + (bPct / 100) * 12) : 0;
+                let opacity = isLit ? Math.min(1.0, 0.3 + (bPct / 100) * 0.6) : 0.05;
+                let colorHex = isLit ? '#ef4444' : '#475569';
+                let glowClass = (isLit && bPct > 130) ? 'animate-overdrive' : '';
+
+                html += `
+                    ${i > 0 ? `<line x1="${x - 18}" y1="35" x2="${x}" y2="35" stroke="#475569" stroke-width="2"/>` : ''}
+                    <g transform="translate(${x}, 20)">
+                        ${isLit ? `<circle cx="15" cy="15" r="${glowR}" fill="#ef4444" opacity="${opacity * 0.5}" class="${glowClass}"/>` : ''}
+                        <circle cx="15" cy="15" r="16" fill="${colorHex}" opacity="${opacity}"/>
+                        <polygon points="5,5 25,15 5,25" fill="${colorHex}" stroke="#f87171" stroke-width="1.5"/>
+                        <line x1="25" y1="5" x2="25" y2="25" stroke="#f87171" stroke-width="2"/>
+                        <text x="15" y="42" fill="${isLit ? '#f87171' : '#64748b'}" font-size="9" text-anchor="middle" font-family="mono">${bPct.toFixed(0)}%</text>
+                    </g>
+                `;
+            }
+
+            html += `<text x="210" y="185" fill="#38bdf8" font-size="11" text-anchor="middle" font-family="serif">MODEL-LED-SER [串聯光度模擬] | 總電流 I = ${iTotal.toFixed(1)} mA</text>`;
+            svg.innerHTML = html;
+        }
+
+        function renderSVGParallelInd(n, vcc, vf, rVal, iTotal, bPct) {
+            const svg = document.getElementById('multi-circuit-svg');
+            const isLit = iTotal > 0.5;
+
+            let html = `
+                <g transform="translate(15, 85)">
+                    <rect x="0" y="0" width="38" height="32" rx="2" fill="#111111" stroke="#38bdf8" stroke-width="1.5"/>
+                    <rect x="38" y="10" width="4" height="12" rx="1" fill="#38bdf8"/>
+                    <text x="8" y="21" fill="#38bdf8" font-size="11" font-weight="bold" font-family="serif">${vcc}V</text>
+                </g>
+                <path d="M 33 85 L 33 35 L 390 35 M 390 155 L 33 155 L 33 117" fill="none" stroke="#475569" stroke-width="2"/>
+            `;
+
+            let step = Math.min(62, 280 / n);
+            let startX = 100;
+
+            for (let i = 0; i < n; i++) {
+                let x = startX + i * step;
+                let glowR = isLit ? Math.min(32, 14 + (bPct / 100) * 12) : 0;
+                let opacity = isLit ? Math.min(1.0, 0.3 + (bPct / 100) * 0.6) : 0.05;
+                let colorHex = isLit ? '#ef4444' : '#475569';
+                let glowClass = (isLit && bPct > 130) ? 'animate-overdrive' : '';
+
+                html += `
+                    <line x1="${x}" y1="35" x2="${x}" y2="155" stroke="#475569" stroke-width="1.5"/>
+                    <g transform="translate(${x - 18}, 48)">
+                        <rect x="0" y="0" width="36" height="20" rx="2" fill="#d97706" stroke="#f59e0b" stroke-width="1"/>
+                        <text x="18" y="14" fill="#ffffff" font-size="9" font-weight="bold" text-anchor="middle" font-family="serif">${rVal}Ω</text>
+                    </g>
+                    <g transform="translate(${x - 12}, 95)">
+                        ${isLit ? `<circle cx="12" cy="12" r="${glowR}" fill="#ef4444" opacity="${opacity * 0.5}" class="${glowClass}"/>` : ''}
+                        <circle cx="12" cy="12" r="14" fill="${colorHex}" opacity="${opacity}"/>
+                        <polygon points="4,2 20,12 4,22" fill="${colorHex}" stroke="#f87171" stroke-width="1.5"/>
+                        <line x1="20" y1="2" x2="20" y2="22" stroke="#f87171" stroke-width="2"/>
+                        <text x="12" y="38" fill="${isLit ? '#f87171' : '#64748b'}" font-size="9" text-anchor="middle" font-family="mono">${bPct.toFixed(0)}%</text>
+                    </g>
+                `;
+            }
+
+            html += `<text x="210" y="188" fill="#38bdf8" font-size="11" text-anchor="middle" font-family="serif">MODEL-LED-PAR-IND [獨立電阻並聯光度模擬] | 總電流 I = ${iTotal.toFixed(1)} mA</text>`;
+            svg.innerHTML = html;
+        }
+
+        function renderSVGParallelShr(n, vcc, vf, rVal, iTotal, bPctArray) {
+            const svg = document.getElementById('multi-circuit-svg');
+            const isLit = iTotal > 0.5;
+
+            let html = `
+                <g transform="translate(15, 85)">
+                    <rect x="0" y="0" width="38" height="32" rx="2" fill="#111111" stroke="#38bdf8" stroke-width="1.5"/>
+                    <rect x="38" y="10" width="4" height="12" rx="1" fill="#38bdf8"/>
+                    <text x="8" y="21" fill="#38bdf8" font-size="11" font-weight="bold" font-family="serif">${vcc}V</text>
+                </g>
+                <path d="M 33 85 L 33 35 L 100 35 M 150 35 L 390 35 M 390 155 L 33 155 L 33 117" fill="none" stroke="#475569" stroke-width="2"/>
+                <g transform="translate(100, 23)">
+                    <rect x="0" y="0" width="50" height="24" rx="2" fill="#d97706" stroke="#f59e0b" stroke-width="1.5"/>
+                    <text x="25" y="16" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle" font-family="serif">${rVal}Ω</text>
+                </g>
+            `;
+
+            let step = Math.min(58, 220 / n);
+            let startX = 170;
+
+            for (let i = 0; i < n; i++) {
+                let x = startX + i * step;
+                let bPct = bPctArray[i] || 0;
+                let glowR = isLit ? Math.min(36, 10 + (bPct / 100) * 15) : 0;
+                let opacity = isLit ? Math.min(1.0, 0.2 + (bPct / 100) * 0.7) : 0.05;
+                let colorHex = isLit ? '#ef4444' : '#475569';
+                let glowClass = (isLit && bPct > 120) ? 'animate-overdrive' : '';
+
+                html += `
+                    <line x1="${x}" y1="35" x2="${x}" y2="155" stroke="#475569" stroke-width="1.5"/>
+                    <g transform="translate(${x - 12}, 75)">
+                        ${isLit && bPct > 10 ? `<circle cx="12" cy="12" r="${glowR}" fill="#ef4444" opacity="${opacity * 0.6}" class="${glowClass}"/>` : ''}
+                        <circle cx="12" cy="12" r="14" fill="${colorHex}" opacity="${opacity}"/>
+                        <polygon points="4,2 20,12 4,22" fill="${colorHex}" stroke="#f87171" stroke-width="1.5"/>
+                        <line x1="20" y1="2" x2="20" y2="22" stroke="#f87171" stroke-width="2"/>
+                        <text x="12" y="38" fill="${bPct > 120 ? '#fbbf24' : '#f87171'}" font-size="9" text-anchor="middle" font-family="mono" font-weight="bold">${bPct.toFixed(0)}%</text>
+                    </g>
+                `;
+            }
+
+            html += `<text x="210" y="188" fill="#f59e0b" font-size="11" text-anchor="middle" font-family="serif">MODEL-LED-PAR-SHR [熱搶奪光度模擬] | ⚠️光強傾斜</text>`;
+            svg.innerHTML = html;
+        }
+
+        // Universal Ohm's Law Calculator
+        let activeInputs = [];
+
+        function calculateOhm(changedKey) {
+            const vInput = document.getElementById('ohm-v');
+            const iInput = document.getElementById('ohm-i');
+            const rInput = document.getElementById('ohm-r');
+            const pInput = document.getElementById('ohm-p');
+
+            activeInputs = activeInputs.filter(k => k !== changedKey);
+            activeInputs.push(changedKey);
+
+            if (activeInputs.length > 2) {
+                activeInputs.shift();
+            }
+
+            const inputs = {
+                v: parseFloat(vInput.value),
+                i: parseFloat(iInput.value) ? parseFloat(iInput.value) / 1000 : NaN,
+                r: parseFloat(rInput.value),
+                p: parseFloat(pInput.value) ? parseFloat(pInput.value) / 1000 : NaN
+            };
+
+            let V = inputs.v;
+            let I = inputs.i;
+            let R = inputs.r;
+            let P = inputs.p;
+
+            if (activeInputs.length === 2) {
+                const keys = activeInputs.sort().join('');
+                try {
+                    if (keys.includes('v') && keys.includes('i')) {
+                        R = V / I;
+                        P = V * I;
+                    } else if (keys.includes('v') && keys.includes('r')) {
+                        I = V / R;
+                        P = (V * V) / R;
+                    } else if (keys.includes('p') && keys.includes('v')) {
+                        I = P / V;
+                        R = (V * V) / P;
+                    } else if (keys.includes('i') && keys.includes('r')) {
+                        V = I * R;
+                        P = I * I * R;
+                    } else if (keys.includes('i') && keys.includes('p')) {
+                        V = P / I;
+                        R = P / (I * I);
+                    } else if (keys.includes('p') && keys.includes('r')) {
+                        V = Math.sqrt(P * R);
+                        I = Math.sqrt(P / R);
+                    }
+
+                    if (!activeInputs.includes('v') && !isNaN(V)) vInput.value = V.toFixed(3);
+                    if (!activeInputs.includes('i') && !isNaN(I)) iInput.value = (I * 1000).toFixed(2);
+                    if (!activeInputs.includes('r') && !isNaN(R)) rInput.value = R.toFixed(2);
+                    if (!activeInputs.includes('p') && !isNaN(P)) pInput.value = (P * 1000).toFixed(2);
+                } catch(e) {
+                    console.error("Ohm error", e);
+                }
+            }
+            triggerMathJax();
+        }
+
+        function clearOhm() {
+            document.getElementById('ohm-v').value = '';
+            document.getElementById('ohm-i').value = '';
+            document.getElementById('ohm-r').value = '';
+            document.getElementById('ohm-p').value = '';
+            activeInputs = [];
+        }
+
+        calculateMultiLED();
+    </script>
+</body>
+</html>

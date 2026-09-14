@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中國舞與台灣舞蹈藝術家美學全解 Guide to Chinese & Taiwanese Dance</title>
+    <!-- Google Fonts for Elegant Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #121519;
+            --bg-card: #1c2229;
+            --bg-card-hover: #252d36;
+            --text-primary: #f0e6d2;
+            --text-secondary: #b8c1ec;
+            --text-muted: #8892b0;
+            --accent-gold: #d4af37;
+            --accent-gold-bright: #f3e5ab;
+            --accent-red: #c0392b;
+            --accent-red-hover: #e74c3c;
+            --accent-teal: #16a085;
+            --accent-blue: #2980b9;
+            --border-color: #2e3846;
+            --border-gold: rgba(212, 175, 55, 0.3);
+            --shadow-glow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --font-title: 'Noto Serif TC', serif;
+            --font-body: 'Noto Sans TC', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            line-height: 1.7;
+            padding-bottom: 60px;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(192, 57, 43, 0.05) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            background: linear-gradient(180deg, rgba(18, 21, 25, 0.95) 0%, rgba(28, 34, 41, 0.8) 100%);
+            border-bottom: 2px solid var(--accent-gold);
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+        }
+
+        header::before {
+            content: "華夏舞韻 • 藝海流芳 • 台灣名家";
+            display: block;
+            font-family: var(--font-title);
+            color: var(--accent-gold);
+            letter-spacing: 6px;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-family: var(--font-title);
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: var(--accent-gold-bright);
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+        }
+
+        .header-subtitle {
+            max-width: 850px;
+            margin: 0 auto;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            font-weight: 300;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Search & Filter Bar */
+        .search-bar-container {
+            margin: 30px auto;
+            max-width: 700px;
+            display: flex;
+            gap: 12px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 20px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-gold);
+            border-radius: 30px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .tab-btn {
+            background-color: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-family: var(--font-title);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #b8860b 100%);
+            color: #121519;
+            border-color: var(--accent-gold);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+            font-weight: 700;
+        }
+
+        /* Section Headings */
+        .section-header {
+            border-left: 4px solid var(--accent-gold);
+            padding-left: 15px;
+            margin: 40px 0 25px;
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .section-title {
+            font-family: var(--font-title);
+            font-size: 1.9rem;
+            color: var(--accent-gold-bright);
+        }
+
+        .section-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 5px;
+        }
+
+        /* Grid Layout */
+        .school-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        /* School Card */
+        .school-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .school-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent-gold);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .card-header {
+            padding: 20px 25px 15px;
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.1) 0%, transparent 100%);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-badge {
+            background-color: rgba(192, 57, 43, 0.2);
+            color: #e74c3c;
+            border: 1px solid rgba(192, 57, 43, 0.4);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .school-card[data-category="classical"] .card-badge {
+            background-color: rgba(212, 175, 55, 0.15);
+            color: var(--accent-gold);
+            border-color: var(--border-gold);
+        }
+
+        .school-card[data-category="ethnic"] .card-badge {
+            background-color: rgba(22, 160, 133, 0.15);
+            color: #1abc9c;
+            border-color: rgba(22, 160, 133, 0.4);
+        }
+
+        .school-card[data-category="taiwan"] .card-badge {
+            background-color: rgba(41, 128, 185, 0.2);
+            color: #3498db;
+            border-color: rgba(41, 128, 185, 0.4);
+        }
+
+        .school-title {
+            font-family: var(--font-title);
+            font-size: 1.5rem;
+            color: var(--accent-gold-bright);
+        }
+
+        .card-body {
+            padding: 22px 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .info-block {
+            margin-bottom: 8px;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .info-content {
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            text-align: justify;
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .tag {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            padding: 3px 9px;
+            border-radius: 4px;
+            font-size: 0.82rem;
+        }
+
+        /* Key People Pills */
+        .figure-pill {
+            display: inline-block;
+            background-color: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--border-gold);
+            color: var(--accent-gold-bright);
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            margin: 2px;
+        }
+
+        /* Video Showcase Box */
+        .video-box {
+            margin-top: auto;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .video-box-title {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .video-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .video-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 6px;
+            font-size: 0.88rem;
+        }
+
+        .video-item:hover {
+            background: rgba(212, 175, 55, 0.08);
+        }
+
+        .video-name {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .video-btn {
+            background-color: var(--accent-red);
+            color: white;
+            text-decoration: none;
+            padding: 4px 10px;
+            border-radius: 14px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .video-btn:hover {
+            background-color: var(--accent-red-hover);
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(192, 57, 43, 0.5);
+        }
+
+        /* Comparison Table Section */
+        .table-section {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: var(--shadow-glow);
+            overflow-x: auto;
+        }
+
+        .comp-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            margin-top: 15px;
+        }
+
+        .comp-table th {
+            background-color: rgba(212, 175, 55, 0.15);
+            color: var(--accent-gold-bright);
+            font-family: var(--font-title);
+            font-size: 1rem;
+            padding: 14px 16px;
+            border-bottom: 2px solid var(--accent-gold);
+            white-space: nowrap;
+        }
+
+        .comp-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 0.92rem;
+            vertical-align: top;
+        }
+
+        .comp-table tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Matrix Highlight text */
+        .highlight-text {
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .highlight-taiwan {
+            color: #3498db;
+            font-weight: 600;
+        }
+
+        /* Overview Taxonomy Cards */
+        .taxonomy-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 1000px) {
+            .taxonomy-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .tax-card {
+            background: linear-gradient(145deg, #1c2229 0%, #171c22 100%);
+            border: 1px solid var(--border-gold);
+            border-radius: 12px;
+            padding: 25px;
+            position: relative;
+        }
+
+        .tax-card h3 {
+            font-family: var(--font-title);
+            font-size: 1.5rem;
+            color: var(--accent-gold-bright);
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .tax-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .tax-list li {
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .tax-list li::before {
+            content: "◆";
+            position: absolute;
+            left: 0;
+            color: var(--accent-gold);
+            font-size: 0.8rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px 0;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 60px;
+        }
+
+        /* Back to top floating button */
+        .top-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--accent-gold);
+            color: #121519;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .top-btn.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .top-btn:hover {
+            transform: translateY(-4px);
+            background: var(--accent-gold-bright);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <h1>中國舞與台灣舞蹈藝術家美學全解</h1>
+            <p class="header-subtitle">
+                涵蓋中國古典舞四大流派（身韻、漢唐、敦煌、崑舞）、民族民間舞族群（藏、蒙、維、傣、朝、漢）、台灣頂尖舞蹈藝術家（林懷民、劉鳳學、許芳宜、羅曼菲、鄭宗龍、布拉瑞揚、蔡瑞月）之美學風格、代表人物與權威參考影片輯錄。
+            </p>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Search Bar -->
+        <div class="search-bar-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 搜尋派別、身韻定義、服飾紗衣、台灣名家（如：林懷民、許芳宜）或劇目...">
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="filterTab('all', this)">✨ 探尋全部派別與名家</button>
+            <button class="tab-btn" onclick="filterTab('overview', this)">📜 體系分類總覽</button>
+            <button class="tab-btn" onclick="filterTab('classical', this)">🏮 古典舞四大流派</button>
+            <button class="tab-btn" onclick="filterTab('taiwan', this)">🇹🇼 台灣舞蹈藝術家</button>
+            <button class="tab-btn" onclick="filterTab('ethnic', this)">🪕 民族民間舞族群</button>
+            <button class="tab-btn" onclick="filterTab('contemporary', this)">🎭 新古典與當代舞</button>
+            <button class="tab-btn" onclick="filterTab('matrix', this)">📊 派別律動對比表</button>
+        </div>
+
+        <!-- Section 1: Overview Taxonomy -->
+        <section id="sec-overview" class="content-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">中國舞與台灣舞蹈藝術體系總覽</h2>
+                    <p class="section-desc">由「中國古典舞」、「民族民間舞」與「台灣大師跨界當代舞蹈」三大視野共同構成豐富的東方肢體景觀。</p>
+                </div>
+            </div>
+
+            <div class="taxonomy-wrapper">
+                <div class="tax-card">
+                    <h3>🏮 中國古典舞四大流派</h3>
+                    <p style="margin-bottom:15px; color:var(--text-secondary);">以戲曲身段、古代石刻壁畫及武術動律為基礎的學院派舞蹈語言。</p>
+                    <ul class="tax-list">
+                        <li><strong>身韻學派：</strong> 講究「形神勁律」與「身法與韻律」統一，古典舞核心語言。</li>
+                        <li><strong>漢唐學派：</strong> 重構漢唐古舞、帛畫與陶俑，呈現古樸雄渾。</li>
+                        <li><strong>敦煌學派：</strong> 莫高窟壁畫轉化，以「三道彎」與飛天為特色。</li>
+                        <li><strong>崑舞學派：</strong> 提煉崑曲水袖與手身步法，展現江南文人詩意。</li>
+                    </ul>
+                </div>
+
+                <div class="tax-card">
+                    <h3>🪕 中國民族民間舞族群</h3>
+                    <p style="margin-bottom:15px; color:var(--text-secondary);">根植於華夏各民族地理、信仰、勞作與歡慶儀式的身體記憶。</p>
+                    <ul class="tax-list">
+                        <li><strong>藏族舞：</strong> 高原負重，膝關節「顫屈伸」與「一順邊」。</li>
+                        <li><strong>蒙古族舞：</strong> 馬背豪情，提壓肩、硬臂與模仿雄鷹奔馬。</li>
+                        <li><strong>維吾爾族舞：</strong> 西域熱情，移頸移肩、托帽揚眉與高速度旋轉。</li>
+                        <li><strong>傣族舞：</strong> 孔雀與水文化，柔順三道彎與孔雀手姿態。</li>
+                        <li><strong>朝鮮族舞：</strong> 重視「長呼吸」與鶴步，動靜相濟典雅含蓄。</li>
+                    </ul>
+                </div>
+
+                <div class="tax-card" style="border-color: rgba(52, 152, 219, 0.4);">
+                    <h3>🇹🇼 台灣舞蹈藝術家與創新</h3>
+                    <p style="margin-bottom:15px; color:var(--text-secondary);">將東方傳統美學（太極、唐樂舞、民俗、原民古謠）與西方當代舞蹈融會貫通。</p>
+                    <ul class="tax-list">
+                        <li><strong>林懷民：</strong> 雲門舞集創辦人，將太極導引、書法藝術與屈原詩篇融入舞蹈。</li>
+                        <li><strong>劉鳳學：</strong> 台灣舞蹈博士教母，古代唐樂舞考證復原與新古典舞團創辦人。</li>
+                        <li><strong>許芳宜：</strong> 國際級頂尖舞者，瑪莎葛蘭姆首席，融匯當代與東方極致韻味。</li>
+                        <li><strong>羅曼菲 / 鄭宗龍：</strong> 雲門精神傳承與艋舺街頭民間道教劇場創新。</li>
+                        <li><strong>布拉瑞揚：</strong> 排灣族編導，探索原住民傳統古謠與土地當代肢體。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Classical Dance Schools -->
+        <section id="sec-classical" class="content-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">中國古典舞四大流派</h2>
+                    <p class="section-desc">深入拆解身韻、漢唐、敦煌、崑舞四大流派的美學密碼。</p>
+                </div>
+            </div>
+
+            <div class="school-grid">
+                <!-- 1. 身韻學派 -->
+                <div class="school-card" data-category="classical" data-keywords="身韻 身韻學派 身法 韻律 定義 風格 服飾 紗衣 大襠褲 水袖 折扇 唐滿城 李正一 華霄一 唐詩逸 形神勁律 提沉沖靠 扇舞丹青 愛蓮說 點降唇 醉鼓">
+                    <div class="card-header">
+                        <h3 class="school-title">身韻學派 (Shenyun School)</h3>
+                        <span class="card-badge">古典舞核心語言</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-block">
+                            <div class="info-label">📜 權威定義 (Definition)</div>
+                            <div class="info-content">
+                                「<strong>身韻</strong>」是「<strong>身法</strong>」（外在動作技法、姿態線路）與「<strong>韻律</strong>」（內在氣息、眼神意念、民族審美韻味）的有機統一。20世紀80年代由唐滿城、李正一教授在《中國古典舞身韻教學法》中系統提出。
+                                核心哲理為「<strong>起於心、發於腰、形於體</strong>」——所有的肢體動作皆由內在的心念引導，經由腰部的轉折推動，最終在四肢與眼神中呈現，是中國古典舞區別於西方芭蕾與現代舞的標誌性靈魂。
+                            </div>
+                        </div>
+
+                        <div class="info-block">
+                            <div class="info-label">💃 藝術風格與美學 (Style)</div>
+                            <div class="info-content">
+                                追求「<strong>形、神、勁、律</strong>」四位一體：
+                                <ul style="padding-left:18px; margin-top:4px;">
+                                    <li><strong>形（外姿）：</strong> 講究「擰、傾、圓、曲」，呈現東方空間美學的曲線流動。</li>
+                                    <li><strong>神（內韻）：</strong> 「以神領形，以形傳神」，強調「眼隨手走、手隨心動」的呼吸與眼神傳情。</li>
+                                    <li><strong>勁（力道）：</strong> 剛柔相濟，強調寸勁、反彈力與連綿不絕的延伸感。</li>
+                                    <li><strong>律（律動）：</strong> 遵循傳統辯證動律：「<strong>欲左先右、欲上先下、欲前先後、逢開必合、逢沖必靠</strong>」，運動軌跡呈平圓、立圓與8字圓。</li>
+                                </ul>
+                            </div>
+                            <div class="tag-list">
+                                <span class="tag">以神領形</span>
+                                <span class="tag">欲左先右</span>
+                                <span class="tag">欲上先下</span>
+                                <span class="tag">平圓立圓8字圓</span>
+                                <span class="tag">剛柔相濟</span>
+                            </div>
+                        </div>
+
+                        <div class="info-block">
+                            <div class="info-label">👘 服飾與道具美學 (Costumes & Props)</div>
+                            <div class="info-content">
+                                服飾與道具是身韻身體線條與氣流延展的直觀視覺載體：
+                                <ul style="padding-left:18px; margin-top:4px;">
+                                    <li><strong>古典身韻紗衣 (Shenyun Robes)：</strong> 採用輕盈半透明的薄紗（雪紡/絲綢），多搭配淡雅水墨色彩（黛綠、煙灰、水藍、胭脂紅）。高衩飄帶裙與長衫隨舞者軀幹擰傾產生空間流動與「風吹殘雲」般的仙氣。</li>
+                                    <li><strong>身韻練功服與大襠褲：</strong> 訓練時穿著貼身彈性上衣與寬鬆垂墜的大襠褲（高腰闊腿褲），便於清晰觀察腰胯「提沉沖靠」與脊椎圓曲的細微擺幅。</li>
+                                    <li><strong>水袖 (Water Sleeves)：</strong> 縫接於袖口之加長白絲綢，講究「以身代袖，以袖帶身」，拋、甩、收、繞、抖，將內息延伸至無限空間。</li>
+                                    <li><strong>折扇與團扇 (Fans)：</strong> 道具如手法的延伸，如《扇舞丹青》中合扇如筆揮毫、開扇如畫卷鋪展。</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="info-block">
+                            <div class="info-label">👑 代表人物</div>
+                            <div class="info-content">
+                                <span class="figure-pill">奠基人：唐滿城</span>
+                                <span class="figure-pill">奠基人：李正一</span>
+                                <span class="figure-pill">當代：唐詩逸</span>
+                                <span class="figure-pill">當代：華霄一</span>
+                                <span class="figure-pill">當代：胡陽</span>
+                                <span class="figure-pill">當代：朱潔靜</span>
+                            </div>
+                        </div>
+
+                        <div class="video-box">
+                            <div class="video-box-title">🎥 權威劇目與示範影片</div>
+                            <ul class="video-list">
+                                <li class="video-item">
+                                    <span class="video-name">《扇舞丹青》- 王亞彬 (身韻扇舞與水墨姿態)</span>
+                                    <a href="https://www.youtube.com/results?search_query=扇舞丹青+王亞彬" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                                <li class="video-item">
+                                    <span class="video-name">《愛蓮說》- 華霄一 (極致提沉紗衣氣韻)</span>
+                                    <a href="https://www.youtube.com/results?search_query=愛蓮說+華霄一" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                                <li class="video-item">
+                                    <span class="video-name">《點降唇》- 華霄一 (閨秀身韻與銅鏡意境)</span>
+                                    <a href="https://www.youtube.com/results?search_query=點降唇+華霄一" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                                <li class="video-item">
+                                    <span class="video-name">《醉鼓》- 胡陽 (剛柔相濟男性身韻)</span>
+                                    <a href="https://www.youtube.com/results?search_query=醉鼓+胡陽" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. 漢唐古典舞派 -->
+                <div class="school-card" data-category="classical" data-keywords="漢唐 漢唐古典舞 孫穎 劉鳳學 踏歌 相和歌 銅雀伎 桃夭 玉人 盤鼓舞 長袖 踏地為節">
+                    <div class="card-header">
+                        <h3 class="school-title">漢唐古典舞派 (Han-Tang School)</h3>
+                        <span class="card-badge">古風歷史復原</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-block">
+                            <div class="info-label">📍 起源與背景</div>
+                            <div class="info-content">由北京舞蹈學院孫穎教授創立，台灣劉鳳學博士亦在古舞復原做出歷史貢獻。以漢、唐歷史文物、石刻、帛畫、陶俑及古籍詩詞為依據，重構漢唐古典舞語彙。</div>
+                        </div>
+
+                        <div class="info-block">
+                            <div class="info-label">✨ 動作特色與美學</div>
+                            <div class="info-content">核心技術包含「<strong>踏地為節</strong>」、「<strong>以斜為美</strong>」與反襯姿態。長袖拂躍、盤鼓舞蹈、響板相和，講究軀幹橫向流動與沉穩步姿。</div>
+                            <div class="tag-list">
+                                <span class="tag">踏地為節</span>
+                                <span class="tag">盤鼓舞</span>
+                                <span class="tag">長袖飄逸</span>
+                                <span class="tag">反襯扭傾</span>
+                            </div>
+                        </div>
+
+                        <div class="info-block">
+                            <div class="info-label">💃 風格與精神</div>
+                            <div class="info-content">古樸雄渾、雍容華貴、深沉寧靜。體現漢代的剛健瀟灑與唐代的開放包容，帶有強烈的歷史厚重感。</div>
+                        </div>
+
+                        <div class="info-block">
+                            <div class="info-label">👑 代表人物</div>
+                            <div class="info-content">
+                                <span class="figure-pill">創始人：孫穎先生</span>
+                                <span class="figure-pill">台灣考證：劉鳳學博士</span>
+                                <span class="figure-pill">代表：華霄一</span>
+                                <span class="figure-pill">代表：劉岩</span>
+                            </div>
+                        </div>
+
+                        <div class="video-box">
+                            <div class="video-box-title">🎥 權威劇目與示範影片</div>
+                            <ul class="video-list">
+                                <li class="video-item">
+                                    <span class="video-name">《踏歌》- 孫穎經典 (漢代踏地長袖舞)</span>
+                                    <a href="https://www.youtube.com/results?search_query=踏歌+中國古典舞" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                                <li class="video-item">
+                                    <span class="video-name">《相和歌》- 盤鼓踏歌經典作品</span>
+                                    <a href="https://www.youtube.com/results?search_query=相和歌+舞蹈" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. 敦煌舞派 -->
+                <div class="school-card" data-category="classical" data-keywords="敦煌 敦煌舞 高金榮 絲路花雨 千手觀音 反彈琵琶 大飛天 三道彎 歪頸擰腰移胯 莫高窟壁畫">
+                    <div class="card-header">
+                        <h3 class="school-title">敦煌舞派 (Dunhuang School)</h3>
+                        <span class="card-badge">絲路壁畫靈性</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-block">
+                            <div class="info-label">📍 起源與背景</div>
+                            <div class="info-content">20世紀70年代末高金榮教授等前往敦煌莫高窟，深入臨摹飛天、菩薩、反彈琵琶壁畫姿態，提煉並創立敦煌舞教學體系。</div>
+                        </div>
+
+                        <div class="info-block">
+                            <div class="info-label">✨ 動作特色與美學</div>
+                            <div class="info-content">經典肢體呈現「<strong>三道彎</strong>」（歪頸、擰腰、移胯）。配合特有的手印（如蓮花手、反彈琵琶手）、勾腳趾、臂彎曲折稜角姿態。</div>
+                            <div class="tag-list">
+                                <span class="tag">三道彎曲線</span>
+                                <span class="tag">反彈琵琶</span>
+                                <span class="tag">佛教手印</span>
+                                <span class="tag">飛天飄帶</span>
+                            </div>
+                        </div>
+
+                        <div class="info-block">
+                            <div class="info-label">💃 風格與精神</div>
+                            <div class="info-content">神秘典雅、莊嚴飄逸、帶有濃郁的西域佛教藝術色彩與中原文化的完美結合，動態如壁畫復活。</div>
+                        </div>
+
+                        <div class="info-block">
+                            <div class="info-label">👑 代表人物</div>
+                            <div class="info-content">
+                                <span class="figure-pill">體系奠基人：高金榮</span>
+                                <span class="figure-pill">專家：董錫玖</span>
+                                <span class="figure-pill">舞者：賀嘉佳</span>
+                            </div>
+                        </div>
+
+                        <div class="video-box">
+                            <div class="video-box-title">🎥 權威劇目與示範影片</div>
+                            <ul class="video-list">
+                                <li class="video-item">
+                                    <span class="video-name">舞劇《絲路花雨》- 敦煌舞開山巨作</span>
+                                    <a href="https://www.youtube.com/results?search_query=絲路花雨+舞蹈" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                                <li class="video-item">
+                                    <span class="video-name">《千手觀音》- 張繼剛編導經典</span>
+                                    <a href="https://www.youtube.com/results?search_query=千手觀音+中國殘疾人藝術團" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. 昆舞派 -->
+                <div class="school-card" data-category="classical" data-keywords="崑舞 昆舞 馬家欽 崑曲 崑韻 游園驚夢 水袖 微雕 江南詩意">
+                    <div class="card-header">
+                        <h3 class="school-title">崑舞派 (Kun Dance School)</h3>
+                        <span class="card-badge">戲曲雅部精粹</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-block">
+                            <div class="info-label">📍 起源與背景</div>
+                            <div class="info-content">由南京藝術學院馬家欽教授等將「百戲之母」崑曲的舞姿、表演身段獨立提煉，經系統舞蹈化加工發展而成的新興古典舞流派。</div>
+                        </div>
+
+                        <div class="info-block">
+                            <div class="info-label">✨ 動作特色與美學</div>
+                            <div class="info-content">極度講究「<strong>手眼身法步</strong>」的極致微雕。包含細膩的水袖功、提留轉折步法、眼神的幽微流轉與折扇韻律。</div>
+                            <div class="tag-list">
+                                <span class="tag">崑曲水袖</span>
+                                <span class="tag">眼神微雕</span>
+                                <span class="tag">步履輕盈</span>
+                                <span class="tag">江南雅韻</span>
+                            </div>
+                        </div>
+
+                        <div class="info-block">
+                            <div class="info-label">👑 代表人物</div>
+                            <div class="info-content">
+                                <span class="figure-pill">創始人：馬家欽教授</span>
+                                <span class="figure-pill">推廣者：馬家榮</span>
+                            </div>
+                        </div>
+
+                        <div class="video-box">
+                            <div class="video-box-title">🎥 權威劇目與示範影片</div>
+                            <ul class="video-list">
+                                <li class="video-item">
+                                    <span class="video-name">舞劇《崑韻》- 崑舞代表作</span>
+                                    <a href="https://www.youtube.com/results?search_query=崑韻+舞蹈" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Taiwanese Dance Artists -->
+        <section id="sec-taiwan" class="content-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">🇹🇼 台灣舞蹈藝術家與東方肢體美學</h2>
+                    <p class="section-desc">介紹台灣當代舞蹈先驅、唐樂舞考證大師、國際名伶與新世代編導巨擘。</p>
+                </div>
+            </div>
+
+            <div class="school-grid">
+                <!-- 1. 林懷民 -->
+                <div class="school-card" data-category="taiwan" data-keywords="林懷民 雲門舞集 薪傳 九歌 水月 流浪者之歌 行草 太極導引 書法舞蹈 台灣舞蹈大師">
+                    <div class="card-header">
+                        <h3 class="school-title">林懷民 (Lin Hwai-min)</h3>
+                        <span class="card-badge" style="background-color:rgba(52, 152, 219, 0.2); color:#3498db; border-color:rgba(52, 152, 219, 0.4);">雲門舞集創辦人</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-block">
+                            <div class="info-label">📍 藝術地位與貢獻</div>
+                            <div class="info-content">1973年創辦華語社會第一個當代舞團「雲門舞集」，獲頒美國舞蹈節終身成就獎等國際殊榮。他將台灣傳統文化、古典文學（屈原《九歌》）、東方身體訓練（太極導引、內家拳、靜坐）與西洋現代舞融合。</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">✨ 美學與肢體特色</div>
+                            <div class="info-content">開創「<strong>太極導引與書法舞蹈</strong>」語彙。如《行草三部曲》將書法筆觸、墨韻枯潤轉化為舞蹈氣息與肢體留白；《水月》以太極水波倒影展現虛實靜謐。</div>
+                            <div class="tag-list">
+                                <span class="tag">太極導引</span>
+                                <span class="tag">書法墨韻動律</span>
+                                <span class="tag">東方哲思</span>
+                                <span class="tag">雲門舞集</span>
+                            </div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">👑 代表劇目</div>
+                            <div class="info-content">《薪傳》、《九歌》、《水月》、《流浪者之歌》、《行草》、《狂草》、《松煙》</div>
+                        </div>
+                        <div class="video-box">
+                            <div class="video-box-title">🎥 權威劇目與參考影片</div>
+                            <ul class="video-list">
+                                <li class="video-item">
+                                    <span class="video-name">《水月》- 雲門舞集 (太極與水波極致名作)</span>
+                                    <a href="https://www.youtube.com/results?search_query=水月+雲門舞集" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                                <li class="video-item">
+                                    <span class="video-name">《行草》- 書法墨韻轉化為舞蹈語彙</span>
+                                    <a href="https://www.youtube.com/results?search_query=行草+雲門舞集" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                                <li class="video-item">
+                                    <span class="video-name">《薪傳·渡海》- 台灣集體記憶史詩舞劇</span>
+                                    <a href="https://www.youtube.com/results?search_query=薪傳+渡海+雲門舞集" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. 劉鳳學 博士 -->
+                <div class="school-card" data-category="taiwan" data-keywords="劉鳳學 新古典舞團 唐樂舞 拔頭 春鶯崡 木蘭歸 大典 國寶級舞蹈博士 原住民采風">
+                    <div class="card-header">
+                        <h3 class="school-title">劉鳳學 博士 (Dr. Liu Feng-shueh)</h3>
+                        <span class="card-badge" style="background-color:rgba(52, 152, 219, 0.2); color:#3498db; border-color:rgba(52, 152, 219, 0.4);">台灣舞蹈界教母</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-block">
+                            <div class="info-label">📍 藝術地位與貢獻</div>
+                            <div class="info-content">台灣第一位舞蹈博士、國寶級舞蹈家，創立「新古典舞團」。她是研究並重現古代<strong>唐樂舞</strong>（宮廷燕樂、大曲）的國際權威學者，同時深入台灣原住民舞蹈采風與數位典藏。</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">✨ 美學與肢體特色</div>
+                            <div class="info-content">主張「<strong>尊重傳統，創造現代</strong>」。透過古代舞譜（如日本宮內廳保存之唐代舞譜）研究，復原唐代宮廷舞蹈之對稱嚴謹、步態昂揚與儒家禮樂美學。</div>
+                            <div class="tag-list">
+                                <span class="tag">唐樂舞復原</span>
+                                <span class="tag">新古典舞團</span>
+                                <span class="tag">禮樂美學</span>
+                                <span class="tag">原住民采風</span>
+                            </div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">👑 代表劇目</div>
+                            <div class="info-content">唐樂舞《拔頭》、《春鶯崡》；現代作品《木蘭歸》、《招魂》、《大典》</div>
+                        </div>
+                        <div class="video-box">
+                            <div class="video-box-title">🎥 權威劇目與參考影片</div>
+                            <ul class="video-list">
+                                <li class="video-item">
+                                    <span class="video-name">《唐樂舞·春鶯崡》- 劉鳳學復原唐代宮廷大曲</span>
+                                    <a href="https://www.youtube.com/results?search_query=劉鳳學+唐樂舞" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                                <li class="video-item">
+                                    <span class="video-name">《木蘭歸》- 新古典舞團舞蹈劇場</span>
+                                    <a href="https://www.youtube.com/results?search_query=劉鳳學+木蘭歸" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. 許芳宜 -->
+                <div class="school-card" data-category="taiwan" data-keywords="許芳宜 瑪莎葛蘭姆 首席舞者 芳宜 刺客聶隱娘 國際舞伶 身體靈魂">
+                    <div class="card-header">
+                        <h3 class="school-title">許芳宜 (Fang-Yi Sheu)</h3>
+                        <span class="card-badge" style="background-color:rgba(52, 152, 219, 0.2); color:#3498db; border-color:rgba(52, 152, 219, 0.4);">國際頂尖舞伶</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-block">
+                            <div class="info-label">📍 藝術地位與貢獻</div>
+                            <div class="info-content">曾任美國「瑪莎·葛蘭姆舞團」首席舞者，被譽為葛蘭姆的傳人與「美國舞蹈雜誌」封面人物。創立「許芳宜&藝術家」，跨足舞劇編創、電影演出（《刺客聶隱娘》、《我心我行》）。</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">✨ 美學與肢體特色</div>
+                            <div class="info-content">將葛蘭姆收縮與釋放（Contraction & Release）技巧與東方女性柔韌、充沛的內在靈魂爆發力結合，肢體極具戲劇張力與雕塑感。</div>
+                            <div class="tag-list">
+                                <span class="tag">瑪莎葛蘭姆首席</span>
+                                <span class="tag">收縮與釋放</span>
+                                <span class="tag">東方靈魂爆發力</span>
+                                <span class="tag">跨界藝術</span>
+                            </div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">👑 代表作品</div>
+                            <div class="info-content">《半絲半縷》、自傳舞蹈電影《我心我行》、電影《刺客聶隱娘》（飾嘉誠公主）</div>
+                        </div>
+                        <div class="video-box">
+                            <div class="video-box-title">🎥 權威劇目與參考影片</div>
+                            <ul class="video-list">
+                                <li class="video-item">
+                                    <span class="video-name">《我心我行》- 許芳宜自傳舞蹈電影</span>
+                                    <a href="https://www.youtube.com/results?search_query=許芳宜+我心我行" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                                <li class="video-item">
+                                    <span class="video-name">許芳宜 舞蹈示範與國際演出選段</span>
+                                    <a href="https://www.youtube.com/results?search_query=許芳宜+舞蹈" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. 羅曼菲 -->
+                <div class="school-card" data-category="taiwan" data-keywords="羅曼菲 挽歌 旋轉獨舞 雲門2 創團總監 舞者 天生舞者">
+                    <div class="card-header">
+                        <h3 class="school-title">羅曼菲 (Lo Man-fei)</h3>
+                        <span class="card-badge" style="background-color:rgba(52, 152, 219, 0.2); color:#3498db; border-color:rgba(52, 152, 219, 0.4);">雲門2 創團總監</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-block">
+                            <div class="info-label">📍 藝術地位與貢獻</div>
+                            <div class="info-content">被林懷民譽為「天生的舞者」，雲門舞集核心舞者與「雲門2」創團藝術總監。深耕台灣舞蹈教育，培養無數當代青年編舞家與舞者。</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">✨ 美學與肢體特色</div>
+                            <div class="info-content">以修長流麗的肢體線條與深情演繹著稱。在林懷民作品《輓歌》中，以長達十幾分鐘不間斷的快速旋轉獨舞震撼國際舞蹈界。</div>
+                            <div class="tag-list">
+                                <span class="tag">《輓歌》極致旋轉</span>
+                                <span class="tag">雲門2總監</span>
+                                <span class="tag">舞蹈教育先驅</span>
+                            </div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">👑 代表作品</div>
+                            <div class="info-content">《輓歌》（旋轉名篇）、《黑髮》、《女歌》</div>
+                        </div>
+                        <div class="video-box">
+                            <div class="video-box-title">🎥 權威劇目與參考影片</div>
+                            <ul class="video-list">
+                                <li class="video-item">
+                                    <span class="video-name">《輓歌》- 羅曼菲不間斷旋轉獨舞經典</span>
+                                    <a href="https://www.youtube.com/results?search_query=羅曼菲+輓歌" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. 鄭宗龍 -->
+                <div class="school-card" data-category="taiwan" data-keywords="鄭宗龍 雲門舞集 現任總監 十三聲 毛月亮 艋舺 道教儀式 台灣民間美學">
+                    <div class="card-header">
+                        <h3 class="school-title">鄭宗龍 (Cheng Tsung-lung)</h3>
+                        <span class="card-badge" style="background-color:rgba(52, 152, 219, 0.2); color:#3498db; border-color:rgba(52, 152, 219, 0.4);">雲門現任藝術總監</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-block">
+                            <div class="info-label">📍 藝術地位與貢獻</div>
+                            <div class="info-content">雲門舞集現任藝術總監。成長於台北艋舺，將市井庶民記憶、廟會道教儀式、台灣傳統說唱與當代舞蹈、科技視覺進行跨界結合。</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">✨ 美學與肢體特色</div>
+                            <div class="info-content">作品《十三聲》汲取艋舺街頭傳奇，結合廟會蹲蹲步、道教起乩肢體、彩繪顏料與台灣古謠；《毛月亮》則探討當代科技與原始肉身的碰撞。</div>
+                            <div class="tag-list">
+                                <span class="tag">艋舺庶民記憶</span>
+                                <span class="tag">道教儀式動律</span>
+                                <span class="tag">《十三聲》</span>
+                                <span class="tag">當代科技與肉身</span>
+                            </div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">👑 代表劇目</div>
+                            <div class="info-content">《十三聲》、《毛月亮》、《定光》、《野水》、《波》</div>
+                        </div>
+                        <div class="video-box">
+                            <div class="video-box-title">🎥 權威劇目與參考影片</div>
+                            <ul class="video-list">
+                                <li class="video-item">
+                                    <span class="video-name">《十三聲》- 雲門舞集 (台灣廟會與庶民動律)</span>
+                                    <a href="https://www.youtube.com/results?search_query=十三聲+雲門舞集" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                                <li class="video-item">
+                                    <span class="video-name">《毛月亮》- 鄭宗龍與Sigur Rós音樂跨界</span>
+                                    <a href="https://www.youtube.com/results?search_query=毛月亮+雲門舞集" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. 布拉瑞揚·帕格勒法 -->
+                <div class="school-card" data-category="taiwan" data-keywords="布拉瑞揚 排灣族 布拉瑞揚舞團 原住民古謠 回家跳舞 漂亮發聲 阿美族古謠">
+                    <div class="card-header">
+                        <h3 class="school-title">布拉瑞揚 (Bulareyaung Pagarlava)</h3>
+                        <span class="card-badge" style="background-color:rgba(52, 152, 219, 0.2); color:#3498db; border-color:rgba(52, 152, 219, 0.4);">布拉瑞揚舞團創辦人</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-block">
+                            <div class="info-label">📍 藝術地位與貢獻</div>
+                            <div class="info-content">排灣族編舞家，曾為雲門舞者與美國瑪莎葛蘭姆舞團受邀編導。2015年響應「回家跳舞」，創立「布拉瑞揚舞團 (BDC)」，深入部落挖掘原民身體能量。</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">✨ 美學與肢體特色</div>
+                            <div class="info-content">結合台灣原住民部落傳統古謠吟唱、踏地步伐、勞作姿態與當代舞蹈劇場，呈現極具震撼力的土地生命力與自我身份認同。</div>
+                            <div class="tag-list">
+                                <span class="tag">排灣原民身體</span>
+                                <span class="tag">傳統古謠吟唱</span>
+                                <span class="tag">回家跳舞</span>
+                                <span class="tag">土地生命力</span>
+                            </div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">👑 代表劇目</div>
+                            <div class="info-content">《拉歌》、《漂亮發聲》、《路訥》、《網好黃》、《聽法蘭克》</div>
+                        </div>
+                        <div class="video-box">
+                            <div class="video-box-title">🎥 權威劇目與參考影片</div>
+                            <ul class="video-list">
+                                <li class="video-item">
+                                    <span class="video-name">《漂亮發聲》- 布拉瑞揚舞團代表作</span>
+                                    <a href="https://www.youtube.com/results?search_query=布拉瑞揚舞團+漂亮發聲" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                                <li class="video-item">
+                                    <span class="video-name">《路訥》- 獲得台新藝術獎大獎作品</span>
+                                    <a href="https://www.youtube.com/results?search_query=布拉瑞揚舞團+路訥" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. 蔡瑞月 -->
+                <div class="school-card" data-category="taiwan" data-keywords="蔡瑞月 台灣現代舞先驅 蔡瑞月舞蹈研究社 台灣舞蹈教育 本土化">
+                    <div class="card-header">
+                        <h3 class="school-title">蔡瑞月 (Tsai Rui-yue)</h3>
+                        <span class="card-badge" style="background-color:rgba(52, 152, 219, 0.2); color:#3498db; border-color:rgba(52, 152, 219, 0.4);">台灣現代舞先驅</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-block">
+                            <div class="info-label">📍 藝術地位與貢獻</div>
+                            <div class="info-content">台灣現代舞與民族舞蹈教育的先驅，創立「蔡瑞月舞蹈研究社」。在20世紀中葉引入現代舞與民族舞蹈教學，啟蒙了台灣數代舞蹈藝術家。</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">✨ 美學與肢體特色</div>
+                            <div class="info-content">作品融合台灣本土民俗風情、社會關懷與現代舞表達，被譽為「台灣舞蹈的母體」。</div>
+                            <div class="tag-list">
+                                <span class="tag">台灣舞蹈先驅</span>
+                                <span class="tag">舞蹈教育啟蒙</span>
+                                <span class="tag">本土民俗融合</span>
+                            </div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">👑 代表劇目</div>
+                            <div class="info-content">《印度之歌》、《死與少女》、《台灣傀儡舞》</div>
+                        </div>
+                        <div class="video-box">
+                            <div class="video-box-title">🎥 權威劇目與參考影片</div>
+                            <ul class="video-list">
+                                <li class="video-item">
+                                    <span class="video-name">蔡瑞月舞蹈紀錄與歷史專題</span>
+                                    <a href="https://www.youtube.com/results?search_query=蔡瑞月+舞蹈" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Ethnic & Folk Dance Streams -->
+        <section id="sec-ethnic" class="content-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">中國民族民間舞主要族群分類</h2>
+                    <p class="section-desc">彙整藏族、蒙古族、維吾爾族、傣族、朝鮮族及漢族民間舞之律動精髓。</p>
+                </div>
+            </div>
+
+            <div class="school-grid">
+                <!-- 藏族舞 -->
+                <div class="school-card" data-category="ethnic" data-keywords="藏族 藏族舞 鍋莊 弦子 熱巴 堆諧 膝關節顫屈伸 一順邊 喜孜瑪 飛弦踏春 天路 布衣者">
+                    <div class="card-header">
+                        <h3 class="school-title">藏族舞蹈 (Tibetan Dance)</h3>
+                        <span class="card-badge">雪域高原氣韻</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-block">
+                            <div class="info-label">📍 主要種類</div>
+                            <div class="info-content">包含<strong>鍋莊舞</strong>（圓圈歡慶舞）、<strong>弦子舞</strong>（柔美長袖舞）、<strong>熱巴舞</strong>（鈴鼓與技巧舞）、<strong>堆諧</strong>（藏式踢踏舞）。</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">✨ 動作律動特色</div>
+                            <div class="info-content">核心在於<strong>膝關節的「顫動」與「屈伸」</strong>，手腳呈「<strong>一順邊</strong>」（同側肢體聯動），源於高原山路負重與勞作姿態。</div>
+                            <div class="tag-list">
+                                <span class="tag">膝關節顫屈伸</span>
+                                <span class="tag">一順邊</span>
+                                <span class="tag">長袖擺甩</span>
+                            </div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">👑 代表人物與代表劇目</div>
+                            <div class="info-content">
+                                <span class="figure-pill">慈仁桑姆</span>
+                                <span class="figure-pill">達娃央宗</span>
+                                <div style="margin-top:5px;">代表作：《飛弦踏春》、《喜孜瑪》、《天路》</div>
+                            </div>
+                        </div>
+                        <div class="video-box">
+                            <div class="video-box-title">🎥 參考影片</div>
+                            <ul class="video-list">
+                                <li class="video-item">
+                                    <span class="video-name">《飛弦踏春》- 拉孜堆諧經典踢踏</span>
+                                    <a href="https://www.youtube.com/results?search_query=飛弦踏春+舞蹈" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 蒙古族舞 -->
+                <div class="school-card" data-category="ethnic" data-keywords="蒙古族 蒙古舞 賈作光 奔騰 雁北歸 筷子舞 盅碗舞 狼圖騰 提壓肩 硬肩 柔臂 馬步">
+                    <div class="card-header">
+                        <h3 class="school-title">蒙古族舞蹈 (Mongolian Dance)</h3>
+                        <span class="card-badge">馬背草原豪情</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-block">
+                            <div class="info-label">📍 主要種類</div>
+                            <div class="info-content">包含<strong>馬刀舞</strong>、<strong>筷子舞</strong>、<strong>盅碗舞</strong>（極致平衡）、<strong>安代舞</strong>、模仿雄鷹之<strong>鷹舞</strong>。</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">✨ 動作律動特色</div>
+                            <div class="info-content">強調<strong>提肩、壓肩、硬肩、硬手、柔臂</strong>與強健的<strong>馬步</strong>。胸廓開闊，模仿雄鷹展翅與駿馬奔馳。</div>
+                            <div class="tag-list">
+                                <span class="tag">抖肩硬肩</span>
+                                <span class="tag">柔臂</span>
+                                <span class="tag">馬步奔馳</span>
+                            </div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">👑 代表人物與代表劇目</div>
+                            <div class="info-content">
+                                <span class="figure-pill">賈作光（蒙古舞之父）</span>
+                                <span class="figure-pill">莫德格瑪</span>
+                                <div style="margin-top:5px;">代表作：《奔騰》、《雁北歸》、《狼圖騰》</div>
+                            </div>
+                        </div>
+                        <div class="video-box">
+                            <div class="video-box-title">🎥 參考影片</div>
+                            <ul class="video-list">
+                                <li class="video-item">
+                                    <span class="video-name">《奔騰》- 張繼剛作品 (男舞巔峰)</span>
+                                    <a href="https://www.youtube.com/results?search_query=奔騰+蒙古舞" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 維吾爾族舞 -->
+                <div class="school-card" data-category="ethnic" data-keywords="維吾爾族 維吾爾舞 康巴爾汗 阿依吐拉 古麗米娜 摘葡萄 鈴鼓舞 賽乃姆 刀郎舞 移頸 托帽 旋轉">
+                    <div class="card-header">
+                        <h3 class="school-title">維吾爾族舞蹈 (Uyghur Dance)</h3>
+                        <span class="card-badge">西域風情律動</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-block">
+                            <div class="info-label">📍 主要種類</div>
+                            <div class="info-content">包含<strong>賽乃姆</strong>（平穩優雅）、<strong>刀郎舞</strong>（粗獷豪邁）、<strong>手鼓舞</strong>、<strong>麥西熱甫</strong>（大眾歡聚舞）。</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">✨ 動作律動特色</div>
+                            <div class="info-content">顯著標誌為<strong>移頸</strong>（頭脖快速水平滑動）、<strong>托帽、揚眉、移肩</strong>，配合多圈高速度定點旋轉與手鼓點節奏。</div>
+                            <div class="tag-list">
+                                <span class="tag">移頸左右滑動</span>
+                                <span class="tag">揚眉托帽</span>
+                                <span class="tag">高難度旋轉</span>
+                            </div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">👑 代表人物與代表劇目</div>
+                            <div class="info-content">
+                                <span class="figure-pill">康巴爾汗</span>
+                                <span class="figure-pill">阿依吐拉</span>
+                                <span class="figure-pill">古麗米娜</span>
+                                <div style="margin-top:5px;">代表作：《摘葡萄》、《鈴鼓舞》</div>
+                            </div>
+                        </div>
+                        <div class="video-box">
+                            <div class="video-box-title">🎥 參考影片</div>
+                            <ul class="video-list">
+                                <li class="video-item">
+                                    <span class="video-name">《摘葡萄》- 阿依吐拉經典風情舞</span>
+                                    <a href="https://www.youtube.com/results?search_query=摘葡萄+維吾爾族舞蹈" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 傣族舞 -->
+                <div class="school-card" data-category="ethnic" data-keywords="傣族 傣族舞 刀美蘭 楊麗萍 雀之靈 月光 兩棵樹 孔雀舞 象腳鼓舞 三道彎 孔雀手 水舞">
+                    <div class="card-header">
+                        <h3 class="school-title">傣族舞蹈 (Dai Dance)</h3>
+                        <span class="card-badge">靈性孔雀柔美</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-block">
+                            <div class="info-label">📍 主要種類</div>
+                            <div class="info-content">最著名為模擬靈禽之<strong>孔雀舞</strong>、歡快之<strong>象腳鼓舞</strong>與水文化舞蹈。</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">✨ 動作律動特色</div>
+                            <div class="info-content">身體呈現優美的「<strong>三道彎</strong>」（頭、肩、腰、膝彎曲），手型極富特色（孔雀手姿態），腳下起伏柔細流暢，外柔內剛。</div>
+                            <div class="tag-list">
+                                <span class="tag">三道彎姿態</span>
+                                <span class="tag">孔雀手型</span>
+                                <span class="tag">靈動優雅</span>
+                            </div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">👑 代表人物與代表劇目</div>
+                            <div class="info-content">
+                                <span class="figure-pill">刀美蘭</span>
+                                <span class="figure-pill">楊麗萍</span>
+                                <div style="margin-top:5px;">代表作：《雀之靈》、《月光》、《兩棵樹》</div>
+                            </div>
+                        </div>
+                        <div class="video-box">
+                            <div class="video-box-title">🎥 參考影片</div>
+                            <ul class="video-list">
+                                <li class="video-item">
+                                    <span class="video-name">《雀之靈》- 楊麗萍享譽全球名作</span>
+                                    <a href="https://www.youtube.com/results?search_query=雀之靈+楊麗萍" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 朝鮮族舞 -->
+                <div class="school-card" data-category="ethnic" data-keywords="朝鮮族 朝鮮舞 崔承喜 長鼓舞 扇骨 農樂舞 鶴步 長呼吸 動靜相濟 典雅含蓄">
+                    <div class="card-header">
+                        <h3 class="school-title">朝鮮族舞蹈 (Korean Dance)</h3>
+                        <span class="card-badge">長呼吸動靜相濟</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-block">
+                            <div class="info-label">📍 主要種類</div>
+                            <div class="info-content">包含<strong>長鼓舞</strong>、<strong>扇子舞</strong>、<strong>鶴舞</strong>、<strong>農樂舞</strong>（象帽甩巾技巧）。</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">✨ 動作律動特色</div>
+                            <div class="info-content">核心靈魂在於「<strong>長呼吸</strong>」（息息相關、提沉勻速），配合步姿「<strong>鶴步</strong>」（抬腳趾、平落地），呈現動靜相濟、飄逸典雅之美。</div>
+                            <div class="tag-list">
+                                <span class="tag">長呼吸提沉</span>
+                                <span class="tag">鶴步姿態</span>
+                                <span class="tag">典雅含蓄</span>
+                            </div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">👑 代表人物與代表劇目</div>
+                            <div class="info-content">
+                                <span class="figure-pill">崔承喜</span>
+                                <span class="figure-pill">朴永光</span>
+                                <div style="margin-top:5px;">代表作：《扇骨》、《長鼓舞》、《農樂舞》</div>
+                            </div>
+                        </div>
+                        <div class="video-box">
+                            <div class="video-box-title">🎥 參考影片</div>
+                            <ul class="video-list">
+                                <li class="video-item">
+                                    <span class="video-name">《扇骨》- 朝鮮族扇舞極致名作</span>
+                                    <a href="https://www.youtube.com/results?search_query=扇骨+朝鮮族舞蹈" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 漢族民間舞 -->
+                <div class="school-card" data-category="ethnic" data-keywords="漢族民間舞 膠州秧歌 東北秧歌 陝北秧歌 安徽花鼓燈 壓腳跟 甩手帕 擰傾碾 蘭花花">
+                    <div class="card-header">
+                        <h3 class="school-title">漢族民間舞 (Han Folk Dance)</h3>
+                        <span class="card-badge">大地生活風情</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-block">
+                            <div class="info-label">📍 主要種類</div>
+                            <div class="info-content">包含三大秧歌（<strong>膠州秧歌、東北秧歌、陝北秧歌</strong>）、<strong>安徽花鼓燈</strong>、<strong>採茶舞</strong>。</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">✨ 動作律動特色</div>
+                            <div class="info-content">膠州秧歌講究「<strong>擰、傾、碾、絆、翠</strong>」；東北秧歌講究「<strong>壓腳跟、甩手帕</strong>」；花鼓燈講究「風卷雪、溜溜步」，充滿幽默熱烈的生活氣息。</div>
+                            <div class="tag-list">
+                                <span class="tag">膠州秧歌擰傾碾</span>
+                                <span class="tag">東北秧歌壓腳跟</span>
+                                <span class="tag">手帕與扇子</span>
+                            </div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">👑 代表劇目</div>
+                            <div class="info-content">
+                                <div>代表作：《膠州秧歌·看秧歌》、《蘭花花》、《花鼓燈·鼓鄉情》</div>
+                            </div>
+                        </div>
+                        <div class="video-box">
+                            <div class="video-box-title">🎥 參考影片</div>
+                            <ul class="video-list">
+                                <li class="video-item">
+                                    <span class="video-name">《膠州秧歌·看秧歌》- 擰傾姿態典範</span>
+                                    <a href="https://www.youtube.com/results?search_query=膠州秧歌+看秧歌" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Neo-Classical & Contemporary Dance -->
+        <section id="sec-contemporary" class="content-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">新古典與當代中國舞作品</h2>
+                    <p class="section-desc">傳統古典韻味與現代舞蹈美學、跨界劇場的當代交融。</p>
+                </div>
+            </div>
+
+            <div class="school-grid">
+                <!-- 只此青綠 -->
+                <div class="school-card" data-category="contemporary" data-keywords="只此青綠 孟慶暘 周莉亞 韓真 千里江山圖 新古典 青綠腰">
+                    <div class="card-header">
+                        <h3 class="school-title">《只此青綠》- 舞蹈詩劇</h3>
+                        <span class="card-badge">宋代山水美學</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-block">
+                            <div class="info-label">📍 特色與創新</div>
+                            <div class="info-content">以北宋王希孟《千里江山圖》為靈感，將古典舞身韻與現代美學結合，創造著名的「青綠腰」與靜謐古雅的峰巒動作語彙。</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">👑 編導與領舞</div>
+                            <div class="info-content">編導：周莉亞、韓真；領舞：孟慶暘。</div>
+                        </div>
+                        <div class="video-box">
+                            <div class="video-box-title">🎥 參考影片</div>
+                            <ul class="video-list">
+                                <li class="video-item">
+                                    <span class="video-name">《只此青綠》選段 - 央視春晚經典</span>
+                                    <a href="https://www.youtube.com/results?search_query=只此青綠+春晚" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 朱鹮 -->
+                <div class="school-card" data-category="contemporary" data-keywords="朱鹮 上海歌舞團 朱潔靜 華霄一 鳥類肢體 當代古典融合">
+                    <div class="card-header">
+                        <h3 class="school-title">《朱鹮》- 舞劇選段</h3>
+                        <span class="card-badge">鳥類與當代肢體</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-block">
+                            <div class="info-label">📍 特色與創新</div>
+                            <div class="info-content">上海歌舞團製作，將國際珍稀保護鳥類朱鹮的肢體（伸頸、輕點、展翅）與中國古典舞身韻、芭蕾腳尖姿態跨界融合。</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">👑 代表舞者</div>
+                            <div class="info-content">朱潔靜、華霄一。</div>
+                        </div>
+                        <div class="video-box">
+                            <div class="video-box-title">🎥 參考影片</div>
+                            <ul class="video-list">
+                                <li class="video-item">
+                                    <span class="video-name">《朱鹮》雙人舞與群舞選段</span>
+                                    <a href="https://www.youtube.com/results?search_query=朱鹮+舞劇" target="_blank" class="video-btn">▶ 觀看影片</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Comparison Matrix Table -->
+        <section id="sec-matrix" class="content-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">主要派別與名家美學對比矩陣</h2>
+                    <p class="section-desc">橫向比較各派別及台灣舞蹈大師在核心動律、呼吸規律與文化特質上的差異。</p>
+                </div>
+            </div>
+
+            <div class="table-section">
+                <table class="comp-table">
+                    <thead>
+                        <tr>
+                            <th>派別 / 藝術家</th>
+                            <th>核心動律與關鍵字</th>
+                            <th>肢體造型與美學標誌</th>
+                            <th>呼吸與力道風格</th>
+                            <th>代表大師 / 經典劇目</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="highlight-text">古典舞 - 身韻學派</span></td>
+                            <td>提、沉、沖、靠、含、腆、移、擺</td>
+                            <td>擰、傾、圓、曲（平圓/立圓/8字圓）</td>
+                            <td>以神領形，欲左先右，剛柔相濟</td>
+                            <td>唐滿城、李正一、華霄一、唐詩逸</td>
+                        </tr>
+                        <tr>
+                            <td><span class="highlight-taiwan">🇹🇼 台灣 - 林懷民 (雲門舞集)</span></td>
+                            <td>太極導引、內家拳、靜坐呼吸</td>
+                            <td>書法墨韻筆觸、虛實留白、水波倒影</td>
+                            <td>沉靜綿密、剛柔並濟、深邃沉思</td>
+                            <td>《水月》、《行草》、《薪傳》、《九歌》</td>
+                        </tr>
+                        <tr>
+                            <td><span class="highlight-taiwan">🇹🇼 台灣 - 劉鳳學 (新古典舞團)</span></td>
+                            <td>唐樂舞考證復原、古代舞譜解碼</td>
+                            <td>宮廷樂舞對稱昂揚、禮樂美學</td>
+                            <td>嚴謹莊重、步態昂揚、古典古樸</td>
+                            <td>唐樂舞《春鶯崡》、《拔頭》、《木蘭歸》</td>
+                        </tr>
+                        <tr>
+                            <td><span class="highlight-taiwan">🇹🇼 台灣 - 許芳宜</span></td>
+                            <td>收縮與釋放（Contraction & Release）</td>
+                            <td>雕塑感軀幹張力、東方靈魂爆發力</td>
+                            <td>極具戲劇衝擊、靈魂深處收縮爆發</td>
+                            <td>瑪莎葛蘭姆首席、《我心我行》、《半絲半縷》</td>
+                        </tr>
+                        <tr>
+                            <td><span class="highlight-taiwan">🇹🇼 台灣 - 鄭宗龍 (雲門總監)</span></td>
+                            <td>艋舺市井記憶、道教起乩與廟會步伐</td>
+                            <td>街頭繽紛彩繪、廟會蹲步、科技相映</td>
+                            <td>狂放魔幻、充滿庶民生命張力</td>
+                            <td>《十三聲》、《毛月亮》、《定光》</td>
+                        </tr>
+                        <tr>
+                            <td><span class="highlight-taiwan">🇹🇼 台灣 - 布拉瑞揚</span></td>
+                            <td>排灣族原民傳統古謠吟唱、踏地步伐</td>
+                            <td>原民部落身體、土地原創精神</td>
+                            <td>真摯震撼、源於土地的原始爆發力</td>
+                            <td>《拉歌》、《漂亮發聲》、《路訥》</td>
+                        </tr>
+                        <tr>
+                            <td><span class="highlight-text">古典舞 - 漢唐學派</span></td>
+                            <td>踏地為節、以斜為美、橫向流動</td>
+                            <td>反襯扭傾、長袖流擺、盤鼓跌宕</td>
+                            <td>深沉古樸、大氣雍容、沉靜遠古</td>
+                            <td>孫穎先生、劉鳳學博士、華霄一</td>
+                        </tr>
+                        <tr>
+                            <td><span class="highlight-text">古典舞 - 敦煌學派</span></td>
+                            <td>歪頸、擰腰、移胯、勾腳趾</td>
+                            <td><strong>「三道彎」</strong>S型曲線、蓮花手印</td>
+                            <td>輕盈飄逸、莊嚴深邃、神聖靈性</td>
+                            <td>高金榮教授、董錫玖、《絲路花雨》</td>
+                        </tr>
+                        <tr>
+                            <td><span class="highlight-text">古典舞 - 崑舞學派</span></td>
+                            <td>手眼身法步極致微雕、水袖翻轉</td>
+                            <td>折扇微調、江南步履輕盈</td>
+                            <td>婉約儒雅、細膩內斂、極具詩意</td>
+                            <td>馬家欽教授、《崑韻》</td>
+                        </tr>
+                        <tr>
+                            <td><span class="highlight-text">藏族舞蹈</span></td>
+                            <td>膝關節「顫動」與「屈伸」</td>
+                            <td>肢體「一順邊」（同側手腳聯動）</td>
+                            <td>高原負重氣息、豪放與虔誠並存</td>
+                            <td>慈仁桑姆、《飛弦踏春》</td>
+                        </tr>
+                        <tr>
+                            <td><span class="highlight-text">蒙古族舞蹈</span></td>
+                            <td>提壓肩、硬肩、硬手、柔臂、馬步</td>
+                            <td>模仿雄鷹展翅與駿馬奔馳</td>
+                            <td>廣袤雄渾、開闊豪邁、驃騎熱烈</td>
+                            <td>賈作光、《奔騰》</td>
+                        </tr>
+                        <tr>
+                            <td><span class="highlight-text">維吾爾族舞蹈</span></td>
+                            <td>移頸（頭脖滑動）、托帽、揚眉</td>
+                            <td>多圈高速度旋轉、手鼓節奏打擊</td>
+                            <td>明快熱烈、熱情奔放、幽默風趣</td>
+                            <td>康巴爾汗、阿依吐拉、《摘葡萄》</td>
+                        </tr>
+                        <tr>
+                            <td><span class="highlight-text">傣族舞蹈</span></td>
+                            <td>三道彎（頭肩腰膝）、腳下起伏</td>
+                            <td>孔雀手姿態、輕盈流水姿態</td>
+                            <td>婀娜靈動、典雅柔順、外柔內剛</td>
+                            <td>刀美蘭、楊麗萍、《雀之靈》</td>
+                        </tr>
+                        <tr>
+                            <td><span class="highlight-text">朝鮮族舞蹈</span></td>
+                            <td>「長呼吸」（息息相關勻速提沉）</td>
+                            <td>鶴步（抬腳趾平落步）、長鼓動態</td>
+                            <td>動靜相濟、典雅含蓄、深沉悠遠</td>
+                            <td>崔承喜、《扇骨》</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>中國舞與台灣舞蹈藝術家美學圖鑑 Guide to Chinese & Taiwanese Dance Classification</p>
+            <p style="margin-top: 5px; color: var(--border-gold);">整理製作 © 2026 Antigravity Dance Aesthetics Research</p>
+        </footer>
+    </div>
+
+    <!-- Back to top button -->
+    <button class="top-btn" id="topBtn" onclick="scrollToTop()">↑</button>
+
+    <!-- JavaScript logic -->
+    <script>
+        // Tab Filtering logic
+        function filterTab(category, btnElement) {
+            // Update active button
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            const sections = document.querySelectorAll('.content-section');
+            const searchInput = document.getElementById('searchInput');
+
+            // Reset search input if switching tabs manually
+            searchInput.value = '';
+            resetCardsVisibility();
+
+            if (category === 'all') {
+                sections.forEach(sec => sec.style.display = 'block');
+            } else if (category === 'overview') {
+                sections.forEach(sec => sec.style.display = (sec.id === 'sec-overview') ? 'block' : 'none');
+            } else if (category === 'taiwan') {
+                sections.forEach(sec => sec.style.display = (sec.id === 'sec-taiwan') ? 'block' : 'none');
+            } else if (category === 'classical') {
+                sections.forEach(sec => sec.style.display = (sec.id === 'sec-classical') ? 'block' : 'none');
+            } else if (category === 'ethnic') {
+                sections.forEach(sec => sec.style.display = (sec.id === 'sec-ethnic') ? 'block' : 'none');
+            } else if (category === 'contemporary') {
+                sections.forEach(sec => sec.style.display = (sec.id === 'sec-contemporary') ? 'block' : 'none');
+            } else if (category === 'matrix') {
+                sections.forEach(sec => sec.style.display = (sec.id === 'sec-matrix') ? 'block' : 'none');
+            }
+        }
+
+        // Search Filter logic
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.school-card');
+            const sections = document.querySelectorAll('.content-section');
+
+            if (query === '') {
+                // If search cleared, activate "all" view
+                const allBtn = document.querySelectorAll('.tab-btn')[0];
+                filterTab('all', allBtn);
+                return;
+            }
+
+            // Ensure all content sections are visible during search
+            sections.forEach(sec => sec.style.display = 'block');
+
+            cards.forEach(card => {
+                const keywords = card.getAttribute('data-keywords') ? card.getAttribute('data-keywords').toLowerCase() : '';
+                const textContent = card.innerText.toLowerCase();
+
+                if (keywords.includes(query) || textContent.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        function resetCardsVisibility() {
+            const cards = document.querySelectorAll('.school-card');
+            cards.forEach(card => card.style.display = 'flex');
+        }
+
+        // Back to top button scroll listener
+        const topBtn = document.getElementById('topBtn');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                topBtn.classList.add('visible');
+            } else {
+                topBtn.classList.remove('visible');
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+</html>

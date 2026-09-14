@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>機器人專題課程筆記索引 - LEGO Mindstorms EV3</title>
+    <style>
+        :root {
+            --primary-color: #d01012; /* LEGO Red */
+            --secondary-color: #0055bf; /* LEGO Blue */
+            --dark-color: #1e293b;
+            --light-bg: #f8fafc;
+            --border-color: #e2e8f0;
+            --card-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+            --accent-yellow: #f59e0b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 3rem 1.5rem;
+            text-align: center;
+            border-bottom: 4px solid var(--primary-color);
+        }
+
+        header h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2.2rem;
+            letter-spacing: 0.5px;
+        }
+
+        header p {
+            color: #94a3b8;
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2.5rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1.2rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .stats-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .stats-item span.count {
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
+            padding: 1.8rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .course-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 1.4rem;
+            color: var(--primary-color);
+        }
+
+        .card-title a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .card-title a:hover {
+            text-decoration: underline;
+        }
+
+        .date-badge {
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+        }
+
+        .tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            font-size: 0.8rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .tag-red { background: #fee2e2; color: #dc2626; }
+        .tag-blue { background: #dbeafe; color: #2563eb; }
+        .tag-green { background: #dcfce7; color: #16a34a; }
+        .tag-purple { background: #f3e8ff; color: #9333ea; }
+
+        .card-body {
+            color: #334155;
+            font-size: 0.98rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-body ul {
+            padding-left: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        .card-body li {
+            margin-bottom: 0.4rem;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 1rem;
+        }
+
+        .btn-view {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.6rem 1.3rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: background-color 0.2s;
+        }
+
+        .btn-view:hover {
+            background: #004397;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2.5rem 1rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🤖 機器人專題課程筆記索引</h1>
+        <p>LEGO Mindstorms EV3 課程記錄、程式積木教學與專題延伸研究彙整</p>
+    </header>
+
+    <div class="container">
+        <div class="stats-bar">
+            <div class="stats-item">
+                📁 目前課程檔案總數： <span class="count">4</span> 份專題檔案 (2 HTML + 2 Markdown 報告)
+            </div>
+            <div class="stats-item">
+                🕒 最後更新時間：2026-09-14 15:20:50 (UTC+8)
+            </div>
+            <div class="stats-item">
+                🤖 模型代號：<span class="count" style="background: #0055bf;">Gemini 3.6 Flash</span>
+            </div>
+        </div>
+
+        <div class="course-grid">
+            <!-- 2026/09/14 課程筆記卡片 (雙層 Switch 距離感測) -->
+            <article class="course-card">
+                <div>
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <a href="nested_switch_distance_logic.html">LEGO Mindstorms EV3 雙層巢狀切換 (Nested Switch) 距離感測邏輯與應用筆記</a>
+                        </h2>
+                        <span class="date-badge">📅 2026-09-14</span>
+                    </div>
+
+                    <div class="tags">
+                        <span class="tag tag-red">雙層巢狀 Switch</span>
+                        <span class="tag tag-blue">超音波/紅外線感測器</span>
+                        <span class="tag tag-green">動態音頻對映算術</span>
+                        <span class="tag tag-purple">負斜率線性演算法</span>
+                        <span class="tag tag-red">雙曲倒數演算法</span>
+                        <span class="tag tag-blue">汽車倒車雷達人因工程</span>
+                    </div>
+
+                    <div class="card-body">
+                        <p><strong>本集課程內容摘要：</strong></p>
+                        <ul>
+                            <li><strong>兩大視覺化圖檔對比：</strong>對比基礎定頻程式 (<code>2swtcih.jpg</code>) 與變數調頻實作程式 (<code>cm2hz.jpg</code>) 之資料線接法與 Math Block 設定。</li>
+                            <li><strong>實作程式正比盲點剖析：</strong>剖析 <code>cm2hz.jpg</code> 中 $\text{Freq} = \text{dis} + 440$ 與 $\text{Freq} = \text{dis} \times 300$ 之正比算數缺陷（距離越近聲音反而越低沉）。</li>
+                            <li><strong>「距離越短音頻越高」算術對映推導：</strong>
+                                <ul>
+                                    <li><strong>負斜率線性公式：</strong>$\text{Freq} = 968 - 17.6 \times d$ （實現 $5\text{cm}\sim30\text{cm}$ 區間發出 $880\text{Hz}\sim440\text{Hz}$ 平滑調頻）。</li>
+                                    <li><strong>雙曲倒數公式：</strong>$\text{Freq} = \frac{2000}{d} + 300$ （實現 $d \le 5\text{cm}$ 急促衝高音頻至 $2300\text{Hz}$）。</li>
+                                </ul>
+                            </li>
+                            <li><strong>虛擬碼與流程圖演進：</strong>加入音頻邊界保護 (Pitch Clamping) 與發音時間響應優化之結構化虛擬碼與動態 Mermaid 流程圖。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card-footer" style="display: flex; gap: 1rem; justify-content: flex-end; flex-wrap: wrap;">
+                    <a href="nested_switch_distance_logic.md" class="btn-view" style="background: #475569;">📑 檢視對應 Markdown 報告 &rarr;</a>
+                    <a href="nested_switch_distance_logic.html" class="btn-view">📖 開啟 HTML 網頁筆記 &rarr;</a>
+                </div>
+            </article>
+
+            <!-- 2026/09/07 課程筆記卡片 -->
+            <article class="course-card">
+                <div>
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <a href="lego_0907.html">LEGO Mindstorms EV3 硬體架構與第一個輸出積木 (聲音 Sound)</a>
+                        </h2>
+                        <span class="date-badge">📅 2026-09-07</span>
+                    </div>
+
+                    <div class="tags">
+                        <span class="tag tag-red">EV3 硬體概論</span>
+                        <span class="tag tag-blue">聲音積木 (Sound)</span>
+                        <span class="tag tag-green">The Final Countdown 音樂排譜</span>
+                        <span class="tag tag-purple">Block Builder (My Block)</span>
+                        <span class="tag tag-red">距離反饋蜂鳴器專題</span>
+                        <span class="tag tag-blue">MP3 音訊播放解法</span>
+                    </div>
+
+                    <div class="card-body">
+                        <p><strong>本集課程內容摘要：</strong></p>
+                        <ul>
+                            <li><strong>EV3 主機硬體介紹：</strong>ARM9 處理器規格、178x128 LCD 螢幕、輸入埠 (1~4)、輸出埠 (A~D)、USB/SD卡槽及按鈕功能詳細解析。</li>
+                            <li><strong>聲音積木 (Sound Block) 4 大模式：</strong><code>Play File</code>、<code>Play Tone</code>、<code>Play Note</code> 與 <code>Stop</code> 模式之操作與應用。</li>
+                            <li><strong>播放控制 (Play Type) 參數：</strong>比較 <code>Wait for Completion</code> (阻塞式) 與 <code>Play Once</code> / <code>Repeat</code> (非阻塞式/背景播放) 對馬達與音效併行控制的影響。</li>
+                            <li><strong>實作樂曲設計：</strong>Europe 搖滾名曲《The Final Countdown》前奏合成器旋律之音符 (Note) 與節拍時間換算排譜明細表。</li>
+                            <li><strong>自訂積木 (Block Builder / My Block)：</strong>如何將長串音樂音符封裝為具備 <code>Volume</code> 與 <code>Speed</code> 輸入參數的模組化青綠色自訂積木。</li>
+                            <li><strong>專題實作 — 距離反饋蜂鳴器：</strong>結合超音波感測器 (Ultrasonic Sensor) 量測距離，透過動態數據對映公式與 Switch 多階分段警報音效，模擬車輛倒車雷達與 Python ev3dev 演算法。</li>
+                            <li><strong>延伸專題研究：</strong>解析 EV3 官方無法直解 MP3 檔的原因（CPU 軟解開銷與 16MB Flash 容量限制），並提供 WAV 音訊轉碼與第三方系統 <code>ev3dev + Python + mpg123</code> 的播放解法。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card-footer" style="display: flex; gap: 1rem; justify-content: flex-end; flex-wrap: wrap;">
+                    <a href="distance_audio_feedback_research.md" class="btn-view" style="background: #475569;">📑 檢視延伸研究報告 (Markdown) &rarr;</a>
+                    <a href="lego_0907.html" class="btn-view">📖 開啟完整筆記 (lego_0907.html) &rarr;</a>
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <footer>
+        <p>機器人專題課程筆記庫 &copy; 2026 | Powered by LEGO Mindstorms EV3 Course Workspace</p>
+        <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.4rem;">
+            🕒 戳記時間：<code>2026-09-14 15:20:50 (UTC+8)</code> &nbsp;|&nbsp; 🤖 模型代號：<code>Gemini 3.6 Flash</code>
+        </p>
+    </footer>
+
+</body>
+</html>

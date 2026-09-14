@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEGO EV3 / SPIKE 機器人：黑色圓圈光感應器尋跡程式設計教學</title>
+    <style>
+        :root {
+            --primary-color: #38bdf8;
+            --primary-dark: #0284c7;
+            --secondary-color: #f1f5f9;
+            --accent-color: #f59e0b;
+            --bg-color: #0b0f19;
+            --card-bg: #161c28;
+            --text-color: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #2a3447;
+            --ev3-red: #ef4444;
+            --ev3-green: #10b981;
+            --ev3-yellow: #f59e0b;
+            --ev3-blue: #3b82f6;
+            --ev3-orange: #f97316;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+            color: #f8fafc;
+            padding: 40px 30px;
+            border-radius: 16px;
+            border: 1px solid #374151;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(56, 189, 248, 0.08);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .badge {
+            display: inline-block;
+            background-color: rgba(56, 189, 248, 0.15);
+            color: var(--primary-color);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+            color: #f8fafc;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .section-card {
+            background-color: var(--card-bg);
+            border-radius: 14px;
+            padding: 30px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        h2 .step-num {
+            background-color: rgba(56, 189, 248, 0.2);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: #f1f5f9;
+            margin: 20px 0 10px 0;
+        }
+
+        h4 {
+            color: #e2e8f0;
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        /* 觀念重點提示框 */
+        .info-box {
+            background-color: #132338;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            color: #e2e8f0;
+        }
+
+        .info-box.warning {
+            background-color: #241c12;
+            border-left-color: var(--accent-color);
+        }
+
+        .info-box strong {
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .info-box.warning strong {
+            color: var(--accent-color);
+        }
+
+        /* 圖表與示意圖區塊 */
+        .diagram-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: stretch;
+            margin: 20px 0;
+        }
+
+        .diagram-box {
+            flex: 1 1 320px;
+            background-color: #111622;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .diagram-box svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .diagram-title {
+            font-weight: 700;
+            margin-top: 10px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Code & Pseudocode Display */
+        pre {
+            background-color: #070a12;
+            color: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 10px;
+            font-family: "Consolas", "Courier New", Courier, monospace;
+            font-size: 0.95rem;
+            overflow-x: auto;
+            line-height: 1.5;
+            margin: 15px 0;
+        }
+
+        code .keyword { color: #38bdf8; font-weight: bold; }
+        code .comment { color: #64748b; font-style: italic; }
+        code .function { color: #f43f5e; }
+        code .number { color: #fbbf24; }
+        code .string { color: #4ade80; }
+
+        /* LEGO EV3 積木表格 / 視覺樣式 */
+        .block-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .block-item {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            background: #1a2232;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .block-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.85rem;
+            width: fit-content;
+        }
+
+        .block-orange { background-color: #c2410c; }
+        .block-green { background-color: #047857; }
+        .block-yellow { background-color: #b45309; }
+        .block-blue { background-color: #1d4ed8; }
+        .block-red { background-color: #b91c1c; }
+
+        .block-item h4 {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+        }
+
+        .block-item p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0;
+        }
+
+        /* 虛擬積木模組 (CSS Mockup Block) */
+        .ev3-block-mockup {
+            background-color: #0e1420;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: sans-serif;
+        }
+
+        .block-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .visual-block {
+            background-color: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            padding: 8px 14px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 3px 0 #334155;
+            color: #f8fafc;
+        }
+
+        .visual-block.loop {
+            background-color: #2c1b12;
+            border-color: #7c2d12;
+            box-shadow: 0 3px 0 #7c2d12;
+            color: #fdba74;
+        }
+
+        .visual-block.switch {
+            background-color: #2a2412;
+            border-color: #713f12;
+            box-shadow: 0 3px 0 #713f12;
+            color: #fde047;
+        }
+
+        .visual-block.motor {
+            background-color: #122a1b;
+            border-color: #14532d;
+            box-shadow: 0 3px 0 #14532d;
+            color: #86efac;
+        }
+
+        .visual-block.sensor {
+            background-color: #122238;
+            border-color: #1e3a8a;
+            box-shadow: 0 3px 0 #1e3a8a;
+            color: #93c5fd;
+        }
+
+        /* 步驟列表 */
+        ol.step-list {
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+
+        ol.step-list li {
+            margin-bottom: 12px;
+            padding-left: 5px;
+        }
+
+        table.param-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+
+        table.param-table th, table.param-table td {
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            text-align: left;
+        }
+
+        table.param-table th {
+            background-color: #1a2333;
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+
+        table.param-table td {
+            background-color: #121824;
+            color: var(--text-color);
+        }
+
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 20px 0;
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 30px;
+        }
+
+        @media (max-width: 640px) {
+            body { padding: 10px; }
+            header { padding: 25px 15px; }
+            h1 { font-size: 1.6rem; }
+            .section-card { padding: 20px 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Header -->
+    <header>
+        <span class="badge">LEGO MINDSTORMS EV3 & SPIKE Prime 專題教學</span>
+        <h1>黑色圓圈光感應器尋跡程式設計</h1>
+        <p>完整剖析沿邊尋跡原理、幾何邏輯判斷流程圖、積木模組配置、MicroPython 實作與高階 PID 移動優化技巧</p>
+    </header>
+
+    <!-- Section 1: 核心觀念與圓圈尋跡原理 -->
+    <div class="section-card">
+        <h2><span class="step-num">1</span> 核心觀念：為什麼圓圈尋跡要「沿邊 (Edge Following)」？</h2>
+        <p>在 LEGO EV3 / SPIKE 的尋跡任務中，機器人裝設了<strong>光感應器 / 顏色感應器 (Color Sensor)</strong>。感應器會向地面發射紅光並接收<strong>「反射光強度 (Reflected Light Intensity)」</strong>（數值範圍 0% ~ 100%）。</p>
+        
+        <div class="info-box warning">
+            <strong>⚠️ 常見誤解與關鍵原理：</strong>
+            <p style="margin-bottom:0;">機器人如果「直接走在黑線正中央」，當感應器偏離黑線時，機器人<strong>無法判斷自己是偏向左邊還是偏向右邊</strong>。因此，機器人必須沿著<strong>「黑白邊界 (Black-White Edge)」</strong>前進！當看到太黑就往白處轉，看到太白就往黑處轉，就能順暢沿著線條邊緣修正前進。</p>
+        </div>
+
+        <h3>圓圈軌跡 (Circular Track) 的幾何特性</h3>
+        <p>繞圓圈行駛時，軌跡具有恆定的曲率。我們推薦採用<strong>「沿黑線外邊界 (Outer Edge)」</strong>或<strong>「沿黑線內邊界 (Inner Edge)」</strong>：</p>
+        
+        <ul style="padding-left: 20px; margin-bottom: 15px;">
+            <li><strong>外邊界尋跡 (推薦)：</strong> 當軌跡向內彎曲時，機器人感應器看到白色會自動向內轉，看到黑色會向外甩，對於大半徑圓圈極為穩定。</li>
+            <li><strong>門檻值 (Threshold) 計算：</strong>
+                <br>
+                在比賽或練習前，需先測量地面的反射光數值：
+                <br>
+                <code style="color: var(--primary-color);">Threshold = (白地反射光強度 + 黑線反射光強度) / 2</code>
+                <br>
+                <em>例如：白色地面讀值 70%，黑色線條讀值 10%，則閾值設定為 <code>(70 + 10) / 2 = 40%</code>。</em>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Section 2: 邏輯判斷示意圖 (Flowchart & Geometry) -->
+    <div class="section-card">
+        <h2><span class="step-num">2</span> 邏輯判斷示意圖</h2>
+        <p>以下包含「雙態尋跡邏輯流程圖」以及「圓圈軌跡黑白邊界修正示意圖」：</p>
+
+        <div class="diagram-container">
+            <!-- Diagram 1: 邏輯流程圖 SVG -->
+            <div class="diagram-box">
+                <svg viewBox="0 0 360 480" width="100%" height="320">
+                    <defs>
+                        <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+                        </marker>
+                    </defs>
+
+                    <!-- Start -->
+                    <rect x="110" y="10" width="140" height="40" rx="20" fill="#0284c7" />
+                    <text x="180" y="35" fill="white" font-weight="bold" font-size="14" text-anchor="middle">開始迴圈 (Loop)</text>
+                    
+                    <line x1="180" y1="50" x2="180" y2="85" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+                    <!-- Read Sensor -->
+                    <rect x="90" y="90" width="180" height="45" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+                    <text x="180" y="118" fill="#38bdf8" font-weight="bold" font-size="13" text-anchor="middle">讀取光感應器反射值 (Light)</text>
+
+                    <line x1="180" y1="135" x2="180" y2="170" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+                    <!-- Decision Rhombus -->
+                    <polygon points="180,175 280,225 180,275 80,225" fill="#2a2412" stroke="#f59e0b" stroke-width="2"/>
+                    <text x="180" y="220" fill="#fde047" font-weight="bold" font-size="12" text-anchor="middle">反射光 &lt; 門檻值?</text>
+                    <text x="180" y="238" fill="#fde047" font-size="11" text-anchor="middle">(是否壓在黑線上)</text>
+
+                    <!-- Branch YES (Black Line) -->
+                    <line x1="80" y1="225" x2="40" y2="225" stroke="#64748b" stroke-width="2"/>
+                    <line x1="40" y1="225" x2="40" y2="315" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+                    <text x="55" y="215" fill="#10b981" font-weight="bold" font-size="12">是 (黑)</text>
+
+                    <!-- Branch NO (White Area) -->
+                    <line x1="280" y1="225" x2="320" y2="225" stroke="#64748b" stroke-width="2"/>
+                    <line x1="320" y1="225" x2="320" y2="315" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+                    <text x="285" y="215" fill="#ef4444" font-weight="bold" font-size="12">否 (白)</text>
+
+                    <!-- Action Left/Right -->
+                    <!-- Action Black: Turn Outward/Right -->
+                    <rect x="5" y="320" width="135" height="50" rx="8" fill="#122a1b" stroke="#10b981" stroke-width="2"/>
+                    <text x="72" y="343" fill="#86efac" font-weight="bold" font-size="12" text-anchor="middle">往白處轉向修正</text>
+                    <text x="72" y="360" fill="#86efac" font-size="11" text-anchor="middle">(例如：B馬達快/C馬達慢)</text>
+
+                    <!-- Action White: Turn Inward/Left -->
+                    <rect x="220" y="320" width="135" height="50" rx="8" fill="#2a1215" stroke="#ef4444" stroke-width="2"/>
+                    <text x="287" y="343" fill="#fca5a5" font-weight="bold" font-size="12" text-anchor="middle">往黑處轉向修正</text>
+                    <text x="287" y="360" fill="#fca5a5" font-size="11" text-anchor="middle">(例如：B馬達慢/C馬達快)</text>
+
+                    <!-- Merge Lines -->
+                    <line x1="72" y1="370" x2="72" y2="440" stroke="#64748b" stroke-width="2"/>
+                    <line x1="287" y1="370" x2="287" y2="440" stroke="#64748b" stroke-width="2"/>
+                    <line x1="72" y1="440" x2="287" y2="440" stroke="#64748b" stroke-width="2"/>
+                    <line x1="180" y1="440" x2="180" y2="465" stroke="#64748b" stroke-width="2"/>
+                    
+                    <!-- Loop Back Arrow -->
+                    <path d="M 180 465 L 180 475 L 350 475 L 350 30 L 255 30" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow)"/>
+                </svg>
+                <div class="diagram-title">圖 2.1：尋跡切換 (Switch) 邏輯判斷流程圖</div>
+            </div>
+
+            <!-- Diagram 2: 圓圈軌跡實質動作 SVG -->
+            <div class="diagram-box">
+                <svg viewBox="0 0 360 480" width="100%" height="320">
+                    <!-- Background circle line -->
+                    <circle cx="180" cy="220" r="130" fill="none" stroke="#475569" stroke-width="24" />
+                    <!-- Circle edge indicator -->
+                    <circle cx="180" cy="220" r="142" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6,6"/>
+                    <text x="180" y="65" fill="#38bdf8" font-weight="bold" font-size="12" text-anchor="middle">外邊界 (Outer Edge 軌跡)</text>
+
+                    <!-- Robot Mockup 1 (On White) -->
+                    <g transform="translate(280, 130) rotate(25)">
+                        <rect x="-18" y="-25" width="36" height="50" rx="4" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+                        <circle cx="0" cy="-20" r="5" fill="#ef4444"/> <!-- Sensor -->
+                        <rect x="-24" y="-15" width="6" height="15" fill="#0f172a"/> <!-- Wheel L -->
+                        <rect x="18" y="-15" width="6" height="15" fill="#0f172a"/> <!-- Wheel R -->
+                        <!-- Turn arrow -->
+                        <path d="M 0 -30 Q -15 -40 -25 -30" fill="none" stroke="#ef4444" stroke-width="3" marker-end="url(#arrow)"/>
+                    </g>
+                    <text x="325" y="170" fill="#fca5a5" font-size="11" font-weight="bold">太偏白：左轉向黑</text>
+
+                    <!-- Robot Mockup 2 (On Black) -->
+                    <g transform="translate(265, 270) rotate(-35)">
+                        <rect x="-18" y="-25" width="36" height="50" rx="4" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+                        <circle cx="0" cy="-20" r="5" fill="#10b981"/> <!-- Sensor -->
+                        <rect x="-24" y="-15" width="6" height="15" fill="#0f172a"/> <!-- Wheel L -->
+                        <rect x="18" y="-15" width="6" height="15" fill="#0f172a"/> <!-- Wheel R -->
+                        <!-- Turn arrow -->
+                        <path d="M 0 -30 Q 15 -40 25 -30" fill="none" stroke="#10b981" stroke-width="3" marker-end="url(#arrow)"/>
+                    </g>
+                    <text x="310" y="320" fill="#86efac" font-size="11" font-weight="bold">太偏黑：右轉向白</text>
+
+                    <!-- Center Label -->
+                    <circle cx="180" cy="220" r="80" fill="#1e293b" stroke="#334155"/>
+                    <text x="180" y="215" fill="#f8fafc" font-weight="bold" font-size="14" text-anchor="middle">黑色圓圈軌跡</text>
+                    <text x="180" y="235" fill="#94a3b8" font-size="12" text-anchor="middle">鋸齒狀 (Zig-Zag) 沿邊平滑前進</text>
+                </svg>
+                <div class="diagram-title">圖 2.2：圓圈外邊界 (Outer Edge) 左右修正幾何圖</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: 程式碼的 Pseudo Code 與 MicroPython -->
+    <div class="section-card">
+        <h2><span class="step-num">3</span> 程式碼 虛擬碼 (Pseudo Code) 與 MicroPython</h2>
+        <p>我們提供兩種常見的尋跡邏輯：適合初學者的<strong>「兩態切換法 (On-Off / Switch)」</strong>與適合高階流暢行駛的<strong>「比例控制法 (P-Controller)」</strong>。</p>
+
+        <h3>方法一：兩態雙區間切換法 (On-Off / Switch Control)</h3>
+        <p>簡單直觀，透過判斷當前反射光是否低於門檻值（壓在黑線上），來交替給予馬達不同的功率速差：</p>
+<pre><code><span class="comment">// --- 1. 初始化與閾值設定 ---</span>
+<span class="keyword">SET</span> Threshold = (White_Value + Black_Value) / <span class="number">2</span>   <span class="comment">// 例如: (70 + 10) / 2 = 40</span>
+<span class="keyword">SET</span> BaseSpeed = <span class="number">30</span>                                 <span class="comment">// 基礎前進速度</span>
+<span class="keyword">SET</span> TurnSpeed = <span class="number">10</span>                                 <span class="comment">// 轉向減速功率</span>
+
+<span class="comment">// --- 2. 主尋跡迴圈 ---</span>
+<span class="keyword">LOOP</span> Forever:
+    <span class="keyword">READ</span> LightSensor <span class="keyword">ON</span> Port 3 <span class="keyword">AS</span> LightValue
+
+    <span class="keyword">IF</span> LightValue &lt; Threshold <span class="keyword">THEN</span>
+        <span class="comment">// 壓在黑色線上：感應器偏向黑線內部 -> 需要往外邊界(白色)轉</span>
+        <span class="function">SetMotorSpeed</span>(Motor_B, BaseSpeed)    <span class="comment">// 外側馬達快</span>
+        <span class="function">SetMotorSpeed</span>(Motor_C, TurnSpeed)    <span class="comment">// 內側馬達慢</span>
+    <span class="keyword">ELSE</span>
+        <span class="comment">// 壓在白色地面：感應器偏離黑線 -> 需要往內邊界(黑色)轉</span>
+        <span class="function">SetMotorSpeed</span>(Motor_B, TurnSpeed)    <span class="comment">// 外側馬達慢</span>
+        <span class="function">SetMotorSpeed</span>(Motor_C, BaseSpeed)    <span class="comment">// 內側馬達快</span>
+    <span class="keyword">END IF</span>
+<span class="keyword">END LOOP</span></code></pre>
+
+        <h3 style="margin-top: 30px;">方法二：比例控制法 (P-Control Line Follower) - 圓圈平滑流暢首選</h3>
+        <p>根據偏離門檻值的程度（誤差 Error）動態計算轉向修正量（Turn），能極大幅度減少在圓圈上行駛時的蛇行抖動：</p>
+<pre><code><span class="comment">// --- 1. 初始化參數 ---</span>
+<span class="keyword">SET</span> TargetValue = <span class="number">40</span>     <span class="comment">// 目標黑白邊界反射光強度</span>
+<span class="keyword">SET</span> Kp = <span class="number">0.8</span>             <span class="comment">// 比例增益常數 (Proportional Gain)</span>
+<span class="keyword">SET</span> BasePower = <span class="number">35</span>        <span class="comment">// 馬達巡航基準功率</span>
+
+<span class="comment">// --- 2. 主尋跡迴圈 ---</span>
+<span class="keyword">LOOP</span> Forever:
+    <span class="keyword">READ</span> LightSensor <span class="keyword">ON</span> Port 3 <span class="keyword">AS</span> CurrentLight
+
+    <span class="comment">// 計算當前與理想邊界的偏差量</span>
+    <span class="keyword">SET</span> Error = CurrentLight - TargetValue
+    
+    <span class="comment">// 計算轉向修正量 (Steering Adjustment)</span>
+    <span class="keyword">SET</span> Turn = Error * Kp
+
+    <span class="comment">// 動態設定左右馬達功率 (Assuming B=Left, C=Right)</span>
+    <span class="function">SetMotorPower</span>(Motor_B, BasePower + Turn)
+    <span class="function">SetMotorPower</span>(Motor_C, BasePower - Turn)
+<span class="keyword">END LOOP</span></code></pre>
+
+        <h3 style="margin-top: 35px; color: var(--primary-color); border-top: 1px dashed var(--border-color); padding-top: 20px;">🐍 LEGO SPIKE Prime MicroPython 實作程式碼 (含詳細註解)</h3>
+        <p>若您使用的是 <strong>LEGO Education SPIKE Prime</strong> 機器人，可以直接採用以下 MicroPython 程式碼進行實作：</p>
+
+        <h4 style="margin-top: 15px; color: #f1f5f9;">1. 兩態切換法 MicroPython (On-Off Control)</h4>
+<pre><code><span class="comment"># =========================================================</span>
+<span class="comment"># LEGO SPIKE Prime MicroPython - 兩態切換圓圈尋跡程式</span>
+<span class="comment"># =========================================================</span>
+<span class="keyword">from</span> spike <span class="keyword">import</span> PrimeHub, ColorSensor, MotorPair, Port
+<span class="keyword">import</span> time
+
+<span class="comment"># --- 1. 硬體物件初始化 ---</span>
+<span class="comment"># 建立 PrimeHub 中央控制器物件</span>
+hub = PrimeHub()
+
+<span class="comment"># 初始化顏色感應器 (假設接在 Port E)</span>
+color_sensor = ColorSensor(Port.E)
+
+<span class="comment"># 初始化雙輪驅動馬達對 (左輪接 Port A，右輪接 Port B)</span>
+wheels = MotorPair(Port.A, Port.B)
+
+<span class="comment"># --- 2. 設定反射光門檻值 (Threshold) 與馬達功率 ---</span>
+BLACK_LIGHT = <span class="number">10</span>   <span class="comment"># 實測黑線反射光強度 (%)</span>
+WHITE_LIGHT = <span class="number">70</span>   <span class="comment"># 實測白地反射光強度 (%)</span>
+
+<span class="comment"># 計算黑白邊界理想門檻值 = (10 + 70) / 2 = 40%</span>
+THRESHOLD = (BLACK_LIGHT + WHITE_LIGHT) / <span class="number">2</span>
+
+FAST_SPEED = <span class="number">30</span>    <span class="comment"># 外側加速車輪功率 (%)</span>
+SLOW_SPEED = <span class="number">10</span>    <span class="comment"># 內側轉向減速車輪功率 (%)</span>
+
+<span class="comment"># --- 3. 無限尋跡主迴圈 ---</span>
+<span class="keyword">while True</span>:
+    <span class="comment"># 讀取感應器傳回之反射光強度 (數值介於 0 到 100 之間)</span>
+    light_value = color_sensor.get_reflected_light()
+    
+    <span class="keyword">if</span> light_value &lt; THRESHOLD:
+        <span class="comment"># 【情況 A】：光線低於門檻值 -> 機器人壓在黑線上 (偏向圓內)</span>
+        <span class="comment"># 動作：左輪輸出 30%、右輪輸出 10% -> 機器人向右(往白色外邊界)切出</span>
+        wheels.start_tank(FAST_SPEED, SLOW_SPEED)
+    <span class="keyword">else</span>:
+        <span class="comment"># 【情況 B】：光線高於門檻值 -> 機器人偏離到白地上 (偏向圓外)</span>
+        <span class="comment"># 動作：左輪輸出 10%、右輪輸出 30% -> 機器人向左(往黑色圓內)切入</span>
+        wheels.start_tank(SLOW_SPEED, FAST_SPEED)</code></pre>
+
+        <h4 style="margin-top: 25px; color: #f1f5f9;">2. 比例控制法 MicroPython (P-Control Line Follower - 繞圓平滑首選)</h4>
+<pre><code><span class="comment"># =========================================================</span>
+<span class="comment"># LEGO SPIKE Prime MicroPython - 比例控制 (P-Control) 尋跡程式</span>
+<span class="comment"># =========================================================</span>
+<span class="keyword">from</span> spike <span class="keyword">import</span> PrimeHub, ColorSensor, MotorPair, Port
+
+<span class="comment"># --- 1. 硬體物件初始化 ---</span>
+hub = PrimeHub()
+color_sensor = ColorSensor(Port.E)  <span class="comment"># 光感應器連接至 Port E</span>
+wheels = MotorPair(Port.A, Port.B)  <span class="comment"># 左馬達 Port A，右馬達 Port B</span>
+
+<span class="comment"># --- 2. P 控制器核心參數設定 ---</span>
+TARGET_LIGHT = <span class="number">40.0</span>   <span class="comment"># 目標黑白邊界反射光強度 (Threshold)</span>
+KP = <span class="number">0.8</span>              <span class="comment"># 比例增益常數 (Proportional Gain)</span>
+BASE_SPEED = <span class="number">35</span>       <span class="comment"># 車輪巡航基準速度 (%)</span>
+
+<span class="comment"># --- 3. 比例控制無限迴圈 ---</span>
+<span class="keyword">while True</span>:
+    <span class="comment"># 步驟 (1)：即時讀取地面光感應器反射值</span>
+    current_light = color_sensor.get_reflected_light()
+    
+    <span class="comment"># 步驟 (2)：計算當前讀值與目標邊值的偏差量 (Error)</span>
+    <span class="comment"># 當偏白時 Error > 0；偏黑時 Error < 0</span>
+    error = current_light - TARGET_LIGHT
+    
+    <span class="comment"># 步驟 (3)：計算動態轉向修正量 (Turn = Error * Kp)</span>
+    turn = error * KP
+    
+    <span class="comment"># 步驟 (4)：計算左右車輪個自應輸出的馬達功率</span>
+    <span class="comment"># 壓白時 (turn > 0): 左輪減速、右輪加速 -> 車頭左轉切回黑線</span>
+    <span class="comment"># 壓黑時 (turn < 0): Left Power 增大、Right Power 減小 -> 車頭右轉甩出黑線</span>
+    left_power = int(BASE_SPEED + turn)
+    right_power = int(BASE_SPEED - turn)
+    
+    <span class="comment"># 步驟 (5)：限制馬達功率在安全數值範圍 [-100, 100] 以內，避免馬達爆速溢位</span>
+    left_power = max(-<span class="number">100</span>, min(<span class="number">100</span>, left_power))
+    right_power = max(-<span class="number">100</span>, min(<span class="number">100</span>, right_power))
+    
+    <span class="comment"># 步驟 (6)：將計算好的功率即時傳送給 Tank 雙驅馬達運轉</span>
+    wheels.start_tank(left_power, right_power)</code></pre>
+    </div>
+
+    <!-- Section 4: 所需 Mindstorms 積木對照說明 -->
+    <div class="section-card">
+        <h2><span class="step-num">4</span> 所需 EV3 Mindstorms 積木清單與設定</h2>
+        <p>無論您使用的是 <strong>EV3 LabVIEW (G代碼圖形介面)</strong> 或 <strong>EV3 Classroom (Scratch 軟體介面)</strong>，以下為程式所必須用到的積木模組說明：</p>
+
+        <div class="block-list">
+            <!-- Block 1 -->
+            <div class="block-item">
+                <span class="block-badge block-orange">控制積木 Control</span>
+                <h4>1. 迴圈積木 (Loop Block)</h4>
+                <p><strong>功能：</strong>使尋跡邏輯持續重複執行，直到達成停止條件（如抵達終點或按鈕按下）。在圖解中設為「無限重複 (Unlimited)」。</p>
+            </div>
+
+            <!-- Block 2 -->
+            <div class="block-item">
+                <span class="block-badge block-yellow">流向控制 Control</span>
+                <h4>2. 切換積木 (Switch Block)</h4>
+                <p><strong>功能：</strong>單條件二分歧判斷（If/Else）。將模式設為「顏色感應器」→「比較」→「反射光強度 (Reflected Light Intensity)」。</p>
+            </div>
+
+            <!-- Block 3 -->
+            <div class="block-item">
+                <span class="block-badge block-blue">感應器 Sensor</span>
+                <h4>3. 顏色感應器積木 (Color Sensor)</h4>
+                <p><strong>功能：</strong>連接在埠 (Port) 1~4（預設 Port 3）。選取「反射光強度」，傳回 0 (極暗黑) 到 100 (極明亮) 的整數值。</p>
+            </div>
+
+            <!-- Block 4 -->
+            <div class="block-item">
+                <span class="block-badge block-green">動作 Action</span>
+                <h4>4. 移動轉向 / 雙馬達積木 (Move Steering)</h4>
+                <p><strong>功能：</strong>控制 B、C 雙驅動馬達。可調整「轉向 (Steering -100~+100)」或直接對左右兩馬達設定個別功率值。</p>
+            </div>
+
+            <!-- Block 5 -->
+            <div class="block-item">
+                <span class="block-badge block-red">資料 Data</span>
+                <h4>5. 算術積木 (Math Block)</h4>
+                <p><em>(比例控制 P-Control 需使用)</em><br><strong>功能：</strong>進行 <code>(感應值 - 門檻值) * Kp</code> 的減法與乘法運算，輸出動態修正數值。</p>
+            </div>
+        </div>
+
+        <h3>Mindstorms 積木組合架構對照表 (兩態切換法)</h3>
+        <table class="param-table">
+            <thead>
+                <tr>
+                    <th>積木種類</th>
+                    <th>設定模式 / 選擇項目</th>
+                    <th>關鍵參數 / 設定值</th>
+                    <th>目的說明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Loop 迴圈</strong></td>
+                    <td>無限次 (Unlimited)</td>
+                    <td>—</td>
+                    <td>維持感應器高頻率連續偵測與馬達即時修正</td>
+                </tr>
+                <tr>
+                    <td><strong>Switch 切換</strong></td>
+                    <td>顏色感應器 &gt; 比較 &gt; 反射光強度</td>
+                    <td>比較符號: <code>&lt;</code><br>閾值 (Threshold): <code>40</code></td>
+                    <td>當反射光小於 40% 時走上方 [True] 分支，否則走下方 [False] 分支</td>
+                </tr>
+                <tr>
+                    <td><strong>Move Steering [True 分支]</strong></td>
+                    <td>開啟 (On)</td>
+                    <td>轉向: <code>+30</code> (向右)<br>馬達功率: <code>25%</code></td>
+                    <td>感應器太靠黑線內部，控制機器人往右側外邊界切出</td>
+                </tr>
+                <tr>
+                    <td><strong>Move Steering [False 分支]</strong></td>
+                    <td>開啟 (On)</td>
+                    <td>轉向: <code>-30</code> (向左)<br>馬達功率: <code>25%</code></td>
+                    <td>感應器偏向白色地面，控制機器人往左側黑線修正切入</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>EV3 程式積木組裝視覺示意 (積木擺放結構)</h3>
+        <div class="ev3-block-mockup">
+            <div class="block-row">
+                <div class="visual-block loop">
+                    🔄 無限 Loop 開始
+                </div>
+                <div class="visual-block switch">
+                    🔀 Switch (光感應器 Port 3 &lt; 40?)
+                </div>
+            </div>
+            
+            <div style="margin: 10px 0 10px 30px; border-left: 3px dashed #334155; padding-left: 15px;">
+                <div style="margin-bottom: 8px;">
+                    <span style="font-size: 0.85rem; font-weight: bold; color: #86efac;">[✓ 是 / 黑線區]：</span>
+                    <div class="visual-block motor" style="display:inline-flex;">
+                        🚗 移動轉向: B馬達 30% / C馬達 10% (往外偏離黑線)
+                    </div>
+                </div>
+                <div>
+                    <span style="font-size: 0.85rem; font-weight: bold; color: #fca5a5;">[✗ 否 / 白地區]：</span>
+                    <div class="visual-block motor" style="display:inline-flex;">
+                        🚗 移動轉向: B馬達 10% / C馬達 30% (往內切入黑線)
+                    </div>
+                </div>
+            </div>
+
+            <div class="block-row">
+                <div class="visual-block loop">
+                    🔄 結束 Loop (重複循環)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 5: 圓圈軌跡實作調校技巧與 FAQ -->
+    <div class="section-card">
+        <h2><span class="step-num">5</span> 圓圈軌跡實作調校與注意事項</h2>
+
+        <ol class="step-list">
+            <li>
+                <strong>調整圓圈半徑相對應的「馬達速差」：</strong>
+                <br>
+                如果黑色圓圈的半徑較小（彎度很急），若左右馬達功率差異不夠大（例如 30% 對 25%），機器人會來不及轉彎而<strong>脫軌甩出去</strong>。小圓圈建議增大人為速差（例如 35% 對 5%）。
+            </li>
+            <li>
+                <strong>光感應器離地高度與位置：</strong>
+                <br>
+                光感應器最佳離地距離約為 <strong>0.8 ~ 1.5 cm</strong>。過高容易受環境燈光干擾，過低可能卡到地面。此外，感應器安裝在<strong>輪軸前方靠近車頭</strong>位置，反應會最敏捷。
+            </li>
+            <li>
+                <strong>外圈尋跡 vs 內圈尋跡選擇：</strong>
+                <br>
+                圓圈順時針行駛時，建議跟隨<strong>「外側邊界」</strong>。因圓圈弧度自然向內彎，外側邊界給予機器人較寬廣的修正緩衝空間。
+            </li>
+            <li>
+                <strong>比例控制 (P-Control) 的 \(K_p\) 調校口訣：</strong>
+                <ul style="padding-left: 20px; margin-top: 5px;">
+                    <li>若機器人反應遲鈍、轉不過圓圈：<strong>增大 \(K_p\)</strong>（如從 0.5 調至 0.8 或 1.0）。</li>
+                    <li>若機器人劇烈左右搖晃、抖動嚴重：<strong>減小 \(K_p\)</strong>（如從 0.8 調降至 0.4）。</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <!-- Section 6: 尋跡程式實際應用延伸與高效移動優化 -->
+    <div class="section-card">
+        <h2><span class="step-num">6</span> 尋跡程式的實際應用延伸與高效率移動優化</h2>
+        
+        <h3>一、 尋跡技術的產業實際應用 (Real-World Applications)</h3>
+        <p>在現實工業與科技領域中，光電尋跡原理被廣泛應用於自動化與無人化設備中：</p>
+        
+        <div class="block-list">
+            <div class="block-item">
+                <span class="block-badge block-blue">智慧倉儲</span>
+                <h4>1. AGV 無人搬運車 (Automated Guided Vehicles)</h4>
+                <p>在亞馬遜 (Amazon) 倉儲或台積電晶圓廠中，AGV 機器人沿著地面鋪設的光學色帶或磁性軌跡行駛，實現 24 小時無人化貨物搬運與精密物料派送。</p>
+            </div>
+
+            <div class="block-item">
+                <span class="block-badge block-green">自動駕駛</span>
+                <h4>2. 車道保持輔助系統 (Lane Keeping Assist, LKA)</h4>
+                <p>現代智慧汽車（如 Tesla、ADAS 系統）利用影像感測器辨識道路兩側的白線/黃線，原理正是透過邊界偏離演算法進行微幅轉向修正，防止車輛偏離車道。</p>
+            </div>
+
+            <div class="block-item">
+                <span class="block-badge block-yellow">工業巡檢</span>
+                <h4>3. 軌道與巡檢機器人</h4>
+                <p>高壓電廠、變電所與地下管道的自動巡檢機器人，沿著特定路徑標示線巡邏，即時檢測設備異常並傳回影像，保障作業安全。</p>
+            </div>
+
+            <div class="block-item">
+                <span class="block-badge block-orange">機器人競賽</span>
+                <h4>4. 競速尋跡與迷宮探索 (Line Maze Solving)</h4>
+                <p>在 WRO (世界機器人奧林匹克) 或 FLL 競賽中，機器人需結合「節點辨識 (Intersection Detection)」與「路徑記憶演算法 (如左手法則、DFS)」，在複雜網格地圖中自動尋找最短路徑。</p>
+            </div>
+        </div>
+
+        <h3 style="margin-top: 30px;">二、 程式演算法：如何讓機器人移動更高效、速度更快？</h3>
+        <p>單純的「兩態切換」會導致機器人劇烈左右抖動（蛇行）並消耗大量馬達電力。要讓機器人<strong>跑得更快、軌跡更平滑、時間更短</strong>，可以採用以下四項高階程式優化技巧：</p>
+
+        <div class="info-box">
+            <strong>🚀 1. 升級為完整 PID 控制器 (Full PID Controller - P + I + D)</strong>
+            <p>只用 P (比例) 仍可能產生些微震盪，加入 <strong>I (積分 Integral)</strong> 與 <strong>D (微分 Derivative)</strong> 能達到極致平滑：</p>
+            <ul style="padding-left: 20px; margin-top: 8px;">
+                <li><strong>P (Proportional 比例項)：</strong> 修正當前偏差。<code>P_turn = Error * Kp</code></li>
+                <li><strong>I (Integral 積分項)：</strong> 累積微小長期偏差，消除機械構造左右不對稱的偏向。<code>Integral = Integral + Error</code></li>
+                <li><strong>D (Derivative 微分項)：</strong> 預測偏差的變化率（相當於「煞車阻尼」），有效抑制過衝 (Overshoot) 與急甩震盪！<code>D_turn = (Error - Last_Error) * Kd</code></li>
+            </ul>
+        </div>
+
+        <div class="info-box warning">
+            <strong>🏎️ 2. 動態車速自適應控制 (Dynamic Speed Ramp / Cornering Speed)</strong>
+            <p>固定速度會限制直線表現（直線太慢、彎道太快甩尾）。程式可加入<strong>「直線加速、急灣減速」</strong>的智慧邏輯：</p>
+            <pre style="margin-top: 10px;"><code><span class="comment">// 根據偏差大小 Error 動態計算基準車速 (當偏差越小表示在直線，速度升至最大)</span>
+<span class="keyword">SET</span> DynamicSpeed = MaxSpeed - (abs(Error) * SpeedScale)
+<span class="function">SetMotorPower</span>(LeftMotor, DynamicSpeed + Turn)
+<span class="function">SetMotorPower</span>(RightMotor, DynamicSpeed - Turn)</code></pre>
+        </div>
+
+        <ol class="step-list" style="margin-top: 20px;">
+            <li>
+                <strong>3. 雙光感應器跨線尋跡 (Dual Sensor Straddling)：</strong>
+                <br>
+                將感應器數量增加為 2 個（跨騎在黑線左右兩側的白區）：
+                <ul style="padding-left: 20px; margin-top: 5px;">
+                    <li><strong>兩感應器皆看到白色：</strong> 代表黑線完美位於兩感應器中央，<strong>馬達 100% 全速衝刺</strong>！</li>
+                    <li><strong>左感應器壓黑：</strong> 代表車頭偏右，左輪減速向左修正。</li>
+                    <li><strong>兩感應器皆壓黑：</strong> 偵測到交叉路口 (Crossroad) 或橫向停靠線，可執行精準停靠或轉向邏輯。</li>
+                </ul>
+            </li>
+            <li>
+                <strong>4. 高頻採樣與閉迴路馬達控制 (Encoder Velocity Feedback)：</strong>
+                <br>
+                在 Python 或 LabVIEW 中儘量減少 <code>sleep()</code> 延遲時間，拉高採樣頻率（100Hz 以上）。同時啟用 EV3/SPIKE 馬達內建的<strong>角度編碼器 (Encoder)</strong> 轉速閉迴路控制，即使電池電量下降，也能確保左右馬達輸出精確無誤的實際轉速。
+            </li>
+        </ol>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>LEGO® MINDSTORMS® EV3 & SPIKE™ Prime 尋跡教學專案設計指南 | 適用於 LabVIEW EV3、EV3 Classroom 與 MicroPython 軟體環境</p>
+    </footer>
+
+</div>
+
+</body>
+</html>

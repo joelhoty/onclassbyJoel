@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生成式 AI、Civitai 影像模型與 Gemini 多模態應用 - 詳細課程筆記</title>
+    <!-- Google Fonts: Inter & Noto Sans TC & Fira Code -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* 黑灰白極簡配色 - 深色主題 */
+            --bg-primary: #09090b;
+            --bg-secondary: #18181b;
+            --bg-card: #27272a;
+            --bg-card-hover: #3f3f46;
+            --border-color: #3f3f46;
+            --border-subtle: #27272a;
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --accent-white: #ffffff;
+            --code-bg: #000000;
+            --diagram-bg: #111113;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+        }
+
+        .light {
+            /* 黑灰白極簡配色 - 明亮主題 */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f4f4f5;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f4f4f5;
+            --border-color: #e4e4e7;
+            --border-subtle: #f4f4f5;
+            --text-primary: #09090b;
+            --text-secondary: #52525b;
+            --text-muted: #a1a1aa;
+            --accent-white: #000000;
+            --code-bg: #18181b;
+            --diagram-bg: #fafafa;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.65;
+            padding-bottom: 80px;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        /* 頂部導覽列 */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(9, 9, 11, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.85rem 2rem;
+            transition: background 0.25s;
+        }
+        .light header {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .logo i {
+            color: var(--text-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.15s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.45rem 0.9rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.15s;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--text-secondary);
+        }
+
+        .btn-primary {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            border-color: var(--text-primary);
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background: var(--text-secondary);
+            border-color: var(--text-secondary);
+            color: var(--bg-primary);
+        }
+
+        /* 頁面主要內容 */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Hero 區塊 (極簡黑灰標頭) */
+        .hero {
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem 2rem;
+            margin-bottom: 2.5rem;
+            text-align: left;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.25;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 1.02rem;
+            max-width: 850px;
+            margin-bottom: 1.25rem;
+        }
+
+        .meta-info {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+        }
+
+        /* 快捷目錄 */
+        .toc-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .toc-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.85rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .toc-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.6rem 0.85rem;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+
+        .toc-item:hover {
+            color: var(--text-primary);
+            border-color: var(--text-secondary);
+            background: var(--bg-card);
+        }
+
+        .toc-num {
+            font-family: 'Fira Code', monospace;
+            font-weight: 700;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        /* 章節結構 */
+        section {
+            margin-bottom: 3rem;
+            scroll-margin-top: 80px;
+        }
+
+        .sec-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sec-header h2 {
+            font-size: 1.45rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .sec-header span {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: var(--bg-secondary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* 卡片面板 */
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        p {
+            margin-bottom: 0.85rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        ul, ol {
+            margin-left: 1.25rem;
+            margin-bottom: 0.85rem;
+            color: var(--text-secondary);
+            font-size: 0.93rem;
+        }
+
+        li {
+            margin-bottom: 0.4rem;
+        }
+
+        strong {
+            color: var(--text-primary);
+        }
+
+        /* 圖形與架構圖容器 (Diagram Components) */
+        .diagram-box {
+            background: var(--diagram-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin: 1.25rem 0;
+        }
+
+        .diagram-header {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* SVG 圖形與 CSS 圖形樣式 */
+        .svg-diagram {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .svg-text {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            fill: var(--text-primary);
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .svg-text-sub {
+            fill: var(--text-muted);
+            font-size: 10px;
+        }
+        .svg-node {
+            fill: var(--bg-card);
+            stroke: var(--border-color);
+            stroke-width: 1.5;
+            rx: 6;
+        }
+        .svg-node-active {
+            fill: var(--bg-secondary);
+            stroke: var(--text-primary);
+            stroke-width: 2;
+            rx: 6;
+        }
+        .svg-line {
+            stroke: var(--border-color);
+            stroke-width: 1.5;
+            stroke-dasharray: none;
+        }
+        .svg-line-arrow {
+            stroke: var(--text-secondary);
+            stroke-width: 1.5;
+            marker-end: url(#arrow);
+        }
+
+        /* 網格區塊 */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* 黑灰白極簡表格 */
+        .table-responsive {
+            overflow-x: auto;
+            margin-bottom: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Prompt / Code Block */
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.88rem;
+            color: #e4e4e7;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* 標籤 Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .badge-bold {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            border-color: var(--text-primary);
+        }
+
+        /* 頁尾 */
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* 回頂部按鈕 */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+        .back-to-top:hover {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+        }
+
+        /* 🖨️ PDF 列印最佳化 CSS (@media print) */
+        @media print {
+            header, .nav-actions, .toc-card, .back-to-top, .btn {
+                display: none !important;
+            }
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                padding-bottom: 0 !important;
+                font-size: 11pt;
+            }
+            .container {
+                max-width: 100% !important;
+                padding: 0 !important;
+            }
+            .hero {
+                border: 1px solid #000000 !important;
+                background: #ffffff !important;
+                padding: 1.5rem !important;
+                margin-bottom: 1.5rem !important;
+            }
+            .hero h1 {
+                color: #000000 !important;
+            }
+            .hero p, .meta-info {
+                color: #333333 !important;
+            }
+            .card, .diagram-box, table, .code-block {
+                background: #ffffff !important;
+                color: #000000 !important;
+                border: 1px solid #666666 !important;
+                break-inside: avoid;
+                page-break-inside: avoid;
+                box-shadow: none !important;
+                margin-bottom: 1rem !important;
+            }
+            .svg-node {
+                fill: #ffffff !important;
+                stroke: #000000 !important;
+            }
+            .svg-node-active {
+                fill: #f0f0f0 !important;
+                stroke: #000000 !important;
+            }
+            .svg-text {
+                fill: #000000 !important;
+            }
+            .svg-text-sub {
+                fill: #555555 !important;
+            }
+            .svg-line, .svg-line-arrow {
+                stroke: #000000 !important;
+            }
+            th {
+                background: #f0f0f0 !important;
+                color: #000000 !important;
+            }
+            td, th {
+                border-bottom: 1px solid #888888 !important;
+            }
+            .code-block {
+                color: #000000 !important;
+            }
+            strong {
+                color: #000000 !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.75rem; }
+            .nav-links { display: none; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 頂部導覽列 -->
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fa-solid fa-cube"></i> AI Notebook
+            </div>
+            <ul class="nav-links">
+                <li><a href="#genai">1. 生成式 AI 原理</a></li>
+                <li><a href="#civitai">2. Civitai 影像模型</a></li>
+                <li><a href="#gemini">3. Gemini 多模態</a></li>
+                <li><a href="#summary">4. 綜合工作流</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="btn btn-primary" onclick="window.print()">
+                    <i class="fa-solid fa-file-pdf"></i> 另存 PDF
+                </button>
+                <button class="btn" id="themeToggle">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- Hero 主題標頭 -->
+        <div class="hero">
+            <div class="hero-badge">Course Documentation</div>
+            <h1>生成式 AI、Civitai 影像模型<br>與 Gemini 多模態應用詳細筆記</h1>
+            <p>本筆記彙整生成式 AI（Generative AI）之核心運作原理、Civitai 生態系繪圖模型（SD / LoRA / ControlNet）參數控制，以及 Google Gemini 原生多模態與 MoE 混合專家模型之架構分析。</p>
+            <div class="meta-info">
+                <div><i class="fa-regular fa-calendar"></i> 2026-09-02</div>
+                <div><i class="fa-solid fa-tag"></i> Generative AI / Civitai / Gemini</div>
+                <div><i class="fa-solid fa-file-lines"></i> 格式：單頁極簡風格</div>
+            </div>
+        </div>
+
+        <!-- 快捷目錄 -->
+        <div class="toc-card">
+            <div class="toc-title"><i class="fa-solid fa-list"></i> 目錄導覽</div>
+            <div class="toc-grid">
+                <a href="#genai" class="toc-item"><span class="toc-num">01</span> 生成式 AI 核心原理</a>
+                <a href="#civitai" class="toc-item"><span class="toc-num">02</span> Civitai 影像模型架構</a>
+                <a href="#gemini" class="toc-item"><span class="toc-num">03</span> Gemini 原生多模態</a>
+                <a href="#summary" class="toc-item"><span class="toc-num">04</span> 比較分析與整合工作流</a>
+            </div>
+        </div>
+
+        <!-- SVG 箭頭定義 -->
+        <svg style="width:0;height:0;position:absolute;">
+            <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--text-secondary)"/>
+                </marker>
+            </defs>
+        </svg>
+
+        <!-- 第一單元：生成式 AI 核心原理 -->
+        <section id="genai">
+            <div class="sec-header">
+                <h2>第一單元：生成式人工智慧 (Generative AI) 核心原理</h2>
+                <span>UNIT 01</span>
+            </div>
+
+            <!-- 卡片 1-1 -->
+            <div class="card">
+                <div class="card-title">1.1 生成式 AI vs 判別式 AI 之資料流原理</div>
+                <p><strong>生成式 AI (Generative AI)</strong> 旨在學習資料之邊際機率分佈 \(P(X)\) 或聯合機率分佈 \(P(X,Y)\)，據以推演並重建全新資料；而<strong>判別式 AI (Discriminative AI)</strong> 則專注於求解條件機率 \(P(Y|X)\)，用以分類或預測標籤。</p>
+
+                <!-- 架構圖 1：判別式 vs 生成式 AI 數據流 -->
+                <div class="diagram-box">
+                    <div class="diagram-header">
+                        <span><i class="fa-solid fa-diagram-project"></i> 圖 1.1 判別式 AI 與生成式 AI 之模型架構與資料流向圖</span>
+                    </div>
+                    <svg class="svg-diagram" viewBox="0 0 760 190">
+                        <!-- 判別式 AI 流水線 -->
+                        <rect x="20" y="20" width="110" height="45" class="svg-node"/>
+                        <text x="75" y="47" text-anchor="middle" class="svg-text">輸入數據 X</text>
+                        <text x="75" y="58" text-anchor="middle" class="svg-text-sub">(如：貓/狗影像)</text>
+
+                        <line x1="130" y1="42.5" x2="190" y2="42.5" class="svg-line-arrow"/>
+
+                        <rect x="190" y="20" width="140" height="45" class="svg-node-active"/>
+                        <text x="260" y="42" text-anchor="middle" class="svg-text">判別式模型</text>
+                        <text x="260" y="56" text-anchor="middle" class="svg-text-sub">P(Y|X) 求解標籤</text>
+
+                        <line x1="330" y1="42.5" x2="390" y2="42.5" class="svg-line-arrow"/>
+
+                        <rect x="390" y="20" width="110" height="45" class="svg-node"/>
+                        <text x="445" y="47" text-anchor="middle" class="svg-text">預測分類 Y</text>
+                        <text x="445" y="58" text-anchor="middle" class="svg-text-sub">(如：類別="貓")</text>
+
+                        <!-- 分隔線 -->
+                        <line x1="20" y1="95" x2="740" y2="95" stroke="var(--border-color)" stroke-dasharray="4 4"/>
+
+                        <!-- 生成式 AI 流水線 -->
+                        <rect x="20" y="120" width="110" height="45" class="svg-node"/>
+                        <text x="75" y="142" text-anchor="middle" class="svg-text">隨機噪聲 / Prompt</text>
+                        <text x="75" y="156" text-anchor="middle" class="svg-text-sub">(潛在向量 z)</text>
+
+                        <line x1="130" y1="142.5" x2="190" y2="142.5" class="svg-line-arrow"/>
+
+                        <rect x="190" y="120" width="140" height="45" class="svg-node-active"/>
+                        <text x="260" y="142" text-anchor="middle" class="svg-text">生成式模型</text>
+                        <text x="260" y="156" text-anchor="middle" class="svg-text-sub">P(X) 重建數據分佈</text>
+
+                        <line x1="330" y1="142.5" x2="390" y2="142.5" class="svg-line-arrow"/>
+
+                        <rect x="390" y="120" width="110" height="45" class="svg-node"/>
+                        <text x="445" y="142" text-anchor="middle" class="svg-text">全新數據 X'</text>
+                        <text x="445" y="156" text-anchor="middle" class="svg-text-sub">(合成圖片/文章)</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- 卡片 1-2 -->
+            <div class="card">
+                <div class="card-title">1.2 擴散模型 (Diffusion Model) 前向與反向運作圖解</div>
+                <p>擴散模型分為兩個主要階段：<strong>前向加噪過程 (Forward Noise Process)</strong> 將真實圖像逐步加入高斯噪聲變為純噪聲；<strong>反向去噪過程 (Reverse Denoising Process)</strong> 則利用 UNet/DiT 神經網路預測噪聲並逐步還原清晰圖像。</p>
+
+                <!-- 架構圖 2：擴散模型流程 -->
+                <div class="diagram-box">
+                    <div class="diagram-header">
+                        <span><i class="fa-solid fa-diagram-project"></i> 圖 1.2 擴散模型之 Markov Chain 加噪與反向 UNet 噪聲預測架構</span>
+                    </div>
+                    <svg class="svg-diagram" viewBox="0 0 760 170">
+                        <!-- 前向加噪 -->
+                        <rect x="30" y="25" width="100" height="40" class="svg-node-active"/>
+                        <text x="80" y="49" text-anchor="middle" class="svg-text">真實圖像 x₀</text>
+
+                        <line x1="130" y1="45" x2="230" y2="45" class="svg-line-arrow"/>
+                        <text x="180" y="38" text-anchor="middle" class="svg-text-sub">前向加噪 q(x_t|x_{t-1})</text>
+
+                        <rect x="230" y="25" width="100" height="40" class="svg-node"/>
+                        <text x="280" y="49" text-anchor="middle" class="svg-text">半噪聲 x_t</text>
+
+                        <line x1="330" y1="45" x2="430" y2="45" class="svg-line-arrow"/>
+                        <text x="380" y="38" text-anchor="middle" class="svg-text-sub">高斯噪聲 Step 1..T</text>
+
+                        <rect x="430" y="25" width="100" height="40" class="svg-node"/>
+                        <text x="480" y="49" text-anchor="middle" class="svg-text">純噪聲 x_T</text>
+
+                        <!-- 反向去噪 -->
+                        <path d="M 480 65 L 480 115 A 10 10 0 0 1 470 125 L 340 125" fill="none" class="svg-line-arrow"/>
+
+                        <rect x="180" y="105" width="160" height="40" class="svg-node-active"/>
+                        <text x="260" y="124" text-anchor="middle" class="svg-text">UNet / DiT 噪聲預測器</text>
+                        <text x="260" y="138" text-anchor="middle" class="svg-text-sub">預測噪聲 ε_θ(x_t, t, c)</text>
+
+                        <line x1="180" y1="125" x2="130" y2="125" class="svg-line-arrow"/>
+
+                        <rect x="30" y="105" width="100" height="40" class="svg-node-active"/>
+                        <text x="80" y="129" text-anchor="middle" class="svg-text">生成新圖像 x₀</text>
+
+                        <!-- Conditioning 條件輸入 -->
+                        <rect x="400" y="105" width="120" height="40" class="svg-node"/>
+                        <text x="460" y="124" text-anchor="middle" class="svg-text">Prompt 文字向量</text>
+                        <text x="460" y="138" text-anchor="middle" class="svg-text-sub">(CLIP / T5 Conditioning)</text>
+
+                        <line x1="400" y1="125" x2="340" y2="125" class="svg-line-arrow"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- 卡片 1-3 -->
+            <div class="card">
+                <div class="card-title">1.3 四大生成模型技術矩陣比較</div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>模型種類</th>
+                                <th>關鍵原理</th>
+                                <th>優點</th>
+                                <th>局限性</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>VAE (變分自編碼器)</strong></td>
+                                <td>Latent 潛在空間高斯重參數化採樣解碼</td>
+                                <td>訓練穩定、理論嚴密</td>
+                                <td>生成的圖像傾向於模糊</td>
+                            </tr>
+                            <tr>
+                                <td><strong>GAN (生成對抗網絡)</strong></td>
+                                <td>生成器 (G) 與判別器 (D) Minimax 博弈對抗</td>
+                                <td>生成細節清晰、推論極快</td>
+                                <td>訓練不穩定、易發生模式崩塌</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Transformer</strong></td>
+                                <td>Self-Attention 機制與自迴歸 (AR) 序列預測</td>
+                                <td>長距離上下文理解極佳</td>
+                                <td>計算複雜度為 \(O(N^2)\)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Diffusion Model</strong></td>
+                                <td>前向 Markov Chain 加噪與反向 UNet/DiT 去噪</td>
+                                <td>生成品質極高、多樣性佳</td>
+                                <td>多步迭代採樣，推論耗時較長</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第二單元：Civitai 影像模型與應用 -->
+        <section id="civitai">
+            <div class="sec-header">
+                <h2>第二單元：Civitai 平台與影像生成模型生態系</h2>
+                <span>UNIT 02</span>
+            </div>
+
+            <!-- 卡片 2-1 -->
+            <div class="card">
+                <div class="card-title">2.1 Civitai 影像模型模組化架構</div>
+                <p>Civitai 平台上的 AI 繪圖生態系高度模組化。一套完整的繪圖 Pipeline 由 **Checkpoint 大模型**、**LoRA 輕量微調**、**ControlNet 姿態約束** 與 **VAE 色彩解碼器** 共同組成。</p>
+
+                <!-- 架構圖 3：Civitai 繪圖 pipeline -->
+                <div class="diagram-box">
+                    <div class="diagram-header">
+                        <span><i class="fa-solid fa-diagram-project"></i> 圖 2.1 Stable Diffusion 生態系模型模組化組合架構</span>
+                    </div>
+                    <svg class="svg-diagram" viewBox="0 0 760 210">
+                        <!-- Text Prompt -->
+                        <rect x="20" y="20" width="130" height="40" class="svg-node"/>
+                        <text x="85" y="44" text-anchor="middle" class="svg-text">Text Prompt</text>
+
+                        <line x1="150" y1="40" x2="210" y2="40" class="svg-line-arrow"/>
+
+                        <!-- Text Encoder -->
+                        <rect x="210" y="20" width="140" height="40" class="svg-node"/>
+                        <text x="280" y="44" text-anchor="middle" class="svg-text">Text Encoder (CLIP)</text>
+
+                        <line x1="280" y1="60" x2="280" y2="105" class="svg-line-arrow"/>
+
+                        <!-- Checkpoint (UNet) -->
+                        <rect x="200" y="105" width="160" height="50" class="svg-node-active"/>
+                        <text x="280" y="128" text-anchor="middle" class="svg-text">Checkpoint (UNet / DiT)</text>
+                        <text x="280" y="142" text-anchor="middle" class="svg-text-sub">基底大模型 (SDXL/Flux)</text>
+
+                        <!-- LoRA -->
+                        <rect x="20" y="105" width="130" height="50" class="svg-node"/>
+                        <text x="85" y="128" text-anchor="middle" class="svg-text">LoRA (ΔW = A×B)</text>
+                        <text x="85" y="142" text-anchor="middle" class="svg-text-sub">微調特定人物/畫風</text>
+
+                        <line x1="150" y1="130" x2="200" y2="130" class="svg-line-arrow"/>
+
+                        <!-- ControlNet -->
+                        <rect x="410" y="20" width="140" height="50" class="svg-node"/>
+                        <text x="480" y="43" text-anchor="middle" class="svg-text">ControlNet 輔助圖</text>
+                        <text x="480" y="57" text-anchor="middle" class="svg-text-sub">(OpenPose / Depth / Line)</text>
+
+                        <path d="M 480 70 L 480 130 L 360 130" fill="none" class="svg-line-arrow"/>
+
+                        <!-- Latent Space -->
+                        <line x1="360" y1="130" x2="430" y2="130" class="svg-line-arrow"/>
+
+                        <rect x="430" y="105" width="120" height="50" class="svg-node"/>
+                        <text x="490" y="128" text-anchor="middle" class="svg-text">Latent Space</text>
+                        <text x="490" y="142" text-anchor="middle" class="svg-text-sub">潛在特徵張量</text>
+
+                        <line x1="550" y1="130" x2="600" y2="130" class="svg-line-arrow"/>
+
+                        <!-- VAE Decoder -->
+                        <rect x="600" y="105" width="130" height="50" class="svg-node-active"/>
+                        <text x="665" y="128" text-anchor="middle" class="svg-text">VAE Decoder</text>
+                        <text x="665" y="142" text-anchor="middle" class="svg-text-sub">還原高解析 RGB</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- 卡片 2-2 -->
+            <div class="card">
+                <div class="card-title">2.2 模型技術類型分析</div>
+                <div class="grid-2">
+                    <div class="card" style="background:var(--bg-primary);">
+                        <span class="badge badge-bold">Checkpoint</span>
+                        <h4 style="margin-top:0.5rem; margin-bottom:0.3rem;">底層主模型 (2GB ~ 12GB)</h4>
+                        <p style="font-size:0.88rem;">包含完整 UNet、Text Encoder 與 VAE。決定畫風總體基調（如擬真照片、二次元動漫、3D 渲染）。</p>
+                    </div>
+                    <div class="card" style="background:var(--bg-primary);">
+                        <span class="badge">LoRA</span>
+                        <h4 style="margin-top:0.5rem; margin-bottom:0.3rem;">低秩微調矩陣 (10MB ~ 200MB)</h4>
+                        <p style="font-size:0.88rem;">原理：凍結主模型權重 \(W_0\)，僅訓練低秩矩陣 \(\Delta W = A \cdot B\)。實現低代價精確控制角色與服飾。</p>
+                    </div>
+                    <div class="card" style="background:var(--bg-primary);">
+                        <span class="badge">ControlNet</span>
+                        <h4 style="margin-top:0.5rem; margin-bottom:0.3rem;">幾何與姿態空間約束</h4>
+                        <p style="font-size:0.88rem;">鎖定主模型並複製 Encoding 層，利用 OpenPose (肢體)、Canny (邊緣)、Depth (深度) 進行精確繪圖控制。</p>
+                    </div>
+                    <div class="card" style="background:var(--bg-primary);">
+                        <span class="badge">VAE</span>
+                        <h4 style="margin-top:0.5rem; margin-bottom:0.3rem;">色彩與細節解碼器</h4>
+                        <p style="font-size:0.88rem;">將低維潛在張量解碼還原為 RGB 像素，修復圖像色彩灰淡、人眼結構與肢體邊緣模糊問題。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 2-3 -->
+            <div class="card">
+                <div class="card-title">2.3 Prompt 提示詞語法與生成參數說明</div>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>WebUI Prompt Format</span>
+                        <span>Syntax Example</span>
+                    </div>
+(masterpiece, best quality:1.2), 1girl, solo, sci-fi cyberpunk city, glowing neon, <lora:cyber_aesthetic:0.8>
+Negative Prompt: (worst quality, low quality:1.4), deformed hands, extra fingers, bad anatomy, badhandv4
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>參數名稱</th>
+                                <th>推薦設定值</th>
+                                <th>技術影響與作用說明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Sampler (採樣器)</strong></td>
+                                <td>DPM++ 2M Karras / Euler a</td>
+                                <td>ODE/SDE 去噪求解器。DPM++ 2M 收斂快，20 步即達極佳品質。</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Steps (去噪步數)</strong></td>
+                                <td>20 ~ 30 步</td>
+                                <td>反向迭代去噪次數。過低會留有噪點，過高 (>50) 邊際效益遞減且耗時。</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CFG Scale (提示詞相關度)</strong></td>
+                                <td>5.0 ~ 8.0</td>
+                                <td>控制圖像遵守 Prompt 的程度。過高 (>12) 易導致線條燒毀與飽和度過曝。</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Hires.fix (高清修復)</strong></td>
+                                <td>Denoising: 0.3 ~ 0.45</td>
+                                <td>先以低解析度生成避免雙頭變形，再經 Latent Upscale 進行二次採樣放大。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第三單元：Google Gemini 多模態模型 -->
+        <section id="gemini">
+            <div class="sec-header">
+                <h2>第三單元：Google Gemini 原生多模態模型</h2>
+                <span>UNIT 03</span>
+            </div>
+
+            <!-- 卡片 3-1 -->
+            <div class="card">
+                <div class="card-title">3.1 Gemini 原生多模態與 MoE 混合專家架構圖解</div>
+                <p>Google Gemini 從底層預訓練即採用**原生多模態 (Native Multimodality)** 架構，並結合 **MoE (Mixture of Experts)** 稀疏激活機制，大幅提升大規模推理效率。</p>
+
+                <!-- 架構圖 4：Gemini MoE 原生多模態 -->
+                <div class="diagram-box">
+                    <div class="diagram-header">
+                        <span><i class="fa-solid fa-diagram-project"></i> 圖 3.1 Gemini 原生多模態 Token 化與 MoE 動態路由架構</span>
+                    </div>
+                    <svg class="svg-diagram" viewBox="0 0 760 210">
+                        <!-- 輸入模態 -->
+                        <rect x="20" y="20" width="80" height="30" class="svg-node"/>
+                        <text x="60" y="39" text-anchor="middle" class="svg-text">文字 Text</text>
+
+                        <rect x="20" y="60" width="80" height="30" class="svg-node"/>
+                        <text x="60" y="79" text-anchor="middle" class="svg-text">影像 Image</text>
+
+                        <rect x="20" y="100" width="80" height="30" class="svg-node"/>
+                        <text x="60" y="119" text-anchor="middle" class="svg-text">音訊 Audio</text>
+
+                        <rect x="20" y="140" width="80" height="30" class="svg-node"/>
+                        <text x="60" y="159" text-anchor="middle" class="svg-text">影片/程式</text>
+
+                        <line x1="100" y1="95" x2="150" y2="95" class="svg-line-arrow"/>
+
+                        <!-- 原生多模態 Tokenizer -->
+                        <rect x="150" y="45" width="130" height="100" class="svg-node-active"/>
+                        <text x="215" y="90" text-anchor="middle" class="svg-text">原生多模態</text>
+                        <text x="215" y="105" text-anchor="middle" class="svg-text">Tokenizer</text>
+
+                        <line x1="280" y1="95" x2="340" y2="95" class="svg-line-arrow"/>
+
+                        <!-- MoE Router -->
+                        <rect x="340" y="55" width="110" height="80" class="svg-node-active"/>
+                        <text x="395" y="90" text-anchor="middle" class="svg-text">MoE Router</text>
+                        <text x="395" y="105" text-anchor="middle" class="svg-text-sub">門控動態路由</text>
+
+                        <!-- Experts -->
+                        <line x1="450" y1="70" x2="520" y2="40" class="svg-line-arrow"/>
+                        <rect x="520" y="25" width="110" height="30" class="svg-node-active"/>
+                        <text x="575" y="44" text-anchor="middle" class="svg-text">Expert 1 (激活)</text>
+
+                        <line x1="450" y1="95" x2="520" y2="95" class="svg-line"/>
+                        <rect x="520" y="80" width="110" height="30" class="svg-node"/>
+                        <text x="575" y="99" text-anchor="middle" class="svg-text-sub">Expert 2 (休眠)</text>
+
+                        <line x1="450" y1="120" x2="520" y2="150" class="svg-line-arrow"/>
+                        <rect x="520" y="135" width="110" height="30" class="svg-node-active"/>
+                        <text x="575" y="154" text-anchor="middle" class="svg-text">Expert N (激活)</text>
+
+                        <!-- Output -->
+                        <line x1="630" y1="40" x2="680" y2="95" class="svg-line"/>
+                        <line x1="630" y1="150" x2="680" y2="95" class="svg-line-arrow"/>
+
+                        <rect x="680" y="70" width="70" height="50" class="svg-node-active"/>
+                        <text x="715" y="99" text-anchor="middle" class="svg-text">輸出</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- 卡片 3-2 -->
+            <div class="card">
+                <div class="card-title">3.2 Gemini 核心技術突破點</div>
+                <div class="grid-3">
+                    <div class="card" style="background:var(--bg-primary);">
+                        <h4>原生多模態 (Native Multimodal)</h4>
+                        <p style="font-size:0.88rem; margin-top:0.4rem;">非傳統 LLM 外部掛載 Vision Encoder 的拼接做法，而是在預訓練時即統一跨模態理解，視覺與音訊語意無損失。</p>
+                    </div>
+                    <div class="card" style="background:var(--bg-primary);">
+                        <h4>100萬+ Tokens 長上下文</h4>
+                        <p style="font-size:0.88rem; margin-top:0.4rem;">優化 RoPE 位置編碼與注意力記憶體。在大海撈針 (Needle in a Haystack) 檢索測試中保持 99%+ 準確率。</p>
+                    </div>
+                    <div class="card" style="background:var(--bg-primary);">
+                        <h4>Code Execution & Agent</h4>
+                        <p style="font-size:0.88rem; margin-top:0.4rem;">內建 Python 沙盒執行環境，能自發撰寫程式驗證數學推理，並支援結構化 Function Calling API。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第四單元：綜合比較與跨領域工作流 -->
+        <section id="summary">
+            <div class="sec-header">
+                <h2>第四單元：綜合比較與跨領域整合工作流</h2>
+                <span>UNIT 04</span>
+            </div>
+
+            <!-- 卡片 4-1 -->
+            <div class="card">
+                <div class="card-title">4.1 三大技術範疇綜合對比矩陣</div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>維度</th>
+                                <th>Generative AI 總論</th>
+                                <th>Civitai SD 生態系</th>
+                                <th>Google Gemini 多模態</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>主要目標</strong></td>
+                                <td>資料分佈學習與生成理論</td>
+                                <td>高精度視覺繪圖與資材產出</td>
+                                <td>通用邏輯推理、程式碼與長文分析</td>
+                            </tr>
+                            <tr>
+                                <td><strong>核心架構</strong></td>
+                                <td>Diffusion / Transformer / VAE / GAN</td>
+                                <td>UNet / DiT + CLIP + VAE + ControlNet</td>
+                                <td>Native Multimodal Transformer + MoE</td>
+                            </tr>
+                            <tr>
+                                <td><strong>運作環境</strong></td>
+                                <td>理論模型（雲/端兼具）</td>
+                                <td>開源本地顯示卡 (NVIDIA GPU)</td>
+                                <td>Google Cloud API / 端側 Nano</td>
+                            </tr>
+                            <tr>
+                                <td><strong>控制方式</strong></td>
+                                <td>演算法數學約束</td>
+                                <td>ControlNet / LoRA / Prompt 權重</td>
+                                <td>System Instruction / CoT / Tool Use</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 卡片 4-2 -->
+            <div class="card">
+                <div class="card-title">4.2 Gemini 與 Civitai 整合工作流 (Integrated Workflow)</div>
+                <p>將 **Gemini 的推理思考與 Prompt 構建能力** 與 **Civitai 的極致出圖控制** 結合，可構建高效視覺自動化管線：</p>
+
+                <!-- 架構圖 5：整合工作流 -->
+                <div class="diagram-box">
+                    <div class="diagram-header">
+                        <span><i class="fa-solid fa-diagram-project"></i> 圖 4.1 Gemini 語意規劃與 Civitai SD 精確繪圖跨平台整合流程圖</span>
+                    </div>
+                    <svg class="svg-diagram" viewBox="0 0 760 140">
+                        <rect x="20" y="45" width="160" height="50" class="svg-node-active"/>
+                        <text x="100" y="68" text-anchor="middle" class="svg-text">1. Gemini 語意發想</text>
+                        <text x="100" y="82" text-anchor="middle" class="svg-text-sub">生成故事與 SD Prompt</text>
+
+                        <line x1="180" y1="70" x2="240" y2="70" class="svg-line-arrow"/>
+
+                        <rect x="240" y="45" width="170" height="50" class="svg-node"/>
+                        <text x="325" y="68" text-anchor="middle" class="svg-text">2. Civitai 資源加載</text>
+                        <text x="325" y="82" text-anchor="middle" class="svg-text-sub">選定 Checkpoint + LoRA</text>
+
+                        <line x1="410" y1="70" x2="470" y2="70" class="svg-line-arrow"/>
+
+                        <rect x="470" y="45" width="160" height="50" class="svg-node"/>
+                        <text x="550" y="68" text-anchor="middle" class="svg-text">3. SD / ControlNet 出圖</text>
+                        <text x="550" y="82" text-anchor="middle" class="svg-text-sub">骨架姿態與二次採樣</text>
+
+                        <line x1="630" y1="70" x2="680" y2="70" class="svg-line-arrow"/>
+
+                        <rect x="680" y="45" width="60" height="50" class="svg-node-active"/>
+                        <text x="710" y="74" text-anchor="middle" class="svg-text">4. 產出</text>
+                    </svg>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- 頁尾 -->
+    <footer>
+        <p>© 2026 AI Class Course Notes | 儲存於 <code>ai_1.html</code> | 單頁黑灰白極簡版</p>
+    </footer>
+
+    <!-- 回頂部按鈕 -->
+    <a href="#" class="back-to-top" title="回到頂部">
+        <i class="fa-solid fa-arrow-up"></i>
+    </a>
+
+    <!-- JavaScript 邏輯 -->
+    <script>
+        // 深色 / 明亮模式切換
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const htmlEl = document.documentElement;
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (htmlEl.classList.contains('dark')) {
+                htmlEl.classList.remove('dark');
+                htmlEl.classList.add('light');
+                themeToggleBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            } else {
+                htmlEl.classList.remove('light');
+                htmlEl.classList.add('dark');
+                themeToggleBtn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+            }
+        });
+
+        // 平滑滾動
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

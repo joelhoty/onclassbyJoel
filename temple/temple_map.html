@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>嘉義市 80 年以上歷史廟宇地圖導覽</title>
+    
+    <!-- Leaflet CSS & Tailwind CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2pdf.js for Client-side PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        #map {
+            height: calc(100vh - 180px);
+            width: 100%;
+            z-index: 10;
+        }
+        @media (max-width: 768px) {
+            #map {
+                height: 50vh;
+            }
+        }
+        .custom-popup .leaflet-popup-content-wrapper {
+            border-radius: 12px;
+            padding: 4px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+        .custom-popup .leaflet-popup-content {
+            margin: 12px 16px;
+            line-height: 1.5;
+        }
+        .custom-marker {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+            border: 2px solid white;
+            transition: transform 0.2s ease;
+        }
+        .custom-marker:hover {
+            transform: scale(1.2);
+        }
+        /* Color tags */
+        .bg-era-300 { background-color: #991b1b; } /* 清初/明鄭 >300年 深紅 */
+        .bg-era-150 { background-color: #c2410c; } /* 清中晚期 150-300年 橙紅 */
+        .bg-era-80  { background-color: #d97706; } /* 日治至二戰 80-150年 琥珀黃 */
+    </style>
+</head>
+<body class="bg-amber-50/40 text-slate-800 flex flex-col h-screen overflow-hidden">
+
+    <!-- 頂部標題與統計列 -->
+    <header class="bg-gradient-to-r from-red-900 via-amber-900 to-amber-950 text-white shadow-md flex-none z-20">
+        <div class="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid font-bold text-amber-400 text-2xl fa-gopuram"></i>
+                        <h1 class="text-xl sm:text-2xl font-bold tracking-wide">嘉義市歷史廟宇地圖導覽</h1>
+                        <span class="bg-amber-400 text-red-950 text-xs px-2.5 py-0.5 rounded-full font-bold">80年以上歷史統計</span>
+                    </div>
+                    <p class="text-xs text-amber-200/80 mt-0.5">匯整嘉義市登記廟宇數據與創立於 1946 年（二戰/日治/清領）以前之核心歷史寺廟</p>
+                </div>
+                
+                <!-- 數據指標卡片 -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-amber-300/20">
+                        <div class="text-amber-300 font-semibold">嘉義市登記廟宇</div>
+                        <div class="text-lg font-bold text-white"><span id="stat-total-registered">149</span> 座</div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-amber-300/20">
+                        <div class="text-amber-300 font-semibold">80年以上歷史廟宇</div>
+                        <div class="text-lg font-bold text-amber-300"><span id="stat-over-80">35</span> 座<span class="text-[10px] font-normal text-amber-200"> (收錄25核心)</span></div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-amber-300/20">
+                        <div class="text-amber-300 font-semibold">300年以上古廟</div>
+                        <div class="text-lg font-bold text-red-300"><span id="stat-over-300">9</span> 座</div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-amber-300/20">
+                        <div class="text-amber-300 font-semibold">古蹟與文化資產</div>
+                        <div class="text-lg font-bold text-amber-200">4 座</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 控制與篩選列 -->
+    <div class="bg-amber-100/80 border-b border-amber-200 px-4 py-2 flex-none z-20">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-sm">
+            <div class="flex flex-wrap items-center gap-2 flex-1 min-w-[280px]">
+                <!-- 搜尋框 -->
+                <div class="relative flex-1 min-w-[180px] max-w-xs">
+                    <input type="text" id="search-input" placeholder="搜尋廟名、主神或地址..." 
+                        class="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-sm">
+                    <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-amber-700/60 text-xs"></i>
+                </div>
+
+                <!-- 主神分類篩選 -->
+                <select id="filter-deity" class="bg-white border border-amber-300 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-sm">
+                    <option value="all">全部分類 (主神)</option>
+                    <option value="城隍關帝">城隍 / 關帝 / 雙忠</option>
+                    <option value="媽祖">天上聖母 (媽祖)</option>
+                    <option value="保生神農">保生大帝 / 神農聖帝</option>
+                    <option value="菩薩佛祖">地藏菩薩 / 釋迦佛 / 觀音</option>
+                    <option value="福德正神">福德正神 (土地公)</option>
+                    <option value="玄天上帝">玄天上帝 / 五顯帝 / 三山國王</option>
+                    <option value="王爺其他">千歲 / 王爺 / 義士 / 其他</option>
+                </select>
+
+                <!-- 年代分級篩選 -->
+                <select id="filter-era" class="bg-white border border-amber-300 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-sm">
+                    <option value="all">全部年代 (80年以上)</option>
+                    <option value="300">300年以上 (明鄭~康熙, 1716以前)</option>
+                    <option value="150">150 - 300年 (雍正~道光, 1717-1875)</option>
+                    <option value="80">80 - 150年 (光緒~日治二戰前, 1876-1946)</option>
+                </select>
+            </div>
+
+            <!-- 操作按鈕：匯出 PDF 與重設 -->
+            <div class="flex items-center space-x-2 text-xs">
+                <div class="hidden lg:flex items-center space-x-3 text-slate-700 mr-2">
+                    <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-red-800 inline-block mr-1"></span> >300年古廟</span>
+                    <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-orange-600 inline-block mr-1"></span> 150-300年</span>
+                    <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-amber-600 inline-block mr-1"></span> 80-150年</span>
+                </div>
+                
+                <button id="export-pdf-btn" class="bg-red-700 hover:bg-red-800 text-white px-3 py-1.5 rounded-lg transition text-xs font-medium flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-file-pdf text-amber-300"></i> 匯出 PDF 報告
+                </button>
+
+                <button id="reset-btn" class="bg-amber-800 hover:bg-amber-900 text-white px-3 py-1.5 rounded-lg transition text-xs font-medium flex items-center gap-1 shadow-sm">
+                    <i class="fa-solid fa-rotate-left"></i> 重設
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主內容區：地圖與側邊欄雙欄版面 -->
+    <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+        <!-- 側邊欄：廟宇清單 -->
+        <aside class="w-full md:w-96 bg-white border-r border-amber-200 flex flex-col h-full z-10 shadow-lg">
+            <div class="p-3 bg-amber-50 border-b border-amber-200 flex items-center justify-between">
+                <span class="text-xs font-bold text-amber-900">
+                    符合條件廟宇 (<span id="showing-count">0</span> / 25)
+                </span>
+                <span class="text-[11px] text-slate-500">點擊清單項目定位至地圖</span>
+            </div>
+            
+            <div id="temple-list" class="flex-1 overflow-y-auto divide-y divide-amber-100 p-2 space-y-2">
+                <!-- 廟宇項目由 JavaScript 動態生成 -->
+            </div>
+        </aside>
+
+        <!-- 右側地圖容器 -->
+        <main class="flex-1 relative">
+            <div id="map"></div>
+        </main>
+    </div>
+
+    <!-- PDF 匯出提示 Modal -->
+    <div id="pdf-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4 border border-amber-200 text-center">
+            <div class="w-12 h-12 bg-red-100 text-red-700 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
+                <i class="fa-solid fa-spinner fa-spin" id="pdf-modal-spinner"></i>
+                <i class="fa-solid fa-circle-check hidden text-emerald-600" id="pdf-modal-success"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 mb-1" id="pdf-modal-title">正在生成 PDF 報告...</h3>
+            <p class="text-xs text-slate-600" id="pdf-modal-desc">正在整理嘉義市歷史廟宇數據與表格，請稍候。</p>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // 嘉義市 80 年以上核心歷史廟宇數據庫 (建立於 1946 年以前)
+        const templeData = [
+            {
+                id: 1,
+                name: "嘉義雙忠廟 (元帥廟)",
+                deity: "雙忠元帥 (張巡、許遠)",
+                category: "城隍關帝",
+                year: 1689,
+                eraName: "清康熙28年 (1689年)",
+                age: 337,
+                address: "嘉義市東區忠孝路88號",
+                heritage: "歷史建築",
+                lat: 23.4831,
+                lng: 120.4542,
+                desc: "素有「諸羅第一古廟」之稱，相傳為嘉義市第一間漢人建立之廟宇。古稱元帥廟，主祀安史之亂殉國之忠烈將領張巡與許遠。"
+            },
+            {
+                id: 2,
+                name: "北社尾保安宮",
+                deity: "保生大帝",
+                category: "保生神農",
+                year: 1681,
+                eraName: "明鄭永曆35年 / 清康熙20年 (1681年)",
+                age: 345,
+                address: "嘉義市西區自由路245號",
+                heritage: "地方庄頭信仰",
+                lat: 23.4925,
+                lng: 120.4358,
+                desc: "嘉義市北社尾地區庄頭大廟，建廟歷史可追溯至明鄭末期，為嘉義市極古老之保生大帝祖廟之一。"
+            },
+            {
+                id: 3,
+                name: "嘉義王靈宮 (埤仔頭五顯帝廟)",
+                deity: "五顯大帝",
+                category: "玄天上帝",
+                year: 1691,
+                eraName: "清康熙30年草創 (1691年)",
+                age: 335,
+                address: "嘉義市西區向榮街255號",
+                heritage: "歷史古廟",
+                lat: 23.4908,
+                lng: 120.4423,
+                desc: "俗稱埤仔頭五顯帝廟，據傳康熙年間即隨先民迎奉神尊入墾埤仔頭，是嘉義西北區重要信仰重鎮。"
+            },
+            {
+                id: 4,
+                name: "九華山地藏庵 (北嶽殿)",
+                deity: "地藏王菩薩",
+                category: "菩薩佛祖",
+                year: 1697,
+                eraName: "清康熙36年奉祀 / 1716年官建",
+                age: 329,
+                address: "嘉義市東區民權路216號",
+                heritage: "歷史古廟 / 宗教聖地",
+                lat: 23.4842,
+                lng: 120.4578,
+                desc: "嘉義市著名地藏王信仰中心，樓高七層壯麗宏偉。康熙年間游崇功將軍發起建廟，歷史悠久，香火盛極全台。"
+            },
+            {
+                id: 5,
+                name: "嘉義仁武宮",
+                deity: "保生大帝",
+                category: "保生神農",
+                year: 1701,
+                eraName: "清康熙40年 (1701年)",
+                age: 325,
+                address: "嘉義市東區北榮街54號",
+                heritage: "市定古蹟",
+                lat: 23.4828,
+                lng: 120.4516,
+                desc: "嘉義市市定古蹟，原為明鄭仁武鎮部隊屯墾防守之地。廟內保存國寶級彩繪大師潘麗水之門神作品與經典木雕。"
+            },
+            {
+                id: 6,
+                name: "嘉義大天宮 (先農壇 / 仙公廟)",
+                deity: "神農聖帝 (神農大帝)",
+                category: "保生神農",
+                year: 1707,
+                eraName: "清康熙46年 (1707年)",
+                age: 319,
+                address: "嘉義市東區和平路84號",
+                heritage: "古官祀廟宇",
+                lat: 23.4795,
+                lng: 120.4589,
+                desc: "清代諸羅縣官府興建之「先農壇」，為台灣中部極具代表性之神農大帝信仰，廟內設有獨特「金雞」護駕供奉。"
+            },
+            {
+                id: 7,
+                name: "西門町開基福德宮",
+                deity: "福德正神 (土地公)",
+                category: "福德正神",
+                year: 1709,
+                eraName: "清康熙48年 (1709年)",
+                age: 317,
+                address: "嘉義市西區國華街200號",
+                heritage: "諸羅城西門古廟",
+                lat: 23.4806,
+                lng: 120.4485,
+                desc: "清代諸羅縣城西門守護神福德正神廟，見證諸羅城門建城與西門商圈百年變遷。"
+            },
+            {
+                id: 8,
+                name: "嘉義城隍廟",
+                deity: "城隍尊神 (綏靖侯)",
+                category: "城隍關帝",
+                year: 1715,
+                eraName: "清康熙54年 (1715年)",
+                age: 311,
+                address: "嘉義市東區吳鳳北路168號",
+                heritage: "國定古蹟",
+                lat: 23.4798,
+                lng: 120.4545,
+                desc: "諸羅知縣周鍾瑄倡建，為台灣府城以北首座官建城隍廟。獲清光緒帝敕封『綏靖侯』，昭和年間王錦木匠師重建，交趾陶藝術極具文化價值。"
+            },
+            {
+                id: 9,
+                name: "嘉義開基三代祖師殿",
+                deity: "三代祖師",
+                category: "王爺其他",
+                year: 1720,
+                eraName: "清康熙59年 (1720年)",
+                age: 306,
+                address: "嘉義市西區培元路27號",
+                heritage: "庄頭百年古廟",
+                lat: 23.4728,
+                lng: 120.4398,
+                desc: "培元里庄頭信仰中心，由福建移民迎奉三代祖師渡海來台，信仰遠播嘉南地區。"
+            },
+            {
+                id: 10,
+                name: "嘉義萬台宮",
+                deity: "萬善爺 / 魏府千歲",
+                category: "王爺其他",
+                year: 1736,
+                eraName: "清乾隆元年 (1736年)",
+                age: 290,
+                address: "嘉義市東區忠孝路500號",
+                heritage: "後湖庄古廟",
+                lat: 23.4935,
+                lng: 120.4521,
+                desc: "後湖庄地區百年信仰，主祀魏府千歲與萬善爺，祈求地方安寧、庇佑鄉里。"
+            },
+            {
+                id: 11,
+                name: "嘉義廣寧宮 (三山國王廟)",
+                deity: "三山國王",
+                category: "玄天上帝",
+                year: 1752,
+                eraName: "清乾隆17年 (1752年)",
+                age: 274,
+                address: "嘉義市東區成仁街142號",
+                heritage: "客家移民古廟",
+                lat: 23.4804,
+                lng: 120.4526,
+                desc: "乾隆年間由潮州客家移民與在地信眾募建，主祀巾山、明山、獨山三山國王，紀錄諸羅城族群融合歷史。"
+            },
+            {
+                id: 12,
+                name: "彌陀禪寺",
+                deity: "釋迦牟尼佛 / 阿彌陀佛",
+                category: "菩薩佛祖",
+                year: 1752,
+                eraName: "清乾隆17年 (1752年)",
+                age: 274,
+                address: "嘉義市東區彌陀路1號",
+                heritage: "歷史建築 (諸羅八景)",
+                lat: 23.4669,
+                lng: 120.4667,
+                desc: "座落於八掌溪畔，為諸羅古八景『彌陀晨鐘』所在地。寺宇清幽，為嘉義歷史最悠久之古典佛教寺剎。"
+            },
+            {
+                id: 13,
+                name: "嘉義水溝尾北極殿",
+                deity: "玄天上帝",
+                category: "玄天上帝",
+                year: 1756,
+                eraName: "清乾隆21年 (1756年)",
+                age: 270,
+                address: "嘉義市東區文化路287號",
+                heritage: "聚落古廟",
+                lat: 23.4851,
+                lng: 120.4497,
+                desc: "位於文化路古水溝尾聚落，主祀玄天上帝，庇佑附近居民平順安康。"
+            },
+            {
+                id: 14,
+                name: "嘉義朝天宮 (溫陵媽廟)",
+                deity: "天上聖母 (溫陵媽)",
+                category: "媽祖",
+                year: 1758,
+                eraName: "清乾隆23年 (1758年)",
+                age: 268,
+                address: "嘉義市東區延平街276號",
+                heritage: "百年媽祖古廟",
+                lat: 23.4779,
+                lng: 120.4502,
+                desc: "泉州晉江溫陵移民於乾隆年間興建，主祀天上聖母，俗稱『溫陵媽廟』，為諸羅城內三大媽祖信仰之一。"
+            },
+            {
+                id: 15,
+                name: "嘉義鎮南聖神宮",
+                deity: "孔子 (至聖先師) / 關聖帝君",
+                category: "城隍關帝",
+                year: 1777,
+                eraName: "清乾隆42年 (1777年)",
+                age: 249,
+                address: "嘉義市東區共和路118號",
+                heritage: "文武廟歷史傳承",
+                lat: 23.4789,
+                lng: 120.4563,
+                desc: "日治皇民化運動時，諸羅舊文廟（孔廟）與舊關帝廟（武廟）神像皆合祀於此，具備極高的文史與神格地位。"
+            },
+            {
+                id: 16,
+                name: "嘉義開基忠義十九公廟",
+                deity: "忠義十九公 (18義士與忠犬)",
+                category: "王爺其他",
+                year: 1786,
+                eraName: "清乾隆51年事件 (1786年)",
+                age: 240,
+                address: "嘉義市東區公明路111號",
+                heritage: "義民信仰名廟",
+                lat: 23.4815,
+                lng: 120.4568,
+                desc: "紀念林爽文事件中誓死守衛諸羅城殉難之18位義士與一隻靈犬，義氣千秋，香火極盛。"
+            },
+            {
+                id: 17,
+                name: "嘉義福昇宮 (東門福德宮)",
+                deity: "福德正神",
+                category: "福德正神",
+                year: 1826,
+                eraName: "清道光6年 (1826年)",
+                age: 200,
+                address: "嘉義市東區吳鳳北路248號",
+                heritage: "諸羅城東門保頭",
+                lat: 23.4819,
+                lng: 120.4542,
+                desc: "古諸羅城東門保頭福德正神廟，俗稱東門土地公廟，守護城東境內商業與黎民。"
+            },
+            {
+                id: 18,
+                name: "過溝仔震安宮",
+                deity: "玄天上帝 / 五府千歲",
+                category: "玄天上帝",
+                year: 1837,
+                eraName: "清道光17年 (1837年)",
+                age: 189,
+                address: "嘉義市東區民族路414號",
+                heritage: "五安境古廟",
+                lat: 23.4772,
+                lng: 120.4533,
+                desc: "舊名五安境王爺廟，為過溝仔聚落信仰中心，後增祀主神玄天上帝，神威顯赫。"
+            },
+            {
+                id: 19,
+                name: "嘉義慈濟宮",
+                deity: "五府千歲 (池府千歲)",
+                category: "王爺其他",
+                year: 1843,
+                eraName: "清道光23年 (1843年)",
+                age: 183,
+                address: "嘉義市西區國華街216巷2號",
+                heritage: "歷史古廟 / 家將文化發源地",
+                lat: 23.4811,
+                lng: 120.4478,
+                desc: "舊稱外教場埔王爺宮，為嘉義知名『如意振裕堂』八家將起源地，保存百年家將畫作與傳統民俗儀軌。"
+            },
+            {
+                id: 20,
+                name: "嘉義太元寺",
+                deity: "觀世音菩薩",
+                category: "菩薩佛祖",
+                year: 1896,
+                eraName: "日治明治29年 (1896年)",
+                age: 130,
+                address: "嘉義市東區民權路246號",
+                heritage: "日治初期古寺",
+                lat: 23.4845,
+                lng: 120.4565,
+                desc: "日治初期由地方善信發起興建之佛教經典寺宇，主祀觀世音菩薩，環境幽靜。"
+            },
+            {
+                id: 21,
+                name: "保生大帝震安宮 (西區)",
+                deity: "保生大帝",
+                category: "保生神農",
+                year: 1912,
+                eraName: "日治明治45年 (1912年)",
+                age: 114,
+                address: "嘉義市西區西門街168號",
+                heritage: "清代書院舊址地段",
+                lat: 23.4791,
+                lng: 120.4472,
+                desc: "座落於清代玉峰書院歷史地段，日治時期建廟奉祀醫神保生大帝，祈求地方平安無災。"
+            },
+            {
+                id: 22,
+                name: "嘉義伏龍宮",
+                deity: "天上聖母 (媽祖)",
+                category: "媽祖",
+                year: 1920,
+                eraName: "日治大正9年顯靈 (1920年)",
+                age: 106,
+                address: "嘉義市西區博愛路二段408巷1號",
+                heritage: "港仔坪庄頭廟",
+                lat: 23.4715,
+                lng: 120.4365,
+                desc: "大正9年聖母顯靈濟世，後由居民集資建廟，為港仔坪地區熱絡之信仰地標。"
+            },
+            {
+                id: 23,
+                name: "嘉義順天宮",
+                deity: "天上聖母 (媽祖)",
+                category: "媽祖",
+                year: 1938,
+                eraName: "日治昭和13年 (1938年)",
+                age: 88,
+                address: "嘉義市西區林森西路452巷5號",
+                heritage: "日治昭和古廟",
+                lat: 23.4848,
+                lng: 120.4452,
+                desc: "昭和年間建立於林森西路巷內，主祀天上聖母媽祖，地方稱祈福靈驗。"
+            },
+            {
+                id: 24,
+                name: "嘉義南天宮",
+                deity: "關聖帝君",
+                category: "城隍關帝",
+                year: 1940,
+                eraName: "日治昭和15年 (1940年)",
+                age: 86,
+                address: "嘉義市東區芳安路195號",
+                heritage: "歷史廟宇 / 巨大關帝像",
+                lat: 23.4688,
+                lng: 120.4612,
+                desc: "昭和末年建廟，主祀關聖帝君，廟頂設有宏偉巨大之關聖帝君坐姿神像，為嘉義著名地標。"
+            },
+            {
+                id: 25,
+                name: "嘉義遊天宮 (鳥岫仔媽祖廟)",
+                deity: "天上聖母 (媽祖)",
+                category: "媽祖",
+                year: 1941,
+                eraName: "日治昭和16年 (1941年)",
+                age: 85,
+                address: "嘉義市西區北社尾路50號",
+                heritage: "鳥岫仔庄頭廟",
+                lat: 23.4962,
+                lng: 120.4328,
+                desc: "鳥岫仔聚落境主廟，二次大戰前夕建廟安撫民心，主祀天上聖母。"
+            }
+        ];
+
+        let currentFilteredData = [...templeData];
+
+        // 初始化 Leaflet 地圖
+        const map = L.map('map', {
+            center: [23.4800, 120.4500],
+            zoom: 14,
+            zoomControl: true
+        });
+
+        // 載入 OpenStreetMap 圖資
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> 貢獻者 | 嘉義市廟宇文化資料庫'
+        }).addTo(map);
+
+        let markersLayer = L.layerGroup().addTo(map);
+
+        // 取得年份對應的顏色與樣式
+        function getEraColor(year) {
+            if (year <= 1716) return { bg: '#991b1b', text: '300年以上', class: 'bg-red-800' }; // 清初/明鄭 >300年
+            if (year <= 1875) return { bg: '#c2410c', text: '150-300年', class: 'bg-orange-600' }; // 清中晚期
+            return { bg: '#d97706', text: '80-150年', class: 'bg-amber-600' }; // 日治至二戰前
+        }
+
+        // 建立 Custom HTML Leaflet Marker
+        function createCustomIcon(temple) {
+            const era = getEraColor(temple.year);
+            const iconHtml = `
+                <div class="custom-marker" style="background-color: ${era.bg}; width: 28px; height: 28px; font-size: 11px;">
+                    <i class="fa-solid fa-gopuram"></i>
+                </div>
+            `;
+            return L.divIcon({
+                html: iconHtml,
+                className: '',
+                iconSize: [28, 28],
+                iconAnchor: [14, 14],
+                popupAnchor: [0, -14]
+            });
+        }
+
+        // 渲染彈出視窗 (Popup) 內容
+        function renderPopupContent(t) {
+            const era = getEraColor(t.year);
+            const googleNavUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(t.name + ' ' + t.address)}`;
+            
+            return `
+                <div class="custom-popup max-w-xs">
+                    <div class="border-b border-slate-200 pb-2 mb-2">
+                        <div class="flex items-center justify-between gap-1 mb-1">
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded text-white ${era.class}">
+                                歷史 ${t.age} 年 (${era.text})
+                            </span>
+                            <span class="text-[10px] bg-amber-100 text-amber-900 border border-amber-300 px-1.5 py-0.5 rounded font-medium">
+                                ${t.heritage}
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-base text-red-950">${t.name}</h3>
+                    </div>
+                    
+                    <div class="space-y-1.5 text-xs text-slate-700">
+                        <div><strong class="text-slate-900"><i class="fa-solid fa-hands-praying text-amber-700 mr-1"></i>主祀神明：</strong>${t.deity}</div>
+                        <div><strong class="text-slate-900"><i class="fa-solid fa-calendar-days text-amber-700 mr-1"></i>創建年代：</strong>${t.eraName}</div>
+                        <div><strong class="text-slate-900"><i class="fa-solid fa-location-dot text-amber-700 mr-1"></i>廟址位置：</strong>${t.address}</div>
+                        <p class="text-[11px] text-slate-600 bg-amber-50/80 p-2 rounded border border-amber-200/60 mt-1 leading-relaxed">
+                            ${t.desc}
+                        </p>
+                    </div>
+
+                    <div class="mt-3 pt-2 border-t border-slate-100 text-right">
+                        <a href="${googleNavUrl}" target="_blank" class="inline-flex items-center gap-1 text-[11px] bg-amber-700 hover:bg-amber-800 text-white font-medium px-2.5 py-1 rounded transition shadow-sm">
+                            <i class="fa-solid fa-diamond-turn-right"></i> Google 地圖導航
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 渲染側邊欄廟宇卡片與地圖標籤
+        function renderApp(filteredTemples) {
+            currentFilteredData = filteredTemples;
+            markersLayer.clearLayers();
+            const listContainer = document.getElementById('temple-list');
+            listContainer.innerHTML = '';
+
+            document.getElementById('showing-count').innerText = filteredTemples.length;
+
+            if (filteredTemples.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="text-center py-8 text-slate-400">
+                        <i class="fa-solid fa-circle-exclamation text-3xl mb-2"></i>
+                        <p class="text-xs">未找到符合條件的廟宇</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredTemples.forEach(temple => {
+                const era = getEraColor(temple.year);
+                
+                // 1. 地圖標註 (Marker)
+                const marker = L.marker([temple.lat, temple.lng], { icon: createCustomIcon(temple) });
+                marker.bindPopup(renderPopupContent(temple), { className: 'custom-popup' });
+                markersLayer.addLayer(marker);
+
+                // 2. 側邊欄卡片 (Sidebar Item)
+                const card = document.createElement('div');
+                card.className = `p-3 rounded-lg border border-amber-200/80 bg-white hover:bg-amber-50 cursor-pointer transition shadow-sm flex flex-col gap-1 hover:border-amber-400`;
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-bold text-sm text-red-950 flex items-center gap-1.5">
+                            <i class="fa-solid fa-gopuram text-amber-700 text-xs"></i> ${temple.name}
+                        </h4>
+                        <span class="text-[10px] font-bold px-1.5 py-0.5 rounded text-white ${era.class}">
+                            ${temple.year}年 (${temple.age}年)
+                        </span>
+                    </div>
+                    <div class="text-xs text-slate-600 flex items-center justify-between mt-0.5">
+                        <span><strong class="text-slate-800">主神:</strong> ${temple.deity}</span>
+                        <span class="text-[10px] text-amber-800 bg-amber-100 px-1 rounded">${temple.heritage}</span>
+                    </div>
+                    <div class="text-[11px] text-slate-500 truncate">
+                        <i class="fa-solid fa-location-dot text-slate-400 mr-1"></i>${temple.address}
+                    </div>
+                `;
+
+                card.addEventListener('click', () => {
+                    map.flyTo([temple.lat, temple.lng], 16.5, { duration: 1.2 });
+                    marker.openPopup();
+                });
+
+                listContainer.appendChild(card);
+            });
+        }
+
+        // 篩選功能邏輯
+        function filterData() {
+            const searchText = document.getElementById('search-input').value.trim().toLowerCase();
+            const deityFilter = document.getElementById('filter-deity').value;
+            const eraFilter = document.getElementById('filter-era').value;
+
+            const filtered = templeData.filter(t => {
+                // 關鍵字搜尋
+                const matchesSearch = !searchText || 
+                    t.name.toLowerCase().includes(searchText) || 
+                    t.deity.toLowerCase().includes(searchText) || 
+                    t.address.toLowerCase().includes(searchText);
+
+                // 主神類別篩選
+                const matchesDeity = (deityFilter === 'all') || (t.category === deityFilter);
+
+                // 年代分級篩選
+                let matchesEra = true;
+                if (eraFilter === '300') matchesEra = t.year <= 1716; // >300年
+                else if (eraFilter === '150') matchesEra = t.year > 1716 && t.year <= 1875; // 150-300年
+                else if (eraFilter === '80') matchesEra = t.year > 1875 && t.year <= 1946; // 80-150年
+
+                return matchesSearch && matchesDeity && matchesEra;
+            });
+
+            renderApp(filtered);
+        }
+
+        // 匯出 PDF 報告功能
+        function generatePDFReport() {
+            const modal = document.getElementById('pdf-modal');
+            const spinner = document.getElementById('pdf-modal-spinner');
+            const successIcon = document.getElementById('pdf-modal-success');
+            const titleEl = document.getElementById('pdf-modal-title');
+            const descEl = document.getElementById('pdf-modal-desc');
+
+            titleEl.innerText = "正在生成 PDF 報告...";
+            descEl.innerText = "正在整理嘉義市歷史廟宇數據與表格，請稍候。";
+            spinner.classList.remove('hidden');
+            successIcon.classList.add('hidden');
+            modal.classList.remove('hidden');
+
+            const nowStr = new Date().toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            // 建立排版用之隱藏 HTML 報告內容
+            const reportContainer = document.createElement('div');
+            reportContainer.id = 'pdf-report-template';
+            reportContainer.style.width = '790px'; // standard A4 portrait pixel fit
+            reportContainer.style.padding = '24px';
+            reportContainer.style.backgroundColor = '#ffffff';
+            reportContainer.style.fontFamily = "'Noto Sans TC', sans-serif";
+            reportContainer.style.color = '#1e293b';
+
+            // 構建報告內容 HTML
+            let tableRowsHtml = '';
+            currentFilteredData.forEach((t, index) => {
+                const era = getEraColor(t.year);
+                tableRowsHtml += `
+                    <tr style="border-bottom: 1px solid #f1f5f9; background-color: ${index % 2 === 0 ? '#ffffff' : '#fdfbf7'}; font-size: 11px;">
+                        <td style="padding: 8px 6px; text-align: center; font-weight: bold; color: #78350f;">${index + 1}</td>
+                        <td style="padding: 8px 6px; font-weight: bold; color: #7f1d1d;">${t.name}</td>
+                        <td style="padding: 8px 6px; text-align: center;">
+                            <span style="background-color: ${era.bg}; color: #ffffff; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold;">
+                                ${t.year}年 (${t.age}年)
+                            </span>
+                        </td>
+                        <td style="padding: 8px 6px; font-weight: 500;">${t.deity}</td>
+                        <td style="padding: 8px 6px; font-size: 10px; color: #475569;">${t.address}</td>
+                        <td style="padding: 8px 6px; font-size: 10px; color: #334155; line-height: 1.3;">
+                            <strong style="color: #92400e;">[${t.heritage}]</strong> ${t.desc}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            reportContainer.innerHTML = `
+                <div style="border-bottom: 2px solid #78350f; padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div>
+                        <h1 style="font-size: 22px; font-weight: bold; color: #7f1d1d; margin: 0;">嘉義市 80 年以上歷史廟宇統計報告</h1>
+                        <p style="font-size: 11px; color: #64748b; margin-top: 4px;">嘉義市目前登記寺廟數量彙整與 1946 年（二戰前/日治/清領）創立古廟清冊</p>
+                    </div>
+                    <div style="text-align: right; font-size: 10px; color: #64748b;">
+                        <div>報告出具日期：${nowStr}</div>
+                        <div>資料來源：嘉義市政府民政處/文化局</div>
+                    </div>
+                </div>
+
+                <!-- 統計指標摘要 -->
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px;">
+                    <div style="background-color: #fef3c7; border: 1px solid #fde68a; border-radius: 6px; padding: 8px; text-align: center;">
+                        <div style="font-size: 10px; color: #92400e; font-weight: bold;">嘉義市登記廟宇總數</div>
+                        <div style="font-size: 16px; font-weight: bold; color: #78350f;">149 座</div>
+                    </div>
+                    <div style="background-color: #ffedd5; border: 1px solid #fed7aa; border-radius: 6px; padding: 8px; text-align: center;">
+                        <div style="font-size: 10px; color: #c2410c; font-weight: bold;">80年以上歷史廟宇</div>
+                        <div style="font-size: 16px; font-weight: bold; color: #9a3412;">35 座</div>
+                    </div>
+                    <div style="background-color: #fee2e2; border: 1px solid #fecaca; border-radius: 6px; padding: 8px; text-align: center;">
+                        <div style="font-size: 10px; color: #991b1b; font-weight: bold;">300年以上歷史古廟</div>
+                        <div style="font-size: 16px; font-weight: bold; color: #7f1d1d;">9 座</div>
+                    </div>
+                    <div style="background-color: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; text-align: center;">
+                        <div style="font-size: 10px; color: #334155; font-weight: bold;">本次產出清冊筆數</div>
+                        <div style="font-size: 16px; font-weight: bold; color: #0f172a;">${currentFilteredData.length} 筆</div>
+                    </div>
+                </div>
+
+                <!-- 詳細資料表格 -->
+                <table style="width: 100%; border-collapse: collapse; margin-top: 8px;">
+                    <thead>
+                        <tr style="background-color: #78350f; color: #ffffff; font-size: 11px;">
+                            <th style="padding: 6px; width: 35px; text-align: center;">NO</th>
+                            <th style="padding: 6px; width: 140px; text-align: left;">廟宇名稱</th>
+                            <th style="padding: 6px; width: 100px; text-align: center;">建立年代</th>
+                            <th style="padding: 6px; width: 120px; text-align: left;">主祀神明</th>
+                            <th style="padding: 6px; width: 150px; text-align: left;">廟址位置</th>
+                            <th style="padding: 6px; text-align: left;">文化資產與沿革簡介</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableRowsHtml}
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 16px; border-top: 1px solid #e2e8f0; pt-8px; text-align: center; font-size: 9px; color: #94a3b8;">
+                    本報告由 嘉義市歷史廟宇地圖導覽系統 自動生成 • 建議保存或列印供地方文史研究與觀光推廣使用
+                </div>
+            `;
+
+            document.body.appendChild(reportContainer);
+
+            const opt = {
+                margin:       [8, 8, 8, 8],
+                filename:     `嘉義市歷史廟宇統計報告_${new Date().toISOString().slice(0,10)}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            setTimeout(() => {
+                html2pdf().set(opt).from(reportContainer).save().then(() => {
+                    document.body.removeChild(reportContainer);
+                    spinner.classList.add('hidden');
+                    successIcon.classList.remove('hidden');
+                    titleEl.innerText = "PDF 匯出成功！";
+                    descEl.innerText = "統計報告已順利下載至您的電腦。";
+
+                    setTimeout(() => {
+                        modal.classList.add('hidden');
+                    }, 1800);
+                }).catch(err => {
+                    console.error("PDF Export error:", err);
+                    document.body.removeChild(reportContainer);
+                    titleEl.innerText = "匯出失敗";
+                    descEl.innerText = "產生 PDF 時發生錯誤，請稍後再試。";
+                    setTimeout(() => { modal.classList.add('hidden'); }, 2000);
+                });
+            }, 500);
+        }
+
+        // 事件接聽
+        document.getElementById('search-input').addEventListener('input', filterData);
+        document.getElementById('filter-deity').addEventListener('change', filterData);
+        document.getElementById('filter-era').addEventListener('change', filterData);
+
+        document.getElementById('reset-btn').addEventListener('click', () => {
+            document.getElementById('search-input').value = '';
+            document.getElementById('filter-deity').value = 'all';
+            document.getElementById('filter-era').value = 'all';
+            map.flyTo([23.4800, 120.4500], 14);
+            filterData();
+        });
+
+        document.getElementById('export-pdf-btn').addEventListener('click', generatePDFReport);
+
+        // 初始渲染
+        filterData();
+    </script>
+</body>
+</html>

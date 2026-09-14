@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生成式 AI、Civitai 影像模型與 Gemini 多模態應用 - 易讀易懂版筆記</title>
+    <!-- Google Fonts: Inter & Noto Sans TC & Fira Code -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* 黑灰白極簡配色 - 深色主題 */
+            --bg-primary: #09090b;
+            --bg-secondary: #18181b;
+            --bg-card: #27272a;
+            --bg-card-hover: #3f3f46;
+            --border-color: #3f3f46;
+            --border-subtle: #27272a;
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --accent-white: #ffffff;
+            --code-bg: #000000;
+            --diagram-bg: #111113;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+        }
+
+        .light {
+            /* 黑灰白極簡配色 - 明亮主題 */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f4f4f5;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f4f4f5;
+            --border-color: #e4e4e7;
+            --border-subtle: #f4f4f5;
+            --text-primary: #09090b;
+            --text-secondary: #52525b;
+            --text-muted: #a1a1aa;
+            --accent-white: #000000;
+            --code-bg: #18181b;
+            --diagram-bg: #fafafa;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            padding-bottom: 80px;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        /* 頂部導覽列 */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(9, 9, 11, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.85rem 2rem;
+            transition: background 0.25s;
+        }
+        .light header {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .nav-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.15s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.45rem 0.9rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.15s;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--text-secondary);
+        }
+
+        .btn-primary {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            border-color: var(--text-primary);
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background: var(--text-secondary);
+            border-color: var(--text-secondary);
+            color: var(--bg-primary);
+        }
+
+        /* 頁面主要內容 */
+        .container {
+            max-width: 1050px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Hero 區塊 */
+        .hero {
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem 2rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.3;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 1.02rem;
+            max-width: 850px;
+            margin-bottom: 1.25rem;
+        }
+
+        .meta-info {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+        }
+
+        /* 快捷目錄 */
+        .toc-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .toc-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.85rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .toc-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.64rem 0.85rem;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+
+        .toc-item:hover {
+            color: var(--text-primary);
+            border-color: var(--text-secondary);
+            background: var(--bg-card);
+        }
+
+        .toc-num {
+            font-family: 'Fira Code', monospace;
+            font-weight: 700;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        /* 章節結構 */
+        section {
+            margin-bottom: 3rem;
+            scroll-margin-top: 80px;
+        }
+
+        .sec-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sec-header h2 {
+            font-size: 1.45rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .sec-header span {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: var(--bg-secondary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* 卡片面板 */
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        /* 比喻與範例專用 Callout 盒 */
+        .callout-analogy {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--text-primary);
+            border-radius: var(--radius-sm);
+            padding: 1.1rem 1.25rem;
+            margin: 1rem 0;
+        }
+
+        .callout-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            color: var(--text-primary);
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .callout-example {
+            background: var(--diagram-bg);
+            border: 1px dashed var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 1.1rem 1.25rem;
+            margin: 1rem 0;
+        }
+
+        p {
+            margin-bottom: 0.85rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        ul, ol {
+            margin-left: 1.25rem;
+            margin-bottom: 0.85rem;
+            color: var(--text-secondary);
+            font-size: 0.93rem;
+        }
+
+        li {
+            margin-bottom: 0.45rem;
+        }
+
+        strong {
+            color: var(--text-primary);
+        }
+
+        /* 圖形與架構圖容器 */
+        .diagram-box {
+            background: var(--diagram-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin: 1.25rem 0;
+        }
+
+        .diagram-header {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .svg-diagram {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .svg-text {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            fill: var(--text-primary);
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .svg-text-sub {
+            fill: var(--text-muted);
+            font-size: 10px;
+        }
+        .svg-node {
+            fill: var(--bg-card);
+            stroke: var(--border-color);
+            stroke-width: 1.5;
+            rx: 6;
+        }
+        .svg-node-active {
+            fill: var(--bg-secondary);
+            stroke: var(--text-primary);
+            stroke-width: 2;
+            rx: 6;
+        }
+        .svg-line {
+            stroke: var(--border-color);
+            stroke-width: 1.5;
+        }
+        .svg-line-arrow {
+            stroke: var(--text-secondary);
+            stroke-width: 1.5;
+            marker-end: url(#arrow);
+        }
+
+        /* 網格區塊 */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* 表格樣式 */
+        .table-responsive {
+            overflow-x: auto;
+            margin-bottom: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Prompt / Code Block */
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.88rem;
+            color: #e4e4e7;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* 標籤 Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .badge-bold {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            border-color: var(--text-primary);
+        }
+
+        /* 參考連結標籤與按鈕樣式 */
+        .ref-link {
+            color: var(--text-primary);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            font-weight: 500;
+            transition: color 0.15s;
+        }
+        .ref-link:hover {
+            color: var(--text-secondary);
+        }
+        .ref-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.65rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 500;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+        .ref-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--text-secondary);
+            color: var(--accent-white);
+        }
+        .badge-paper {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+        .light .badge-paper {
+            background: rgba(2, 132, 199, 0.1);
+            color: #0284c7;
+            border-color: rgba(2, 132, 199, 0.3);
+        }
+        .badge-site {
+            background: rgba(74, 222, 128, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+        .light .badge-site {
+            background: rgba(22, 163, 74, 0.1);
+            color: #16a34a;
+            border-color: rgba(22, 163, 74, 0.3);
+        }
+        .badge-tool {
+            background: rgba(251, 146, 60, 0.15);
+            color: #fb923c;
+            border: 1px solid rgba(251, 146, 60, 0.3);
+        }
+        .light .badge-tool {
+            background: rgba(234, 88, 12, 0.1);
+            color: #ea580c;
+            border-color: rgba(234, 88, 12, 0.3);
+        }
+        .inline-ref {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            margin-top: 0.4rem;
+            padding: 0.2rem 0.5rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+        }
+
+        /* 頁尾 */
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* 回頂部按鈕 */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+        .back-to-top:hover {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+        }
+
+        /* 🖨️ PDF 列印最佳化 CSS */
+        @media print {
+            header, .nav-actions, .toc-card, .back-to-top, .btn {
+                display: none !important;
+            }
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                padding-bottom: 0 !important;
+                font-size: 11pt;
+            }
+            .container {
+                max-width: 100% !important;
+                padding: 0 !important;
+            }
+            .hero {
+                border: 1px solid #000000 !important;
+                background: #ffffff !important;
+                padding: 1.5rem !important;
+                margin-bottom: 1.5rem !important;
+            }
+            .card, .diagram-box, table, .code-block, .callout-analogy, .callout-example {
+                background: #ffffff !important;
+                color: #000000 !important;
+                border: 1px solid #666666 !important;
+                break-inside: avoid;
+                page-break-inside: avoid;
+                box-shadow: none !important;
+                margin-bottom: 1rem !important;
+            }
+            .svg-node {
+                fill: #ffffff !important;
+                stroke: #000000 !important;
+            }
+            .svg-node-active {
+                fill: #f0f0f0 !important;
+                stroke: #000000 !important;
+            }
+            .svg-text {
+                fill: #000000 !important;
+            }
+            .svg-text-sub {
+                fill: #555555 !important;
+            }
+            .svg-line, .svg-line-arrow {
+                stroke: #000000 !important;
+            }
+            th {
+                background: #f0f0f0 !important;
+                color: #000000 !important;
+            }
+            td, th {
+                border-bottom: 1px solid #888888 !important;
+            }
+            .code-block {
+                color: #000000 !important;
+            }
+            strong {
+                color: #000000 !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.75rem; }
+            .nav-links { display: none; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 頂部導覽列 -->
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fa-solid fa-cube"></i> AI Easy Guide
+            </div>
+            <ul class="nav-links">
+                <li><a href="#genai">1. 生成式 AI 基礎</a></li>
+                <li><a href="#civitai">2. Civitai 繪圖模型</a></li>
+                <li><a href="#gemini">3. Gemini 多模態</a></li>
+                <li><a href="#summary">4. 實務整合範例</a></li>
+                <li><a href="#references">5. 參考資料與論文</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="btn btn-primary" onclick="window.print()">
+                    <i class="fa-solid fa-file-pdf"></i> 另存 PDF
+                </button>
+                <button class="btn" id="themeToggle">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- Hero 主題標頭 -->
+        <div class="hero">
+            <div class="hero-badge">Course Documentation (Easy Reading Edition)</div>
+            <h1>生成式 AI、Civitai 影像模型<br>與 Gemini 多模態應用通俗筆記</h1>
+            <p>本筆記採用最白話的日常比喻、實務案例與白話解析，重新改寫生成式 AI 底層原理、Civitai 生態系模型操作與 Google Gemini 原生多模態的觀念，讓您輕鬆掌握 AI 關鍵技術。</p>
+            <div class="meta-info">
+                <div><i class="fa-regular fa-calendar"></i> 2026-09-02</div>
+                <div><i class="fa-solid fa-tag"></i> 易讀風格 / 實例講解 / 論文與官網索引</div>
+                <div><i class="fa-solid fa-file-lines"></i> 儲存目標：<code>ai_2.htm</code></div>
+            </div>
+        </div>
+
+        <!-- 快捷目錄 -->
+        <div class="toc-card">
+            <div class="toc-title"><i class="fa-solid fa-list"></i> 本章目錄導覽</div>
+            <div class="toc-grid">
+                <a href="#genai" class="toc-item"><span class="toc-num">01</span> 生成式 AI 通俗原理與比喻</a>
+                <a href="#civitai" class="toc-item"><span class="toc-num">02</span> Civitai 繪圖模型與參數範例</a>
+                <a href="#gemini" class="toc-item"><span class="toc-num">03</span> Gemini 多模態生活實例</a>
+                <a href="#summary" class="toc-item"><span class="toc-num">04</span> 跨平台全流程案例演練</a>
+                <a href="#references" class="toc-item"><span class="toc-num">05</span> 網路參考資料與論文</a>
+            </div>
+        </div>
+
+        <!-- SVG 箭頭定義 -->
+        <svg style="width:0;height:0;position:absolute;">
+            <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--text-secondary)"/>
+                </marker>
+            </defs>
+        </svg>
+
+        <!-- 第一單元：生成式 AI 核心原理 -->
+        <section id="genai">
+            <div class="sec-header">
+                <h2>第一單元：生成式人工智慧 (Generative AI) 觀念與比喻</h2>
+                <span>UNIT 01</span>
+            </div>
+
+            <!-- 卡片 1-1 -->
+            <div class="card">
+                <div class="card-title"><i class="fa-solid fa-brain"></i> 1.1 什麼是生成式 AI？（閱卷老師 vs 創意畫家）</div>
+                <p>要理解生成式 AI，最簡單的方式就是把它和傳統的「判別式 AI」做比較：</p>
+                
+                <div class="callout-analogy">
+                    <div class="callout-title"><i class="fa-solid fa-lightbulb"></i> 直覺比喻：閱卷老師 vs 創意畫家</div>
+                    <ul style="margin-bottom:0;">
+                        <li><strong>判別式 AI 像「嚴格的考卷閱卷老師」：</strong>你給他一張照片，他只負責判斷「這是不是貓？(Yes/No)」，或是「這封郵件是不是垃圾郵件？」。他只做選取、分類與預測，不會憑空創造新東西。</li>
+                        <li><strong>生成式 AI 像「充滿想像力的畫家與作家」：</strong>你給他一個主題（如「太空人騎馬」），他能憑藉過去看過幾百萬張畫作的經驗，從一片空白中畫出一副世界上從未存在過的精美作品。</li>
+                    </ul>
+                </div>
+
+                <div class="callout-example">
+                    <div class="callout-title"><i class="fa-solid fa-magnifying-glass"></i> 實務範例對比</div>
+                    <p style="margin-bottom:0.3rem;"><strong>範例 A (判別式)：</strong>車牌辨識系統、門禁人臉刷卡、醫療 X 光片腫瘤自動標記。</p>
+                    <p style="margin-bottom:0;"><strong>範例 B (生成式)：</strong>輸入 Prompt 讓 ChatGPT 寫出一份行銷企劃案、用 Midjourney/Stable Diffusion 繪製遊戲角色海報、用 Suno AI 自動合成一首流行歌曲。</p>
+                </div>
+
+                <div class="inline-ref">
+                    <i class="fa-solid fa-bookmark" style="color:var(--text-muted);"></i>
+                    <span><strong>基礎架構論文：</strong><a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener noreferrer" class="ref-link">Attention Is All You Need (Transformer)</a></span>
+                </div>
+
+                <!-- 架構圖 1：判別式 vs 生成式 AI 數據流 -->
+                <div class="diagram-box">
+                    <div class="diagram-header">
+                        <span><i class="fa-solid fa-diagram-project"></i> 圖 1.1 判別式 AI (選別分類) 與生成式 AI (創造重建) 數據流程圖</span>
+                    </div>
+                    <svg class="svg-diagram" viewBox="0 0 760 190">
+                        <rect x="20" y="20" width="110" height="45" class="svg-node"/>
+                        <text x="75" y="47" text-anchor="middle" class="svg-text">輸入數據 X</text>
+                        <text x="75" y="58" text-anchor="middle" class="svg-text-sub">(如：照片)</text>
+
+                        <line x1="130" y1="42.5" x2="190" y2="42.5" class="svg-line-arrow"/>
+
+                        <rect x="190" y="20" width="140" height="45" class="svg-node-active"/>
+                        <text x="260" y="42" text-anchor="middle" class="svg-text">判別式模型</text>
+                        <text x="260" y="56" text-anchor="middle" class="svg-text-sub">檢查特徵與分類</text>
+
+                        <line x1="330" y1="42.5" x2="390" y2="42.5" class="svg-line-arrow"/>
+
+                        <rect x="390" y="20" width="110" height="45" class="svg-node"/>
+                        <text x="445" y="47" text-anchor="middle" class="svg-text">輸出結果 Y</text>
+                        <text x="445" y="58" text-anchor="middle" class="svg-text-sub">(如：標籤"貓")</text>
+
+                        <line x1="20" y1="95" x2="740" y2="95" stroke="var(--border-color)" stroke-dasharray="4 4"/>
+
+                        <rect x="20" y="120" width="110" height="45" class="svg-node"/>
+                        <text x="75" y="142" text-anchor="middle" class="svg-text">文字提示 / 噪聲</text>
+                        <text x="75" y="156" text-anchor="middle" class="svg-text-sub">(如：文字 Prompt)</text>
+
+                        <line x1="130" y1="142.5" x2="190" y2="142.5" class="svg-line-arrow"/>
+
+                        <rect x="190" y="120" width="140" height="45" class="svg-node-active"/>
+                        <text x="260" y="142" text-anchor="middle" class="svg-text">生成式模型</text>
+                        <text x="260" y="156" text-anchor="middle" class="svg-text-sub">學習機率分佈並顯影</text>
+
+                        <line x1="330" y1="142.5" x2="390" y2="142.5" class="svg-line-arrow"/>
+
+                        <rect x="390" y="120" width="110" height="45" class="svg-node"/>
+                        <text x="445" y="142" text-anchor="middle" class="svg-text">全新創作 X'</text>
+                        <text x="445" y="156" text-anchor="middle" class="svg-text-sub">(如：全新畫作/文章)</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- 卡片 1-2 -->
+            <div class="card">
+                <div class="card-title"><i class="fa-solid fa-wand-magic-sparkles"></i> 1.2 擴散模型 (Diffusion Model) 運作原理：逆轉墨水擴散</div>
+                <p>AI 畫圖技術中最紅的「擴散模型 (Diffusion Model)」，原理聽起來很深奧，但用生活現象來想就很簡單：</p>
+                
+                <div class="callout-analogy">
+                    <div class="callout-title"><i class="fa-solid fa-droplet"></i> 比喻：將滴入水中的墨水倒帶還原</div>
+                    <ul style="margin-bottom:0;">
+                        <li><strong>正向加噪 (Forward)：</strong>想像你把一滴黑色墨水滴入清水中，墨水會漸漸擴散開來，直到最後整杯水變成模糊均勻的灰水（滿屏噪點）。</li>
+                        <li><strong>反向去噪 (Reverse AI 生成)：</strong>AI 的任務就是扮演「時間倒帶大師」。AI 從滿屏毫無規律的彩色彩色噪點（灰水）開始，一步步把雜訊「擦掉」，最後把墨水重新凝聚回原本清晰的圖案！</li>
+                    </ul>
+                </div>
+
+                <div class="inline-ref">
+                    <i class="fa-solid fa-bookmark" style="color:var(--text-muted);"></i>
+                    <span><strong>擴散模型論文：</strong><a href="https://arxiv.org/abs/2006.11239" target="_blank" rel="noopener noreferrer" class="ref-link">DDPM (Ho et al.)</a> | <a href="https://arxiv.org/abs/2112.10752" target="_blank" rel="noopener noreferrer" class="ref-link">Latent Diffusion Models (SD 論文)</a></span>
+                </div>
+
+                <!-- 架構圖 2：擴散模型流程 -->
+                <div class="diagram-box">
+                    <div class="diagram-header">
+                        <span><i class="fa-solid fa-diagram-project"></i> 圖 1.2 擴散模型正向模糊化與反向擦除雜訊顯影過程</span>
+                    </div>
+                    <svg class="svg-diagram" viewBox="0 0 760 170">
+                        <rect x="30" y="25" width="100" height="40" class="svg-node-active"/>
+                        <text x="80" y="49" text-anchor="middle" class="svg-text">清晰照片 x₀</text>
+
+                        <line x1="130" y1="45" x2="230" y2="45" class="svg-line-arrow"/>
+                        <text x="180" y="38" text-anchor="middle" class="svg-text-sub">一步步加入噪點</text>
+
+                        <rect x="230" y="25" width="100" height="40" class="svg-node"/>
+                        <text x="280" y="49" text-anchor="middle" class="svg-text">半模糊點陣 x_t</text>
+
+                        <line x1="330" y1="45" x2="430" y2="45" class="svg-line-arrow"/>
+                        <text x="380" y="38" text-anchor="middle" class="svg-text-sub">完全混亂</text>
+
+                        <rect x="430" y="25" width="100" height="40" class="svg-node"/>
+                        <text x="480" y="49" text-anchor="middle" class="svg-text">純噪聲電視雪花 x_T</text>
+
+                        <path d="M 480 65 L 480 115 A 10 10 0 0 1 470 125 L 340 125" fill="none" class="svg-line-arrow"/>
+
+                        <rect x="180" y="105" width="160" height="40" class="svg-node-active"/>
+                        <text x="260" y="124" text-anchor="middle" class="svg-text">UNet 神經網路預測器</text>
+                        <text x="260" y="138" text-anchor="middle" class="svg-text-sub">預測並扣除目前步驟的噪點</text>
+
+                        <line x1="180" y1="125" x2="130" y2="125" class="svg-line-arrow"/>
+
+                        <rect x="30" y="105" width="100" height="40" class="svg-node-active"/>
+                        <text x="80" y="129" text-anchor="middle" class="svg-text">顯影全新圖片</text>
+
+                        <rect x="400" y="105" width="120" height="40" class="svg-node"/>
+                        <text x="460" y="124" text-anchor="middle" class="svg-text">你的 Prompt 需求</text>
+                        <text x="460" y="138" text-anchor="middle" class="svg-text-sub">(指引圖畫發展方向)</text>
+
+                        <line x1="400" y1="125" x2="340" y2="125" class="svg-line-arrow"/>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第二單元：Civitai 繪圖模型與應用 -->
+        <section id="civitai">
+            <div class="sec-header">
+                <h2>第二單元：Civitai 影像模型與參數應用通俗解析</h2>
+                <span>UNIT 02</span>
+            </div>
+
+            <!-- 卡片 2-1 -->
+            <div class="card">
+                <div class="card-title"><i class="fa-solid fa-layer-group"></i> 2.1 Civitai 模型的比喻：玩樂高與樂團配備</div>
+                <p>Civitai (civitai.com) 是全球最大的 AI 繪圖模型社群。在 Civitai 上下載的模型，可以看作是不同的樂高積木組合：</p>
+
+                <div class="callout-analogy">
+                    <div class="callout-title"><i class="fa-solid fa-cubes"></i> 比喻：樂高積木與樂團組合</div>
+                    <ul>
+                        <li><strong>Checkpoint (主模型/大模型)：</strong>像「樂高主題基礎盒」或「畫家的主風格」。決定你是要畫日系二次元動漫、寫實真人攝影、還是 3D 歐美動畫風。檔案通常很大 (2GB~6GB)。</li>
+                        <li><strong>LoRA (輕量小配件)：</strong>像「外掛配件包」。不改變整體畫風，但能幫角色加上特定的衣服（如：日式和服）、特定人物臉孔、或是特定的藝術風格。檔案很小 (50MB~200MB)。</li>
+                        <li><strong>VAE (色彩解碼濾鏡)：</strong>像「相機的色調濾鏡與洗照藥水」。專門處理顏色會不會發灰洗白、眼睛亮不亮、邊緣清晰度。</li>
+                        <li><strong>ControlNet (骨架線條控制器)：</strong>像「美術課的木頭姿勢人偶」。用來指定人物姿勢（如：跳躍、揮拳），讓 AI 乖乖照著這個姿勢畫，不會畫出怪異肢體。</li>
+                    </ul>
+                </div>
+
+                <div class="inline-ref">
+                    <i class="fa-solid fa-bookmark" style="color:var(--text-muted);"></i>
+                    <span><strong>官方網站與論文：</strong><a href="https://civitai.com" target="_blank" rel="noopener noreferrer" class="ref-link">Civitai 官網</a> | <a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer" class="ref-link">LoRA 論文</a> | <a href="https://arxiv.org/abs/2302.05543" target="_blank" rel="noopener noreferrer" class="ref-link">ControlNet 論文</a> | <a href="https://arxiv.org/abs/1312.6114" target="_blank" rel="noopener noreferrer" class="ref-link">VAE 論文</a></span>
+                </div>
+
+                <!-- 架構圖 3：Civitai 繪圖 pipeline -->
+                <div class="diagram-box">
+                    <div class="diagram-header">
+                        <span><i class="fa-solid fa-diagram-project"></i> 圖 2.1 Civitai 模組化模型出圖搭配流程圖</span>
+                    </div>
+                    <svg class="svg-diagram" viewBox="0 0 760 210">
+                        <rect x="20" y="20" width="130" height="40" class="svg-node"/>
+                        <text x="85" y="44" text-anchor="middle" class="svg-text">文字指令 Prompt</text>
+
+                        <line x1="150" y1="40" x2="210" y2="40" class="svg-line-arrow"/>
+
+                        <rect x="210" y="20" width="140" height="40" class="svg-node"/>
+                        <text x="280" y="44" text-anchor="middle" class="svg-text">CLIP 文字理解器</text>
+
+                        <line x1="280" y1="60" x2="280" y2="105" class="svg-line-arrow"/>
+
+                        <rect x="200" y="105" width="160" height="50" class="svg-node-active"/>
+                        <text x="280" y="128" text-anchor="middle" class="svg-text">Checkpoint 主模型</text>
+                        <text x="280" y="142" text-anchor="middle" class="svg-text-sub">(決定基本畫風與品質)</text>
+
+                        <rect x="20" y="105" width="130" height="50" class="svg-node"/>
+                        <text x="85" y="128" text-anchor="middle" class="svg-text">LoRA 造型配件包</text>
+                        <text x="85" y="142" text-anchor="middle" class="svg-text-sub">(指定服飾/特定臉蛋)</text>
+
+                        <line x1="150" y1="130" x2="200" y2="130" class="svg-line-arrow"/>
+
+                        <rect x="410" y="20" width="140" height="50" class="svg-node"/>
+                        <text x="480" y="43" text-anchor="middle" class="svg-text">ControlNet 木頭人</text>
+                        <text x="480" y="57" text-anchor="middle" class="svg-text-sub">(指定姿勢與線條輪廓)</text>
+
+                        <path d="M 480 70 L 480 130 L 360 130" fill="none" class="svg-line-arrow"/>
+
+                        <line x1="360" y1="130" x2="430" y2="130" class="svg-line-arrow"/>
+
+                        <rect x="430" y="105" width="120" height="50" class="svg-node"/>
+                        <text x="490" y="128" text-anchor="middle" class="svg-text">Latent 潛在空間</text>
+                        <text x="490" y="142" text-anchor="middle" class="svg-text-sub">(計算去噪草稿)</text>
+
+                        <line x1="550" y1="130" x2="600" y2="130" class="svg-line-arrow"/>
+
+                        <rect x="600" y="105" width="130" height="50" class="svg-node-active"/>
+                        <text x="665" y="128" text-anchor="middle" class="svg-text">VAE 顯影解碼器</text>
+                        <text x="665" y="142" text-anchor="middle" class="svg-text-sub">(還原高解析彩圖)</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- 卡片 2-2 -->
+            <div class="card">
+                <div class="card-title"><i class="fa-solid fa-sliders"></i> 2.2 實務 Prompt 提示詞拆解與參數調整實例</div>
+                <p>在畫圖工具（如 Stable Diffusion WebUI 或 ComfyUI）中，提示詞寫法與參數設定是控制畫質的關鍵：</p>
+
+                <div class="callout-example">
+                    <div class="callout-title"><i class="fa-solid fa-code"></i> 實務 Prompt 語法拆解範例</div>
+                    <div class="code-block" style="margin-bottom:0.5rem;">
+<span style="color:#7dd3fc;">(masterpiece, best quality, ultra-detailed:1.2)</span>, 1girl, solo, wearing cyberpunk jacket, neon rain street, highly detailed eyes, <span style="color:#f472b6;">&lt;lora:cyber_v2:0.75&gt;</span>
+                    </div>
+                    <ul style="font-size:0.88rem; margin-bottom:0;">
+                        <li><code>(masterpiece:1.2)</code>：代表將「傑作」這個詞的權重乘以 1.2 倍，強迫 AI 專注於品質。</li>
+                        <li><code><lora:cyber_v2:0.75></code>：調用名為 cyber_v2 的 LoRA，權重設為 0.75（過高容易破圖，過低效果不明顯）。</li>
+                        <li><strong>Negative Prompt (負向提示詞)：</strong>寫上 <code>(worst quality, bad hand, extra fingers:1.4)</code>，明確禁止 AI 畫出劣質手部與變形肢體。</li>
+                    </ul>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>關鍵參數</th>
+                                <th>常用推薦設定</th>
+                                <th>白話功能講解</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Sampler (採樣演算法)</strong></td>
+                                <td><code>DPM++ 2M Karras</code></td>
+                                <td>去噪演算的方法。DPM++ 2M 運算速度快且畫質極佳，20 步就能出大片。</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Steps (繪圖步數)</strong></td>
+                                <td>20 - 30 步</td>
+                                <td>AI 擦拭噪點的次數。低於 15 步像沒洗好的相片；高於 50 步速度變慢且邊際效益低。</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CFG Scale (提示詞聽話度)</strong></td>
+                                <td>7.0 左右</td>
+                                <td>數字越低 AI 越自由發揮（容易亂畫）；數字過高 (>12) 圖像線條會過曝崩壞。</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Hires.fix (高清二次修復)</strong></td>
+                                <td>放大 2 倍 (重繪幅度 0.35)</td>
+                                <td>先畫一張小圖避免畫出「雙頭怪人」，再自動把圖片放大補滿細節。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第三單元：Google Gemini 模型 -->
+        <section id="gemini">
+            <div class="sec-header">
+                <h2>第三單元：Google Gemini 原生多模態模型</h2>
+                <span>UNIT 03</span>
+            </div>
+
+            <!-- 卡片 3-1 -->
+            <div class="card">
+                <div class="card-title"><i class="fa-solid fa-lightbulb"></i> 3.1 什麼是原生多模態與 MoE 混合專家？</div>
+                
+                <div class="callout-analogy">
+                    <div class="callout-title"><i class="fa-solid fa-eye"></i> 比喻一：原生多模態 vs 拼貼翻譯</div>
+                    <p style="margin-bottom:0.4rem;"><strong>傳統 AI 像「看簡體字幕的外國人」：</strong>看照片時，必須先用一個視角模型把照片轉成文字說明，再交給語言模型思考。中間轉換過程會漏掉大量視覺細節。</p>
+                    <p style="margin-bottom:0;"><strong>Gemini 原生多模態像「眼睛耳朵大腦合一的大師」：</strong>大腦從一開始訓練時，就同時學會看影像、聽聲音、讀文字。能一眼看出「圖片裡這瓶醬油標籤的細微過期日期」。</p>
+                </div>
+
+                <div class="callout-analogy">
+                    <div class="callout-title"><i class="fa-solid fa-hospital-user"></i> 比喻二：MoE (混合專家) 像大型醫院分診系統</div>
+                    <p style="margin-bottom:0;">模型內部就像一間擁有幾百位專科醫生的醫院。當你提出一個「程式語言」問題時，門控系統 (Router) 只會幫你掛號給「程式碼專家」與「邏輯專家」，其餘 98% 的醫生都在休息。這樣做能讓模型<strong>運算速度極快、成本極低，但智商依然超高</strong>！</p>
+                </div>
+
+                <div class="inline-ref">
+                    <i class="fa-solid fa-bookmark" style="color:var(--text-muted);"></i>
+                    <span><strong>Gemini 官方資源與論文：</strong><a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer" class="ref-link">Gemini 官網</a> | <a href="https://arxiv.org/abs/2312.11805" target="_blank" rel="noopener noreferrer" class="ref-link">Gemini 1.0 技術報告</a> | <a href="https://arxiv.org/abs/1701.06538" target="_blank" rel="noopener noreferrer" class="ref-link">MoE 專家網路論文</a></span>
+                </div>
+
+                <!-- 架構圖 4：Gemini MoE 原生多模態 -->
+                <div class="diagram-box">
+                    <div class="diagram-header">
+                        <span><i class="fa-solid fa-diagram-project"></i> 圖 3.1 Gemini 原生多模態理解與 MoE 分診專家動態路由示意圖</span>
+                    </div>
+                    <svg class="svg-diagram" viewBox="0 0 760 210">
+                        <rect x="20" y="20" width="80" height="30" class="svg-node"/>
+                        <text x="60" y="39" text-anchor="middle" class="svg-text">文字 Prompt</text>
+
+                        <rect x="20" y="60" width="80" height="30" class="svg-node"/>
+                        <text x="60" y="79" text-anchor="middle" class="svg-text">照片/截圖</text>
+
+                        <rect x="20" y="100" width="80" height="30" class="svg-node"/>
+                        <text x="60" y="119" text-anchor="middle" class="svg-text">錄音/語音</text>
+
+                        <rect x="20" y="140" width="80" height="30" class="svg-node"/>
+                        <text x="60" y="159" text-anchor="middle" class="svg-text">長影片檔案</text>
+
+                        <line x1="100" y1="95" x2="150" y2="95" class="svg-line-arrow"/>
+
+                        <rect x="150" y="45" width="130" height="100" class="svg-node-active"/>
+                        <text x="215" y="90" text-anchor="middle" class="svg-text">原生多模態</text>
+                        <text x="215" y="105" text-anchor="middle" class="svg-text">Tokenizer (大腦)</text>
+
+                        <line x1="280" y1="95" x2="340" y2="95" class="svg-line-arrow"/>
+
+                        <rect x="340" y="55" width="110" height="80" class="svg-node-active"/>
+                        <text x="395" y="90" text-anchor="middle" class="svg-text">MoE 醫院分診</text>
+                        <text x="395" y="105" text-anchor="middle" class="svg-text-sub">(自動派案專長)</text>
+
+                        <line x1="450" y1="70" x2="520" y2="40" class="svg-line-arrow"/>
+                        <rect x="520" y="25" width="110" height="30" class="svg-node-active"/>
+                        <text x="575" y="44" text-anchor="middle" class="svg-text">視覺專家 (工作)</text>
+
+                        <line x1="450" y1="95" x2="520" y2="95" class="svg-line"/>
+                        <rect x="520" y="80" width="110" height="30" class="svg-node"/>
+                        <text x="575" y="99" text-anchor="middle" class="svg-text-sub">醫療專家 (休息)</text>
+
+                        <line x1="450" y1="120" x2="520" y2="150" class="svg-line-arrow"/>
+                        <rect x="520" y="135" width="110" height="30" class="svg-node-active"/>
+                        <text x="575" y="154" text-anchor="middle" class="svg-text">程式專家 (工作)</text>
+
+                        <line x1="630" y1="40" x2="680" y2="95" class="svg-line"/>
+                        <line x1="630" y1="150" x2="680" y2="95" class="svg-line-arrow"/>
+
+                        <rect x="680" y="70" width="70" height="50" class="svg-node-active"/>
+                        <text x="715" y="99" text-anchor="middle" class="svg-text">精確回答</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- 卡片 3-2 -->
+            <div class="card">
+                <div class="card-title"><i class="fa-solid fa-list-check"></i> 3.2 Gemini 實務應用真實案例講解</div>
+                <div class="grid-2">
+                    <div class="callout-example">
+                        <div class="callout-title"><i class="fa-solid fa-camera"></i> 案例一：生活食材拍照分析與食譜</div>
+                        <p style="font-size:0.88rem; margin-bottom:0.3rem;"><strong>操作：</strong>拍下家裡冰箱剩餘的 3 種食材（雞蛋、番茄、剩飯）。</p>
+                        <p style="font-size:0.88rem; margin-bottom:0;"><strong>Gemini 表現：</strong>瞬間識別照片中的食材，並自動輸出「番茄炒蛋蓋飯」的 4 步驟烹飪簡報，甚至提示番茄要先燙過剝皮。</p>
+                    </div>
+                    <div class="callout-example">
+                        <div class="callout-title"><i class="fa-solid fa-file-video"></i> 案例二：2 小時線上課程影片摘要</div>
+                        <p style="font-size:0.88rem; margin-bottom:0.3rem;"><strong>操作：</strong>直接上傳長達 2 小時的 Python 教學錄影檔。</p>
+                        <p style="font-size:0.88rem; margin-bottom:0;"><strong>Gemini 表現：</strong>利用超長上下文視窗，精確標註出「01:23:15 講師開始示範遞迴函式」，並整理出重點筆記。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第四單元：綜合比較與實務工作流 -->
+        <section id="summary">
+            <div class="sec-header">
+                <h2>第四單元：跨平台全流程實務案例演練</h2>
+                <span>UNIT 04</span>
+            </div>
+
+            <!-- 卡片 4-1 -->
+            <div class="card">
+                <div class="card-title"><i class="fa-solid fa-gamepad"></i> 4.1 實戰演練：打造獨立遊戲宣傳海報的全套 AI 工作流</div>
+                <p>假設我們今天想要從零打造一款「賽博朋克風格」的獨立遊戲宣傳海報，結合 **Gemini 智力** 與 **Civitai SD 繪圖力** 的標準 4 步驟流程如下：</p>
+
+                <div class="diagram-box">
+                    <div class="diagram-header">
+                        <span><i class="fa-solid fa-diagram-project"></i> 圖 4.1 Gemini 策劃與 Civitai SD 出圖全套實戰流程圖</span>
+                    </div>
+                    <svg class="svg-diagram" viewBox="0 0 760 140">
+                        <rect x="20" y="45" width="160" height="50" class="svg-node-active"/>
+                        <text x="100" y="68" text-anchor="middle" class="svg-text">Step 1. Gemini 發想</text>
+                        <text x="100" y="82" text-anchor="middle" class="svg-text-sub">構思文案與 SD Prompt</text>
+
+                        <line x1="180" y1="70" x2="240" y2="70" class="svg-line-arrow"/>
+
+                        <rect x="240" y="45" width="170" height="50" class="svg-node"/>
+                        <text x="325" y="68" text-anchor="middle" class="svg-text">Step 2. Civitai 配備</text>
+                        <text x="325" y="82" text-anchor="middle" class="svg-text-sub">下載大模型與人物 LoRA</text>
+
+                        <line x1="410" y1="70" x2="470" y2="70" class="svg-line-arrow"/>
+
+                        <rect x="470" y="45" width="160" height="50" class="svg-node"/>
+                        <text x="550" y="68" text-anchor="middle" class="svg-text">Step 3. ControlNet 精確繪圖</text>
+                        <text x="550" y="82" text-anchor="middle" class="svg-text-sub">擺出動作並高清放大</text>
+
+                        <line x1="630" y1="70" x2="680" y2="70" class="svg-line-arrow"/>
+
+                        <rect x="680" y="45" width="60" height="50" class="svg-node-active"/>
+                        <text x="710" y="74" text-anchor="middle" class="svg-text">完成</text>
+                    </svg>
+                </div>
+
+                <div class="callout-example">
+                    <div class="callout-title"><i class="fa-solid fa-list-ol"></i> 詳細操作步驟說明</div>
+                    <ol style="font-size:0.9rem; margin-bottom:0;">
+                        <li><strong>Step 1 (Gemini 腦力激盪)：</strong>向 Gemini 輸入：「我要設計一款賽博朋克遊戲主角，請幫我寫一份英文提示詞 (Prompt)，包含髮型、霓虹燈光與背景氛圍。」</li>
+                        <li><strong>Step 2 (Civitai 下載配備)：</strong>登入 Civitai，下載基底大模型 <code>CyberRealistic v5</code>，並下載一個賽博朋克夾克造型的 <code>LoRA</code> 檔。</li>
+                        <li><strong>Step 3 (SD 姿勢控制與出圖)：</strong>打開 WebUI，將 Gemini 給的 Prompt 貼上，開啟 <code>ControlNet OpenPose</code> 匯入主角帥氣揮拳的骨架圖。設定 Sampler 為 <code>DPM++ 2M Karras</code> 跑 25 步。</li>
+                        <li><strong>Step 4 (Gemini 視覺品質驗證)：</strong>將生成的圖片傳給 Gemini，詢問「圖片有哪些細節可以改進？」，Gemini 建議負向提示詞補上 <code>extra arms</code>，修改後成功產出完美海報！</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第五單元：網路參考資料、官方網站與學術論文彙整 -->
+        <section id="references">
+            <div class="sec-header">
+                <h2>第五單元：網路參考資料、官方網站與學術論文彙整</h2>
+                <span>UNIT 05</span>
+            </div>
+
+            <!-- 卡片 5-1：生成式 AI & 擴散模型論文與官網 -->
+            <div class="card">
+                <div class="card-title"><i class="fa-solid fa-book-bookmark"></i> 5.1 生成式 AI 與擴散模型 (Diffusion Models) 論文與官網</div>
+                <p>包含 Transformer 架構、DDPM 擴散模型與 Latent Diffusion (Stable Diffusion) 原始學術論文與開發團隊官方網站：</p>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">資源類型</th>
+                                <th style="width: 25%;">主題 / 名稱</th>
+                                <th style="width: 40%;">論文內容與網站簡介</th>
+                                <th style="width: 20%;">原始連結</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge badge-paper">學術論文</span></td>
+                                <td><strong>Attention Is All You Need</strong><br><span style="font-size:0.75rem; color:var(--text-muted);">Vaswani et al. (2017)</span></td>
+                                <td>提出了革命性的 Transformer 架構，為現代 GPT、Gemini 等大語言模型與多模態 AI 的關鍵底層基礎。</td>
+                                <td><a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener noreferrer" class="ref-btn"><i class="fa-solid fa-newspaper"></i> arXiv:1706.03762 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-paper">學術論文</span></td>
+                                <td><strong>Denoising Diffusion Probabilistic Models (DDPM)</strong><br><span style="font-size:0.75rem; color:var(--text-muted);">Jonathan Ho et al. (2020)</span></td>
+                                <td>奠定現代 AI 繪圖擴散模型理論基礎，詳細闡述正向加噪與反向擦拭噪點顯影的熱力學數學推導。</td>
+                                <td><a href="https://arxiv.org/abs/2006.11239" target="_blank" rel="noopener noreferrer" class="ref-btn"><i class="fa-solid fa-newspaper"></i> arXiv:2006.11239 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-paper">學術論文</span></td>
+                                <td><strong>High-Resolution Image Synthesis with Latent Diffusion Models</strong><br><span style="font-size:0.75rem; color:var(--text-muted);">Rombach et al. (CVPR 2022)</span></td>
+                                <td>Stable Diffusion 原始論文。將圖像轉移至低維度的潛在空間 (Latent Space) 進行擴散生成，大幅降低記憶體需求。</td>
+                                <td><a href="https://arxiv.org/abs/2112.10752" target="_blank" rel="noopener noreferrer" class="ref-btn"><i class="fa-solid fa-newspaper"></i> arXiv:2112.10752 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-site">官方網站</span></td>
+                                <td><strong>Stability AI 官方網站</strong></td>
+                                <td>Stable Diffusion 研發團隊與開源生成式 AI 圖像、視頻、音訊模型的官方發佈平台與技術部落格。</td>
+                                <td><a href="https://stability.ai" target="_blank" rel="noopener noreferrer" class="ref-btn"><i class="fa-solid fa-globe"></i> stability.ai <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-site">官方網站</span></td>
+                                <td><strong>OpenAI 官方網站</strong></td>
+                                <td>開發 ChatGPT (GPT-4o)、DALL-E 3、Sora 等先進生成式 AI 模型之團隊官方門戶。</td>
+                                <td><a href="https://openai.com" target="_blank" rel="noopener noreferrer" class="ref-btn"><i class="fa-solid fa-globe"></i> openai.com <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 卡片 5-2：Civitai 繪圖生態系與套件論文 -->
+            <div class="card">
+                <div class="card-title"><i class="fa-solid fa-cubes-stacked"></i> 5.2 Civitai 繪圖模型生態系、LoRA、ControlNet 與工具</div>
+                <p>涵蓋 Civitai 模型下載平台、LoRA 配件包論文、ControlNet 骨架控制論文以及常用開源出圖工具：</p>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">資源類型</th>
+                                <th style="width: 25%;">主題 / 名稱</th>
+                                <th style="width: 40%;">論文內容與網站簡介</th>
+                                <th style="width: 20%;">原始連結</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge badge-site">官方網站</span></td>
+                                <td><strong>Civitai 模型社群網站</strong></td>
+                                <td>全球最大的 AI 繪圖模型 (Checkpoint/LoRA/VAE/Embedding) 分享、評測與提示詞交流平台。</td>
+                                <td><a href="https://civitai.com" target="_blank" rel="noopener noreferrer" class="ref-btn"><i class="fa-solid fa-globe"></i> civitai.com <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-paper">學術論文</span></td>
+                                <td><strong>LoRA: Low-Rank Adaptation of Large Language Models</strong><br><span style="font-size:0.75rem; color:var(--text-muted);">Edward Hu et al. (Microsoft 2021)</span></td>
+                                <td>低秩適應論文。透過凍結主模型並訓練微小型低秩矩陣，實現輕量化造型配件包 (LoRA) 的訓練與套用。</td>
+                                <td><a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer" class="ref-btn"><i class="fa-solid fa-newspaper"></i> arXiv:2106.09685 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-paper">學術論文</span></td>
+                                <td><strong>Adding Conditional Control to Text-to-Image Diffusion Models</strong><br><span style="font-size:0.75rem; color:var(--text-muted);">Zhang & Agrawala (ICCV 2023)</span></td>
+                                <td>ControlNet 原始論文。讓繪圖模型能接收姿勢人偶 (OpenPose)、線條草圖、深度圖等條件輸入進行精確出圖。</td>
+                                <td><a href="https://arxiv.org/abs/2302.05543" target="_blank" rel="noopener noreferrer" class="ref-btn"><i class="fa-solid fa-newspaper"></i> arXiv:2302.05543 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-paper">學術論文</span></td>
+                                <td><strong>Auto-Encoding Variational Bayes (VAE)</strong><br><span style="font-size:0.75rem; color:var(--text-muted);">Kingma & Welling (2013)</span></td>
+                                <td>變分自編碼器 (VAE) 論文。為 AI 繪圖中的 VAE 色彩解碼器與畫質過濾奠定概率變分架構。</td>
+                                <td><a href="https://arxiv.org/abs/1312.6114" target="_blank" rel="noopener noreferrer" class="ref-btn"><i class="fa-solid fa-newspaper"></i> arXiv:1312.6114 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-tool">開源工具</span></td>
+                                <td><strong>AUTOMATIC1111 SD WebUI</strong></td>
+                                <td>全球使用最廣泛的 Stable Diffusion 瀏覽器 GUI 工具介面 GitHub 專案。</td>
+                                <td><a href="https://github.com/AUTOMATIC1111/stable-diffusion-webui" target="_blank" rel="noopener noreferrer" class="ref-btn"><i class="fa-brands fa-github"></i> SD WebUI <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-tool">開源工具</span></td>
+                                <td><strong>ComfyUI 視覺化節點工作流</strong></td>
+                                <td>模組化、節點導向 (Node-based) 的高階 Stable Diffusion 與 SDXL / Flux 繪圖引擎。</td>
+                                <td><a href="https://github.com/comfyanonymous/ComfyUI" target="_blank" rel="noopener noreferrer" class="ref-btn"><i class="fa-brands fa-github"></i> ComfyUI <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 卡片 5-3：Google Gemini 多模態與 MoE 論文 -->
+            <div class="card">
+                <div class="card-title"><i class="fa-brands fa-google"></i> 5.3 Google Gemini 原生多模態與 MoE 混合專家技術資源</div>
+                <p>包含了 Google Gemini 原生多模態模型技術報告、MoE (Mixture of Experts) 專家分診架構論文與 API 開發者平台：</p>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">資源類型</th>
+                                <th style="width: 25%;">主題 / 名稱</th>
+                                <th style="width: 40%;">論文內容與網站簡介</th>
+                                <th style="width: 20%;">原始連結</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge badge-site">官方網站</span></td>
+                                <td><strong>Google Gemini 對話服務</strong></td>
+                                <td>Google Gemini 原生多模態 AI 對話助手與個人助理官方體驗網站。</td>
+                                <td><a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer" class="ref-btn"><i class="fa-solid fa-globe"></i> gemini.google <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-site">官方網站</span></td>
+                                <td><strong>Google DeepMind Gemini 技術專頁</strong></td>
+                                <td>Google DeepMind 展示 Gemini 家族模型架構、最新論文與 Benchmark 評測數據專頁。</td>
+                                <td><a href="https://deepmind.google/technologies/gemini/" target="_blank" rel="noopener noreferrer" class="ref-btn"><i class="fa-solid fa-globe"></i> deepmind.google <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-site">官方網站</span></td>
+                                <td><strong>Google AI Studio (Gemini API)</strong></td>
+                                <td>供開發者測試 Gemini 多模態能力、調整模型參數與發行 API 金鑰的官方開發者平台。</td>
+                                <td><a href="https://aistudio.google.com" target="_blank" rel="noopener noreferrer" class="ref-btn"><i class="fa-solid fa-code"></i> AI Studio <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-paper">學術論文</span></td>
+                                <td><strong>Gemini 1.0 Technical Report</strong><br><span style="font-size:0.75rem; color:var(--text-muted);">Gemini Team, Google (2023)</span></td>
+                                <td>Google 發布之首個從底層原生整合文本、圖像、音訊與視訊的原生多模態模型技術報告。</td>
+                                <td><a href="https://arxiv.org/abs/2312.11805" target="_blank" rel="noopener noreferrer" class="ref-btn"><i class="fa-solid fa-newspaper"></i> arXiv:2312.11805 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-paper">學術論文</span></td>
+                                <td><strong>Gemini 1.5: Unlocking Multimodal Understanding Across Millions of Tokens</strong><br><span style="font-size:0.75rem; color:var(--text-muted);">Google (2024)</span></td>
+                                <td>詳細探討突破性的 100萬至 200萬 Token 長上下文視窗與近乎完美的「大海撈針 (Needle In A Haystack)」檢索技術。</td>
+                                <td><a href="https://arxiv.org/abs/2403.05530" target="_blank" rel="noopener noreferrer" class="ref-btn"><i class="fa-solid fa-newspaper"></i> arXiv:2403.05530 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-paper">學術論文</span></td>
+                                <td><strong>Outrageously Large Neural Networks: Sparsely-Gated MoE</strong><br><span style="font-size:0.75rem; color:var(--text-muted);">Noam Shazeer et al. (2017)</span></td>
+                                <td>MoE 混合專家網路經典論文。提出稀疏門控路由 (Sparsely-Gated Router)，大幅減低千億規模模型之推論算力負擔。</td>
+                                <td><a href="https://arxiv.org/abs/1701.06538" target="_blank" rel="noopener noreferrer" class="ref-btn"><i class="fa-solid fa-newspaper"></i> arXiv:1701.06538 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-paper">學術論文</span></td>
+                                <td><strong>Switch Transformers: Scaling to Trillion Parameter Models</strong><br><span style="font-size:0.75rem; color:var(--text-muted);">William Fedus et al. (2021)</span></td>
+                                <td>Google 研發之萬億級模型 MoE 簡化架構，將軟性路由改為單一門控切換，使 MoE 訓練更加快速穩定。</td>
+                                <td><a href="https://arxiv.org/abs/2101.03961" target="_blank" rel="noopener noreferrer" class="ref-btn"><i class="fa-solid fa-newspaper"></i> arXiv:2101.03961 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- 頁尾 -->
+    <footer>
+        <p>© 2026 AI Class Notebook | 易讀通俗版 | 儲存於 <code>ai_2.htm</code></p>
+    </footer>
+
+    <!-- 回頂部按鈕 -->
+    <a href="#" class="back-to-top" title="回到頂部">
+        <i class="fa-solid fa-arrow-up"></i>
+    </a>
+
+    <!-- JavaScript 邏輯 -->
+    <script>
+        // 深色 / 明亮模式切換
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const htmlEl = document.documentElement;
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (htmlEl.classList.contains('dark')) {
+                htmlEl.classList.remove('dark');
+                htmlEl.classList.add('light');
+                themeToggleBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            } else {
+                htmlEl.classList.remove('light');
+                htmlEl.classList.add('dark');
+                themeToggleBtn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+            }
+        });
+
+        // 平滑滾動
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
