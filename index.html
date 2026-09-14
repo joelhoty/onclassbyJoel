@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>onclassbyJoel - 課程筆記與研究文件總覽</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --accent-color: #0d9488;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            padding: 2.5rem 1.5rem 2rem 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        p.subtitle {
+            margin: 0 0 1.5rem 0;
+            color: #94a3b8;
+            font-size: 1.05rem;
+        }
+
+        .metadata-box {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .metadata-item strong {
+            color: #38bdf8;
+        }
+
+        .actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: #475569;
+        }
+        .btn-secondary:hover {
+            background-color: #334155;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .search-container {
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.85rem 1.25rem;
+            font-size: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+            background-color: white;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge-count {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            font-size: 0.8rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+
+        .file-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            flex-grow: 1;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            transition: background-color 0.15s;
+        }
+
+        .file-item:hover {
+            background-color: #f1f5f9;
+        }
+
+        .file-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 0.95rem;
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .file-link:hover {
+            text-decoration: underline;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tag-html { background-color: #dbeafe; color: #1e40af; }
+        .tag-md { background-color: #fef3c7; color: #92400e; }
+        .tag-pdf { background-color: #fee2e2; color: #991b1b; }
+        .tag-py { background-color: #dcfce7; color: #166534; }
+        .tag-img { background-color: #f3e8ff; color: #6b21a8; }
+
+        footer {
+            margin-top: 3rem;
+            background-color: white;
+            border-top: 1px solid var(--border-color);
+            padding: 2rem 1.5rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .prompt-archive {
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.25rem;
+            font-size: 0.9rem;
+        }
+
+        .prompt-archive pre {
+            background-color: #1e293b;
+            color: #f8fafc;
+            padding: 0.8rem;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+
+        @media print {
+            header button, .search-container, .actions {
+                display: none !important;
+            }
+            body {
+                background-color: white;
+            }
+            .card {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <h1>📚 onclassbyJoel - 課程筆記與專題索引導覽</h1>
+            <p class="subtitle">彙整 AI、電子電路、樂高機器人、數學統計、廟宇人文與電腦視覺相關筆記與教學文件</p>
+            
+            <div class="metadata-box">
+                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-14 15:59:00 (UTC+8)</div>
+                <div class="metadata-item"><strong>使用模型:</strong> Gemini 3.6 Flash</div>
+                <div class="metadata-item"><strong>執行 Agent:</strong> GitHub Pages Index Generator</div>
+                <div class="metadata-item"><strong>GitHub Repo:</strong> <a href="https://github.com/joelhoty/onclassbyJoel" style="color:#38bdf8;" target="_blank">joelhoty/onclassbyJoel</a></div>
+            </div>
+
+            <div class="actions">
+                <button class="btn" onclick="window.print()">🖨️ 匯出成 PDF / 列印此頁</button>
+                <a class="btn btn-secondary" href="https://github.com/joelhoty/onclassbyJoel" target="_blank">💻 前往 GitHub 儲存庫</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 快速搜尋主題或檔案名稱..." onkeyup="filterFiles()">
+        </div>
+
+        <div class="grid" id="categoryGrid">
+            
+            <!-- AI 分類 -->
+            <div class="card" data-category="AI">
+                <div class="card-header">
+                    <h2 class="card-title">🤖 🤖 AI / 機器學習與深度學習</h2>
+                    <span class="badge-count">9 檔案</span>
+                </div>
+                <ul class="file-list">
+                    <li class="file-item"><a class="file-link" href="./AI/learning_plan_attention_first.html">Attention-First 學習計畫</a> <span class="tag tag-html">HTML</span></li>
+                    <li class="file-item"><a class="file-link" href="./AI/ai_cnn.html">CNN 卷積神經網路解析</a> <span class="tag tag-html">HTML</span></li>
+                    <li class="file-item"><a class="file-link" href="./AI/research_proposal_b02.md">AI 研究提案計畫書 (b02)</a> <span class="tag tag-md">MD</span></li>
+                    <li class="file-item"><a class="file-link" href="./AI/ai_0910.html">AI 課程筆記 (2026-09-10)</a> <span class="tag tag-html">HTML</span></li>
+                    <li class="file-item"><a class="file-link" href="./AI/AI_0909.HTML">AI 課程筆記 (2026-09-09)</a> <span class="tag tag-html">HTML</span></li>
+                    <li class="file-item"><a class="file-link" href="./AI/ai_class_0902.html">AI 課程筆記 (2026-09-02)</a> <span class="tag tag-html">HTML</span></li>
+                    <li class="file-item"><a class="file-link" href="./AI/ai_1.html">AI 基礎單元 1</a> <span class="tag tag-html">HTML</span></li>
+                    <li class="file-item"><a class="file-link" href="./AI/ai_2.html">AI 基礎單元 2 (HTML)</a> <span class="tag tag-html">HTML</span></li>
+                    <li class="file-item"><a class="file-link" href="./AI/ai_2.htm">AI 基礎單元 2 (HTM)</a> <span class="tag tag-html">HTM</span></li>
+                </ul>
+            </div>
+
+            <!-- 電子電路 分類 -->
+            <div class="card" data-category="ec">
+                <div class="card-header">
+                    <h2 class="card-title">⚡ 電子電路與硬體實驗</h2>
+                    <span class="badge-count">9 檔案</span>
+                </div>
+                <ul class="file-list">
+                    <li class="file-item"><a class="file-link" href="./ec/led.html">LED 限流電阻原理與實驗</a> <span class="tag tag-html">HTML</span></li>
+                    <li class="file-item"><a class="file-link" href="./ec/ohm.html">歐姆定律計算與計算工具</a> <span class="tag tag-html">HTML</span></li>
+                    <li class="file-item"><a class="file-link" href="./ec/ee_0910.html">電機電子實驗 (2026-09-10)</a> <span class="tag tag-html">HTML</span></li>
+                    <li class="file-item"><a class="file-link" href="./ec/ec_1.html">基礎電路實驗 1</a> <span class="tag tag-html">HTML</span></li>
+                    <li class="file-item"><a class="file-link" href="./ec/LED%20LaTeX%20EE-0910.pdf">LED LaTeX 技術手冊 (PDF)</a> <span class="tag tag-pdf">PDF</span></li>
+                    <li class="file-item"><a class="file-link" href="./ec/紅色%20LED%20限流電阻工程手冊與計算工具.pdf">紅色 LED 限流手冊 (PDF)</a> <span class="tag tag-pdf">PDF</span></li>
+                    <li class="file-item"><a class="file-link" href="./ec/S1_AI_Content_b06.pdf">S1 AI 電路內容講義 (PDF)</a> <span class="tag tag-pdf">PDF</span></li>
+                    <li class="file-item"><a class="file-link" href="./ec/20260908.jpg">電路實驗相片 1</a> <span class="tag tag-img">JPG</span></li>
+                    <li class="file-item"><a class="file-link" href="./ec/LED.jpg">LED 電路接線圖</a> <span class="tag tag-img">JPG</span></li>
+                </ul>
+            </div>
+
+            <!-- EV3 / SPIKE 機器人 分類 -->
+            <div class="card" data-category="ev3">
+                <div class="card-header">
+                    <h2 class="card-title">🤖 樂高機器人 (EV3 / SPIKE)</h2>
+                    <span class="badge-count">9 檔案</span>
+                </div>
+                <ul class="file-list">
+                    <li class="file-item"><a class="file-link" href="./ev3/index.html">樂高機器人專題筆記首頁</a> <span class="tag tag-html">HTML</span></li>
+                    <li class="file-item"><a class="file-link" href="./ev3/nested_switch_distance_logic.html">雙顏色感測器邏輯 Switch (HTML)</a> <span class="tag tag-html">HTML</span></li>
+                    <li class="file-item"><a class="file-link" href="./ev3/nested_switch_distance_logic.md">雙感測器 Switch 邏輯解析 (MD)</a> <span class="tag tag-md">MD</span></li>
+                    <li class="file-item"><a class="file-link" href="./ev3/distance_audio_feedback_research.md">距離感測與音訊回饋研究提案</a> <span class="tag tag-md">MD</span></li>
+                    <li class="file-item"><a class="file-link" href="./ev3/lego_spike_line_follower.py">SPIKE 尋跡控制程式 (Py)</a> <span class="tag tag-py">PY</span></li>
+                    <li class="file-item"><a class="file-link" href="./ev3/lego_0907.html">樂高專題紀錄 (2026-09-07)</a> <span class="tag tag-html">HTML</span></li>
+                    <li class="file-item"><a class="file-link" href="./ev3/lego_1.html">樂高基礎控制單元 1</a> <span class="tag tag-html">HTML</span></li>
+                    <li class="file-item"><a class="file-link" href="./ev3/2swtcih.png">雙 Switch 邏輯流程圖</a> <span class="tag tag-img">PNG</span></li>
+                    <li class="file-item"><a class="file-link" href="./ev3/cm2hz.jpg">距離轉換音頻曲線圖</a> <span class="tag tag-img">JPG</span></li>
+                </ul>
+            </div>
+
+            <!-- 數學與統計 分類 -->
+            <div class="card" data-category="math">
+                <div class="card-header">
+                    <h2 class="card-title">📐 數學與機率統計</h2>
+                    <span class="badge-count">1 檔案</span>
+                </div>
+                <ul class="file-list">
+                    <li class="file-item"><a class="file-link" href="./math/math_01.html">數學與機率分布筆記 01</a> <span class="tag tag-html">HTML</span></li>
+                </ul>
+            </div>
+
+            <!-- 地方文化與 GIS 分類 -->
+            <div class="card" data-category="temple">
+                <div class="card-header">
+                    <h2 class="card-title">🏯 廟宇文化與 GIS 地圖</h2>
+                    <span class="badge-count">3 檔案</span>
+                </div>
+                <ul class="file-list">
+                    <li class="file-item"><a class="file-link" href="./temple/temple_map.html">嘉義市歷史廟宇 GIS 互動地圖</a> <span class="tag tag-html">HTML</span></li>
+                    <li class="file-item"><a class="file-link" href="./temple/嘉義市歷史廟宇統計報告_2026-09-03.pdf">廟宇文化統計報告 (2026-09-03)</a> <span class="tag tag-pdf">PDF</span></li>
+                    <li class="file-item"><a class="file-link" href="./temple/嘉義市歷史廟宇統計報告_2026-09-04.pdf">廟宇文化統計報告 (2026-09-04)</a> <span class="tag tag-pdf">PDF</span></li>
+                </ul>
+            </div>
+
+            <!-- 藝術與舞蹈 分類 -->
+            <div class="card" data-category="dance">
+                <div class="card-header">
+                    <h2 class="card-title">💃 舞蹈美學與藝術研究</h2>
+                    <span class="badge-count">1 檔案</span>
+                </div>
+                <ul class="file-list">
+                    <li class="file-item"><a class="file-link" href="./dance/cd.html">舞蹈美學與動作分析筆記</a> <span class="tag tag-html">HTML</span></li>
+                </ul>
+            </div>
+
+            <!-- YOLO 物件偵測 分類 -->
+            <div class="card" data-category="yolo">
+                <div class="card-header">
+                    <h2 class="card-title">🎯 YOLO 物體偵測專題</h2>
+                    <span class="badge-count">5 檔案</span>
+                </div>
+                <ul class="file-list">
+                    <li class="file-item"><a class="file-link" href="./yolo/README.md">YOLO 手勢偵測說明文檔</a> <span class="tag tag-md">MD</span></li>
+                    <li class="file-item"><a class="file-link" href="./yolo/main.py">YOLO 主程式 (main.py)</a> <span class="tag tag-py">PY</span></li>
+                    <li class="file-item"><a class="file-link" href="./yolo/gesture_detector.py">手勢偵測模組</a> <span class="tag tag-py">PY</span></li>
+                    <li class="file-item"><a class="file-link" href="./yolo/train_gesture.py">模型訓練指令腳本</a> <span class="tag tag-py">PY</span></li>
+                    <li class="file-item"><a class="file-link" href="./yolo/requirements.txt">環境套件需求表</a> <span class="tag tag-md">TXT</span></li>
+                </ul>
+            </div>
+
+            <!-- 工作區規範與指引 分類 -->
+            <div class="card" data-category="guidelines">
+                <div class="card-header">
+                    <h2 class="card-title">📋 規範指引與根目錄檔</h2>
+                    <span class="badge-count">4 檔案</span>
+                </div>
+                <ul class="file-list">
+                    <li class="file-item"><a class="file-link" href="./NOTE_GENERATION_GUIDE.md">筆記生成與更新標準指引</a> <span class="tag tag-md">MD</span></li>
+                    <li class="file-item"><a class="file-link" href="./AGENTS.md">Multi-Agent 工作區規範</a> <span class="tag tag-md">MD</span></li>
+                    <li class="file-item"><a class="file-link" href="./GEMINI.md">Antigravity Note Rules</a> <span class="tag tag-md">MD</span></li>
+                    <li class="file-item"><a class="file-link" href="./ai_0910.html">根目錄 AI 課程總覽 (ai_0910)</a> <span class="tag tag-html">HTML</span></li>
+                </ul>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <h3>📝 提示詞歷史與變更記錄 (Prompt Archive)</h3>
+            <div class="prompt-archive">
+                <h4>🔹 [2026-09-14 15:59:00] [Antigravity / Gemini 3.6 Flash] 初始建立 index.html</h4>
+                <p><strong>模型/Agent:</strong> Gemini 3.6 Flash / GitHub Pages Index Generator</p>
+                <p><strong>Prompt 原文:</strong></p>
+                <pre>add a default page for github page, and index this folder in default page</pre>
+                <p><strong>變更摘要:</strong> 建立 GitHub Pages 預設首頁 (`index.html`) 與 Markdown 索引檔 (`INDEX.md`)，整合全工作區（AI、電子電路、樂高機器人、數學統計、廟宇人文、舞蹈與 YOLO）共 40+ 份文件及研究提案之分類索引、即時關鍵字搜尋過濾功能與 PDF 匯出列印功能。</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function filterFiles() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const cards = document.querySelectorAll('.card');
+
+            cards.forEach(card => {
+                const items = card.querySelectorAll('.file-item');
+                let hasMatch = false;
+
+                items.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    if (text.includes(filter)) {
+                        item.style.display = 'flex';
+                        hasMatch = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                if (hasMatch || filter === '') {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
