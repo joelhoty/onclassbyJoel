@@ -1,7 +1,7 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-15 11:25:16 (UTC+8)  
-> **使用模型**: Gemini 3.6 Flash  
+> **最後更新時間**: 2026-09-15 15:06:42 (UTC+8)  
+> **使用模型**: Gemini 3.7 Flash  
 > **執行 Agent**: Antigravity Documentation Specialist  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 
@@ -23,6 +23,11 @@
 * `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
+* `2026-09-15` | [電磁繼電器 SPDT 控制電路 (HTML)](./ec/relay_spdt_circuit_analysis.html) (HTML)
+* `2026-09-15` | [電磁繼電器 SPDT 控制電路 (MD)](./ec/relay_spdt_circuit_analysis.md) (MD)
+* `2026-09-15` | [2路磁簧繼電器動態模擬 (HTML)](./ec/reed_relay_2ch_simulation.html) (HTML)
+* `2026-09-15` | [2路磁簧繼電器原理剖析 (MD)](./ec/reed_relay_2ch_simulation.md) (MD)
+* `2026-09-15` | [繼電器控制電路設計相片](./ec/relay1.jpg) (JPG)
 * `2026-09-10` | [電機電子實驗 (09-10)](./ec/ee_0910.html) (HTML)
 * `2026-09-10` | [LED LaTeX 技術手冊](./ec/LED%20LaTeX%20EE-0910.pdf) (PDF)
 * `2026-09-10` | [LED 電路接線圖](./ec/LED.jpg) (JPG)
@@ -99,3 +104,11 @@
   index的檔案日期依照新舊排列
   ```
 - **變更摘要**: 重構 `INDEX.md` 與 `index.html` 全站各類別下所有檔案之排列順序，全面改為依日期由新至舊 (Newest to Oldest) 降序排列。
+
+### 🔹 [2026-09-15 15:06:42] [Gemini 3.7 Flash / Antigravity Documentation Specialist]
+- **模型/Agent**: Gemini 3.7 Flash / Antigravity Documentation Specialist
+- **Prompt 原文**:
+  ```text
+  更新index索引
+  ```
+- **變更摘要**: 同步將最新完成的繼電器控制電路與 2路磁簧繼電器系列 5 份新檔案 (`relay_spdt_circuit_analysis.html/md`, `relay1.jpg`, `reed_relay_2ch_simulation.html/md`) 納入電子電路 (`ec/`) 索引清單，更新檔案數量統計並維持依日期由新至舊降序排列。
