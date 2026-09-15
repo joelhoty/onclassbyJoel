@@ -1,0 +1,2883 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ 2路磁簧繼電器 (2-Channel Reed Relay) 原理解析與動態互動模擬器</title>
+    
+    <!-- 引入 KaTeX 數學公式渲染庫 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\\\(', right: '\\\\)', display: false},
+                {left: '\\\\[', right: '\\\\]', display: true}
+            ],
+            throwOnError: false
+        });"></script>
+
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-light: #e0f2fe;
+            --primary-dark: #0369a1;
+            --secondary: #6366f1;
+            --secondary-light: #ede9fe;
+            --accent: #f59e0b;
+            --accent-light: #fef3c7;
+            --ch1-color: #3b82f6;
+            --ch1-glow: rgba(59, 130, 246, 0.4);
+            --ch2-color: #10b981;
+            --ch2-glow: rgba(16, 185, 129, 0.4);
+            --dark: #0f172a;
+            --gray-900: #0f172a;
+            --gray-800: #1e293b;
+            --gray-700: #334155;
+            --gray-600: #475569;
+            --gray-500: #64748b;
+            --gray-300: #cbd5e1;
+            --gray-200: #e2e8f0;
+            --gray-100: #f1f5f9;
+            --gray-50: #f8fafc;
+            --white: #ffffff;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Microsoft JhengHei", sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.7;
+        }
+
+        /* 頂部導覽與頁首 */
+        header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0369a1 100%);
+            color: var(--white);
+            padding: 2.5rem 1.5rem 2rem 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 4px solid var(--primary);
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .header-content {
+            max-width: 1050px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(2, 132, 199, 0.3);
+            border: 1px solid rgba(56, 189, 248, 0.5);
+            color: #7dd3fc;
+            padding: 0.3rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .meta-box {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+        .meta-box strong {
+            color: #e2e8f0;
+        }
+
+        .action-bar {
+            margin-top: 1.25rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 2px 4px rgba(2, 132, 199, 0.4);
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+            box-shadow: 0 2px 4px rgba(99, 102, 241, 0.4);
+        }
+        .btn-secondary:hover {
+            background-color: #4f46e5;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: white;
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1.25rem;
+        }
+
+        /* 導覽目錄 */
+        .nav-toc {
+            background: var(--white);
+            padding: 1.25rem 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            border-left: 5px solid var(--primary);
+        }
+
+        .nav-toc h3 {
+            font-size: 1.1rem;
+            color: var(--gray-900);
+            margin-bottom: 0.75rem;
+        }
+
+        .nav-toc ul {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 0.5rem 1rem;
+            list-style: none;
+        }
+
+        .nav-toc a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+        .nav-toc a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        /* 區塊卡片 */
+        section {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 2.25rem;
+            margin-bottom: 2.25rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-200);
+        }
+
+        h2 {
+            font-size: 1.55rem;
+            color: var(--gray-900);
+            border-bottom: 2px solid var(--gray-100);
+            padding-bottom: 0.6rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        h2 .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.2rem;
+            height: 2.2rem;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: 8px;
+            font-size: 1.2rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            color: var(--gray-800);
+            margin: 1.5rem 0 0.6rem 0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--gray-700);
+        }
+
+        ul, ol {
+            margin-bottom: 1.25rem;
+            padding-left: 1.5rem;
+            color: var(--gray-700);
+        }
+
+        li {
+            margin-bottom: 0.45rem;
+        }
+
+        /* 提示框 */
+        .highlight-box {
+            background-color: var(--gray-50);
+            border-left: 4px solid var(--primary);
+            padding: 1.1rem 1.3rem;
+            border-radius: 0 var(--radius) var(--radius) 0;
+            margin: 1.25rem 0;
+        }
+
+        .alert-warning {
+            background-color: #fffbeb;
+            border: 1px solid #fde68a;
+            border-left: 5px solid #f59e0b;
+            padding: 1.1rem 1.3rem;
+            border-radius: var(--radius);
+            margin: 1.25rem 0;
+            color: #92400e;
+        }
+
+        .alert-info {
+            background-color: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-left: 5px solid #0284c7;
+            padding: 1.1rem 1.3rem;
+            border-radius: var(--radius);
+            margin: 1.25rem 0;
+            color: #075985;
+        }
+
+        /* 網格系統 */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1.25rem 0;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+            margin: 1.25rem 0;
+        }
+
+        @media (max-width: 860px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+        }
+
+        .card-header {
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* 比較表格 */
+        .table-responsive {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 0.85rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        th {
+            background-color: var(--gray-100);
+            color: var(--gray-800);
+            font-weight: 700;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* 程式碼區塊 */
+        pre {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 1.25rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, "Courier New", monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 1rem 0;
+        }
+
+        code {
+            font-family: Consolas, Monaco, "Courier New", monospace;
+            background: #e2e8f0;
+            color: #0f172a;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.88em;
+        }
+
+        /* 螺線管磁場模擬器樣式 (NEW Section 1) */
+        .solenoid-sim-box {
+            background: #080d1a;
+            border: 1px solid #1e293b;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            color: #e2e8f0;
+            margin: 1.5rem 0;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.4);
+        }
+
+        .solenoid-canvas-wrap {
+            position: relative;
+            background: radial-gradient(circle at center, #0e172a 0%, #050811 100%);
+            border: 1px solid #334155;
+            border-radius: 10px;
+            overflow: hidden;
+            width: 100%;
+            height: 380px;
+            cursor: crosshair;
+        }
+
+        .solenoid-canvas-wrap canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .probe-hud {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            border-radius: 8px;
+            padding: 0.6rem 0.9rem;
+            font-size: 0.82rem;
+            color: #e2e8f0;
+            pointer-events: none;
+            font-family: Consolas, monospace;
+            z-index: 5;
+        }
+        .probe-hud .hud-title {
+            color: #38bdf8;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .solenoid-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1rem;
+            margin-top: 1.25rem;
+            background: #0f172a;
+            padding: 1.1rem;
+            border-radius: 8px;
+            border: 1px solid #1e293b;
+        }
+
+        .solenoid-btn-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .solenoid-toggle-btn {
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #475569;
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .solenoid-toggle-btn.active {
+            background: #0284c7;
+            color: #fff;
+            border-color: #38bdf8;
+            font-weight: 600;
+        }
+
+        /* 微觀特寫模擬器專用樣式 */
+        .micro-sim-container {
+            background: linear-gradient(180deg, #090d16 0%, #111827 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            color: #e2e8f0;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+            border: 1px solid #1e293b;
+            margin: 1.5rem 0;
+        }
+
+        .micro-stage-nav {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .stage-btn {
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            padding: 0.5rem 0.9rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .stage-btn:hover {
+            background: #334155;
+            color: #f1f5f9;
+        }
+        .stage-btn.active {
+            background: #6366f1;
+            color: white;
+            border-color: #818cf8;
+            font-weight: 700;
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .micro-visual-card {
+            background: #060913;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .micro-control-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #1e293b;
+        }
+
+        .micro-play-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .micro-btn {
+            background: #1e293b;
+            color: #e2e8f0;
+            border: 1px solid #475569;
+            padding: 0.45rem 0.9rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .micro-btn:hover {
+            background: #334155;
+            border-color: #94a3b8;
+        }
+        .micro-btn.play-active {
+            background: #f59e0b;
+            color: #000;
+            border-color: #fbbf24;
+        }
+
+        .micro-desc-box {
+            background: #111827;
+            border: 1px solid #374151;
+            border-left: 4px solid #6366f1;
+            border-radius: 8px;
+            padding: 1.1rem 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .micro-desc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .stage-timing-tag {
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid #6366f1;
+            color: #a5b4fc;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-family: monospace;
+        }
+
+        /* 雙通道模擬器專用樣式 */
+        .sim-container {
+            background: linear-gradient(180deg, #0b1120 0%, #111827 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            color: #e2e8f0;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+            border: 1px solid #1e293b;
+            margin: 1.5rem 0;
+        }
+
+        .sim-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #334155;
+            margin-bottom: 1.5rem;
+        }
+
+        .sim-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sim-controls-global {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .sim-mode-btn {
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #475569;
+            padding: 0.4rem 0.85rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sim-mode-btn.active {
+            background: #0284c7;
+            color: white;
+            border-color: #38bdf8;
+            font-weight: 600;
+        }
+
+        .dual-channel-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 960px) {
+            .dual-channel-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .ch-box {
+            background: #172033;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            padding: 1.25rem;
+            position: relative;
+            transition: border-color 0.3s;
+        }
+        .ch-box.ch1-active {
+            border-color: var(--ch1-color);
+            box-shadow: 0 0 15px var(--ch1-glow);
+        }
+        .ch-box.ch2-active {
+            border-color: var(--ch2-color);
+            box-shadow: 0 0 15px var(--ch2-glow);
+        }
+
+        .ch-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ch-badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .ch1-badge { background: #1d4ed8; color: white; }
+        .ch2-badge { background: #047857; color: white; }
+
+        .ch-status-pill {
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .status-off { background: #334155; color: #94a3b8; }
+        .status-on-ch1 { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid #3b82f6; }
+        .status-on-ch2 { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
+
+        .relay-visual {
+            background: #090e17;
+            border-radius: 8px;
+            border: 1px solid #1f293d;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ch-telemetry {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.4rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        @media (max-width: 600px) {
+            .ch-telemetry {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        .tele-card {
+            background: #0f172a;
+            padding: 0.5rem 0.3rem;
+            border-radius: 6px;
+            border: 1px solid #1e293b;
+        }
+        .tele-label {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin-bottom: 0.15rem;
+        }
+        .tele-val {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            font-family: Consolas, monospace;
+        }
+
+        .control-group {
+            margin-top: 1rem;
+        }
+        .slider-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 0.88rem;
+        }
+        .slider-row input[type=range] {
+            flex: 1;
+            margin: 0 0.75rem;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .switch-toggle-btn {
+            width: 100%;
+            padding: 0.65rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid #475569;
+            background: #1e293b;
+            color: #94a3b8;
+            transition: all 0.2s;
+        }
+        .switch-toggle-btn:hover {
+            border-color: #cbd5e1;
+        }
+        .btn-toggle-ch1.active {
+            background: #2563eb;
+            color: white;
+            border-color: #60a5fa;
+            box-shadow: 0 0 12px rgba(37, 99, 235, 0.5);
+        }
+        .btn-toggle-ch2.active {
+            background: #059669;
+            color: white;
+            border-color: #34d399;
+            box-shadow: 0 0 12px rgba(5, 150, 105, 0.5);
+        }
+
+        .load-circuit-box {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: #090e17;
+            border-radius: 6px;
+            border: 1px solid #1f293d;
+            font-size: 0.82rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .load-indicator {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #334155;
+            transition: all 0.3s;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+        }
+        .load-indicator.ch1-on {
+            background: #facc15;
+            box-shadow: 0 0 12px #facc15, 0 0 20px #f59e0b;
+        }
+        .load-indicator.ch2-on {
+            background: #38bdf8;
+            box-shadow: 0 0 12px #38bdf8, 0 0 20px #0284c7;
+        }
+
+        /* 示波器與磁滯曲線圖表 */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        @media (max-width: 860px) {
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .graph-card {
+            background: #172033;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            padding: 1rem;
+        }
+        .graph-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .graph-card canvas {
+            background: #050811;
+            border-radius: 6px;
+            border: 1px solid #1e293d;
+            width: 100%;
+            height: 160px;
+            display: block;
+        }
+
+        /* 觀察指南卡片 */
+        .guide-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+            gap: 1.25rem;
+            margin: 1.25rem 0;
+        }
+        .guide-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-top: 4px solid var(--primary);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+        }
+        .guide-card h4 {
+            color: var(--gray-900);
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        /* 頁尾 */
+        footer {
+            background: var(--gray-900);
+            color: #94a3b8;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            border-top: 1px solid var(--gray-800);
+            margin-top: 3rem;
+        }
+
+        /* 列印與 PDF 匯出優化 */
+        @media print {
+            header {
+                background: none !important;
+                color: #000 !important;
+                border-bottom: 2px solid #000 !important;
+                padding: 1rem 0 !important;
+            }
+            .action-bar, .nav-toc, .sim-controls-global, .control-group, .micro-stage-nav, .micro-play-controls, .solenoid-controls {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            section {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                page-break-inside: avoid;
+                margin-bottom: 1.5rem !important;
+                padding: 1rem !important;
+            }
+            .solenoid-sim-box, .micro-sim-container, .sim-container {
+                background: #ffffff !important;
+                color: #000 !important;
+                border: 1px solid #000 !important;
+                box-shadow: none !important;
+            }
+            .solenoid-canvas-wrap, .micro-visual-card, .relay-visual, .graph-card canvas {
+                background: #f1f5f9 !important;
+                border: 1px solid #cbd5e1 !important;
+            }
+            .tele-card, .micro-desc-box, .guide-card {
+                background: #f8fafc !important;
+                color: #000 !important;
+                border: 1px solid #cbd5e1 !important;
+            }
+            .tele-val {
+                color: #000 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 頂部 Header -->
+    <header>
+        <div class="header-content">
+            <span class="badge">ELECTRONIC CIRCUITS & HARDWARE</span>
+            <h1>⚡ 2路磁簧繼電器 (2-Channel Reed Relay)</h1>
+            <p class="subtitle">通電線圈電磁場生成 × 微觀接點物理動態剖析 × 雙通道互動模擬實驗室</p>
+            
+            <div class="meta-box">
+                <span>🕒 <strong>最後更新時間:</strong> 2026-09-15 14:24:00 (UTC+8)</span>
+                <span>🤖 <strong>使用模型:</strong> Gemini 3.7 Flash</span>
+                <span>👨‍💻 <strong>執行 Agent:</strong> Antigravity</span>
+            </div>
+
+            <div class="action-bar">
+                <button class="btn btn-primary" onclick="window.print()">
+                    📄 匯出成 PDF / 列印筆記
+                </button>
+                <a href="#solenoid-section" class="btn btn-secondary">
+                    🧲 通電線圈磁場模擬
+                </a>
+                <a href="#micro-section" class="btn btn-outline">
+                    🔍 微觀接點動態分解
+                </a>
+                <a href="#bridge-section" class="btn btn-outline">
+                    🌉 邏輯連貫橋樑
+                </a>
+                <a href="#sim-section" class="btn btn-outline">
+                    🎮 2路雙通道實驗室
+                </a>
+                <a href="#compare-section" class="btn btn-outline">
+                    📊 三大繼電器深度對比
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- 導覽目錄 -->
+        <nav class="nav-toc">
+            <h3>📑 快速導覽目錄</h3>
+            <ul>
+                <li><a href="#solenoid-section">🧲 1. 通電螺線管線圈電磁場生成與安培右手定則</a></li>
+                <li><a href="#micro-section">🔍 2. 控制端導通之微觀接點動態剖析</a></li>
+                <li><a href="#bridge-section">🌉 3. 邏輯連貫橋樑：微觀物理到巨觀測量</a></li>
+                <li><a href="#sim-section">🎮 4. 2路磁簧繼電器動態模擬實驗室</a></li>
+                <li><a href="#sim-guide-section">💡 5. 雙通道模擬動畫深度解讀指南</a></li>
+                <li><a href="#theory-section">🔬 6. 磁簧繼電器核心工作原理</a></li>
+                <li><a href="#math-section">📐 7. 電磁吸合與安匝數 (AT) 數學模型</a></li>
+                <li><a href="#circuit-section">🔌 8. 2路硬體驅動電路與保護設計</a></li>
+                <li><a href="#compare-section">📊 9. 繼電器三劍客 (Reed vs EMR vs SSR) 深度對比</a></li>
+                <li><a href="#prompt-archive">📝 10. 提示詞歷史與變更記錄</a></li>
+            </ul>
+        </nav>
+
+        <!-- ==========================================================================
+           🧲 SECTION 1: 通電螺線管線圈電磁場生成與安培右手定則動態模擬器 (NEW)
+           ========================================================================== -->
+        <section id="solenoid-section">
+            <h2><span class="icon">🧲</span> 1. 通電螺線管線圈電磁場生成與安培右手定則 (Energized Solenoid Field Simulator)</h2>
+            <p>
+                所有電磁繼電器運作的根本物理起點，在於<strong>電流所伴隨的電磁效應（畢奧-沙伐定律與安培定律）</strong>。當電流流經密繞螺旋銅導線時，各匝線圈所建立的微觀環形磁場在螺線管軸向疊加，形成均勻強大的軸向磁場，進而磁化內部的導磁介質（如坡莫合金簧片）。
+            </p>
+
+            <!-- 螺線管動態模擬器畫布 -->
+            <div class="solenoid-sim-box">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+                    <span style="font-weight:700; color:#38bdf8; font-size:1.1rem;">
+                        🌀 螺線管即時電磁向量場動態互動畫布
+                    </span>
+                    <span style="font-size:0.8rem; color:#94a3b8;">
+                        💡 提示：在畫布任意位置<strong>點擊或按住拖曳</strong>，移動小磁針探針觀測即時磁場 $\vec{B}(x,y)$！
+                    </span>
+                </div>
+
+                <div class="solenoid-canvas-wrap" id="solenoidWrap">
+                    <canvas id="solenoidCanvas" width="900" height="380"></canvas>
+                    
+                    <!-- 探針 HUD 浮動儀表板 -->
+                    <div class="probe-hud" id="probeHud">
+                        <div class="hud-title">🧭 霍爾磁場向量探針 (Hall Probe)</div>
+                        <div>座標 $(X, Y)$: <span id="hud-pos" style="color:#facc15;">0, 0</span></div>
+                        <div>磁通密度 $|B|$: <span id="hud-bval" style="color:#38bdf8; font-weight:bold;">0.00 mT</span> (<span id="hud-gauss" style="color:#94a3b8;">0.0 G</span>)</div>
+                        <div>場向量角度 $\theta$: <span id="hud-theta" style="color:#a78bfa;">0.0°</span></div>
+                        <div>磁極指向: <span id="hud-pole" style="color:#4ade80; font-weight:bold;">指向 N 極</span></div>
+                    </div>
+                </div>
+
+                <!-- 螺線管即時物理遙測數據 -->
+                <div class="ch-telemetry" style="grid-template-columns: repeat(5, 1fr); margin:1rem 0;">
+                    <div class="tele-card">
+                        <div class="tele-label">驅動電流 (I)</div>
+                        <div class="tele-val" id="tele-sol-i" style="color:#38bdf8;">+2.50 A</div>
+                    </div>
+                    <div class="tele-card">
+                        <div class="tele-label">線圈匝數 (N)</div>
+                        <div class="tele-val" id="tele-sol-n" style="color:#facc15;">20 匝</div>
+                    </div>
+                    <div class="tele-card">
+                        <div class="tele-label">安匝數 (AT = NI)</div>
+                        <div class="tele-val" id="tele-sol-at" style="color:#a78bfa;">50.0 A·t</div>
+                    </div>
+                    <div class="tele-card">
+                        <div class="tele-label">中心磁通密度 ($B_0$)</div>
+                        <div class="tele-val" id="tele-sol-b0" style="color:#4ade80;">1.26 mT</div>
+                    </div>
+                    <div class="tele-card">
+                        <div class="tele-label">磁場儲能 ($E_m$)</div>
+                        <div class="tele-val" id="tele-sol-energy" style="color:#fb7185;">0.15 mJ</div>
+                    </div>
+                </div>
+
+                <!-- 控制滑桿與切換開關 -->
+                <div class="solenoid-controls">
+                    <div>
+                        <div class="slider-row">
+                            <span>⚡ 電流大小與方向 ($I$):</span>
+                            <strong id="label-sol-i" style="color:#38bdf8;">+2.5 A</strong>
+                        </div>
+                        <input type="range" id="slider-sol-i" min="-10.0" max="10.0" step="0.1" value="2.5" oninput="onSolenoidCurrentChange(this.value)" style="width:100%;">
+                        <div class="solenoid-btn-group">
+                            <button class="solenoid-toggle-btn" onclick="reverseSolenoidCurrent()">🔄 反轉電流方向</button>
+                            <button class="solenoid-toggle-btn" onclick="setSolenoidCurrent(0)">⏹️ 歸零 (0A)</button>
+                            <button class="solenoid-toggle-btn" onclick="setSolenoidCurrent(5.0)">⚡ +5V額定 (5A)</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="slider-row">
+                            <span>🌀 線圈匝數 ($N$):</span>
+                            <strong id="label-sol-n" style="color:#facc15;">20 匝</strong>
+                        </div>
+                        <input type="range" id="slider-sol-n" min="5" max="50" step="1" value="20" oninput="onSolenoidTurnsChange(this.value)" style="width:100%;">
+                        
+                        <div class="slider-row" style="margin-top:0.5rem;">
+                            <span>🧲 導磁芯材料:</span>
+                            <select id="select-sol-core" onchange="onSolenoidCoreChange(this.value)" style="background:#1e293b; color:#f1f5f9; border:1px solid #475569; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.82rem;">
+                                <option value="1">空氣芯 (Air, μr = 1)</option>
+                                <option value="600">鐵氧體 (Ferrite, μr = 600)</option>
+                                <option value="5000" selected>坡莫合金簧片 (Permalloy, μr = 5000)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span style="font-size:0.85rem; font-weight:700; color:#cbd5e1;">👁️ 視覺層次切換:</span>
+                        <div class="solenoid-btn-group" style="margin-top:0.4rem;">
+                            <button id="btn-toggle-flow" class="solenoid-toggle-btn active" onclick="toggleSolenoidOption('flow')">🌊 磁力線流動粒子</button>
+                            <button id="btn-toggle-compass-grid" class="solenoid-toggle-btn" onclick="toggleSolenoidOption('compassGrid')">🧭 空間磁針探測網格</button>
+                            <button id="btn-toggle-hand-rule" class="solenoid-toggle-btn active" onclick="toggleSolenoidOption('handRule')">✋ 安培右手定則手勢</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 理論剖析三層次結構 -->
+            <div class="grid-3" style="margin-top:1.5rem;">
+                <div class="card">
+                    <div class="card-header" style="color:#0284c7;">
+                        <span>📐 1. 畢奧-沙伐定律與螺線管軸向磁場</span>
+                    </div>
+                    <p style="font-size:0.9rem;">
+                        單匝環形導線在軸心產生的磁場為 $dB = \frac{\mu_0 I R^2}{2(R^2+z^2)^{3/2}}$。將長度為 $L$、總匝數為 $N$ 的螺線管沿軸向積分，內部中心處磁通密度為：
+                    </p>
+                    <p style="text-align:center; font-weight:bold; color:#0369a1; font-size:0.95rem;">
+                        $$B = \mu_0 \mu_r \frac{N}{L} I = \mu_0 \mu_r n I$$
+                    </p>
+                    <p style="font-size:0.85rem; color:#64748b;">
+                        其中 $\mu_0 = 4\pi \times 10^{-7}\ \text{T}\cdot\text{m/A}$ 為真空磁導率，$n = N/L$ 為單位長度線圈匝數密度。
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" style="color:#6366f1;">
+                        <span>✋ 2. 安培右手定則 (右手螺旋定則)</span>
+                    </div>
+                    <p style="font-size:0.9rem;">
+                        <strong>定則口訣</strong>：以右手四指彎曲指向導線中<strong>電流 $I$ 的流動方向</strong>（從正極流向負極），此時大拇指所指向的一端即為螺線管內部的磁力線方向，亦即螺線管對外表現的 <strong>N 極 (北極)</strong>！
+                    </p>
+                    <div class="highlight-box" style="margin:0.5rem 0; padding:0.6rem 0.8rem; font-size:0.85rem;">
+                        🔹 <strong>電流反向</strong>：四指反向彎曲，大拇指指向反轉，N/S 極立即對調！
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" style="color:#f59e0b;">
+                        <span>🧲 3. 導磁芯介質與磁化增強效應</span>
+                    </div>
+                    <p style="font-size:0.9rem;">
+                        在線圈內部放入高導磁率軟磁材料（如<strong>坡莫合金 Permalloy，$\mu_r \approx 5000\sim 100000$</strong>），金屬內部無序排列的磁疇（Magnetic Domains）會在外部線圈磁場下瞬間同向轉動，使總磁通密度 $B$ 猛增數千倍！
+                    </p>
+                    <p style="font-size:0.85rem; color:#64748b;">
+                        這正是為什麼磁簧開關只需要微弱的線圈電流（$10\sim 20\text{ mA}$），就能產生足夠強大的磁吸引力閉合金屬接點。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+           🔍 SECTION 2: 控制端導通內部接點動態變化與磁簧開關微觀模擬
+           ========================================================================== -->
+        <section id="micro-section">
+            <h2><span class="icon">🔍</span> 2. 控制端導通之微觀接點物理動態剖析 (Microscopic Action Sequence)</h2>
+            <p>
+                在了解線圈磁場生成後，讓我們進入<strong>高倍率微觀特寫</strong>，一步步觀察當繼電器控制端輸入 5V 導通訊號後，<strong>線圈電流、磁力線穿透、金屬簧片極化 (N/S 極)、磁吸力克服彈簧剛性、接點微秒級彈跳 (Bounce) 至完全導通</strong>的 7 大關鍵物理階段演變：
+            </p>
+
+            <div class="micro-sim-container">
+                <div class="micro-stage-nav" id="microStageNav">
+                    <button class="stage-btn active" onclick="setMicroStage(0)">Stage 0: 待機開路</button>
+                    <button class="stage-btn" onclick="setMicroStage(1)">Stage 1: 線圈激磁 (0~0.2ms)</button>
+                    <button class="stage-btn" onclick="setMicroStage(2)">Stage 2: 簧片極化 (0.2~0.4ms)</button>
+                    <button class="stage-btn" onclick="setMicroStage(3)">Stage 3: 克服彈力 (0.4~0.7ms)</button>
+                    <button class="stage-btn" onclick="setMicroStage(4)">Stage 4: 碰撞彈跳 (0.7~1.0ms)</button>
+                    <button class="stage-btn" onclick="setMicroStage(5)">Stage 5: 完全導通 (&gt;1.0ms)</button>
+                    <button class="stage-btn" onclick="setMicroStage(6)">Stage 6: 斷電退磁復位</button>
+                </div>
+
+                <div class="micro-visual-card">
+                    <svg id="microSvg" width="100%" height="100%" viewBox="0 0 760 250">
+                        <defs>
+                            <linearGradient id="microCoilGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.8"/>
+                                <stop offset="100%" stop-color="#1e1b4b" stop-opacity="0.9"/>
+                            </linearGradient>
+                            <linearGradient id="bladeGradA" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#64748b"/>
+                                <stop offset="70%" stop-color="#94a3b8"/>
+                                <stop offset="100%" stop-color="#cbd5e1"/>
+                            </linearGradient>
+                            <linearGradient id="bladeGradB" x1="100%" y1="0%" x2="0%" y2="0%">
+                                <stop offset="0%" stop-color="#64748b"/>
+                                <stop offset="70%" stop-color="#94a3b8"/>
+                                <stop offset="100%" stop-color="#cbd5e1"/>
+                            </linearGradient>
+                            <linearGradient id="microFluxGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#6366f1" stop-opacity="0.1"/>
+                                <stop offset="50%" stop-color="#818cf8" stop-opacity="0.8"/>
+                                <stop offset="100%" stop-color="#6366f1" stop-opacity="0.1"/>
+                            </linearGradient>
+                            <linearGradient id="goldPadGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#fde047"/>
+                                <stop offset="100%" stop-color="#ca8a04"/>
+                            </linearGradient>
+                        </defs>
+
+                        <line x1="380" y1="10" x2="380" y2="240" stroke="#1e293b" stroke-dasharray="4,4"/>
+                        <text x="385" y="25" fill="#475569" font-size="10" font-family="monospace">Center Contact Gap (0.8mm)</text>
+
+                        <g id="micro-coils">
+                            <rect x="40" y="20" width="680" height="28" rx="5" fill="url(#microCoilGrad)" stroke="#6366f1" stroke-width="1.5"/>
+                            <text x="50" y="38" fill="#c7d2fe" font-size="11" font-weight="bold">線圈繞組截面 (電流進入 ⨂⨂⨂)</text>
+                            <rect x="40" y="202" width="680" height="28" rx="5" fill="url(#microCoilGrad)" stroke="#6366f1" stroke-width="1.5"/>
+                            <text x="50" y="220" fill="#c7d2fe" font-size="11" font-weight="bold">線圈繞組截面 (電流流出 ⊙⊙⊙)</text>
+                        </g>
+
+                        <rect x="60" y="58" width="640" height="134" rx="18" fill="rgba(15, 23, 42, 0.7)" stroke="#38bdf8" stroke-width="1.8" stroke-opacity="0.5"/>
+                        <text x="75" y="76" fill="#38bdf8" font-size="10" font-family="monospace">惰性氣體保護密封腔 (N₂ 97% + He 3%)</text>
+
+                        <g id="micro-flux-group" opacity="0">
+                            <path d="M 80 125 C 220 70, 540 70, 680 125" fill="none" stroke="url(#microFluxGrad)" stroke-width="2.5" stroke-dasharray="10,6">
+                                <animate attributeName="stroke-dashoffset" from="200" to="0" dur="2s" repeatCount="indefinite" />
+                            </path>
+                            <path d="M 120 125 C 240 90, 520 90, 640 125" fill="none" stroke="url(#microFluxGrad)" stroke-width="2" stroke-dasharray="8,4">
+                                <animate attributeName="stroke-dashoffset" from="100" to="0" dur="1.5s" repeatCount="indefinite" />
+                            </path>
+                            <path d="M 80 125 C 220 180, 540 180, 680 125" fill="none" stroke="url(#microFluxGrad)" stroke-width="2.5" stroke-dasharray="10,6">
+                                <animate attributeName="stroke-dashoffset" from="200" to="0" dur="2s" repeatCount="indefinite" />
+                            </path>
+                        </g>
+
+                        <g id="micro-blade-a">
+                            <path id="micro-path-a" d="M 30 125 L 140 125 L 395 116" fill="none" stroke="url(#bladeGradA)" stroke-width="8" stroke-linecap="round"/>
+                            <rect id="micro-pad-a" x="370" y="112" width="28" height="6" rx="2" fill="url(#goldPadGrad)" stroke="#a16207" stroke-width="1"/>
+                            <text x="160" y="112" fill="#94a3b8" font-size="11" font-weight="bold">鐵鎳合金簧片 A (Permalloy 52)</text>
+                            <text id="micro-pole-n" x="355" y="110" fill="#ef4444" font-size="13" font-weight="bold" opacity="0">N</text>
+                        </g>
+
+                        <g id="micro-blade-b">
+                            <path id="micro-path-b" d="M 730 125 L 620 125 L 365 138" fill="none" stroke="url(#bladeGradB)" stroke-width="8" stroke-linecap="round"/>
+                            <rect id="micro-pad-b" x="362" y="134" width="28" height="6" rx="2" fill="url(#goldPadGrad)" stroke="#a16207" stroke-width="1"/>
+                            <text x="460" y="145" fill="#94a3b8" font-size="11" font-weight="bold">鐵鎳合金簧片 B (Permalloy 52)</text>
+                            <text id="micro-pole-s" x="400" y="147" fill="#3b82f6" font-size="13" font-weight="bold" opacity="0">S</text>
+                        </g>
+
+                        <line id="gap-line" x1="380" y1="116" x2="380" y2="138" stroke="#f59e0b" stroke-width="2" stroke-dasharray="2,2"/>
+                        <text id="gap-text" x="390" y="130" fill="#f59e0b" font-size="11" font-family="monospace">Gap: 0.80 mm</text>
+
+                        <g id="micro-spark" opacity="0">
+                            <circle cx="380" cy="125" r="14" fill="rgba(253, 224, 71, 0.4)"/>
+                            <polygon points="380,115 383,122 390,125 383,128 380,135 377,128 370,125 377,122" fill="#fef08a"/>
+                        </g>
+
+                        <path id="micro-current-beam" d="M 30 125 L 140 125 L 380 125 L 620 125 L 730 125" fill="none" stroke="#facc15" stroke-width="3" stroke-dasharray="8,4" opacity="0">
+                            <animate attributeName="stroke-dashoffset" from="100" to="0" dur="0.8s" repeatCount="indefinite" />
+                        </path>
+                    </svg>
+                </div>
+
+                <div class="micro-desc-box">
+                    <div class="micro-desc-header">
+                        <h4 id="micro-desc-title" style="color:#818cf8; font-size:1.15rem; margin:0;">Stage 0: 待機開路狀態 (Standby / De-energized)</h4>
+                        <span class="stage-timing-tag" id="micro-desc-time">時間: t &lt; 0 ms</span>
+                    </div>
+                    <p id="micro-desc-text" style="color:#cbd5e1; font-size:0.95rem; margin-bottom:0.6rem;">
+                        控制端尚未輸入電壓 ($V_{\text{coil}} = 0\text{V}$)，線圈內部無電流、無磁場。兩簧片依靠自身懸臂梁金屬彈簧剛性分開，兩端接點保持 0.8 mm 初始間隙，斷開絕緣阻抗高達 $10^{12}\ \Omega$。
+                    </p>
+                    <div id="micro-desc-formula" style="font-size:0.85rem; color:#94a3b8; font-family:Consolas, monospace;">
+                        物理狀態：$I = 0\text{ A},\ B = 0\text{ T},\ F_m = 0\text{ N},\ R_{\text{iso}} &gt; 10^{12}\ \Omega$
+                    </div>
+                </div>
+
+                <div class="micro-control-panel">
+                    <div class="micro-play-controls">
+                        <button class="micro-btn" onclick="prevMicroStage()">⏮️ 上一階段</button>
+                        <button id="btn-micro-autoplay" class="micro-btn" onclick="toggleMicroAutoPlay()">⏯️ 慢動作自動播放</button>
+                        <button class="micro-btn" onclick="nextMicroStage()">下一階段 ⏭️</button>
+                    </div>
+                    <div>
+                        <span id="micro-stage-num" style="font-size:0.85rem; color:#94a3b8; margin-right:0.75rem;">Stage 0 / 6</span>
+                        <button class="micro-btn" onclick="triggerMicroInstantToggle()" style="background:#0284c7; border-color:#38bdf8;">⚡ 模擬 5V 即時吸合/釋放</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+           🌉 SECTION 3: 邏輯連貫橋樑
+           ========================================================================== -->
+        <section id="bridge-section">
+            <h2><span class="icon">🌉</span> 3. 章節邏輯連貫性橋樑：從微觀物理演變到巨觀電路測量 (Logic Continuity Bridge)</h2>
+            <p>
+                從<strong>微觀單管物理（Section 2）</strong>到<strong>巨觀雙通道電路與示波器測量（Section 4）</strong>，並非兩個獨立割裂的概念，而是同一套電磁與接觸力學物理法則在<strong>不同時間尺規與不同觀測維度</strong>下的完美映射：
+            </p>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:20%;">微觀物理階段 (Section 2)</th>
+                            <th style="width:25%;">微觀時間與物理特徵</th>
+                            <th style="width:30%;">巨觀儀表與示波器波形響應 (Section 4)</th>
+                            <th style="width:25%;">雙通道實驗室中對應觀察焦點</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Stage 0: 待機開路</strong></td>
+                            <td>$t < 0\text{ ms}$, 初始間隙 $0.8\text{ mm}$</td>
+                            <td>$V_{\text{coil}} = 0\text{V}$, $V_{\text{contact}} = 0\text{V}$, $I_{\text{load}} = 0\text{ mA}$</td>
+                            <td>負載指示燈熄滅，狀態標籤顯示 <code>OFF</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Stage 1: 線圈激磁</strong></td>
+                            <td>$0 \sim 0.2\text{ ms}$, 電流指數上升 $i(t)$</td>
+                            <td>示波器黃色線 $V_{\text{coil}}$ 驟升至 $5\text{V}$，安匝數上升</td>
+                            <td>線圈磁通動畫 $\Phi$ 開始點亮，磁滯點右移</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Stage 2: 簧片極化</strong></td>
+                            <td>$0.2 \sim 0.4\text{ ms}$, 磁極感應 $M = \chi H$</td>
+                            <td>$AT$ 持續上升，但尚未達到 Pull-in 門檻 ($20\text{ AT}$)</td>
+                            <td>簧片兩端顯示 N / S 極性標籤，間隙微動</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Stage 3: 克服彈力</strong></td>
+                            <td>$0.4 \sim 0.7\text{ ms}$, 突跳點 (Snap Action)</td>
+                            <td>磁吸力 $F_m > F_k$，簧片急遽向中心彎曲加速</td>
+                            <td>間隙值從 $0.8\text{ mm}$ 劇烈縮減至 $< 0.1\text{ mm}$</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Stage 4: 碰撞彈跳</strong></td>
+                            <td>$0.7 \sim 1.0\text{ ms}$, 接點撞擊彈跳</td>
+                            <td>示波器藍色線 $V_{\text{contact}}$ 出現 $2\sim 3$ 次微秒級突波毛邊</td>
+                            <td>接點處觸發電弧火花動畫，音效發出金屬敲擊聲</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Stage 5: 完全導通</strong></td>
+                            <td>$t > 1.0\text{ ms}$, 接觸電阻 $< 50\text{ m}\Omega$</td>
+                            <td>$V_{\text{contact}}$ 穩定在最高電位，迴路電流額定流通</td>
+                            <td>通道 1 的 24V LED 滿功率恆亮，磁滯圖處於右上飽和點</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Stage 6: 斷電退磁</strong></td>
+                            <td>電源切斷瞬間, $0.1 \sim 0.5\text{ ms}$</td>
+                            <td>$V_{\text{coil}} \to 0\text{V}$，低於 Drop-out ($9\text{ AT}$) 瞬間彈開</td>
+                            <td>磁滯圖經由左下路徑復位，負載即刻斷電</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+           🎮 SECTION 4: 2路 (雙通道) 磁簧繼電器動態模擬實驗室
+           ========================================================================== -->
+        <section id="sim-section">
+            <h2><span class="icon">🎮</span> 4. 2路磁簧繼電器動態模擬實驗室 (2-Channel Reed Relay Interactive Lab)</h2>
+            <p>
+                下方為雙通道 (Channel 1 & Channel 2) 獨立磁簧繼電器內部結構與電氣響應即時模擬。您可以透過開關或調節線圈驅動電壓，直觀觀察電磁線圈磁化、磁力線分佈、簧片物理位移、接觸彈跳 (Contact Bounce) 以及負載導通狀態：
+            </p>
+
+            <div class="sim-container">
+                <div class="sim-topbar">
+                    <div class="sim-title">
+                        <span>⚡ 雙通道電磁與機械動態模擬器</span>
+                    </div>
+                    <div class="sim-controls-global">
+                        <button id="mode-manual" class="sim-mode-btn active" onclick="setMode('manual')">手動獨立控制</button>
+                        <button id="mode-interlock" class="sim-mode-btn" onclick="setMode('interlock')">雙路互鎖輪替 (自動)</button>
+                        <button id="btn-sound" class="sim-mode-btn" onclick="toggleSound()">🔊 機械音效: 開</button>
+                    </div>
+                </div>
+
+                <div class="dual-channel-grid">
+                    <!-- 通道 1 -->
+                    <div class="ch-box" id="box-ch1">
+                        <div class="ch-header">
+                            <div style="display:flex; align-items:center; gap:0.5rem;">
+                                <span class="ch-badge ch1-badge">CH 1</span>
+                                <strong style="color:#60a5fa;">24V / 20mA 功率指示負載</strong>
+                            </div>
+                            <span class="ch-status-pill status-off" id="status-ch1">● 斷開 (OFF)</span>
+                        </div>
+
+                        <div class="relay-visual" id="visual-ch1">
+                            <svg width="100%" height="100%" viewBox="0 0 380 180">
+                                <defs>
+                                    <linearGradient id="ch1CoilGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.8"/>
+                                        <stop offset="100%" stop-color="#0f172a" stop-opacity="0.9"/>
+                                    </linearGradient>
+                                    <linearGradient id="ch1FluxGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.1"/>
+                                        <stop offset="50%" stop-color="#60a5fa" stop-opacity="0.8"/>
+                                        <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.1"/>
+                                    </linearGradient>
+                                </defs>
+                                <rect x="25" y="25" width="330" height="130" rx="10" fill="#0c1322" stroke="#334155" stroke-width="1.5"/>
+                                <rect x="30" y="30" width="320" height="20" rx="4" fill="url(#ch1CoilGrad)" stroke="#3b82f6" stroke-width="1"/>
+                                <rect x="30" y="130" width="320" height="20" rx="4" fill="url(#ch1CoilGrad)" stroke="#3b82f6" stroke-width="1"/>
+                                
+                                <g id="flux-lines-ch1" opacity="0">
+                                    <path d="M 50 90 C 120 50, 260 50, 330 90" fill="none" stroke="url(#ch1FluxGrad)" stroke-width="2" stroke-dasharray="6,4">
+                                        <animate attributeName="stroke-dashoffset" from="50" to="0" dur="1s" repeatCount="indefinite"/>
+                                    </path>
+                                    <path d="M 50 90 C 120 130, 260 130, 330 90" fill="none" stroke="url(#ch1FluxGrad)" stroke-width="2" stroke-dasharray="6,4">
+                                        <animate attributeName="stroke-dashoffset" from="50" to="0" dur="1s" repeatCount="indefinite"/>
+                                    </path>
+                                </g>
+
+                                <rect x="45" y="60" width="290" height="60" rx="12" fill="rgba(15, 23, 42, 0.6)" stroke="#38bdf8" stroke-width="1.2" stroke-opacity="0.4"/>
+                                <path id="blade-path-a-ch1" d="M 30 90 L 80 90 L 195 85" fill="none" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+                                <circle id="contact-dot-a-ch1" cx="192" cy="85" r="3.5" fill="#facc15"/>
+                                <text id="pole-n-ch1" x="175" y="80" fill="#ef4444" font-size="10" font-weight="bold" opacity="0">N</text>
+
+                                <path id="blade-path-b-ch1" d="M 350 90 L 300 90 L 185 97" fill="none" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+                                <circle id="contact-dot-ch1" cx="188" cy="97" r="3.5" fill="#facc15"/>
+                                <text id="pole-s-ch1" x="198" y="109" fill="#3b82f6" font-size="10" font-weight="bold" opacity="0">S</text>
+                                
+                                <circle id="spark-ch1" cx="190" cy="91" r="9" fill="#facc15" opacity="0"/>
+                            </svg>
+                        </div>
+
+                        <div class="ch-telemetry">
+                            <div class="tele-card">
+                                <div class="tele-label">驅動電壓 (V)</div>
+                                <div class="tele-val" id="val-vcoil-ch1">0.0 V</div>
+                            </div>
+                            <div class="tele-card">
+                                <div class="tele-label">安匝數 (AT)</div>
+                                <div class="tele-val" id="val-at-ch1">0.0 AT</div>
+                            </div>
+                            <div class="tele-card">
+                                <div class="tele-label">接點間隙 (mm)</div>
+                                <div class="tele-val" id="val-gap-ch1">0.80 mm</div>
+                            </div>
+                            <div class="tele-card">
+                                <div class="tele-label">磁吸力 (mN)</div>
+                                <div class="tele-val" id="val-fm-ch1">0.0 mN</div>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <div class="slider-row">
+                                <span>線圈電壓調節:</span>
+                                <strong id="label-slider-v1">0.0V</strong>
+                            </div>
+                            <input type="range" id="slider-v-ch1" min="0" max="12" step="0.1" value="0" oninput="onVoltageChange(1, this.value)">
+                            
+                            <button class="switch-toggle-btn btn-toggle-ch1" id="btn-toggle-1" onclick="toggleChannel(1)">
+                                🔌 通道 1 激磁開關 (OFF)
+                            </button>
+                        </div>
+
+                        <div class="load-circuit-box">
+                            <div>
+                                <strong style="color:#cbd5e1;">負載端狀態:</strong>
+                                <span id="load-text-ch1" style="color:#94a3b8; margin-left:0.4rem;">迴路開路中 (0.00 mA)</span>
+                            </div>
+                            <div class="load-indicator" id="led-indicator-1"></div>
+                        </div>
+                    </div>
+
+                    <!-- 通道 2 -->
+                    <div class="ch-box" id="box-ch2">
+                        <div class="ch-header">
+                            <div style="display:flex; align-items:center; gap:0.5rem;">
+                                <span class="ch-badge ch2-badge">CH 2</span>
+                                <strong style="color:#34d399;">高靈敏音訊/感測微弱訊號負載</strong>
+                            </div>
+                            <span class="ch-status-pill status-off" id="status-ch2">● 斷開 (OFF)</span>
+                        </div>
+
+                        <div class="relay-visual" id="visual-ch2">
+                            <svg width="100%" height="100%" viewBox="0 0 380 180">
+                                <defs>
+                                    <linearGradient id="ch2CoilGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" stop-color="#047857" stop-opacity="0.8"/>
+                                        <stop offset="100%" stop-color="#0f172a" stop-opacity="0.9"/>
+                                    </linearGradient>
+                                    <linearGradient id="ch2FluxGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stop-color="#10b981" stop-opacity="0.1"/>
+                                        <stop offset="50%" stop-color="#34d399" stop-opacity="0.8"/>
+                                        <stop offset="100%" stop-color="#10b981" stop-opacity="0.1"/>
+                                    </linearGradient>
+                                </defs>
+                                <rect x="25" y="25" width="330" height="130" rx="10" fill="#0c1322" stroke="#334155" stroke-width="1.5"/>
+                                <rect x="30" y="30" width="320" height="20" rx="4" fill="url(#ch2CoilGrad)" stroke="#10b981" stroke-width="1"/>
+                                <rect x="30" y="130" width="320" height="20" rx="4" fill="url(#ch2CoilGrad)" stroke="#10b981" stroke-width="1"/>
+                                
+                                <g id="flux-lines-ch2" opacity="0">
+                                    <path d="M 50 90 C 120 50, 260 50, 330 90" fill="none" stroke="url(#ch2FluxGrad)" stroke-width="2" stroke-dasharray="6,4">
+                                        <animate attributeName="stroke-dashoffset" from="50" to="0" dur="1s" repeatCount="indefinite"/>
+                                    </path>
+                                    <path d="M 50 90 C 120 130, 260 130, 330 90" fill="none" stroke="url(#ch2FluxGrad)" stroke-width="2" stroke-dasharray="6,4">
+                                        <animate attributeName="stroke-dashoffset" from="50" to="0" dur="1s" repeatCount="indefinite"/>
+                                    </path>
+                                </g>
+
+                                <rect x="45" y="60" width="290" height="60" rx="12" fill="rgba(15, 23, 42, 0.6)" stroke="#34d399" stroke-width="1.2" stroke-opacity="0.4"/>
+                                <path id="blade-path-a-ch2" d="M 30 90 L 80 90 L 195 85" fill="none" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+                                <circle id="contact-dot-a-ch2" cx="192" cy="85" r="3.5" fill="#38bdf8"/>
+                                <text id="pole-n-ch2" x="175" y="80" fill="#ef4444" font-size="10" font-weight="bold" opacity="0">N</text>
+
+                                <path id="blade-path-b-ch2" d="M 350 90 L 300 90 L 185 97" fill="none" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+                                <circle id="contact-dot-ch2" cx="188" cy="97" r="3.5" fill="#38bdf8"/>
+                                <text id="pole-s-ch2" x="198" y="109" fill="#3b82f6" font-size="10" font-weight="bold" opacity="0">S</text>
+                                
+                                <circle id="spark-ch2" cx="190" cy="91" r="9" fill="#38bdf8" opacity="0"/>
+                            </svg>
+                        </div>
+
+                        <div class="ch-telemetry">
+                            <div class="tele-card">
+                                <div class="tele-label">驅動電壓 (V)</div>
+                                <div class="tele-val" id="val-vcoil-ch2">0.0 V</div>
+                            </div>
+                            <div class="tele-card">
+                                <div class="tele-label">安匝數 (AT)</div>
+                                <div class="tele-val" id="val-at-ch2">0.0 AT</div>
+                            </div>
+                            <div class="tele-card">
+                                <div class="tele-label">接點間隙 (mm)</div>
+                                <div class="tele-val" id="val-gap-ch2">0.80 mm</div>
+                            </div>
+                            <div class="tele-card">
+                                <div class="tele-label">磁吸力 (mN)</div>
+                                <div class="tele-val" id="val-fm-ch2">0.0 mN</div>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <div class="slider-row">
+                                <span>線圈電壓調節:</span>
+                                <strong id="label-slider-v2">0.0V</strong>
+                            </div>
+                            <input type="range" id="slider-v-ch2" min="0" max="12" step="0.1" value="0" oninput="onVoltageChange(2, this.value)">
+                            
+                            <button class="switch-toggle-btn btn-toggle-ch2" id="btn-toggle-2" onclick="toggleChannel(2)">
+                                🔌 通道 2 激磁開關 (OFF)
+                            </button>
+                        </div>
+
+                        <div class="load-circuit-box">
+                            <div>
+                                <strong style="color:#cbd5e1;">訊號通道狀態:</strong>
+                                <span id="load-text-ch2" style="color:#94a3b8; margin-left:0.4rem;">訊號隔離斷開中 (高阻抗 10¹² Ω)</span>
+                            </div>
+                            <div class="load-indicator" id="led-indicator-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 示波器與磁滯曲線圖表區 -->
+                <div class="analytics-grid">
+                    <div class="graph-card">
+                        <div class="graph-title">
+                            <span>📈 即時示波器視圖 (CH1 電壓與彈跳接觸波形)</span>
+                            <span style="font-size:0.75rem; color:#60a5fa;">Timebase: 0.2ms/div</span>
+                        </div>
+                        <canvas id="scopeCanvas" width="450" height="160"></canvas>
+                    </div>
+
+                    <div class="graph-card">
+                        <div class="graph-title">
+                            <span>🔄 磁滯曲線特性 (Hysteresis Loop: AT vs 導通狀態)</span>
+                            <span style="font-size:0.75rem; color:#34d399;">Pull-in: 20AT | Drop-out: 9AT</span>
+                        </div>
+                        <canvas id="hysteresisCanvas" width="450" height="160"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+           💡 SECTION 5: 雙通道模擬動畫深度解讀指南
+           ========================================================================== -->
+        <section id="sim-guide-section">
+            <h2><span class="icon">💡</span> 5. 雙通道模擬動畫深度解構與觀察指南 (2-Channel Simulation Breakdown)</h2>
+            <p>
+                2 路磁簧繼電器動態模擬器整合了多層次的電磁學、微機電物理運動與即時儀表響應。在進行互動測試時，推薦重點觀察以下 6 大物理現象與工程指標：
+            </p>
+
+            <div class="guide-grid">
+                <div class="guide-card">
+                    <h4>🌀 1. 激磁安匝數 (AT) 與磁力線密度動態</h4>
+                    <p style="font-size:0.9rem;">
+                        調節電壓滑桿時，線圈電流按歐姆定律 $I = V / R_{\text{coil}}$ 變化。安匝數 $AT = N \times I$ 是驅動磁化的根本力量。在 SVG 動畫中，藍/綠色磁力線的<strong>發光不透明度 (Opacity)</strong> 與<strong>流動速度</strong>會隨 $AT$ 線性增強，視覺化呈現玻璃管內部空間磁通密度 $B$ 的增長過程。
+                    </p>
+                </div>
+
+                <div class="guide-card">
+                    <h4>📐 2. 非線性突跳位移 (Snap Action)</h4>
+                    <p style="font-size:0.9rem;">
+                        緩慢拖動電壓滑桿（如 0V 升至 3.5V），會發現接點間隙僅緩慢微幅縮小；然而一旦達到 <strong>Pull-in 臨界門檻 (4.0V / 20 AT)</strong>，磁吸力 $F_m \propto 1/x^2$ 的非線性陡增徹底壓倒彈簧線性恢復力 $F_k \propto x$，簧片瞬間以<strong>微秒級速度吸合 (Snap Action)</strong>，接點間隙自 $0.25\text{ mm}$ 驟降為 $0\text{ mm}$！
+                    </p>
+                </div>
+
+                <div class="guide-card">
+                    <h4>⚡ 3. 示波器視圖：微秒級接觸彈跳 (Contact Bounce)</h4>
+                    <p style="font-size:0.9rem;">
+                        點擊開關導通通道 1 時，觀察下方示波器畫布的<strong>藍色負載電壓波形 ($V_{\text{contact}}$)</strong>：在躍升至 24V 的瞬間，會出現 $2\sim 3$ 次微小毛邊震盪（持續約 $100\sim 200\ \mu\text{s}$）。這精確再現了簧片高速撞擊時金屬彈性碰撞的接觸彈跳現象。
+                    </p>
+                </div>
+
+                <div class="guide-card">
+                    <h4>🔄 4. 磁滯曲線 (Hysteresis Loop) 動態軌跡追蹤</h4>
+                    <p style="font-size:0.9rem;">
+                        觀察右側磁滯曲線畫布上的<strong>即時藍色動態指示點</strong>：
+                        <br>• <strong>升壓過程</strong>：指示點沿著下方 OFF 基準線向右移動，直到穿越 $20\text{ AT}$ (Pull-in) 垂直躍升至 ON 頂部。
+                        <br>• <strong>降壓過程</strong>：指示點在頂部向左折返，穿越 $20\text{ AT}$ 時<strong>依然保持導通</strong>，直到降至 $9\text{ AT}$ (Drop-out) 才會向下跳回 OFF！
+                    </p>
+                </div>
+
+                <div class="guide-card">
+                    <h4>🛡️ 5. 雙通道防磁串擾屏蔽 (Magnetic Shielding)</h4>
+                    <p style="font-size:0.9rem;">
+                        在雙通道獨立模式下，將通道 1 電壓開至最大 (12V / 48 AT)，通道 2 依然能保持穩定的 OFF 狀態。這是因為模組內部各通道均包裹了<strong>高導磁率坡莫合金磁屏蔽罩 (Permalloy Shield)</strong>，將絕大部分漏磁通束縛在各自通道內，避免相鄰線圈相互誤觸發。
+                    </p>
+                </div>
+
+                <div class="guide-card">
+                    <h4>💡 6. 雙通道負載差異化表現</h4>
+                    <p style="font-size:0.9rem;">
+                        • <strong>通道 1 (功率控制)</strong>：導通時右下方黃色高亮 LED 劇烈發光，模擬 $24\text{V} / 20\text{mA}$ 指示燈負載。
+                        <br>• <strong>通道 2 (微弱類比訊號)</strong>：導通時藍色精密儀表指示燈點亮，接觸電阻降至 $45\text{ m}\Omega$，展現磁簧繼電器在精密量測與音訊無損切換中的超低接觸熱電勢優勢。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+           🔬 SECTION 6: 磁簧繼電器核心概念與工作原理
+           ========================================================================== -->
+        <section id="theory-section">
+            <h2><span class="icon">🔬</span> 6. 磁簧繼電器核心概念與工作原理 (Core Concepts)</h2>
+            
+            <h3>6.1 什麼是磁簧開關與磁簧繼電器？</h3>
+            <p>
+                <strong>磁簧開關 (Reed Switch)</strong> 是由 W. B. Ellwood 於 1936 年在貝爾實驗室發明的純被動磁控機械開關。將磁簧開關置於電磁線圈 (Coil) 中心，利用線圈通電產生的電磁場控制接點閉合與斷開，即構成了<strong>磁簧繼電器 (Reed Relay)</strong>。
+            </p>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <span>🧪 內部微觀結構材料科學</span>
+                    </div>
+                    <ul>
+                        <li><strong>簧片基體</strong>：採用 <strong>52 鐵鎳合金 (Permalloy 52: 52% Ni, 48% Fe)</strong>，兼具高導磁率（極易被磁化）與優異的彈簧機械剛性。</li>
+                        <li><strong>接點鍍層</strong>：在簧片重疊接觸區真空電鍍 <strong>銠 (Rhodium, Rh)</strong>、<strong>釕 (Ruthenium, Ru)</strong> 或 <strong>金 (Gold, Au)</strong>，提供極高的抗電弧燒蝕硬度與低至 $30\sim 50\text{ m}\Omega$ 的接觸電阻。</li>
+                        <li><strong>密封環境</strong>：管內充填 <strong>高純度乾燥氮氣 (97% N₂) 與氦氣 (3% He)</strong> 或抽至高真空 ($10^{-5}\text{ Torr}$)，徹底隔絕外部氧氣、濕氣、硫化物對接點的氧化侵蝕。</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span>⚡ 電氣與切換優勢特徵</span>
+                    </div>
+                    <ul>
+                        <li><strong>極致切換速度</strong>：簧片質量極輕（數毫克），動作時間僅需 <strong>$0.2 \sim 1.0\text{ ms}$</strong>，比傳統電磁繼電器 (EMR, $5\sim 15\text{ ms}$) 快 10~50 倍。</li>
+                        <li><strong>超長機械壽命</strong>：在低電平訊號 (Cold Switching) 下壽命可達 <strong>$10^8 \sim 10^9$ 次 (十億次)</strong>。</li>
+                        <li><strong>極致絕緣與低漏電</strong>：斷開時接點間絕緣阻抗高達 <strong>$> 10^{12}\ \Omega\ (1\text{ T}\Omega)$</strong>，漏電流 $< 1\text{ pA}$，寄生電容 $< 0.5\text{ pF}$。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+           📐 SECTION 7: 電磁吸合與安匝數 (AT) 數學模型
+           ========================================================================== -->
+        <section id="math-section">
+            <h2><span class="icon">📐</span> 7. 電磁吸合與安匝數 (AT) 數學模型 (Mathematical Model)</h2>
+            <p>
+                磁簧繼電器的吸合與釋放由<strong>電磁吸力 (Magnetic Pull Force)</strong> 與<strong>簧片懸臂梁機械恢復力 (Mechanical Restoring Force)</strong> 之間的動態力平衡決定：
+            </p>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header" style="color:#0284c7;">
+                        <span>🧲 1. 電磁吸力模型 (Maxwell Magnetic Force)</span>
+                    </div>
+                    <p style="font-size:0.9rem;">
+                        根據馬克士威應力張量，接點間隙處由磁場產生的垂直吸力 $F_m$ 為：
+                    </p>
+                    <p style="text-align:center; font-weight:bold; color:#0369a1;">
+                        $$F_m = \frac{\Phi^2}{2\mu_0 A} = \frac{B^2 A}{2\mu_0} = \frac{\mu_0 A (N I)^2}{2 (2 x + l_m / \mu_r)^2} \propto \frac{(N I)^2}{x^2}$$
+                    </p>
+                    <p style="font-size:0.85rem; color:#64748b;">
+                        其中 $\Phi$ 為穿過接點的磁通量，$A$ 為接點重疊截面積，$NI$ 為安匝數，$x$ 為接點當時間隙。<strong>吸力與間隙平方成反比</strong>，這導致了強烈的正回授加速吸合特性。
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" style="color:#6366f1;">
+                        <span>📏 2. 懸臂梁機械彈簧恢復力</span>
+                    </div>
+                    <p style="font-size:0.9rem;">
+                        簧片可視為一端固定、一端受力的彈性懸臂梁，其恢復力 $F_k$ 與位移 $\Delta x$ 呈線性關係（虎克定律）：
+                    </p>
+                    <p style="text-align:center; font-weight:bold; color:#4f46e5;">
+                        $$F_k = k \cdot \Delta x = \left( \frac{E \cdot w \cdot t^3}{4 L^3} \right) \cdot (x_0 - x)$$
+                    </p>
+                    <p style="font-size:0.85rem; color:#64748b;">
+                        其中 $E$ 為材料楊氏模數（Permalloy $\approx 150\text{ GPa}$），$w, t, L$ 分別為簧片寬度、厚度與長度，$x_0$ 為初始靜態間隙 ($0.8\text{ mm}$)。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+           🔌 SECTION 8: 2路硬體驅動電路與保護設計
+           ========================================================================== -->
+        <section id="circuit-section">
+            <h2><span class="icon">🔌</span> 8. 2路硬體驅動電路與微控制器實作 (Circuit & Firmware)</h2>
+            <p>
+                微控制器 (如 Arduino, ESP32, STM32) 的 GPIO 輸出電流一般為 $5\sim 20\text{ mA}$，且電磁線圈在切斷瞬間會產生數十伏特至上百伏特的反向感應電動勢 ($V = -L \frac{di}{dt}$)。因此，模組必須配置專用的<strong>開關電晶體與續流二極體 (Flyback Diode)</strong>：
+            </p>
+
+            <pre><code>// ==============================================================================
+// ⚡ 2路磁簧繼電器 (2-Channel Reed Relay) Arduino / ESP32 雙通道控制範例
+// ==============================================================================
+const int REED_CH1_PIN = 4;   // 控制通道 1 (GPIO 4 -> Q1 NPN Base / Gate)
+const int REED_CH2_PIN = 5;   // 控制通道 2 (GPIO 5 -> Q2 NPN Base / Gate)
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(REED_CH1_PIN, OUTPUT);
+  pinMode(REED_CH2_PIN, OUTPUT);
+  
+  digitalWrite(REED_CH1_PIN, LOW);
+  digitalWrite(REED_CH2_PIN, LOW);
+  Serial.println("2-Channel Reed Relay Module Initialized.");
+}
+
+void loop() {
+  // 模式 1: 通道 1 導通 (24V 負載工作)，通道 2 隔離
+  Serial.println("[CH1 ON] Activating Channel 1 (Power Load)...");
+  digitalWrite(REED_CH1_PIN, HIGH);
+  digitalWrite(REED_CH2_PIN, LOW);
+  delay(1000);
+
+  // 模式 2: 通道 2 導通 (微弱音訊訊號切換)，通道 1 斷開
+  Serial.println("[CH2 ON] Activating Channel 2 (Sensor Signal)...");
+  digitalWrite(REED_CH1_PIN, LOW);
+  digitalWrite(REED_CH2_PIN, HIGH);
+  delay(1000);
+}</code></pre>
+        </section>
+
+        <!-- ==========================================================================
+           📊 SECTION 9: 繼電器三劍客深度對比
+           ========================================================================== -->
+        <section id="compare-section">
+            <h2><span class="icon">📊</span> 9. 繼電器三劍客 (Reed Relay vs EMR vs SSR) 設計架構與工作原理深度對比</h2>
+            <p>
+                在現代電子工程中，<strong>磁簧繼電器 (Reed Relay)</strong>、<strong>傳統電磁繼電器 (EMR, Electromechanical Relay)</strong> 與<strong>固態繼電器 (SSR, Solid-State Relay)</strong> 各自具備截然不同的物理設計與適用場景：
+            </p>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>評比維度 / 指標</th>
+                            <th style="color:#0284c7; width:28%;">🧲 磁簧繼電器 (Reed Relay)</th>
+                            <th style="color:#f59e0b; width:28%;">⚙️ 傳統電磁繼電器 (EMR)</th>
+                            <th style="color:#10b981; width:28%;">💡 固態繼電器 (SSR)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>核心切換機制</strong></td>
+                            <td>真空玻殼內<strong>軟磁金屬簧片自感應吸合</strong></td>
+                            <td>外部線圈吸引<strong>活動銜鐵帶動機械接點桿</strong></td>
+                            <td><strong>光電耦合 (Optocoupler)</strong> 驅動半導體 (MOSFET/Triac)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>切換動作時間</strong></td>
+                            <td><strong>極快 ($0.2 \sim 1.0\text{ ms}$)</strong></td>
+                            <td>較慢 ($5 \sim 15\text{ ms}$)</td>
+                            <td><strong>最快 ($10\ \mu\text{s} \sim 1\text{ ms}$)</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>接點導通電阻 ($R_{\text{on}}$)</strong></td>
+                            <td><strong>極低且純歐姆性 ($30 \sim 100\text{ m}\Omega$)</strong></td>
+                            <td>極低 ($20 \sim 50\text{ m}\Omega$)</td>
+                            <td>較高 ($0.5 \sim 5\ \Omega$ 或 $0.7\sim 1.6\text{V}$ 導通壓降)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>斷開漏電流 ($I_{\text{leak}}$)</strong></td>
+                            <td><strong>極微弱 ($< 1\text{ pA} = 10^{-12}\text{ A}$)</strong></td>
+                            <td>極微弱 ($< 10\text{ pA}$)</td>
+                            <td><strong>明顯 ($1\ \mu\text{A} \sim 5\text{ mA}$)</strong> (含 RC 漏電)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>切換壽命 (次數)</strong></td>
+                            <td><strong>$10^8 \sim 10^9$ 次 (十億次)</strong></td>
+                            <td>$10^5 \sim 10^6$ 次 (易電弧燒蝕)</td>
+                            <td><strong>理論無限次 (無機械磨損)</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>寄生電容與高頻特性</strong></td>
+                            <td><strong>極小 ($0.2 \sim 0.8\text{ pF}$)，支援數 GHz</strong></td>
+                            <td>較大 ($1.5 \sim 5\text{ pF}$)，高頻串擾嚴重</td>
+                            <td>較大 ($20 \sim 100\text{ pF}$)，高頻隔離差</td>
+                        </tr>
+                        <tr>
+                            <td><strong>最佳應用場景</strong></td>
+                            <td>ATE 自動化測試、半導體測試、高階音訊矩陣切換、微弱感測訊號切換</td>
+                            <td>大功率工業馬達、冷氣壓縮機、大電流家電 (10A~40A) 總電源通斷</td>
+                            <td>高頻繁 PWM 溫控 (加熱棒)、固態照明調光、無火花防爆環境</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+           📝 SECTION 10: 提示詞歷史與變更記錄
+           ========================================================================== -->
+        <section id="prompt-archive">
+            <h2><span class="icon">📝</span> 10. 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+            <p>本文件遵循跨 Agent 協同規範，所有歷史提示詞與架構迭代均採累加式增補記錄：</p>
+
+            <div class="card" style="background:#f8fafc; border-left:4px solid #0284c7; margin-bottom:1rem;">
+                <h3 style="margin-top:0; color:#0369a1;">🔹 [2026-09-15 13:58:00] [Gemini 3.7 Flash] 建立紀錄</h3>
+                <ul>
+                    <li><strong>模型/Agent:</strong> Gemini 3.7 Flash / Antigravity</li>
+                    <li><strong>Prompt 原文:</strong>
+                        <pre style="background:#0f172a; color:#7dd3fc; padding:0.8rem; margin:0.5rem 0;"><code>設計一個磁簧繼電器的動態模擬 (2路) 網頁，並藉說原理</code></pre>
+                    </li>
+                    <li><strong>變更摘要:</strong> 建立 2 路磁簧繼電器全方位原理筆記與獨立互動模擬網頁。</li>
+                </ul>
+            </div>
+
+            <div class="card" style="background:#f8fafc; border-left:4px solid #10b981; margin-bottom:1rem;">
+                <h3 style="margin-top:0; color:#047857;">🔹 [2026-09-15 14:08:00] [Gemini 3.7 Flash] 變更紀錄</h3>
+                <ul>
+                    <li><strong>模型/Agent:</strong> Gemini 3.7 Flash / Antigravity</li>
+                    <li><strong>Prompt 原文:</strong>
+                        <pre style="background:#0f172a; color:#6ee7b7; padding:0.8rem; margin:0.5rem 0;"><code>在2路磁簧繼電器動態模擬實驗室 之先以動態模擬介紹當relay控制端導通後，內部發生的接點變化與模擬磁簧開關</code></pre>
+                    </li>
+                    <li><strong>變更摘要:</strong> 新增「微觀接點物理動態剖析」專屬互動動態模擬區塊與 7 大物理階段演變。</li>
+                </ul>
+            </div>
+
+            <div class="card" style="background:#f8fafc; border-left:4px solid #f59e0b; margin-bottom:1rem;">
+                <h3 style="margin-top:0; color:#b45309;">🔹 [2026-09-15 14:10:00] [Gemini 3.7 Flash] 變更紀錄</h3>
+                <ul>
+                    <li><strong>模型/Agent:</strong> Gemini 3.7 Flash / Antigravity</li>
+                    <li><strong>Prompt 原文:</strong>
+                        <pre style="background:#0f172a; color:#fde68a; padding:0.8rem; margin:0.5rem 0;"><code>下方為雙通道 (Channel 1 & Channel 2) 獨立磁簧繼電器內部結構與電氣響應即時模擬。您可以透過開關或調節線圈驅動電壓，直觀觀察電磁線圈磁化、磁力線分佈、簧片物理位移、接觸彈跳 (Contact Bounce) 以及負載導通狀態 這部分的模擬動畫就為複雜需要更詳細的解說</code></pre>
+                    </li>
+                    <li><strong>變更摘要:</strong> 深度擴充 2 路雙通道模擬器的圖文解讀指南與 6 大觀察焦點。</li>
+                </ul>
+            </div>
+
+            <div class="card" style="background:#f8fafc; border-left:4px solid #8b5cf6; margin-bottom:1rem;">
+                <h3 style="margin-top:0; color:#6d28d9;">🔹 [2026-09-15 14:12:00] [Gemini 3.7 Flash] 變更紀錄</h3>
+                <ul>
+                    <li><strong>模型/Agent:</strong> Gemini 3.7 Flash / Antigravity</li>
+                    <li><strong>Prompt 原文:</strong>
+                        <pre style="background:#0f172a; color:#c4b5fd; padding:0.8rem; margin:0.5rem 0;"><code>1 與 2.2的通道是否有連貫的邏輯</code></pre>
+                    </li>
+                    <li><strong>變更摘要:</strong> 新增「第 3 章 邏輯連貫橋樑：從微觀物理演變到巨觀電路測量」專題章節與對照矩陣。</li>
+                </ul>
+            </div>
+
+            <div class="card" style="background:#f8fafc; border-left:4px solid #ec4899; margin-bottom:1rem;">
+                <h3 style="margin-top:0; color:#be185d;">🔹 [2026-09-15 14:14:00] [Gemini 3.7 Flash] 變更紀錄</h3>
+                <ul>
+                    <li><strong>模型/Agent:</strong> Gemini 3.7 Flash / Antigravity</li>
+                    <li><strong>Prompt 原文:</strong>
+                        <pre style="background:#0f172a; color:#fbcfe8; padding:0.8rem; margin:0.5rem 0;"><code>磁簧繼電器 (Reed Relay) 傳統電磁繼電器 (EMR) 固態繼電器 (SSR) 增加這三個繼電器的設計與原理差異說明</code></pre>
+                    </li>
+                    <li><strong>變更摘要:</strong> 大幅升級「第 9 章 繼電器三劍客 (Reed vs EMR vs SSR) 設計與原理深度對比」。</li>
+                </ul>
+            </div>
+
+            <div class="card" style="background:#f8fafc; border-left:4px solid #06b6d4; margin-bottom:1rem;">
+                <h3 style="margin-top:0; color:#0e7490;">🔹 [2026-09-15 14:24:00] [Gemini 3.7 Flash] 變更紀錄</h3>
+                <ul>
+                    <li><strong>模型/Agent:</strong> Gemini 3.7 Flash / Antigravity</li>
+                    <li><strong>Prompt 原文:</strong>
+                        <pre style="background:#0f172a; color:#a5f3fc; padding:0.8rem; margin:0.5rem 0;"><code>應該 要設計出通電線圈產生磁場的動態展示</code></pre>
+                    </li>
+                    <li><strong>變更摘要:</strong> 
+                        新增「第 1 章 通電螺線管線圈電磁場生成與安培右手定則動態模擬器」，提供 3D 螺旋線圈、電流方向切換 (⨂/⊙)、動態磁力線與流動粒子、可自由拖曳的磁針/霍爾探針 (即時量測向量磁場 B(x,y) 與角度 θ)、導磁芯材料切換與安培右手定則手勢視覺化導引。
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- 頁尾 -->
+    <footer>
+        <p>© 2026 基礎電子電路與硬體實驗筆記 | 2-Channel Reed Relay Simulation | 檔案：<code>reed_relay_2ch_simulation.html</code></p>
+    </footer>
+
+    <!-- ==========================================================================
+       ⚡ 動態模擬器 JavaScript 核心邏輯
+       ========================================================================== -->
+    <script>
+        // ==============================================================================
+        // 🧲 1. 通電螺線管磁場模擬器 (Solenoid Magnetic Field Simulator)
+        // ==============================================================================
+        const solState = {
+            current: 2.5,       // 安培 (A)
+            turns: 20,          // 匝數 (N)
+            length: 0.12,       // 螺線管長度 (m)
+            radius: 0.035,      // 螺線管半徑 (m)
+            mu_r: 5000,         // 坡莫合金相對導磁率
+            showFlow: true,
+            showCompassGrid: false,
+            showHandRule: true,
+            probe: {
+                x: 620,         // Canvas 座標 (px)
+                y: 190,
+                isDragging: false
+            },
+            particles: []
+        };
+
+        // 初始化磁力線流動粒子
+        const NUM_PARTICLES = 120;
+        for (let i = 0; i < NUM_PARTICLES; i++) {
+            solState.particles.push({
+                loopIdx: Math.floor(Math.random() * 6),
+                progress: Math.random(),
+                speed: 0.003 + Math.random() * 0.005
+            });
+        }
+
+        const solCanvas = document.getElementById('solenoidCanvas');
+        const solCtx = solCanvas.getContext('2d');
+        const solWrap = document.getElementById('solenoidWrap');
+
+        // 計算空間任意點 (x, y) 的磁場強度與方向 (2D 偶極子 + 螺線管近似模型)
+        function calcMagneticField(px, py) {
+            const cx = solCanvas.width / 2;
+            const cy = solCanvas.height / 2;
+            const dx = (px - cx) * 0.0004; // 轉換為米
+            const dy = (py - cy) * 0.0004;
+
+            const I = solState.current;
+            const N = solState.turns;
+            const L = solState.length;
+            const R = solState.radius;
+            const mu0 = 4 * Math.PI * 1e-7;
+
+            // 中心基準磁場 B0
+            const B0 = mu0 * solState.mu_r * (N / L) * I;
+
+            if (Math.abs(I) < 0.001) {
+                return { Bx: 0, By: 0, Bmag: 0, angle: 0 };
+            }
+
+            // 兩端磁極位置 (x1, y0), (x2, y0)
+            const halfLenPx = 140;
+            const xN = (I > 0) ? (cx + halfLenPx) : (cx - halfLenPx);
+            const xS = (I > 0) ? (cx - halfLenPx) : (cx + halfLenPx);
+
+            // 磁單極子疊加計算 (N 極流出，S 極流入)
+            const rN_sq = Math.pow(px - xN, 2) + Math.pow(py - cy, 2) + 400;
+            const rS_sq = Math.pow(px - xS, 2) + Math.pow(py - cy, 2) + 400;
+
+            const rN = Math.sqrt(rN_sq);
+            const rS = Math.sqrt(rS_sq);
+
+            // 磁場向量 (微觀疊加)
+            let Bx = (px - xN) / Math.pow(rN, 3) - (px - xS) / Math.pow(rS, 3);
+            let By = (py - cy) / Math.pow(rN, 3) - (py - cy) / Math.pow(rS, 3);
+
+            // 如果在線圈內部 (軸心附近)，強化均勻軸向磁場
+            if (Math.abs(px - cx) < halfLenPx && Math.abs(py - cy) < 45) {
+                const internalBoost = (I > 0 ? 1 : -1) * (0.00008 * Math.abs(I));
+                Bx += internalBoost;
+                By *= 0.2; // 內部主要是平行軸向
+            }
+
+            const rawMag = Math.sqrt(Bx * Bx + By * By);
+            const angle = Math.atan2(By, Bx);
+
+            // 標定物理量 (mT)
+            const scaleFactor = Math.abs(B0) * 1200;
+            const Bmag_mT = rawMag * scaleFactor;
+
+            return { Bx, By, Bmag: Bmag_mT, angle };
+        }
+
+        function renderSolenoid() {
+            const w = solCanvas.width;
+            const h = solCanvas.height;
+            const cx = w / 2;
+            const cy = h / 2;
+            const I = solState.current;
+            const N = solState.turns;
+
+            solCtx.clearRect(0, 0, w, h);
+
+            // 1. 繪製背景微弱網格
+            solCtx.strokeStyle = '#111827';
+            solCtx.lineWidth = 1;
+            for (let x = 0; x < w; x += 40) {
+                solCtx.beginPath(); solCtx.moveTo(x, 0); solCtx.lineTo(x, h); solCtx.stroke();
+            }
+            for (let y = 0; y < h; y += 40) {
+                solCtx.beginPath(); solCtx.moveTo(0, y); solCtx.lineTo(w, y); solCtx.stroke();
+            }
+
+            // 2. 空間磁針網格 (若開啟)
+            if (solState.showCompassGrid && Math.abs(I) > 0.05) {
+                for (let gx = 60; gx < w; gx += 55) {
+                    for (let gy = 40; gy < h; gy += 50) {
+                        const field = calcMagneticField(gx, gy);
+                        const len = 14;
+                        const tipX = gx + Math.cos(field.angle) * len;
+                        const tipY = gy + Math.sin(field.angle) * len;
+                        const tailX = gx - Math.cos(field.angle) * len;
+                        const tailY = gy - Math.sin(field.angle) * len;
+
+                        // N極 (紅)
+                        solCtx.strokeStyle = '#ef4444';
+                        solCtx.lineWidth = 2;
+                        solCtx.beginPath(); solCtx.moveTo(gx, gy); solCtx.lineTo(tipX, tipY); solCtx.stroke();
+
+                        // S極 (藍)
+                        solCtx.strokeStyle = '#3b82f6';
+                        solCtx.lineWidth = 2;
+                        solCtx.beginPath(); solCtx.moveTo(gx, gy); solCtx.lineTo(tailX, tailY); solCtx.stroke();
+
+                        solCtx.fillStyle = '#f8fafc';
+                        solCtx.beginPath(); solCtx.arc(gx, gy, 2, 0, Math.PI * 2); solCtx.fill();
+                    }
+                }
+            }
+
+            // 3. 繪製閉合磁力線曲線
+            const halfLen = 140;
+            const loopRadii = [35, 65, 105, 155, 215, 280];
+            const isEnergized = Math.abs(I) > 0.05;
+
+            loopRadii.forEach((r, idx) => {
+                const opacity = isEnergized ? Math.min(0.85, 0.2 + (Math.abs(I) / 10) * 0.65 - idx * 0.08) : 0.08;
+                solCtx.strokeStyle = (I > 0) ? `rgba(56, 189, 248, ${opacity})` : `rgba(168, 85, 247, ${opacity})`;
+                solCtx.lineWidth = (idx === 0) ? 2.5 : 1.5;
+                solCtx.setLineDash(idx === 0 ? [] : [6, 4]);
+
+                // 上半環
+                solCtx.beginPath();
+                solCtx.ellipse(cx, cy, halfLen + r * 0.9, r, 0, 0, Math.PI * 2);
+                solCtx.stroke();
+            });
+            solCtx.setLineDash([]);
+
+            // 4. 動態流動粒子
+            if (solState.showFlow && isEnergized) {
+                solState.particles.forEach(p => {
+                    const r = loopRadii[p.loopIdx];
+                    p.progress += p.speed * (I > 0 ? 1 : -1) * (Math.abs(I) / 4);
+                    if (p.progress > 1) p.progress -= 1;
+                    if (p.progress < 0) p.progress += 1;
+
+                    const theta = p.progress * Math.PI * 2;
+                    const px = cx + (halfLen + r * 0.9) * Math.cos(theta);
+                    const py = cy + r * Math.sin(theta);
+
+                    solCtx.fillStyle = (I > 0) ? '#38bdf8' : '#c084fc';
+                    solCtx.shadowColor = (I > 0) ? '#0284c7' : '#9333ea';
+                    solCtx.shadowBlur = 8;
+                    solCtx.beginPath();
+                    solCtx.arc(px, py, 2.5, 0, Math.PI * 2);
+                    solCtx.fill();
+                    solCtx.shadowBlur = 0;
+                });
+            }
+
+            // 5. 繪製導磁芯 (Core Material)
+            const coreColor = (solState.mu_r === 1) ? 'rgba(30, 41, 59, 0.4)' :
+                              (solState.mu_r === 600) ? 'rgba(71, 85, 105, 0.8)' : 'rgba(148, 163, 184, 0.85)';
+            solCtx.fillStyle = coreColor;
+            solCtx.strokeStyle = '#64748b';
+            solCtx.lineWidth = 1.5;
+            solCtx.fillRect(cx - halfLen + 10, cy - 20, (halfLen - 10) * 2, 40);
+            solCtx.strokeRect(cx - halfLen + 10, cy - 20, (halfLen - 10) * 2, 40);
+
+            solCtx.font = '11px system-ui, sans-serif';
+            solCtx.fillStyle = '#f8fafc';
+            solCtx.textAlign = 'center';
+            const coreName = (solState.mu_r === 1) ? '空氣芯 (Air Core)' :
+                             (solState.mu_r === 600) ? '鐵氧體芯 (Ferrite Core)' : '坡莫合金簧片芯 (Permalloy Core)';
+            solCtx.fillText(coreName, cx, cy + 4);
+
+            // 6. 繪製 3D 螺旋線圈 (Helical Coil Loops)
+            const coilCount = Math.min(24, Math.max(8, N));
+            const step = (halfLen * 2 - 20) / coilCount;
+            const coilRadius = 38;
+
+            for (let i = 0; i <= coilCount; i++) {
+                const x = cx - halfLen + 10 + i * step;
+
+                // 線圈頂部截面圈
+                solCtx.fillStyle = '#f59e0b';
+                solCtx.strokeStyle = '#78350f';
+                solCtx.lineWidth = 1.5;
+                solCtx.beginPath();
+                solCtx.arc(x, cy - coilRadius, 7, 0, Math.PI * 2);
+                solCtx.fill();
+                solCtx.stroke();
+
+                // 頂部電流方向標記 (⨂ 或 ⊙)
+                solCtx.fillStyle = '#000000';
+                solCtx.font = 'bold 9px monospace';
+                solCtx.textAlign = 'center';
+                solCtx.textBaseline = 'middle';
+                const topSymbol = (I >= 0) ? '⨂' : '⊙';
+                solCtx.fillText(topSymbol, x, cy - coilRadius);
+
+                // 線圈正面傾斜銅線 (斜線連接)
+                if (i < coilCount) {
+                    solCtx.strokeStyle = '#d97706';
+                    solCtx.lineWidth = 3.5;
+                    solCtx.beginPath();
+                    solCtx.moveTo(x, cy - coilRadius);
+                    solCtx.lineTo(x + step, cy + coilRadius);
+                    solCtx.stroke();
+                }
+
+                // 線圈底部截面圈
+                solCtx.fillStyle = '#f59e0b';
+                solCtx.beginPath();
+                solCtx.arc(x, cy + coilRadius, 7, 0, Math.PI * 2);
+                solCtx.fill();
+                solCtx.stroke();
+
+                // 底部電流方向標記 (⊙ 或 ⨂)
+                solCtx.fillStyle = '#000000';
+                const botSymbol = (I >= 0) ? '⊙' : '⨂';
+                solCtx.fillText(botSymbol, x, cy + coilRadius);
+            }
+
+            // 7. 螺線管兩端磁極標籤 (N 極 / S 極)
+            if (isEnergized) {
+                const poleN_x = (I > 0) ? (cx + halfLen + 28) : (cx - halfLen - 28);
+                const poleS_x = (I > 0) ? (cx - halfLen - 28) : (cx + halfLen + 28);
+
+                // N 極標記 (紅)
+                solCtx.fillStyle = '#ef4444';
+                solCtx.shadowColor = '#ef4444';
+                solCtx.shadowBlur = 15;
+                solCtx.beginPath(); solCtx.arc(poleN_x, cy, 18, 0, Math.PI * 2); solCtx.fill();
+                solCtx.fillStyle = '#ffffff';
+                solCtx.font = 'bold 15px system-ui';
+                solCtx.fillText('N', poleN_x, cy);
+
+                // S 極標記 (藍)
+                solCtx.fillStyle = '#3b82f6';
+                solCtx.shadowColor = '#3b82f6';
+                solCtx.shadowBlur = 15;
+                solCtx.beginPath(); solCtx.arc(poleS_x, cy, 18, 0, Math.PI * 2); solCtx.fill();
+                solCtx.fillStyle = '#ffffff';
+                solCtx.fillText('S', poleS_x, cy);
+                solCtx.shadowBlur = 0;
+            }
+
+            // 8. 安培右手定則手勢視覺化導引 (若開啟)
+            if (solState.showHandRule && isEnergized) {
+                const thumbDir = (I > 0) ? 1 : -1;
+                const handX = cx;
+                const handY = cy - 95;
+
+                solCtx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+                solCtx.strokeStyle = '#6366f1';
+                solCtx.lineWidth = 1.5;
+                solCtx.roundRect(handX - 140, handY - 24, 280, 48, 8);
+                solCtx.fill();
+                solCtx.stroke();
+
+                solCtx.fillStyle = '#f8fafc';
+                solCtx.font = '12px system-ui, sans-serif';
+                solCtx.textAlign = 'center';
+                const ruleText = (I > 0) ? 
+                    '✋ 四指順著電流方向彎曲 (頂部⨂進入) ➔ 大拇指指向右方 (N 極)' :
+                    '✋ 四指順著電流方向彎曲 (頂部⊙流出) ➔ 大拇指指向左方 (N 極)';
+                solCtx.fillText(ruleText, handX, handY + 5);
+            }
+
+            // 9. 繪製霍爾 / 磁針探棒 (Draggable Probe)
+            const probe = solState.probe;
+            const pField = calcMagneticField(probe.x, probe.y);
+
+            // 探針外環
+            solCtx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+            solCtx.strokeStyle = '#38bdf8';
+            solCtx.lineWidth = 2.5;
+            solCtx.shadowColor = '#0284c7';
+            solCtx.shadowBlur = 12;
+            solCtx.beginPath();
+            solCtx.arc(probe.x, probe.y, 22, 0, Math.PI * 2);
+            solCtx.fill();
+            solCtx.stroke();
+            solCtx.shadowBlur = 0;
+
+            // 探針旋轉指針 (紅 N / 藍 S)
+            const pAngle = pField.angle;
+            const needleLen = 17;
+            const nx = probe.x + Math.cos(pAngle) * needleLen;
+            const ny = probe.y + Math.sin(pAngle) * needleLen;
+            const sx = probe.x - Math.cos(pAngle) * needleLen;
+            const sy = probe.y - Math.sin(pAngle) * needleLen;
+
+            // N 端 (指向磁場方向)
+            solCtx.strokeStyle = '#ef4444';
+            solCtx.lineWidth = 4;
+            solCtx.beginPath();
+            solCtx.moveTo(probe.x, probe.y);
+            solCtx.lineTo(nx, ny);
+            solCtx.stroke();
+
+            // S 端
+            solCtx.strokeStyle = '#3b82f6';
+            solCtx.lineWidth = 4;
+            solCtx.beginPath();
+            solCtx.moveTo(probe.x, probe.y);
+            solCtx.lineTo(sx, sy);
+            solCtx.stroke();
+
+            // 中心軸承
+            solCtx.fillStyle = '#f8fafc';
+            solCtx.beginPath();
+            solCtx.arc(probe.x, probe.y, 4, 0, Math.PI * 2);
+            solCtx.fill();
+
+            // 更新 HUD 數據
+            document.getElementById('hud-pos').textContent = `${Math.round(probe.x)}, ${Math.round(probe.y)}`;
+            document.getElementById('hud-bval').textContent = `${pField.Bmag.toFixed(2)} mT`;
+            document.getElementById('hud-gauss').textContent = `${(pField.Bmag * 10).toFixed(1)} G`;
+            document.getElementById('hud-theta').textContent = `${(pAngle * 180 / Math.PI).toFixed(1)}°`;
+            document.getElementById('hud-pole').textContent = (I === 0) ? '無磁場' : (I > 0 ? '指向右方 N 極' : '指向左方 N 極');
+        }
+
+        // 滑鼠與觸控拖曳探針邏輯
+        function updateProbePos(e) {
+            const rect = solCanvas.getBoundingClientRect();
+            const scaleX = solCanvas.width / rect.width;
+            const scaleY = solCanvas.height / rect.height;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            solState.probe.x = Math.max(30, Math.min(solCanvas.width - 30, (clientX - rect.left) * scaleX));
+            solState.probe.y = Math.max(30, Math.min(solCanvas.height - 30, (clientY - rect.top) * scaleY));
+        }
+
+        solWrap.addEventListener('mousedown', (e) => {
+            solState.probe.isDragging = true;
+            updateProbePos(e);
+        });
+        window.addEventListener('mousemove', (e) => {
+            if (solState.probe.isDragging) updateProbePos(e);
+        });
+        window.addEventListener('mouseup', () => {
+            solState.probe.isDragging = false;
+        });
+
+        solWrap.addEventListener('touchstart', (e) => {
+            solState.probe.isDragging = true;
+            updateProbePos(e);
+        }, { passive: true });
+        window.addEventListener('touchmove', (e) => {
+            if (solState.probe.isDragging) updateProbePos(e);
+        }, { passive: true });
+        window.addEventListener('touchend', () => {
+            solState.probe.isDragging = false;
+        });
+
+        // 遙測數據與滑桿更新
+        function updateSolenoidTelemetry() {
+            const I = solState.current;
+            const N = solState.turns;
+            const L = solState.length;
+            const mu0 = 4 * Math.PI * 1e-7;
+            const AT = N * Math.abs(I);
+            const B0 = mu0 * solState.mu_r * (N / L) * Math.abs(I) * 1000; // mT
+            const area = Math.PI * Math.pow(solState.radius, 2);
+            const Linductance = (mu0 * solState.mu_r * Math.pow(N, 2) * area) / L; // H
+            const Em = 0.5 * Linductance * Math.pow(I, 2) * 1000; // mJ
+
+            document.getElementById('tele-sol-i').textContent = `${I >= 0 ? '+' : ''}${I.toFixed(2)} A`;
+            document.getElementById('tele-sol-n').textContent = `${N} 匝`;
+            document.getElementById('tele-sol-at').textContent = `${AT.toFixed(1)} A·t`;
+            document.getElementById('tele-sol-b0').textContent = `${B0.toFixed(2)} mT`;
+            document.getElementById('tele-sol-energy').textContent = `${Em.toFixed(2)} mJ`;
+
+            document.getElementById('label-sol-i').textContent = `${I >= 0 ? '+' : ''}${I.toFixed(1)} A`;
+            document.getElementById('slider-sol-i').value = I;
+            document.getElementById('label-sol-n').textContent = `${N} 匝`;
+        }
+
+        function onSolenoidCurrentChange(val) {
+            solState.current = parseFloat(val);
+            updateSolenoidTelemetry();
+        }
+
+        function setSolenoidCurrent(val) {
+            solState.current = val;
+            updateSolenoidTelemetry();
+        }
+
+        function reverseSolenoidCurrent() {
+            solState.current = -solState.current;
+            updateSolenoidTelemetry();
+        }
+
+        function onSolenoidTurnsChange(val) {
+            solState.turns = parseInt(val);
+            updateSolenoidTelemetry();
+        }
+
+        function onSolenoidCoreChange(val) {
+            solState.mu_r = parseFloat(val);
+            updateSolenoidTelemetry();
+        }
+
+        function toggleSolenoidOption(opt) {
+            if (opt === 'flow') {
+                solState.showFlow = !solState.showFlow;
+                document.getElementById('btn-toggle-flow').className = solState.showFlow ? 'solenoid-toggle-btn active' : 'solenoid-toggle-btn';
+            } else if (opt === 'compassGrid') {
+                solState.showCompassGrid = !solState.showCompassGrid;
+                document.getElementById('btn-toggle-compass-grid').className = solState.showCompassGrid ? 'solenoid-toggle-btn active' : 'solenoid-toggle-btn';
+            } else if (opt === 'handRule') {
+                solState.showHandRule = !solState.showHandRule;
+                document.getElementById('btn-toggle-hand-rule').className = solState.showHandRule ? 'solenoid-toggle-btn active' : 'solenoid-toggle-btn';
+            }
+        }
+
+        // ==============================================================================
+        // 🔍 2. 微觀特寫模擬器狀態與資料
+        // ==============================================================================
+        const microStages = [
+            {
+                num: 0,
+                name: "Stage 0: 待機開路狀態",
+                time: "時間: t < 0 ms",
+                title: "Stage 0: 待機開路狀態 (Standby / De-energized)",
+                desc: "控制端尚未輸入電壓 ($V_{\\\\text{coil}} = 0\\\\text{V}$)，線圈內部無電流、無磁場。兩簧片依靠自身懸臂梁金屬彈簧剛性分開，兩端接點保持 0.8 mm 初始間隙，斷開絕緣阻抗高達 $10^{12}\\\\ \\\\Omega$。",
+                formula: "物理狀態：$I = 0\\\\text{ A},\\\\ B = 0\\\\text{ T},\\\\ F_m = 0\\\\text{ N},\\\\ R_{\\\\text{iso}} > 10^{12}\\\\ \\\\Omega$",
+                fluxOpacity: 0, poleN: 0, poleS: 0, bladeAY: 116, bladeBY: 138, gap: 0.80, spark: false, currentBeam: false
+            },
+            {
+                num: 1,
+                name: "Stage 1: 線圈激磁",
+                time: "時間: 0 ~ 0.2 ms",
+                title: "Stage 1: 線圈激磁與磁場建立 (Current Inrush & Field Rise)",
+                desc: "控制端輸入 +5V 電壓，線圈電流受電感限制按指數曲線上升：$i(t) = \\\\frac{V}{R}(1 - e^{-t/\\\\tau})$。螺線管軸心開始快速建立軸向磁通 $\\\\Phi$，磁力線穿透玻璃管。",
+                formula: "電磁公式：$B(t) = \\\\mu_0 \\\\mu_r n \\\\cdot i(t),\\\\ MMF = N \\\\cdot I\\\\ (\\\\text{安匝數 AT 開始上升})$",
+                fluxOpacity: 0.35, poleN: 0.2, poleS: 0.2, bladeAY: 116, bladeBY: 138, gap: 0.80, spark: false, currentBeam: false
+            },
+            {
+                num: 2,
+                name: "Stage 2: 簧片極化",
+                time: "時間: 0.2 ~ 0.4 ms",
+                title: "Stage 2: 鐵鎳金屬簧片磁化 (Blade Magnetic Polarization)",
+                desc: "磁力線集中通過高導磁率的鐵鎳合金（Permalloy）簧片，簧片被深度磁化。左端簧片自由端感應出強烈的 N 極，右端簧片自由端感應出強烈的 S 極，形成異名磁極相吸結構。",
+                formula: "磁化模型：兩簧片重疊端部感應磁極 $M = \\\\chi_m H$，端部形成強烈局部磁場梯度",
+                fluxOpacity: 0.75, poleN: 1, poleS: 1, bladeAY: 117, bladeBY: 136, gap: 0.70, spark: false, currentBeam: false
+            },
+            {
+                num: 3,
+                name: "Stage 3: 克服彈力",
+                time: "時間: 0.4 ~ 0.7 ms",
+                title: "Stage 3: 磁吸引力克服彈簧恢復力 (Magnetic Force Overcomes Spring)",
+                desc: "當線圈電流上升至吸合門檻 (Pull-in AT) 時，磁吸引力 $F_m \\\\propto \\\\frac{(NI)^2}{x^2}$ 超過懸臂梁彈簧恢復力 $F_k = k \\\\cdot \\\\Delta x$。兩片金屬簧片發生明顯彈性彎曲，加速向中心相互吸引！",
+                formula: "力平衡臨界點：$F_m = \\\\frac{B^2 A}{2\\\\mu_0} > F_k(x) = \\\\frac{3EI}{L^3}\\\\Delta x \\\\implies \\\\text{加速閉合}$",
+                fluxOpacity: 0.95, poleN: 1, poleS: 1, bladeAY: 121, bladeBY: 129, gap: 0.25, spark: false, currentBeam: false
+            },
+            {
+                num: 4,
+                name: "Stage 4: 碰撞彈跳",
+                time: "時間: 0.7 ~ 1.0 ms",
+                title: "Stage 4: 接點碰撞吸合與微秒級彈跳 (Contact Snap & Bounce)",
+                desc: "兩片鍍金/鍍銠接點以高速度猛烈撞擊！因金屬固有的機械彈性，接點在閉合瞬間會產生 1~3 次、持續約 $50 \\\\sim 200\\\\ \\\\mu\\\\text{s}$ 的微小彈跳 (Contact Bounce)，伴隨微小接觸火花。",
+                formula: "碰撞動態：彈跳時間 $t_{\\\\text{bounce}} \\\\approx 0.1\\\\sim 0.3\\\\text{ ms}$，接觸電阻在此微秒區間劇烈抖動",
+                fluxOpacity: 1, poleN: 1, poleS: 1, bladeAY: 123, bladeBY: 127, gap: 0.08, spark: true, currentBeam: false
+            },
+            {
+                num: 5,
+                name: "Stage 5: 完全導通",
+                time: "時間: > 1.0 ms",
+                title: "Stage 5: 接點緊密閉合與電路完全導通 (Full Steady Conduction)",
+                desc: "接點彈跳結束，在持續強大磁吸力作用下緊密貼合。鍍金/銠表面接觸電阻降至 $< 50\\\\text{ m}\\\\Omega$。負載電路完全導通，電流順暢流過，訊號無損傳輸！",
+                formula: "穩態導通：接觸電阻 $R_{\\\\text{contact}} < 50\\\\text{ m}\\\\Omega$，熱電勢 $< 1\\\\ \\\\mu\\\\text{V}$，負載全功率工作",
+                fluxOpacity: 1, poleN: 1, poleS: 1, bladeAY: 125, bladeBY: 125, gap: 0.00, spark: false, currentBeam: true
+            },
+            {
+                num: 6,
+                name: "Stage 6: 斷電退磁復位",
+                time: "時間: 切斷電源瞬間",
+                title: "Stage 6: 控制端關閉，退磁與彈簧彈開復位 (De-energize & Spring Release)",
+                desc: "控制端信號切為 0V，線圈反向感應電動勢經續流二極體洩放，磁場歸零。低矯頑磁力的簧片迅速退磁，磁吸力消失，簧片靠自身彈簧恢復力在 $0.2\\\\text{ ms}$ 內瞬間彈開，切斷負載電路！",
+                formula: "釋放過程：$F_m \\\\to 0,\\\\ F_k \\\\text{ 驅動簧片彈回原位},\\\\ t_{\\\\text{release}} \\\\approx 0.1 \\\\sim 0.5\\\\text{ ms}$",
+                fluxOpacity: 0, poleN: 0, poleS: 0, bladeAY: 116, bladeBY: 138, gap: 0.80, spark: false, currentBeam: false
+            }
+        ];
+
+        let currentMicroStage = 0;
+        let microAutoPlayInterval = null;
+
+        function setMicroStage(idx) {
+            currentMicroStage = idx;
+            const data = microStages[idx];
+
+            const navBtns = document.getElementById('microStageNav').querySelectorAll('.stage-btn');
+            navBtns.forEach((btn, i) => {
+                btn.className = (i === idx) ? 'stage-btn active' : 'stage-btn';
+            });
+
+            document.getElementById('micro-stage-num').textContent = `Stage ${idx} / 6`;
+            document.getElementById('micro-desc-title').textContent = data.title;
+            document.getElementById('micro-desc-time').textContent = data.time;
+            document.getElementById('micro-desc-text').innerHTML = data.desc;
+            document.getElementById('micro-desc-formula').innerHTML = data.formula;
+
+            if (window.renderMathInElement) {
+                renderMathInElement(document.querySelector('.micro-desc-box'), {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ],
+                    throwOnError: false
+                });
+            }
+
+            document.getElementById('micro-flux-group').style.opacity = data.fluxOpacity.toString();
+            document.getElementById('micro-pole-n').style.opacity = data.poleN.toString();
+            document.getElementById('micro-pole-s').style.opacity = data.poleS.toString();
+
+            const pathA = document.getElementById('micro-path-a');
+            const padA = document.getElementById('micro-pad-a');
+            const pathB = document.getElementById('micro-path-b');
+            const padB = document.getElementById('micro-pad-b');
+
+            pathA.setAttribute('d', `M 30 125 L 140 125 L 395 ${data.bladeAY}`);
+            padA.setAttribute('y', (data.bladeAY - 4).toString());
+
+            pathB.setAttribute('d', `M 730 125 L 620 125 L 365 ${data.bladeBY}`);
+            padB.setAttribute('y', (data.bladeBY - 4).toString());
+
+            const gapLine = document.getElementById('gap-line');
+            const gapText = document.getElementById('gap-text');
+            if (data.gap > 0) {
+                gapLine.style.opacity = '1';
+                gapLine.setAttribute('y1', data.bladeAY.toString());
+                gapLine.setAttribute('y2', data.bladeBY.toString());
+                gapText.textContent = `Gap: ${data.gap.toFixed(2)} mm`;
+                gapText.setAttribute('y', ((data.bladeAY + data.bladeBY) / 2 + 4).toString());
+            } else {
+                gapLine.style.opacity = '0';
+                gapText.textContent = 'Closed (0.00 mm)';
+                gapText.setAttribute('y', '125');
+            }
+
+            const spark = document.getElementById('micro-spark');
+            spark.style.opacity = data.spark ? '1' : '0';
+            if (data.spark) {
+                playRelayClick(true);
+            }
+
+            const beam = document.getElementById('micro-current-beam');
+            beam.style.opacity = data.currentBeam ? '1' : '0';
+
+            if (idx === 6) {
+                playRelayClick(false);
+            }
+        }
+
+        function prevMicroStage() {
+            const nextIdx = (currentMicroStage - 1 + microStages.length) % microStages.length;
+            setMicroStage(nextIdx);
+        }
+
+        function nextMicroStage() {
+            const nextIdx = (currentMicroStage + 1) % microStages.length;
+            setMicroStage(nextIdx);
+        }
+
+        function toggleMicroAutoPlay() {
+            const btn = document.getElementById('btn-micro-autoplay');
+            if (microAutoPlayInterval) {
+                clearInterval(microAutoPlayInterval);
+                microAutoPlayInterval = null;
+                btn.className = 'micro-btn';
+                btn.textContent = '⏯️ 慢動作自動播放';
+            } else {
+                btn.className = 'micro-btn play-active';
+                btn.textContent = '⏸️ 暫停播放';
+                microAutoPlayInterval = setInterval(() => {
+                    nextMicroStage();
+                }, 1800);
+            }
+        }
+
+        function triggerMicroInstantToggle() {
+            if (currentMicroStage === 5) {
+                setMicroStage(6);
+                setTimeout(() => setMicroStage(0), 400);
+            } else {
+                setMicroStage(1);
+                setTimeout(() => setMicroStage(3), 150);
+                setTimeout(() => setMicroStage(4), 300);
+                setTimeout(() => setMicroStage(5), 450);
+            }
+        }
+
+        // ==============================================================================
+        // 🎮 3. 雙通道 2-Channel 繼電器實驗室狀態與邏輯
+        // ==============================================================================
+        const state = {
+            soundEnabled: true,
+            mode: 'manual',
+            interlockInterval: null,
+            interlockStep: 0,
+            ch1: {
+                vCoil: 0,
+                rCoil: 500,
+                nTurns: 2000,
+                pullInAT: 20,
+                dropOutAT: 9,
+                isClosed: false,
+                gap: 0.8,
+                currentmA: 0,
+                at: 0,
+                fm: 0
+            },
+            ch2: {
+                vCoil: 0,
+                rCoil: 500,
+                nTurns: 2000,
+                pullInAT: 20,
+                dropOutAT: 9,
+                isClosed: false,
+                gap: 0.8,
+                currentmA: 0,
+                at: 0,
+                fm: 0
+            }
+        };
+
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) audioCtx = new AudioContextClass();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playRelayClick(isClosing) {
+            if (!state.soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+                
+                const now = ctx.currentTime;
+                const bufferSize = ctx.sampleRate * 0.015;
+                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
+                }
+
+                const noise = ctx.createBufferSource();
+                noise.buffer = buffer;
+
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(isClosing ? 3800 : 2600, now);
+                filter.Q.setValueAtTime(4.0, now);
+
+                const gain = ctx.createGain();
+                gain.gain.setValueAtTime(isClosing ? 0.35 : 0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
+
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(ctx.destination);
+
+                noise.start(now);
+            } catch (e) {
+                console.warn("音效播放失敗:", e);
+            }
+        }
+
+        function toggleSound() {
+            state.soundEnabled = !state.soundEnabled;
+            document.getElementById('btn-sound').textContent = state.soundEnabled ? '🔊 機械音效: 開' : '🔇 機械音效: 關';
+        }
+
+        const scopeHistory = {
+            vCoil1: new Array(120).fill(0),
+            vContact1: new Array(120).fill(0),
+            bounceTimer1: 0
+        };
+
+        function updateChannel(chNum, targetV) {
+            const ch = (chNum === 1) ? state.ch1 : state.ch2;
+            ch.vCoil = Math.max(0, Math.min(12, targetV));
+            
+            ch.currentmA = (ch.vCoil / ch.rCoil) * 1000;
+            ch.at = (ch.currentmA / 1000) * ch.nTurns;
+
+            const wasClosed = ch.isClosed;
+
+            if (!ch.isClosed) {
+                ch.fm = (0.05 * Math.pow(ch.at, 2)) / Math.max(0.01, Math.pow(ch.gap, 2));
+
+                if (ch.at >= ch.pullInAT) {
+                    ch.isClosed = true;
+                    ch.gap = 0.0;
+                    ch.fm = 28.5;
+                    if (!wasClosed) {
+                        playRelayClick(true);
+                        triggerSpark(chNum);
+                        if (chNum === 1) scopeHistory.bounceTimer1 = 8;
+                    }
+                } else {
+                    const ratio = ch.at / ch.pullInAT;
+                    ch.gap = Math.max(0.05, 0.8 * (1 - 0.7 * Math.pow(ratio, 2)));
+                }
+            } else {
+                ch.fm = (0.05 * Math.pow(ch.at, 2)) / 0.01;
+
+                if (ch.at < ch.dropOutAT) {
+                    ch.isClosed = false;
+                    ch.gap = 0.8;
+                    ch.fm = 0.0;
+                    if (wasClosed) {
+                        playRelayClick(false);
+                    }
+                } else {
+                    ch.gap = 0.0;
+                }
+            }
+
+            renderChannelUI(chNum);
+        }
+
+        function triggerSpark(chNum) {
+            const spark = document.getElementById(`spark-ch${chNum}`);
+            if (spark) {
+                spark.style.opacity = '1';
+                setTimeout(() => { spark.style.opacity = '0'; }, 60);
+            }
+        }
+
+        function renderChannelUI(chNum) {
+            const ch = (chNum === 1) ? state.ch1 : state.ch2;
+            const prefix = chNum;
+
+            document.getElementById(`val-vcoil-ch${prefix}`).textContent = ch.vCoil.toFixed(1) + ' V';
+            document.getElementById(`val-at-ch${prefix}`).textContent = ch.at.toFixed(1) + ' AT';
+            document.getElementById(`val-gap-ch${prefix}`).textContent = ch.gap.toFixed(2) + ' mm';
+            document.getElementById(`val-fm-ch${prefix}`).textContent = ch.fm.toFixed(1) + ' mN';
+            document.getElementById(`label-slider-v${prefix}`).textContent = ch.vCoil.toFixed(1) + 'V';
+            document.getElementById(`slider-v-ch${prefix}`).value = ch.vCoil;
+
+            const box = document.getElementById(`box-ch${prefix}`);
+            const statusPill = document.getElementById(`status-ch${prefix}`);
+            const toggleBtn = document.getElementById(`btn-toggle-${prefix}`);
+            const ledInd = document.getElementById(`led-indicator-${prefix}`);
+            const loadText = document.getElementById(`load-text-ch${prefix}`);
+
+            if (ch.isClosed) {
+                box.className = `ch-box ch${prefix}-active`;
+                statusPill.className = `ch-status-pill status-on-ch${prefix}`;
+                statusPill.innerHTML = `● 吸合導通 (ON)`;
+                toggleBtn.className = `switch-toggle-btn btn-toggle-ch${prefix} active`;
+                toggleBtn.innerHTML = `⚡ 通道 ${prefix} 激磁中 (ON - ${ch.vCoil.toFixed(1)}V)`;
+                ledInd.className = `load-indicator ch${prefix}-on`;
+                if (chNum === 1) {
+                    loadText.textContent = `24V LED 正常點亮 (發光電流 20.0 mA)`;
+                } else {
+                    loadText.textContent = `精密訊號接通 (導通電阻 45 mΩ)`;
+                }
+            } else {
+                box.className = `ch-box`;
+                statusPill.className = `ch-status-pill status-off`;
+                statusPill.innerHTML = `● 斷開 (OFF)`;
+                toggleBtn.className = `switch-toggle-btn btn-toggle-ch${prefix}`;
+                toggleBtn.innerHTML = `🔌 通道 ${prefix} 激磁開關 (OFF)`;
+                ledInd.className = `load-indicator`;
+                if (chNum === 1) {
+                    loadText.textContent = `迴路開路中 (0.00 mA)`;
+                } else {
+                    loadText.textContent = `訊號隔離斷開中 (高阻抗 10¹² Ω)`;
+                }
+            }
+
+            const fluxOpacity = Math.min(1, ch.at / ch.pullInAT);
+            document.getElementById(`flux-lines-ch${prefix}`).style.opacity = (fluxOpacity * 0.9).toString();
+            document.getElementById(`pole-n-ch${prefix}`).style.opacity = fluxOpacity > 0.3 ? '1' : '0';
+            document.getElementById(`pole-s-ch${prefix}`).style.opacity = fluxOpacity > 0.3 ? '1' : '0';
+
+            const targetY = 91 + (ch.gap / 0.8) * 12;
+            const pathB = document.getElementById(`blade-path-b-ch${prefix}`);
+            const dotB = document.getElementById(`contact-dot-ch${prefix}`);
+            if (pathB && dotB) {
+                pathB.setAttribute('d', `M 350 95 L 300 95 L 190 ${targetY.toFixed(1)}`);
+                dotB.setAttribute('cy', (targetY + 1).toFixed(1));
+            }
+        }
+
+        function toggleChannel(chNum) {
+            const ch = (chNum === 1) ? state.ch1 : state.ch2;
+            const newV = (ch.vCoil > 0.5) ? 0 : 5.0;
+            updateChannel(chNum, newV);
+        }
+
+        function onVoltageChange(chNum, val) {
+            updateChannel(chNum, parseFloat(val));
+        }
+
+        function setMode(newMode) {
+            state.mode = newMode;
+            document.getElementById('mode-manual').className = (newMode === 'manual') ? 'sim-mode-btn active' : 'sim-mode-btn';
+            document.getElementById('mode-interlock').className = (newMode === 'interlock') ? 'sim-mode-btn active' : 'sim-mode-btn';
+
+            if (state.interlockInterval) {
+                clearInterval(state.interlockInterval);
+                state.interlockInterval = null;
+            }
+
+            if (newMode === 'interlock') {
+                state.interlockStep = 0;
+                state.interlockInterval = setInterval(() => {
+                    state.interlockStep = (state.interlockStep + 1) % 2;
+                    if (state.interlockStep === 0) {
+                        updateChannel(1, 5.0);
+                        updateChannel(2, 0.0);
+                    } else {
+                        updateChannel(1, 0.0);
+                        updateChannel(2, 5.0);
+                    }
+                }, 1000);
+            }
+        }
+
+        // 示波器與磁滯曲線 Canvas 繪圖
+        const scopeCanvas = document.getElementById('scopeCanvas');
+        const scopeCtx = scopeCanvas.getContext('2d');
+        const hysCanvas = document.getElementById('hysteresisCanvas');
+        const hysCtx = hysCanvas.getContext('2d');
+
+        function renderScope() {
+            scopeHistory.vCoil1.shift();
+            scopeHistory.vCoil1.push(state.ch1.vCoil);
+
+            scopeHistory.vContact1.shift();
+            let contactV = state.ch1.isClosed ? 24 : 0;
+            if (scopeHistory.bounceTimer1 > 0) {
+                scopeHistory.bounceTimer1--;
+                if (scopeHistory.bounceTimer1 % 2 === 1) contactV = 0;
+            }
+            scopeHistory.vContact1.push(contactV);
+
+            const w = scopeCanvas.width;
+            const h = scopeCanvas.height;
+            scopeCtx.fillStyle = '#050811';
+            scopeCtx.fillRect(0, 0, w, h);
+
+            scopeCtx.strokeStyle = '#1e293b';
+            scopeCtx.lineWidth = 1;
+            for (let x = 0; x < w; x += 40) {
+                scopeCtx.beginPath();
+                scopeCtx.moveTo(x, 0);
+                scopeCtx.lineTo(x, h);
+                scopeCtx.stroke();
+            }
+            for (let y = 0; y < h; y += 35) {
+                scopeCtx.beginPath();
+                scopeCtx.moveTo(0, y);
+                scopeCtx.lineTo(w, y);
+                scopeCtx.stroke();
+            }
+
+            scopeCtx.strokeStyle = '#facc15';
+            scopeCtx.lineWidth = 2;
+            scopeCtx.beginPath();
+            for (let i = 0; i < scopeHistory.vCoil1.length; i++) {
+                const x = (i / (scopeHistory.vCoil1.length - 1)) * w;
+                const y = h - 25 - (scopeHistory.vCoil1[i] / 12) * 45;
+                if (i === 0) scopeCtx.moveTo(x, y);
+                else scopeCtx.lineTo(x, y);
+            }
+            scopeCtx.stroke();
+
+            scopeCtx.strokeStyle = '#38bdf8';
+            scopeCtx.lineWidth = 2;
+            scopeCtx.beginPath();
+            for (let i = 0; i < scopeHistory.vContact1.length; i++) {
+                const x = (i / (scopeHistory.vContact1.length - 1)) * w;
+                const y = h - 20 - (scopeHistory.vContact1[i] / 24) * 90;
+                if (i === 0) scopeCtx.moveTo(x, y);
+                else scopeCtx.lineTo(x, y);
+            }
+            scopeCtx.stroke();
+
+            scopeCtx.font = '10px Consolas, monospace';
+            scopeCtx.fillStyle = '#facc15';
+            scopeCtx.fillText('― V_coil (0~12V)', 10, 18);
+            scopeCtx.fillStyle = '#38bdf8';
+            scopeCtx.fillText('― V_contact (0~24V)', 130, 18);
+        }
+
+        function renderHysteresis() {
+            const w = hysCanvas.width;
+            const h = hysCanvas.height;
+            hysCtx.fillStyle = '#050811';
+            hysCtx.fillRect(0, 0, w, h);
+
+            hysCtx.strokeStyle = '#334155';
+            hysCtx.lineWidth = 1;
+            hysCtx.beginPath();
+            hysCtx.moveTo(40, 20);
+            hysCtx.lineTo(40, h - 25);
+            hysCtx.lineTo(w - 20, h - 25);
+            hysCtx.stroke();
+
+            hysCtx.font = '9px system-ui, sans-serif';
+            hysCtx.fillStyle = '#64748b';
+            hysCtx.fillText('接點狀態 (ON/OFF)', 45, 18);
+            hysCtx.fillText('激磁安匝數 (AT) / 電壓 ➔', w - 125, h - 10);
+
+            const xDrop = 40 + (state.ch1.dropOutAT / 30) * (w - 70);
+            const xPull = 40 + (state.ch1.pullInAT / 30) * (w - 70);
+            const yOff = h - 30;
+            const yOn = 35;
+
+            hysCtx.strokeStyle = '#475569';
+            hysCtx.lineWidth = 1.5;
+            hysCtx.setLineDash([4, 4]);
+            hysCtx.beginPath();
+            hysCtx.moveTo(40, yOff);
+            hysCtx.lineTo(xPull, yOff);
+            hysCtx.lineTo(xPull, yOn);
+            hysCtx.lineTo(w - 30, yOn);
+            hysCtx.stroke();
+
+            hysCtx.beginPath();
+            hysCtx.moveTo(w - 30, yOn);
+            hysCtx.lineTo(xDrop, yOn);
+            hysCtx.lineTo(xDrop, yOff);
+            hysCtx.stroke();
+            hysCtx.setLineDash([]);
+
+            hysCtx.fillStyle = '#10b981';
+            hysCtx.fillText(`Drop-out (${state.ch1.dropOutAT}AT)`, xDrop - 25, h - 10);
+            hysCtx.fillStyle = '#ef4444';
+            hysCtx.fillText(`Pull-in (${state.ch1.pullInAT}AT)`, xPull - 20, h - 10);
+
+            const curX = Math.min(w - 30, 40 + (state.ch1.at / 30) * (w - 70));
+            const curY = state.ch1.isClosed ? yOn : yOff;
+
+            hysCtx.fillStyle = '#38bdf8';
+            hysCtx.beginPath();
+            hysCtx.arc(curX, curY, 6, 0, Math.PI * 2);
+            hysCtx.fill();
+            hysCtx.strokeStyle = '#ffffff';
+            hysCtx.lineWidth = 2;
+            hysCtx.stroke();
+        }
+
+        function animationLoop() {
+            renderSolenoid();
+            renderScope();
+            renderHysteresis();
+            requestAnimationFrame(animationLoop);
+        }
+
+        // 初始化
+        updateSolenoidTelemetry();
+        setMicroStage(0);
+        updateChannel(1, 0);
+        updateChannel(2, 0);
+        animationLoop();
+    </script>
+</body>
+</html>
