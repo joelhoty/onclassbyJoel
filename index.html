@@ -111,10 +111,13 @@
 
         .search-container {
             margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
         }
 
         .search-input {
-            width: 100%;
+            flex-grow: 1;
             padding: 0.85rem 1.25rem;
             font-size: 1rem;
             border: 2px solid var(--border-color);
@@ -296,10 +299,10 @@
     <header>
         <div class="header-content">
             <h1>📚 onclassbyJoel - 課程筆記與專題索引導覽</h1>
-            <p class="subtitle">彙整 AI、電子電路、樂高機器人、數學統計、廟宇人文與電腦視覺相關筆記與教學文件</p>
+            <p class="subtitle">彙整 AI、電子電路、樂高機器人、數學統計、廟宇人文、平面設計與電腦視覺相關筆記 (檔案依日期由新至舊排列)</p>
             
             <div class="metadata-box">
-                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-15 09:36:37 (UTC+8)</div>
+                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-15 11:25:16 (UTC+8)</div>
                 <div class="metadata-item"><strong>使用模型:</strong> Gemini 3.6 Flash</div>
                 <div class="metadata-item"><strong>執行 Agent:</strong> Antigravity Documentation Specialist</div>
                 <div class="metadata-item"><strong>GitHub Repo:</strong> <a href="https://github.com/joelhoty/onclassbyJoel" style="color:#38bdf8;" target="_blank">joelhoty/onclassbyJoel</a></div>
@@ -327,17 +330,38 @@
                 </div>
                 <ul class="file-list">
                     <li class="file-item">
-                        <a class="file-link" href="./AI/learning_plan_attention_first.html">Attention-First 學習計畫</a>
+                        <a class="file-link" href="./AI/Antigravity_cli_b06.html">Antigravity CLI b06 手冊 (HTML)</a>
                         <div class="file-meta">
-                            <span class="file-date">2026-09-01</span>
+                            <span class="file-date">2026-09-15</span>
                             <span class="tag tag-html">HTML</span>
                         </div>
                     </li>
                     <li class="file-item">
-                        <a class="file-link" href="./AI/research_proposal_b02.md">AI 研究提案計畫書 (b02)</a>
+                        <a class="file-link" href="./AI/Antigravity_cli_b06.md">Antigravity CLI b06 手冊 (MD)</a>
                         <div class="file-meta">
-                            <span class="file-date">2026-09-01</span>
+                            <span class="file-date">2026-09-15</span>
                             <span class="tag tag-md">MD</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./AI/ai_0910.html">AI 課程筆記 (09-10)</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-11</span>
+                            <span class="tag tag-html">HTML</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./AI/AI_0909.HTML">AI 課程筆記 (09-09)</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-09</span>
+                            <span class="tag tag-html">HTML</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./AI/ai_cnn.html">CNN 卷積神經網路解析</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-04</span>
+                            <span class="tag tag-html">HTML</span>
                         </div>
                     </li>
                     <li class="file-item">
@@ -369,111 +393,41 @@
                         </div>
                     </li>
                     <li class="file-item">
-                        <a class="file-link" href="./AI/ai_cnn.html">CNN 卷積神經網路解析</a>
-                        <div class="file-meta">
-                            <span class="file-date">2026-09-04</span>
-                            <span class="tag tag-html">HTML</span>
-                        </div>
-                    </li>
-                    <li class="file-item">
-                        <a class="file-link" href="./AI/AI_0909.HTML">AI 課程筆記 (09-09)</a>
-                        <div class="file-meta">
-                            <span class="file-date">2026-09-09</span>
-                            <span class="tag tag-html">HTML</span>
-                        </div>
-                    </li>
-                    <li class="file-item">
-                        <a class="file-link" href="./AI/ai_0910.html">AI 課程筆記 (09-10)</a>
-                        <div class="file-meta">
-                            <span class="file-date">2026-09-11</span>
-                            <span class="tag tag-html">HTML</span>
-                        </div>
-                    </li>
-                    <li class="file-item">
-                        <a class="file-link" href="./AI/Antigravity_cli_b06.html">Antigravity CLI b06 手冊 (HTML)</a>
-                        <div class="file-meta">
-                            <span class="file-date">2026-09-15</span>
-                            <span class="tag tag-html">HTML</span>
-                        </div>
-                    </li>
-                    <li class="file-item">
-                        <a class="file-link" href="./AI/Antigravity_cli_b06.md">Antigravity CLI b06 手冊 (MD)</a>
-                        <div class="file-meta">
-                            <span class="file-date">2026-09-15</span>
-                            <span class="tag tag-md">MD</span>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- 電子電路 分類 -->
-            <div class="card" data-category="ec">
-                <div class="card-header">
-                    <h2 class="card-title">⚡ 電子電路與硬體實驗</h2>
-                    <span class="badge-count">9 檔案</span>
-                </div>
-                <ul class="file-list">
-                    <li class="file-item">
-                        <a class="file-link" href="./ec/led.html">LED 限流電阻原理與實驗</a>
+                        <a class="file-link" href="./AI/learning_plan_attention_first.html">Attention-First 學習計畫</a>
                         <div class="file-meta">
                             <span class="file-date">2026-09-01</span>
                             <span class="tag tag-html">HTML</span>
                         </div>
                     </li>
                     <li class="file-item">
-                        <a class="file-link" href="./ec/ohm.html">歐姆定律計算與工具</a>
+                        <a class="file-link" href="./AI/research_proposal_b02.md">AI 研究提案計畫書 (b02)</a>
                         <div class="file-meta">
-                            <span class="file-date">2026-09-03</span>
+                            <span class="file-date">2026-09-01</span>
+                            <span class="tag tag-md">MD</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 平面設計與 CorelDRAW 分類 -->
+            <div class="card" data-category="design">
+                <div class="card-header">
+                    <h2 class="card-title">🎨 平面設計與 CorelDRAW</h2>
+                    <span class="badge-count">2 檔案</span>
+                </div>
+                <ul class="file-list">
+                    <li class="file-item">
+                        <a class="file-link" href="./design/coreldraw_keychain_design.html">CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-15</span>
                             <span class="tag tag-html">HTML</span>
                         </div>
                     </li>
                     <li class="file-item">
-                        <a class="file-link" href="./ec/ec_1.html">基礎電路實驗 1</a>
+                        <a class="file-link" href="./design/coreldraw_keychain_design.md">CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計 (MD)</a>
                         <div class="file-meta">
-                            <span class="file-date">2026-09-08</span>
-                            <span class="tag tag-html">HTML</span>
-                        </div>
-                    </li>
-                    <li class="file-item">
-                        <a class="file-link" href="./ec/20260908.jpg">電路實驗相片 1</a>
-                        <div class="file-meta">
-                            <span class="file-date">2026-09-08</span>
-                            <span class="tag tag-img">JPG</span>
-                        </div>
-                    </li>
-                    <li class="file-item">
-                        <a class="file-link" href="./ec/紅色%20LED%20限流電阻工程手冊與計算工具.pdf">紅色 LED 限流手冊</a>
-                        <div class="file-meta">
-                            <span class="file-date">2026-09-08</span>
-                            <span class="tag tag-pdf">PDF</span>
-                        </div>
-                    </li>
-                    <li class="file-item">
-                        <a class="file-link" href="./ec/S1_AI_Content_b06.pdf">S1 AI 電路內容講義</a>
-                        <div class="file-meta">
-                            <span class="file-date">2026-09-09</span>
-                            <span class="tag tag-pdf">PDF</span>
-                        </div>
-                    </li>
-                    <li class="file-item">
-                        <a class="file-link" href="./ec/ee_0910.html">電機電子實驗 (09-10)</a>
-                        <div class="file-meta">
-                            <span class="file-date">2026-09-10</span>
-                            <span class="tag tag-html">HTML</span>
-                        </div>
-                    </li>
-                    <li class="file-item">
-                        <a class="file-link" href="./ec/LED%20LaTeX%20EE-0910.pdf">LED LaTeX 技術手冊</a>
-                        <div class="file-meta">
-                            <span class="file-date">2026-09-10</span>
-                            <span class="tag tag-pdf">PDF</span>
-                        </div>
-                    </li>
-                    <li class="file-item">
-                        <a class="file-link" href="./ec/LED.jpg">LED 電路接線圖</a>
-                        <div class="file-meta">
-                            <span class="file-date">2026-09-10</span>
-                            <span class="tag tag-img">JPG</span>
+                            <span class="file-date">2026-09-15</span>
+                            <span class="tag tag-md">MD</span>
                         </div>
                     </li>
                 </ul>
@@ -486,34 +440,6 @@
                     <span class="badge-count">9 檔案</span>
                 </div>
                 <ul class="file-list">
-                    <li class="file-item">
-                        <a class="file-link" href="./ev3/lego_1.html">樂高基礎控制單元 1</a>
-                        <div class="file-meta">
-                            <span class="file-date">2026-08-31</span>
-                            <span class="tag tag-html">HTML</span>
-                        </div>
-                    </li>
-                    <li class="file-item">
-                        <a class="file-link" href="./ev3/lego_spike_line_follower.py">SPIKE 尋跡控制程式</a>
-                        <div class="file-meta">
-                            <span class="file-date">2026-08-31</span>
-                            <span class="tag tag-py">PY</span>
-                        </div>
-                    </li>
-                    <li class="file-item">
-                        <a class="file-link" href="./ev3/distance_audio_feedback_research.md">距離音訊回饋研究提案</a>
-                        <div class="file-meta">
-                            <span class="file-date">2026-09-07</span>
-                            <span class="tag tag-md">MD</span>
-                        </div>
-                    </li>
-                    <li class="file-item">
-                        <a class="file-link" href="./ev3/lego_0907.html">樂高專題紀錄 (09-07)</a>
-                        <div class="file-meta">
-                            <span class="file-date">2026-09-07</span>
-                            <span class="tag tag-html">HTML</span>
-                        </div>
-                    </li>
                     <li class="file-item">
                         <a class="file-link" href="./ev3/index.html">樂高機器人專題筆記首頁</a>
                         <div class="file-meta">
@@ -549,20 +475,104 @@
                             <span class="tag tag-img">JPG</span>
                         </div>
                     </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ev3/distance_audio_feedback_research.md">距離音訊回饋研究提案</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-07</span>
+                            <span class="tag tag-md">MD</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ev3/lego_0907.html">樂高專題紀錄 (09-07)</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-07</span>
+                            <span class="tag tag-html">HTML</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ev3/lego_1.html">樂高基礎控制單元 1</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-08-31</span>
+                            <span class="tag tag-html">HTML</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ev3/lego_spike_line_follower.py">SPIKE 尋跡控制程式</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-08-31</span>
+                            <span class="tag tag-py">PY</span>
+                        </div>
+                    </li>
                 </ul>
             </div>
 
-            <!-- 數學與統計 分類 -->
-            <div class="card" data-category="math">
+            <!-- 電子電路 分類 -->
+            <div class="card" data-category="ec">
                 <div class="card-header">
-                    <h2 class="card-title">📐 數學與機率統計</h2>
-                    <span class="badge-count">1 檔案</span>
+                    <h2 class="card-title">⚡ 電子電路與硬體實驗</h2>
+                    <span class="badge-count">9 檔案</span>
                 </div>
                 <ul class="file-list">
                     <li class="file-item">
-                        <a class="file-link" href="./math/math_01.html">數學與機率分布筆記 01</a>
+                        <a class="file-link" href="./ec/ee_0910.html">電機電子實驗 (09-10)</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-10</span>
+                            <span class="tag tag-html">HTML</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/LED%20LaTeX%20EE-0910.pdf">LED LaTeX 技術手冊</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-10</span>
+                            <span class="tag tag-pdf">PDF</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/LED.jpg">LED 電路接線圖</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-10</span>
+                            <span class="tag tag-img">JPG</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/S1_AI_Content_b06.pdf">S1 AI 電路內容講義</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-09</span>
+                            <span class="tag tag-pdf">PDF</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/ec_1.html">基礎電路實驗 1</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-08</span>
+                            <span class="tag tag-html">HTML</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/20260908.jpg">電路實驗相片 1</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-08</span>
+                            <span class="tag tag-img">JPG</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/紅色%20LED%20限流手冊">紅色 LED 限流手冊</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-08</span>
+                            <span class="tag tag-pdf">PDF</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/ohm.html">歐姆定律計算與工具</a>
                         <div class="file-meta">
                             <span class="file-date">2026-09-03</span>
+                            <span class="tag tag-html">HTML</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/led.html">LED 限流電阻原理與實驗</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-01</span>
                             <span class="tag tag-html">HTML</span>
                         </div>
                     </li>
@@ -577,6 +587,13 @@
                 </div>
                 <ul class="file-list">
                     <li class="file-item">
+                        <a class="file-link" href="./temple/嘉義市歷史廟宇統計報告_2026-09-04.pdf">廟宇統計報告 (09-04)</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-04</span>
+                            <span class="tag tag-pdf">PDF</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
                         <a class="file-link" href="./temple/temple_map.html">嘉義市歷史廟宇 GIS 地圖</a>
                         <div class="file-meta">
                             <span class="file-date">2026-09-03</span>
@@ -587,13 +604,6 @@
                         <a class="file-link" href="./temple/嘉義市歷史廟宇統計報告_2026-09-03.pdf">廟宇統計報告 (09-03)</a>
                         <div class="file-meta">
                             <span class="file-date">2026-09-03</span>
-                            <span class="tag tag-pdf">PDF</span>
-                        </div>
-                    </li>
-                    <li class="file-item">
-                        <a class="file-link" href="./temple/嘉義市歷史廟宇統計報告_2026-09-04.pdf">廟宇統計報告 (09-04)</a>
-                        <div class="file-meta">
-                            <span class="file-date">2026-09-04</span>
                             <span class="tag tag-pdf">PDF</span>
                         </div>
                     </li>
@@ -611,6 +621,23 @@
                         <a class="file-link" href="./dance/cd.html">舞蹈美學與動作分析筆記</a>
                         <div class="file-meta">
                             <span class="file-date">2026-09-04</span>
+                            <span class="tag tag-html">HTML</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 數學與統計 分類 -->
+            <div class="card" data-category="math">
+                <div class="card-header">
+                    <h2 class="card-title">📐 數學與機率統計</h2>
+                    <span class="badge-count">1 檔案</span>
+                </div>
+                <ul class="file-list">
+                    <li class="file-item">
+                        <a class="file-link" href="./math/math_01.html">數學與機率分布筆記 01</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-03</span>
                             <span class="tag tag-html">HTML</span>
                         </div>
                     </li>
@@ -662,30 +689,6 @@
                 </ul>
             </div>
 
-            <!-- 平面設計與 CorelDRAW 分類 -->
-            <div class="card" data-category="design">
-                <div class="card-header">
-                    <h2 class="card-title">🎨 平面設計與 CorelDRAW</h2>
-                    <span class="badge-count">2 檔案</span>
-                </div>
-                <ul class="file-list">
-                    <li class="file-item">
-                        <a class="file-link" href="./design/coreldraw_keychain_design.html">CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計</a>
-                        <div class="file-meta">
-                            <span class="file-date">2026-09-15</span>
-                            <span class="tag tag-html">HTML</span>
-                        </div>
-                    </li>
-                    <li class="file-item">
-                        <a class="file-link" href="./design/coreldraw_keychain_design.md">CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計 (MD)</a>
-                        <div class="file-meta">
-                            <span class="file-date">2026-09-15</span>
-                            <span class="tag tag-md">MD</span>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-
             <!-- 工作區規範與指引 分類 -->
             <div class="card" data-category="guidelines">
                 <div class="card-header">
@@ -694,16 +697,9 @@
                 </div>
                 <ul class="file-list">
                     <li class="file-item">
-                        <a class="file-link" href="./NOTE_GENERATION_GUIDE.md">筆記生成與更新標準指引</a>
+                        <a class="file-link" href="./AGENTS.md">Multi-Agent 工作區規範</a>
                         <div class="file-meta">
-                            <span class="file-date">2026-09-10</span>
-                            <span class="tag tag-md">MD</span>
-                        </div>
-                    </li>
-                    <li class="file-item">
-                        <a class="file-link" href="./GEMINI.md">Antigravity Note Rules</a>
-                        <div class="file-meta">
-                            <span class="file-date">2026-09-10</span>
+                            <span class="file-date">2026-09-14</span>
                             <span class="tag tag-md">MD</span>
                         </div>
                     </li>
@@ -715,9 +711,16 @@
                         </div>
                     </li>
                     <li class="file-item">
-                        <a class="file-link" href="./AGENTS.md">Multi-Agent 工作區規範</a>
+                        <a class="file-link" href="./NOTE_GENERATION_GUIDE.md">筆記生成與更新標準指引</a>
                         <div class="file-meta">
-                            <span class="file-date">2026-09-14</span>
+                            <span class="file-date">2026-09-10</span>
+                            <span class="tag tag-md">MD</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./GEMINI.md">Antigravity Note Rules</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-10</span>
                             <span class="tag tag-md">MD</span>
                         </div>
                     </li>
@@ -743,6 +746,13 @@
                 <p><strong>Prompt 原文:</strong></p>
                 <pre>應該要歸在什麼類別? 並更新首頁的檔案索引</pre>
                 <p><strong>變更摘要:</strong> 將 Antigravity_cli_b06 正確歸類移至 `AI/` 資料夾，將 coreldraw_keychain_design 歸類至 `design/` 資料夾，並更新 `index.html` 之 AI 卡片、新增 CorelDRAW 設計卡片與對應檔數統計。</p>
+            </div>
+            <div class="prompt-archive" style="margin-top: 15px;">
+                <h4>🔹 [2026-09-15 11:25:16] [Antigravity / Gemini 3.6 Flash] 重構首頁檔案依日期由新至舊排序</h4>
+                <p><strong>模型/Agent:</strong> Gemini 3.6 Flash / Antigravity Documentation Specialist</p>
+                <p><strong>Prompt 原文:</strong></p>
+                <pre>index的檔案日期依照新舊排列</pre>
+                <p><strong>變更摘要:</strong> 將 `index.html` 與 `INDEX.md` 中全站各主題卡片下的所有檔案重新排序，改為依修改日期由最新到最舊 (Newest to Oldest) 降序呈現。</p>
             </div>
         </div>
     </footer>

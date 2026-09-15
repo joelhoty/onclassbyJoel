@@ -1,56 +1,56 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-14 16:01:00 (UTC+8)  
+> **最後更新時間**: 2026-09-15 11:25:16 (UTC+8)  
 > **使用模型**: Gemini 3.6 Flash  
-> **執行 Agent**: GitHub Pages Index Generator  
+> **執行 Agent**: Antigravity Documentation Specialist  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 
 ---
 
-## 🎯 工作區主題檔案分類與最後修改日期
+## 🎯 工作區主題檔案分類與最後修改日期 (依日期由新至舊排列)
 
 ### 🤖 1. AI / 機器學習與深度學習 (`AI/`)
-* `2026-09-01` | [Attention-First 學習計畫](./AI/learning_plan_attention_first.html) (HTML)
-* `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
+* `2026-09-15` | [Antigravity CLI b06 手冊 (HTML)](./AI/Antigravity_cli_b06.html) (HTML)
+* `2026-09-15` | [Antigravity CLI b06 手冊 (MD)](./AI/Antigravity_cli_b06.md) (MD)
+* `2026-09-11` | [AI 課程筆記 (09-10)](./AI/ai_0910.html) (HTML)
+* `2026-09-09` | [AI 課程筆記 (09-09)](./AI/AI_0909.HTML) (HTML)
+* `2026-09-04` | [CNN 卷積神經網路解析](./AI/ai_cnn.html) (HTML)
 * `2026-09-02` | [AI 課程筆記 (09-02)](./AI/ai_class_0902.html) (HTML)
 * `2026-09-02` | [AI 基礎單元 1](./AI/ai_1.html) (HTML)
 * `2026-09-02` | [AI 基礎單元 2 (HTML)](./AI/ai_2.html) (HTML)
 * `2026-09-02` | [AI 基礎單元 2 (HTM)](./AI/ai_2.htm) (HTM)
-* `2026-09-04` | [CNN 卷積神經網路解析](./AI/ai_cnn.html) (HTML)
-* `2026-09-09` | [AI 課程筆記 (09-09)](./AI/AI_0909.HTML) (HTML)
-* `2026-09-11` | [AI 課程筆記 (09-10)](./AI/ai_0910.html) (HTML)
-* `2026-09-15` | [Antigravity CLI b06 手冊 (HTML)](./AI/Antigravity_cli_b06.html) (HTML)
-* `2026-09-15` | [Antigravity CLI b06 手冊 (MD)](./AI/Antigravity_cli_b06.md) (MD)
+* `2026-09-01` | [Attention-First 學習計畫](./AI/learning_plan_attention_first.html) (HTML)
+* `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
-* `2026-09-01` | [LED 限流電阻原理與實驗](./ec/led.html) (HTML)
-* `2026-09-03` | [歐姆定律計算與工具](./ec/ohm.html) (HTML)
-* `2026-09-08` | [基礎電路實驗 1](./ec/ec_1.html) (HTML)
-* `2026-09-08` | [電路實驗相片 1](./ec/20260908.jpg) (JPG)
-* `2026-09-08` | [紅色 LED 限流手冊](./ec/紅色%20LED%20限流電阻工程手冊與計算工具.pdf) (PDF)
-* `2026-09-09` | [S1 AI 電路內容講義](./ec/S1_AI_Content_b06.pdf) (PDF)
 * `2026-09-10` | [電機電子實驗 (09-10)](./ec/ee_0910.html) (HTML)
 * `2026-09-10` | [LED LaTeX 技術手冊](./ec/LED%20LaTeX%20EE-0910.pdf) (PDF)
 * `2026-09-10` | [LED 電路接線圖](./ec/LED.jpg) (JPG)
+* `2026-09-09` | [S1 AI 電路內容講義](./ec/S1_AI_Content_b06.pdf) (PDF)
+* `2026-09-08` | [基礎電路實驗 1](./ec/ec_1.html) (HTML)
+* `2026-09-08` | [電路實驗相片 1](./ec/20260908.jpg) (JPG)
+* `2026-09-08` | [紅色 LED 限流手冊](./ec/紅色%20LED%20限流電阻工程手冊與計算工具.pdf) (PDF)
+* `2026-09-03` | [歐姆定律計算與工具](./ec/ohm.html) (HTML)
+* `2026-09-01` | [LED 限流電阻原理與實驗](./ec/led.html) (HTML)
 
 ### 🤖 3. 樂高機器人 EV3 / SPIKE (`ev3/`)
-* `2026-08-31` | [樂高基礎控制單元 1](./ev3/lego_1.html) (HTML)
-* `2026-08-31` | [SPIKE 尋跡控制程式](./ev3/lego_spike_line_follower.py) (Python)
-* `2026-09-07` | [距離音訊回饋研究提案](./ev3/distance_audio_feedback_research.md) (MD)
-* `2026-09-07` | [樂高專題紀錄 (09-07)](./ev3/lego_0907.html) (HTML)
 * `2026-09-14` | [樂高機器人專題筆記首頁](./ev3/index.html) (HTML)
 * `2026-09-14` | [雙感測器邏輯 (HTML)](./ev3/nested_switch_distance_logic.html) (HTML)
 * `2026-09-14` | [雙感測器邏輯解析 (MD)](./ev3/nested_switch_distance_logic.md) (MD)
 * `2026-09-14` | [雙 Switch 邏輯流程圖](./ev3/2swtcih.png) (PNG)
 * `2026-09-14` | [距離轉換音頻曲線圖](./ev3/cm2hz.jpg) (JPG)
+* `2026-09-07` | [距離音訊回饋研究提案](./ev3/distance_audio_feedback_research.md) (MD)
+* `2026-09-07` | [樂高專題紀錄 (09-07)](./ev3/lego_0907.html) (HTML)
+* `2026-08-31` | [樂高基礎控制單元 1](./ev3/lego_1.html) (HTML)
+* `2026-08-31` | [SPIKE 尋跡控制程式](./ev3/lego_spike_line_follower.py) (Python)
 
 ### 📐 4. 數學與機率統計 (`math/`)
 * `2026-09-03` | [數學與機率分布筆記 01](./math/math_01.html) (HTML)
 
 ### 🏯 5. 廟宇文化與 GIS 地圖 (`temple/`)
+* `2026-09-04` | [廟宇統計報告 (09-04)](./temple/嘉義市歷史廟宇統計報告_2026-09-04.pdf) (PDF)
 * `2026-09-03` | [嘉義市歷史廟宇 GIS 地圖](./temple/temple_map.html) (HTML)
 * `2026-09-03` | [廟宇統計報告 (09-03)](./temple/嘉義市歷史廟宇統計報告_2026-09-03.pdf) (PDF)
-* `2026-09-04` | [廟宇統計報告 (09-04)](./temple/嘉義市歷史廟宇統計報告_2026-09-04.pdf) (PDF)
 
 ### 💃 6. 舞蹈美學與藝術研究 (`dance/`)
 * `2026-09-04` | [舞蹈美學與動作分析筆記](./dance/cd.html) (HTML)
@@ -67,10 +67,10 @@
 * `2026-09-15` | [CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計實務教學 (MD)](./design/coreldraw_keychain_design.md) (MD)
 
 ### 📋 9. 工作區指引與核心規範
+* `2026-09-14` | [Multi-Agent 工作區規範](./AGENTS.md) (MD)
+* `2026-09-11` | [根目錄 AI 課程總覽](./ai_0910.html) (HTML)
 * `2026-09-10` | [筆記生成與更新標準指引](./NOTE_GENERATION_GUIDE.md) (MD)
 * `2026-09-10` | [Antigravity Note Rules](./GEMINI.md) (MD)
-* `2026-09-11` | [根目錄 AI 課程總覽](./ai_0910.html) (HTML)
-* `2026-09-14` | [Multi-Agent 工作區規範](./AGENTS.md) (MD)
 
 ---
 
@@ -92,3 +92,10 @@
   ```
 - **變更摘要**: 將 `Antigravity_cli_b06` 正確歸類移至 `AI/` 資料夾中，將 `coreldraw_keychain_design` 歸類於 `design/` 資料夾中，並同步全面更新 `INDEX.md` 與 `index.html` 之全站主題卡片索引與檔案計數。
 
+### 🔹 [2026-09-15 11:25:16] [Gemini 3.6 Flash / Antigravity Documentation Specialist]
+- **模型/Agent**: Gemini 3.6 Flash / Antigravity Documentation Specialist
+- **Prompt 原文**:
+  ```text
+  index的檔案日期依照新舊排列
+  ```
+- **變更摘要**: 重構 `INDEX.md` 與 `index.html` 全站各類別下所有檔案之排列順序，全面改為依日期由新至舊 (Newest to Oldest) 降序排列。
