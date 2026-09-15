@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Antigravity CLI（agy）PowerShell 安裝、OAuth 入門、額度與 API Key</title>
+  <style>
+    :root {
+      --primary-color: #1a73e8;
+      --primary-dark: #1557b0;
+      --secondary-color: #0f9d58;
+      --bg-color: #f8f9fa;
+      --text-color: #202124;
+      --card-bg: #ffffff;
+      --border-color: #dadce0;
+      --code-bg: #1e1e1e;
+      --code-color: #d4d4d4;
+      --quote-bg: #e8f0fe;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+      line-height: 1.7;
+      color: var(--text-color);
+      background-color: var(--bg-color);
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .action-bar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+    }
+
+    .pdf-btn {
+      background-color: #2e7d32;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 15px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+      transition: all 0.2s ease;
+    }
+
+    .pdf-btn:hover {
+      background-color: #1b5e20;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      color: #1a0dab;
+      border-bottom: 3px solid var(--primary-color);
+      padding-bottom: 12px;
+      margin-top: 0;
+      font-size: 26px;
+    }
+
+    h2 {
+      color: #1a73e8;
+      border-left: 5px solid var(--primary-color);
+      padding-left: 12px;
+      margin-top: 36px;
+      font-size: 21px;
+    }
+
+    h3 {
+      color: #3c4043;
+      margin-top: 24px;
+      font-size: 17px;
+    }
+
+    h4 {
+      color: #5f6368;
+      font-size: 15px;
+      margin-top: 18px;
+    }
+
+    .metadata {
+      background-color: var(--quote-bg);
+      border-left: 4px solid var(--primary-color);
+      padding: 14px 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .metadata p {
+      margin: 4px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      font-size: 14px;
+    }
+
+    th, td {
+      border: 1px solid var(--border-color);
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #e8f0fe;
+      color: #1a73e8;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+
+    .diagram-card {
+      background-color: #f1f3f4;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      font-family: monospace;
+    }
+
+    .flow-step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .flow-box {
+      background: white;
+      border: 1px solid #1a73e8;
+      color: #1a73e8;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    .flow-arrow {
+      color: #5f6368;
+      font-weight: bold;
+    }
+
+    .callout-warning {
+      background-color: #fef7e0;
+      border-left: 4px solid #f9ab00;
+      padding: 12px 16px;
+      margin: 15px 0;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .callout-info {
+      background-color: #e8f0fe;
+      border-left: 4px solid #1a73e8;
+      padding: 12px 16px;
+      margin: 15px 0;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    pre, code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    }
+
+    pre {
+      background-color: var(--code-bg);
+      color: var(--code-color);
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 13.5px;
+      line-height: 1.5;
+    }
+
+    code {
+      background-color: #f1f3f4;
+      color: #c5221f;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13.5px;
+    }
+
+    pre code {
+      background-color: transparent;
+      color: inherit;
+      padding: 0;
+    }
+
+    .qa-box {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-left: 5px solid #0f9d58;
+      padding: 16px;
+      margin: 16px 0;
+      border-radius: 6px;
+    }
+
+    .qa-q {
+      font-weight: bold;
+      color: #0f9d58;
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .prompt-archive {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 2px dashed #cbd5e1;
+    }
+
+    @media print {
+      body {
+        background-color: #ffffff;
+        padding: 0;
+      }
+      .container {
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      .action-bar {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="action-bar">
+    <button class="pdf-btn" onclick="window.print()">🖨️ 匯出成 PDF / 列印講義</button>
+  </div>
+
+  <h1>Antigravity CLI（<code>agy</code>）PowerShell 安裝、OAuth 入門、額度與 API Key</h1>
+
+  <div class="metadata">
+    <p><strong>最後更新時間</strong>: 2026-09-15 09:35:39 (UTC+8)</p>
+    <p><strong>使用模型</strong>: Gemini 3.6 Flash</p>
+    <p><strong>執行 Agent</strong>: Antigravity Documentation Specialist</p>
+    <p><strong>版本號</strong>：b06 | <strong>原編修模型</strong>：GPT-5.6 Sol / Cursor Grok 4.6</p>
+    <p><strong>本機實測 CLI</strong>：<code>agy</code> 1.1.16（macOS 路徑：<code>~/.local/bin/agy</code>）</p>
+    <p><strong>前一版本</strong>：<code>Antigravity_cli_b05.md</code>（b05，2026-09-08 22:53:42）</p>
+    <p><strong>本版調整</strong>：新增 Windows PowerShell 安裝、權限排錯、以資料夾為單位啟動、OAuth 登入與模型選擇；再銜接原有額度、API key 與扣款內容</p>
+    <p><strong>主題範圍</strong>：PowerShell 安裝、OAuth、資料夾工作區、模型選擇、免費額度、API key、Prepay／Postpay、G1／AI Credits</p>
+  </div>
+
+  <hr>
+
+  <h2>查詢紀錄（時間戳記與模型）</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>項目</th>
+        <th>內容</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>本版更新日期</td>
+        <td>2026-09-14（原額度與計費查詢：2026-09-08）</td>
+      </tr>
+      <tr>
+        <td>查詢時間</td>
+        <td>21:45:00 CST（b06 入門流程更新）；22:53:42 CST（b05 結構重排）；b04 討論 22:48:58；b03 除錯 22:35:28；b02 計費 22:13:27；額度查詢 22:04:52（b01）</td>
+      </tr>
+      <tr>
+        <td>本版編修模型</td>
+        <td>GPT-5.6 Sol（安裝步驟依 2026-09-14 官方文件核對）；原查詢模型 Cursor Grok 4.6</td>
+      </tr>
+      <tr>
+        <td>本機 CLI 版本</td>
+        <td>Antigravity CLI <code>agy</code> 1.1.16</td>
+      </tr>
+      <tr>
+        <td>本機設定（除錯當下）</td>
+        <td><code>modelProvider: "gemini"</code>；<code>useG1Credits</code> 原為 <code>true</code>，已改為 <code>false</code>（或省略，預設即 false）</td>
+      </tr>
+      <tr>
+        <td>本機日誌關鍵句</td>
+        <td><code>authMethod=gemini_api_key</code>；<code>GetG1Credits: paidTier is nil</code>；<code>doRefreshQuota: skipped (not logged in)</code></td>
+      </tr>
+      <tr>
+        <td>狀態列現象</td>
+        <td><code>Gemini 3.6 Flash · medium · AI: Out of credits</code>；<code>press ctrl+c again to exit</code> 為退出確認，不是額度錯誤</td>
+      </tr>
+      <tr>
+        <td>官方文件快照時間</td>
+        <td>2026-09-08 晚間（額度文件與 b01 同一回合；計費文件於 22:13 再查）</td>
+      </tr>
+      <tr>
+        <td>本機 <code>/usage</code></td>
+        <td><code>agy -p "/usage" --output-format json</code> 回傳 <code>groups: []</code>（print 模式未列出具體剩餘量）</td>
+      </tr>
+      <tr>
+        <td>本機 <code>/credits</code></td>
+        <td>回傳 <code>no credits info found</code>（與免費方案沒有 AI Credits 額度池相符）</td>
+      </tr>
+      <tr>
+        <td>API key 官方依據</td>
+        <td><a href="https://antigravity.google/docs/cli/install" target="_blank">Installation &amp; Auth</a>（<code>agy</code> 1.1.13 起支援 <code>GEMINI_API_KEY</code>）</td>
+      </tr>
+      <tr>
+        <td>計費官方依據</td>
+        <td><a href="https://ai.google.dev/gemini-api/docs/billing" target="_blank">Gemini API Billing</a>（2026-03-23 起 Prepay／Postpay）</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>閱讀路徑</h2>
+  <p>本文件依「先會操作，再理解額度與計費」的順序編排，不必一次讀完：</p>
+  <table>
+    <thead>
+      <tr>
+        <th>章節</th>
+        <th>讀完之後你能做什麼</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>一、PowerShell 安裝</strong></td>
+        <td>開啟 PowerShell、安裝 <code>agy</code>，並處理執行原則、寫入權限與 PATH 問題</td>
+      </tr>
+      <tr>
+        <td><strong>二、以資料夾為單位開始</strong></td>
+        <td>切換到 <code>D:\</code>、建立工作資料夾、啟動 <code>agy</code>、完成 OAuth 與選擇模型</td>
+      </tr>
+      <tr>
+        <td>三、為什麼重要</td>
+        <td>知道為什麼額度與帳單會卡住課堂</td>
+      </tr>
+      <tr>
+        <td>四、官方方案額度</td>
+        <td>說明免費／Pro／Ultra 的週配額（OAuth 那一條）</td>
+      </tr>
+      <tr>
+        <td>五、在 <code>agy</code> 裡查與省</td>
+        <td>用 <code>/usage</code> 操作方案額度</td>
+      </tr>
+      <tr>
+        <td><strong>六、使用 API key（完整設定）</strong></td>
+        <td>從建金鑰、改設定、驗收到 Prepay／改回 OAuth</td>
+      </tr>
+      <tr>
+        <td>七、通道、除錯與討論</td>
+        <td>分辨 G1 與 API；處理 Out of credits；討論為何複雜</td>
+      </tr>
+      <tr>
+        <td>八～十三</td>
+        <td>練習、Q&amp;A、總結、延伸、來源與結論</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>一、在 Windows PowerShell 安裝 <code>agy</code></h2>
+  <p>本章以 Windows 10／11 的 <strong>PowerShell</strong> 為操作環境。<code>agy</code> 是原生執行檔，不需要先安裝 Node.js、npm 或 Python。官方安裝程式預設安裝到目前使用者的 <code>%LOCALAPPDATA%\agy\bin</code>，通常不需要系統管理員權限。</p>
+
+  <h3>1.1 開啟 PowerShell</h3>
+  <ol>
+    <li>按下 Windows 鍵，輸入 <code>PowerShell</code>。</li>
+    <li>點選 <strong>Windows PowerShell</strong>；Windows 11 也可以開啟 <strong>Terminal（終端機）</strong>。</li>
+    <li>用下列指令確認目前環境：</li>
+  </ol>
+  <pre><code>$PSVersionTable.PSVersion
+$env:USERNAME</code></pre>
+
+  <h3>1.2 執行官方安裝指令</h3>
+  <p>將下列<strong>完整一行</strong>貼到 PowerShell，按 Enter：</p>
+  <pre><code>irm https://antigravity.google/cli/install.ps1 | iex</code></pre>
+  <p>安裝完成後，<strong>關閉並重新開啟 PowerShell</strong>，再確認：</p>
+  <pre><code>Get-Command agy
+agy --help</code></pre>
+
+  <h3>1.3 常見權限與安裝問題</h3>
+  <div class="callout-warning">
+    <strong>情況 A：PowerShell 顯示不允許執行指令碼</strong>
+    <p>個人電腦可使用只影響目前 PowerShell 視窗的暫時設定：</p>
+    <pre><code>Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+irm https://antigravity.google/cli/install.ps1 | iex</code></pre>
+  </div>
+
+  <h2>二、以資料夾為單位開始：切換目錄、OAuth 登入與選擇模型</h2>
+  <p>建議「一個課程、專題或程式專案使用一個資料夾」，並在該資料夾內啟動 <code>agy</code>。</p>
+
+  <div class="diagram-card">
+    <strong>工作流程圖示：</strong>
+    <div class="flow-step">
+      <div class="flow-box">開啟 PowerShell</div> <span class="flow-arrow">➔</span>
+      <div class="flow-box">切換磁碟與資料夾</div> <span class="flow-arrow">➔</span>
+      <div class="flow-box">建立專案資料夾</div> <span class="flow-arrow">➔</span>
+      <div class="flow-box">執行 agy</div> <span class="flow-arrow">➔</span>
+      <div class="flow-box">OAuth 瀏覽器登入</div> <span class="flow-arrow">➔</span>
+      <div class="flow-box">用 /model 選擇模型</div>
+    </div>
+  </div>
+
+  <h3>2.2 完整示範：在 <code>D:\</code> 建立工作資料夾</h3>
+  <pre><code>Set-Location D:\
+New-Item -ItemType Directory -Name 'agy-practice' -ErrorAction SilentlyContinue
+Set-Location .\agy-practice
+Get-Location
+agy</code></pre>
+
+  <h2>三、為什麼這份紀錄重要（Why）</h2>
+  <p>Antigravity CLI 是 Google 提供的終端 Agent 工具，指令名稱為 <code>agy</code>。免費方案可以登入個人 Google 帳號使用。實務上最常卡住的是：官方不公布免費額度絕對請求數，額度依 Agent 完成工作量扣除，額度用完後免費方案不能用 AI Credits 超額續跑。</p>
+
+  <h2>四、官方怎麼描述額度（What）</h2>
+  <h3>4.1 方案分層表</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>方案</th>
+        <th>價格</th>
+        <th>官方對額度的說法</th>
+        <th>刷新方式</th>
+        <th>用完後可否加買</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Individual（免費）</td>
+        <td>$0／月</td>
+        <td>Meaningful quota；Basic weekly rate limits</td>
+        <td>每週刷新</td>
+        <td><strong>否</strong>。僅 Pro/Ultra 開放 Overages</td>
+      </tr>
+      <tr>
+        <td>Google AI Pro</td>
+        <td>約 $20／月</td>
+        <td>High, generous quota</td>
+        <td>每 5 小時刷新</td>
+        <td>可以，使用 AI Credits</td>
+      </tr>
+      <tr>
+        <td>Google AI Ultra</td>
+        <td>$200／月</td>
+        <td>Highest, most generous quota</td>
+        <td>每 5 小時刷新</td>
+        <td>可以，使用 AI Credits</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>六、使用 API key：完整設定</h2>
+  <p>目標：讓 <code>agy</code> 用 <a href="https://aistudio.google.com/" target="_blank">Google AI Studio</a> 建立的 Gemini API key，扣該專案的帳單，而不是方案週配額。</p>
+
+  <h3>6.3 必做的兩件事（少一件就無效）</h3>
+  <p><strong>第一件：</strong> 編輯 <code>~/.gemini/antigravity-cli/settings.json</code>：</p>
+  <pre><code>{
+  "modelProvider": "gemini",
+  "useG1Credits": false
+}</code></pre>
+
+  <p><strong>第二件：</strong> 在同一個 Shell 匯出金鑰：</p>
+  <pre><code>export GEMINI_API_KEY="你的_AI_Studio_金鑰"
+agy</code></pre>
+
+  <h2>七、扣款通道、實測除錯與授權討論</h2>
+  <div class="callout-info">
+    <strong>三條扣款通道互不相通：</strong><br>
+    Google 個人訂閱額度（含 G1／AI Credits）與 API／GCP 帳單分開設定、分開扣款、互不補洞。若在 API key 路徑設了 <code>useG1Credits: true</code>，日誌會顯示 <code>paidTier is nil</code>，導致狀態列誤顯示 <code>AI: Out of credits</code>。
+  </div>
+
+  <h2>九、常見問題（Q&amp;A）</h2>
+  <div class="qa-box">
+    <div class="qa-q">Q1：免費到底有幾次？</div>
+    <div class="qa-a">官方沒有公布絕對次數。正確說法是「有意義的每週配額 (meaningful quota)」，數量隨任務複雜度與系統容量動態調整。</div>
+  </div>
+
+  <div class="qa-box">
+    <div class="qa-q">Q11：Google One／G1 額度與 API 是各自設定嗎？</div>
+    <div class="qa-a"><strong>是，兩套帳單、互不補洞。</strong> G1/AI Credits 綁 OAuth 個人帳號；API 預付/GCP 綁 API key 所屬專案帳單。</div>
+  </div>
+
+  <h2>十三、給教材與課堂的一句話結論</h2>
+  <p><strong><code>agy</code> 免費層可以使用，而且官方列出的模型名單看起來很大；真正的限制是未公布數字的每週 Agent 工作量配額，用完只能等，不能靠免費點數續跑。</strong> 若改用 <code>ai.dev</code> 的 API key，那是另一條直連 Gemini API 的路。G1／AI Credits 與 API 預付<strong>各自設定、互不補洞</strong>。</p>
+
+  <div class="prompt-archive">
+    <h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+    <h3>🔹 [2026-09-15 09:35:39] [Gemini 3.6 Flash / Antigravity Documentation Specialist]</h3>
+    <ul>
+      <li><strong>模型/Agent</strong>: Gemini 3.6 Flash / Antigravity Documentation Specialist</li>
+      <li><strong>Prompt 原文</strong>:
+        <pre><code>將 @[Antigravity_cli_b06.md] 製作html版本</code></pre>
+      </li>
+      <li><strong>變更摘要</strong>: 依據工作區規範，為 <code>Antigravity_cli_b06.md</code> 建立具備完整樣式與 PDF 匯出按鈕之 HTML 版本 (<code>Antigravity_cli_b06.html</code>)，並更新二者之 Metadata 與 Prompt Archive 紀錄。</li>
+    </ul>
+  </div>
+
+</div>
+
+</body>
+</html>

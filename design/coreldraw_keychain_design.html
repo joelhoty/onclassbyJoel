@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計實務教學</title>
+  <style>
+    :root {
+      --primary-color: #007acc;
+      --secondary-color: #0288d1;
+      --accent-color: #e91e63;
+      --bg-color: #f8f9fa;
+      --text-color: #212529;
+      --card-bg: #ffffff;
+      --border-color: #e9ecef;
+      --code-bg: #2d3748;
+      --code-color: #f7fafc;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+      line-height: 1.7;
+      color: var(--text-color);
+      background-color: var(--bg-color);
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .action-bar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+    }
+
+    .pdf-btn {
+      background-color: #2e7d32;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 15px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+      transition: all 0.2s ease;
+    }
+
+    .pdf-btn:hover {
+      background-color: #1b5e20;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      color: #1a237e;
+      border-bottom: 3px solid var(--primary-color);
+      padding-bottom: 12px;
+      margin-top: 0;
+      font-size: 28px;
+    }
+
+    h2 {
+      color: var(--secondary-color);
+      border-left: 5px solid var(--primary-color);
+      padding-left: 12px;
+      margin-top: 36px;
+      font-size: 22px;
+    }
+
+    h3 {
+      color: #37474f;
+      margin-top: 24px;
+      font-size: 18px;
+    }
+
+    .metadata {
+      background-color: #e8f4f8;
+      border-left: 4px solid var(--primary-color);
+      padding: 12px 18px;
+      margin: 20px 0;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .metadata p {
+      margin: 4px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    th, td {
+      border: 1px solid var(--border-color);
+      padding: 12px 16px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #e3f2fd;
+      color: #0d47a1;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #fcfcfc;
+    }
+
+    .algo-box {
+      background-color: #f0f7ff;
+      border: 1px solid #bae6fd;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .algo-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .algo-step-item {
+      background: white;
+      padding: 15px;
+      border-radius: 6px;
+      border-top: 4px solid var(--secondary-color);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    }
+
+    .workflow-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .step-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-left: 6px solid var(--primary-color);
+      padding: 18px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+
+    .step-card strong {
+      color: #0d47a1;
+      font-size: 16px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #e1f5fe;
+      color: #0288d1;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-left: 8px;
+    }
+
+    .key-tip {
+      background: #fff3e0;
+      border-left: 4px solid #ff9800;
+      padding: 12px 16px;
+      margin: 15px 0;
+      border-radius: 4px;
+    }
+
+    pre, code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    }
+
+    pre {
+      background-color: var(--code-bg);
+      color: var(--code-color);
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 14px;
+    }
+
+    code {
+      background-color: #f1f5f9;
+      color: #d63384;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    pre code {
+      background-color: transparent;
+      color: inherit;
+      padding: 0;
+    }
+
+    .prompt-archive {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 2px dashed #cbd5e1;
+    }
+
+    @media print {
+      body {
+        background-color: #ffffff;
+        padding: 0;
+      }
+      .container {
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      .action-bar {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="action-bar">
+    <button class="pdf-btn" onclick="window.print()">🖨️ 匯出成 PDF / 列印筆記</button>
+  </div>
+
+  <h1>🎨 CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計實務教學</h1>
+
+  <div class="metadata">
+    <p><strong>最後更新時間</strong>: 2026-09-15 09:33:54 (UTC+8)</p>
+    <p><strong>使用模型</strong>: Gemini 3.6 Flash</p>
+    <p><strong>執行 Agent</strong>: CorelDRAW Design Specialist</p>
+  </div>
+
+  <hr>
+
+  <h2>📌 概述 (Overview)</h2>
+  <p>在平面設計與數位製造（如雷射切割、3D 列印、壓克力吊飾加工）領域中，<strong>CorelDRAW</strong> 是一款強大的向量圖形設計軟體。本教學講義針對 CorelDRAW 的<strong>檔案匯入匯出</strong>、<strong>點陣圖解析度 (DPI) 概念</strong>、<strong>描繪點陣圖 (Trace Bitmap) 演算法原理與前後差異</strong>、<strong>解散群組 (Ungroup)</strong> 以及 <strong>建立界線 (Create Boundary)</strong> 等核心功能進行深度剖析，並以「大象」與「海龜」圖案為範例，手把手導引如何製作精細的<strong>鑰匙圈吊飾 (Keychain Pendant Design)</strong> 切割外框與加工圖稿。</p>
+
+  <h2>📚 一、核心概念剖析 (Core Concepts)</h2>
+
+  <h3>1. 點陣圖 (Bitmap) vs 向量圖 (Vector Graphics)</h3>
+  <p>在進入 CorelDRAW 操作前，必須明確區分兩大圖像類型：</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>特性比較</th>
+        <th>點陣圖 (Bitmap / Raster Image)</th>
+        <th>向量圖 (Vector Graphics)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>構成元素</strong></td>
+        <td>像素點 (Pixels) 陣列組成</td>
+        <td>數學公式（點、線、貝茲曲線、多邊形）</td>
+      </tr>
+      <tr>
+        <td><strong>常見格式</strong></td>
+        <td><code>.jpg</code>, <code>.png</code>, <code>.bmp</code>, <code>.tif</code>, <code>.webp</code></td>
+        <td><code>.cdr</code>, <code>.ai</code>, <code>.svg</code>, <code>.eps</code>, <code>.dxf</code></td>
+      </tr>
+      <tr>
+        <td><strong>縮放特性</strong></td>
+        <td>放大後會失真、出現馬賽克鋸齒</td>
+        <td>無限放大不失真，線條保持絕對銳利</td>
+      </tr>
+      <tr>
+        <td><strong>雷射切割應用</strong></td>
+        <td>用於雷射雕刻 (Engraving / Raster)</td>
+        <td>用於雷射切割 (Cutting / Vector Contour)</td>
+      </tr>
+      <tr>
+        <td><strong>檔案大小</strong></td>
+        <td>與解析度及尺寸成正比</td>
+        <td>與圖形複雜度（節點數量）相關</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>🔬 2. 點陣圖描繪成向量圖的演算法原理 (Mathematical Principles of Bitmap Tracing)</h3>
+  <p>CorelDRAW 的「描繪點陣圖 (Trace Bitmap / PowerTrace)」功能並非單純的視覺放大，而是透過複雜的<strong>電腦視覺 (Computer Vision)</strong> 與 <strong>計算幾何 (Computational Geometry)</strong> 演算法，將連續的像素矩陣轉換為離散的向量參數曲線。其底層運算包含四個核心階段：</p>
+
+  <div class="algo-box">
+    <div class="algo-steps">
+      <div class="algo-step-item">
+        <strong>1. 色彩量化與二值化</strong>
+        <p style="font-size: 13px; color: #555; margin-top: 6px;">掃描像素並降維歸納色彩板（Color Palette），或透過閥值轉為黑白圖形以消除雜訊。</p>
+      </div>
+      <div class="algo-step-item">
+        <strong>2. 邊緣與梯度檢測</strong>
+        <p style="font-size: 13px; color: #555; margin-top: 6px;">透過梯度演算法（Sobel/Canny），定位像素色彩與亮度劇烈變化的邊界臨界點。</p>
+      </div>
+      <div class="algo-step-item">
+        <strong>3. 輪廓路徑追蹤</strong>
+        <p style="font-size: 13px; color: #555; margin-top: 6px;">利用鏈碼 (Chain Code) 將鋸齒狀邊緣像素點連結成一條離散的閉合像素路徑。</p>
+      </div>
+      <div class="algo-step-item">
+        <strong>4. 貝茲曲線擬合</strong>
+        <p style="font-size: 13px; color: #555; margin-top: 6px;">利用最小二乘法與 Potrace 將像素路徑擬合為包含控制點的三次方貝茲曲線。</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>📊 3. 點陣圖描繪前後的深度特徵差異 (Before & After Comparison)</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>評比維度</th>
+        <th>轉換前：點陣圖 (Bitmap Source)</th>
+        <th>轉換後：向量圖 (Vectorized Graphic)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>資料儲存結構</strong></td>
+        <td>二維像素座標陣列 <code>Grid[x][y] = (R,G,B)</code></td>
+        <td>幾何數學方程式 <code>Bezier(P0, P1, P2, P3)</code></td>
+      </tr>
+      <tr>
+        <td><strong>空間解析度依賴</strong></td>
+        <td>強烈依賴 DPI。放大後會產生鋸齒與馬賽克</td>
+        <td>100% 解析度獨立 (Resolution Independent)，放大無極限</td>
+      </tr>
+      <tr>
+        <td><strong>數位加工相容性</strong></td>
+        <td>僅能作為<strong>雷射雕刻 (Raster Engraving)</strong> 輸出，<strong>無法雷射切割</strong></td>
+        <td>生成連續幾何路徑，可作為<strong>雷射切割 (Vector Cut Path)</strong></td>
+      </tr>
+      <tr>
+        <td><strong>編輯自由度</strong></td>
+        <td>只能塗刷或裁剪像素，無法單獨調整線條彎曲度</td>
+        <td>可使用「形狀工具 (F10)」自由拖拉節點、改變曲率</td>
+      </tr>
+      <tr>
+        <td><strong>邊界封閉性</strong></td>
+        <td>邊界為模糊過渡像素，無幾何邊界概念</td>
+        <td>形成封閉路徑 (Closed Path)，可進行「建立界線」與填色</td>
+      </tr>
+      <tr>
+        <td><strong>檔案量成長曲線</strong></td>
+        <td>隨著圖像實體尺寸與 DPI 增加呈現幾何級數暴增</td>
+        <td>僅取決於圖形邊界與節點 (Node) 數量，尺寸放大檔案大小不變</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>4. 解析度 (Resolution / DPI) 與檔案匯入/匯出</h3>
+  <h4>(1) DPI (Dots Per Inch) 概念</h4>
+  <ul>
+    <li><strong>DPI (每英吋點數)</strong>：代表一英吋長度內包含的像素數量。</li>
+    <li><strong>網頁/螢幕顯示</strong>：一般為 <code>72 DPI</code> 或 <code>96 DPI</code>。</li>
+    <li><strong>印刷與描繪品質</strong>：建議至少 <code>300 DPI</code> 以上。解析度過低時，點陣圖邊緣模糊，描繪點陣圖時容易產生過多雜點或曲線扭曲。</li>
+  </ul>
+
+  <h4>(2) 檔案匯入 (Import) 與 匯出 (Export)</h4>
+  <ul>
+    <li><strong>匯入 (Import, <code>Ctrl + I</code>)</strong>：將外來的圖片（如大象、海龜線稿照片）載入至 CorelDRAW 繪圖頁面中。</li>
+    <li><strong>重新取樣 (Resample)</strong>：在 <code>點陣圖</code> -&gt; <code>重新取樣</code> 中，可檢視與調整圖像的實際 DPI 尺寸。</li>
+    <li><strong>匯出 (Export, <code>Ctrl + E</code>)</strong>：將完成的向量外框與雕刻圖稿匯出為雷射切割機支援的格式（如 <code>.dxf</code>, <code>.eps</code>, <code>.pdf</code>）或壓克力印製用的高解析度 <code>.png</code>。</li>
+  </ul>
+
+  <h3>5. 解散群組 (Ungroup) 與 建立界線 (Create Boundary)</h3>
+  <ul>
+    <li><strong>解散群組 (Ungroup / <code>Ctrl + U</code>)</strong>：描繪完成的向量圖預設為一個整體群組。執行解散群組後，可單獨選取、刪除背景色塊或修補線條細節。</li>
+    <li><strong>建立界線 (Create Boundary / 舊稱或口語常稱為「建議界線」)</strong>：
+      <ul>
+        <li><strong>演算原理</strong>：CorelDRAW 會計算所有選取向量物件的外圍聯集邊界（Union Outer Boundary），並自動生成一條<strong>完全封閉的幾何曲線 (Closed Curve)</strong>。</li>
+        <li><strong>關鍵價值</strong>：這條封閉曲線正是雷射切割機進行切割（Cut Path）所必需的外部輪廓！</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h2>🛠️ 二、實作與應用範例 (Practical Examples)</h2>
+  <p>本單元以<strong>黑白大象/海龜線稿圖片</strong>轉換為<strong>壓克力鑰匙圈吊飾</strong>為例，說明完整的操作流程。</p>
+
+  <div class="workflow-container">
+    <div class="step-card">
+      <strong>步驟 1：匯入圖片與解析度檢查</strong> <span class="badge">Ctrl + I</span>
+      <p>開啟 CorelDRAW 新建 A4 文件，匯入大象或海龜點陣圖 (<code>elephant.jpg</code>)。點擊 <code>點陣圖</code> -&gt; <code>重新取樣</code>，確認解析度至少為 <code>300 DPI</code>。</p>
+    </div>
+
+    <div class="step-card">
+      <strong>步驟 2：執行「描繪點陣圖」 (Trace Bitmap)</strong> <span class="badge">Outline Trace</span>
+      <p>選取圖片，點擊屬性列 <code>描繪點陣圖</code> -&gt; <code>輪廓描繪</code> -&gt; <code>線條圖</code> 或 <code>詳細標誌</code>。在預覽視窗中微調「細節」與「平滑度」，並勾選「移除背景顏色」。</p>
+    </div>
+
+    <div class="step-card">
+      <strong>步驟 3：解散群組與清理雜訊</strong> <span class="badge">Ctrl + U</span>
+      <p>選取描繪完成的向量物件，按下 <code>Ctrl + U</code> 解散群組。使用挑選工具刪除多餘的背景色塊與離群雜點。</p>
+    </div>
+
+    <div class="step-card">
+      <strong>步驟 4：執行「建立界線 (Create Boundary)」</strong> <span class="badge">Boundary</span>
+      <p>全選大象或海龜的所有向量組件，點擊功能表列 <code>物件</code> -&gt; <code>形狀</code> -&gt; <code>界線</code>（或上方屬性列的「建立界線」）。瞬間生成大象/海龜外圍的<strong>特殊形狀封閉曲線</strong>。</p>
+    </div>
+
+    <div class="step-card">
+      <strong>步驟 5：鑰匙圈輪廓外擴與打孔設計</strong> <span class="badge">Ctrl + F9</span>
+      <p>開啟輪廓圖工具 (<code>Ctrl + F9</code>)，設定向外擴展 <code>2.0 mm ~ 3.0 mm</code> 圓角。按 <code>Ctrl + K</code> 拆分外框。利用橢圓工具畫出 <code>3.0 mm</code> 吊鍊孔與 <code>6.0 mm</code> 保護圈並進行焊接。</p>
+    </div>
+
+    <div class="step-card">
+      <strong>步驟 6：設定雷射切割圖層顏色與線寬</strong> <span class="badge">Hairline</span>
+      <p>切割線設定為 <code>髮線 (Hairline)</code> 與純紅 (RGB: 255, 0, 0)；大象內部雕刻細節設定為黑色填滿 (RGB: 0, 0, 0)。</p>
+    </div>
+  </div>
+
+  <h2>🚀 三、延伸思考與進階主題 (Extensions & Advanced Topics)</h2>
+
+  <h3>1. 節點簡化與平滑化 (Node Optimization)</h3>
+  <p>描繪點陣圖後常會產生數百至數千個冗餘節點，導致雷射切割機運作時發生振動抖動。</p>
+  <div class="key-tip">
+    <strong>💡 最佳化技巧：</strong>使用 <code>形狀工具 (F10)</code> 全選節點，點擊屬性列的 <code>減少節點 (Reduce Nodes)</code>，將曲線簡化為流暢的貝茲曲線。
+  </div>
+
+  <h3>2. 低解析度圖片修補與斷線焊接</h3>
+  <p>若原始圖片解析度過低，描繪出的邊界可能出現斷線，導致「建立界線」失敗。</p>
+  <ul>
+    <li>使用 <code>形狀工具</code> 將開口節點拖曳重疊並點擊 <code>連接兩個節點</code>。</li>
+    <li>或使用 <code>智慧型填款工具 (Smart Fill Tool)</code> 在封閉區域點擊，重新生成單一封閉物件。</li>
+  </ul>
+
+  <h3>3. 工業生產與加工注意事項 (Manufacturing & Materials)</h3>
+  <ul>
+    <li><strong>壓克力 (Acrylic)</strong>：切割線需考慮雷射光束的 <strong>切口補償 (Kerf)</strong>（約 <code>0.1 mm ~ 0.2 mm</code>）。</li>
+    <li><strong>雙層壓克力夾層</strong>：若壓克力包含 UV 印刷圖案，外框需預留 <code>1.5 mm</code> 印刷出血 (Bleed)，防止切割時邊緣剝落。</li>
+  </ul>
+
+  <div class="prompt-archive">
+    <h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+    <h3>🔹 [2026-09-15 09:31:25] [Gemini 3.6 Flash / Antigravity CorelDRAW Design Specialist]</h3>
+    <ul>
+      <li><strong>模型/Agent</strong>: Gemini 3.6 Flash / Antigravity CorelDRAW Design Specialist</li>
+      <li><strong>Prompt 原文</strong>:
+        <pre><code>coreldraw的檔案功能，特別是點陣圖的匯入與匯出與解析度的概念，可以使用描繪點陣圖功能將有完整線條的點陣圖先描繪成向量圖，解散群組後，再進行建議界線，就可以獲得一個特殊形狀的封閉曲線 例如大象 海龜，之後就可以拿來做成鑰匙圈的吊飾設計</code></pre>
+      </li>
+      <li><strong>變更摘要</strong>: 建立 CorelDRAW 點陣圖匯入匯出、解析度原理、描繪點陣圖、解散群組與建立界線製作鑰匙圈吊飾之完整教學筆記（HTML 格式，具備 PDF 匯出列印按鈕與響應式視覺美化）。</li>
+    </ul>
+
+    <h3>🔹 [2026-09-15 09:33:54] [Gemini 3.6 Flash / Antigravity CorelDRAW Design Specialist]</h3>
+    <ul>
+      <li><strong>模型/Agent</strong>: Gemini 3.6 Flash / Antigravity CorelDRAW Design Specialist</li>
+      <li><strong>Prompt 原文</strong>:
+        <pre><code>加入探討點陣圖描繪成向量圖的原理與前後的差異</code></pre>
+      </li>
+      <li><strong>變更摘要</strong>: 補充點陣圖轉換為向量圖之四階段演算法原理（色彩量化、邊緣檢測、輪廓追蹤、貝茲曲線擬合）與轉換前後之完整特徵差異對照表。</li>
+    </ul>
+  </div>
+
+</div>
+
+</body>
+</html>

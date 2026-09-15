@@ -19,6 +19,8 @@
 * `2026-09-04` | [CNN 卷積神經網路解析](./AI/ai_cnn.html) (HTML)
 * `2026-09-09` | [AI 課程筆記 (09-09)](./AI/AI_0909.HTML) (HTML)
 * `2026-09-11` | [AI 課程筆記 (09-10)](./AI/ai_0910.html) (HTML)
+* `2026-09-15` | [Antigravity CLI b06 手冊 (HTML)](./AI/Antigravity_cli_b06.html) (HTML)
+* `2026-09-15` | [Antigravity CLI b06 手冊 (MD)](./AI/Antigravity_cli_b06.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
 * `2026-09-01` | [LED 限流電阻原理與實驗](./ec/led.html) (HTML)
@@ -60,7 +62,11 @@
 * `2026-09-01` | [模型訓練指令腳本 train_gesture.py](./yolo/train_gesture.py) (Python)
 * `2026-09-01` | [環境套件需求表](./yolo/requirements.txt) (TXT)
 
-### 📋 8. 工作區指引與核心規範
+### 🎨 8. 平面設計與 CorelDRAW (`design/`)
+* `2026-09-15` | [CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計實務教學](./design/coreldraw_keychain_design.html) (HTML)
+* `2026-09-15` | [CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計實務教學 (MD)](./design/coreldraw_keychain_design.md) (MD)
+
+### 📋 9. 工作區指引與核心規範
 * `2026-09-10` | [筆記生成與更新標準指引](./NOTE_GENERATION_GUIDE.md) (MD)
 * `2026-09-10` | [Antigravity Note Rules](./GEMINI.md) (MD)
 * `2026-09-11` | [根目錄 AI 課程總覽](./ai_0910.html) (HTML)
@@ -77,3 +83,12 @@
   update default page, with files date
   ```
 - **變更摘要**: 於 `index.html` 與 `INDEX.md` 為全區域所有檔案補全修改日期標籤 (`YYYY-MM-DD`)，讓搜尋與瀏覽更容易。
+
+### 🔹 [2026-09-15 09:36:37] [Gemini 3.6 Flash / Antigravity Documentation Specialist]
+- **模型/Agent**: Gemini 3.6 Flash / Antigravity Documentation Specialist
+- **Prompt 原文**:
+  ```text
+  應該要歸在什麼類別? 並更新首頁的檔案索引
+  ```
+- **變更摘要**: 將 `Antigravity_cli_b06` 正確歸類移至 `AI/` 資料夾中，將 `coreldraw_keychain_design` 歸類於 `design/` 資料夾中，並同步全面更新 `INDEX.md` 與 `index.html` 之全站主題卡片索引與檔案計數。
+
