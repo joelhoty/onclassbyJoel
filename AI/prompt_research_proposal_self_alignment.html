@@ -522,63 +522,78 @@
 
         <!-- Section 1 -->
         <h2 id="sec-1" class="section-title">單元一：AI 提示詞工程 (Prompt Engineering) 與學術小論文共創方法論深度解析</h2>
-        <p>在利用大型語言模型（LLM）構思科學小論文、高中科展專題或大專研究計畫時，<strong>「Prompt 的品質決定了研究深度的上限」</strong>。如果提示詞過於籠統（例如：「<em>幫我寫一篇小葉欖仁落體的小論文</em>」），AI 只會產出空泛的科普敘述；唯有透過<strong>結構化限制（Constraints）、物理機制錨定（Grounding）、思考鏈（Chain-of-Thought, CoT）與分步迭代（Iterative Refinement）</strong>，才能引導 AI 產出具備剛體流體力學建模、精確微分方程、嚴謹實驗變因矩陣及開源軟體量化驗證的專業級學術計畫書。</p>
+        <p>在利用大型語言模型（LLM）構思科學小論文、高中科展專題或大專研究計畫時，最常見的誤解是：<strong>「以為一開始就必須寫出包含高階流體力學公式與專業術語的完美 Prompt」</strong>。</p>
+        <p>事實上，真實的科學研究具備<strong>「認知漸進律（Cognitive Progression Law）」</strong>：在研究初始發想期，研究者通常只有宏觀觀察或直觀好奇（例如：「<em>我想研究小葉欖仁種子落下</em>」），不可能一開始就憑空寫出「雷諾數 $Re$ 在 $10^3 \sim 10^4$、質心壓心偏心力矩 $\tau_{aero}$ 與二階欠阻尼微分方程」。</p>
+        <p>因此，高階的 AI 學術提示詞工程，本質上不是「單次指令的華麗詞藻堆砌」，而是<strong>「透過多輪對話逐步遞進的引導藝術」</strong>：</p>
+
+        <div class="callout info">
+            <strong>真實學術專題 Prompt「認知漸進與人機協同」三層推進架構：</strong><br>
+            • <strong>【初期：開放啟發層】</strong> 自然語言 + 角色賦能 (科學老師) ➔ 探索 5 大可行研究問題<br>
+            • <strong>【中期：文獻與方法層】</strong> 聯網深化文獻 ➔ 逆向追問「根據文獻如何修改目的與方法？」➔ 反推升級工具鏈<br>
+            • <strong>【後期：建模與收斂層】</strong> 終極統整指令 ➔ 聚合長上下文 ➔ 產出完整計畫書與 Python 回歸代碼
+        </div>
 
         <h3 id="sec-1-1" class="sub-title">1.1 學術專題 AI 提示詞四大核心心法與思維模型</h3>
         <div class="card-grid">
             <div class="feature-card">
                 <h4>🎯 1. 角色語境錨定 (Role & Context Framing)</h4>
-                <p>明確指定 AI 的學術專業背景（如生物流體力學與仿生研究員），設定論文深度為特優專題水準，杜絕口語化表達。</p>
+                <p>初始階段指定 AI 扮演科學老師或導師，設定風格具備啟發性與落地可行性，避免過早堆砌艱深公式。</p>
             </div>
             <div class="feature-card">
-                <h4>📐 2. 思考鏈與機制約束 (CoT & Mechanism Anchoring)</h4>
-                <p>強制引導模型依循：<code>微觀現象 ➔ 雷諾數定界 ➔ 質心(CM)/壓心(CP)受力分析 ➔ 二階微分方程 ➔ 邊界條件</code>。</p>
+                <h4>📐 2. 逆向校準提示詞 (Grounding & Alignment)</h4>
+                <p>當 AI 在文獻中帶出高階理論時，透過「根據文獻如何修改方法？」引導 AI 自我對齊與升級實驗設計。</p>
             </div>
             <div class="feature-card">
-                <h4>🔬 3. 負向約束與防幻覺 (Negative Constraints & Grounding)</h4>
-                <p>禁止 AI 幻想昂貴的高速風洞或不存在的昂貴感測器，限定使用 ImageJ、Tracker 240fps、Arduino 等平民化開源工具鏈。</p>
+                <h4>🔬 3. 負向約束與防幻覺 (Negative Constraints)</h4>
+                <p>禁止 AI 幻想昂貴的高速風洞或不存在的感測器，鎖定 ImageJ、Tracker 240fps、Arduino 等開源工具鏈。</p>
             </div>
             <div class="feature-card">
-                <h4>📑 4. 結構範本約束 (Schema Templating)</h4>
-                <p>強制要求 AI 依照標準學術規範輸出中英文摘要、文獻回顧表、三類變因矩陣與 APA 參考文獻清單。</p>
+                <h4>📑 4. 全域知識聚合 (Global Synthesis)</h4>
+                <p>在最後階段利用大模型的長上下文記憶，發出統整指令，強制依照標準學術規範輸出無省略全文。</p>
             </div>
         </div>
 
-        <h3 id="sec-1-2" class="sub-title">1.2 新手常見誤區 vs 專家級 Prompt 結構深度對照表</h3>
+        <h3 id="sec-1-2" class="sub-title">1.2 「分階段提示詞演進」vs「單純新手低效指令」對照表</h3>
         <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
-                        <th>構面維度</th>
-                        <th>❌ 新手低效 Prompt (Naive)</th>
-                        <th>✅ 專家級結構化 Prompt (Expert)</th>
-                        <th>AI 輸出品質差異分析</th>
+                        <th>研究階段</th>
+                        <th>❌ 新手常見低效 Prompt (單向且空洞)</th>
+                        <th>✅ 專家級階梯式真實 Prompt (漸進引導)</th>
+                        <th>提示詞設計邏輯與 AI 反應機制</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>題目與動機</strong></td>
-                        <td><code>我想做小葉欖仁種子掉下來的題目，幫我寫動機。</code></td>
-                        <td><code>從小葉欖仁落果的非對稱梭形幾何出發，對比羽毛球力學，探討其空中『被動自校正機制』。請從『樹冠穿透效益』與『微型空投感測器外殼設計』兩大維度撰寫研究動機。</code></td>
-                        <td>從「日常看見落葉」的普通作文，躍升為「具有生態適應與工程仿生價值」的科學專題。</td>
+                        <td><strong>初期：選題探索</strong></td>
+                        <td><code>我想做小葉欖仁種子掉下來的題目，幫我寫論文。</code></td>
+                        <td><code>你是科學老師，我想進行關於小葉欖仁的種子落下的相關研究，提供五個可行的研究問題讓我參考。</code></td>
+                        <td><strong>啟發引導</strong>：不堆砌看不懂的術語，讓 AI 從不同物理維度（偏心、風布、含水率、姿態）拋出候選方案。</td>
                     </tr>
                     <tr>
-                        <td><strong>理論與模型</strong></td>
-                        <td><code>種子掉下來會受到空氣阻力，請寫出公式。</code></td>
-                        <td><code>請考慮落體雷諾數 Re 在 10³~10⁴ 區間，建立剛體質心(CM)與投影壓心(CP)之偏心氣動力矩方程 τ_aero，並推導二階非線性欠阻尼姿態角擺動方程 θ(t) 的解析解。</code></td>
-                        <td>從高中物理的一維空氣阻力質點公式，升級為三維剛體空氣動力學旋轉阻尼振盪模型。</td>
+                        <td><strong>中期：框架搭棚</strong></td>
+                        <td><code>好，就做第四個，直接寫內容。</code></td>
+                        <td><code>我要選擇研究問題四：初始釋放姿態對動態穩定性與軌跡的影響。撰寫研究大綱，包含題目,摘要,動機,文獻探討,研究方法,研究結果（可省略）,結果與討論(可省略）。</code></td>
+                        <td><strong>結構約束</strong>：先搭骨架（Scaffolding），避免 AI 一次性生成全文時結構散亂。</td>
                     </tr>
                     <tr>
-                        <td><strong>實驗與量測</strong></td>
-                        <td><code>我要怎麼做實驗量速度和角度？</code></td>
-                        <td><code>設計一組 2.5m 防風垂直落體塔實驗。要求：1. 使用 Arduino 伺服夾爪達成零初速與零角速度釋放；2. 使用 ImageJ 量化無量綱偏心率 ε；3. 透過 240fps 攝影與 Tracker 雙點追蹤萃取姿態角 θ(t)；4. 制定包含 5 組釋放傾角(0°~180°)的操縱、控制與應變變因矩陣。</code></td>
-                        <td>從模糊的「用碼錶和手機拍照」，轉變為具有高重複性、無擾動釋放、像素級校準的正式實驗架構。</td>
+                        <td><strong>中期：文獻深化</strong></td>
+                        <td><code>文獻探討太短了，再多寫一點。</code></td>
+                        <td><code>把文獻探討寫得更詳細更多面向，可以利用網路搜尋找相關的研究納入。</code></td>
+                        <td><strong>工具調用</strong>：授權 AI 聯網檢索，引入熱帶種子沉降、雷諾數相圖與 Nature 前沿論文。</td>
                     </tr>
                     <tr>
-                        <td><strong>數據與分析</strong></td>
-                        <td><code>幫我算一下實驗數據。</code></td>
-                        <td><code>提供一份完整的 Python 腳本（使用 scipy.optimize.curve_fit），運用 Levenberg-Marquardt 演算法對姿態角時序 θ(t) 進行非線性最小平方回歸，求出衰減係數 γ、固有頻率 ω_d 及過渡高度 H_t，並繪製包含衰減包絡線的圖表。</code></td>
-                        <td>提供可以直接運行的數值分析與論文圖表生成程式，極大提升研究說服力。</td>
+                        <td><strong>後期：方法校準</strong></td>
+                        <td><code>幫我想實驗步驟。</code></td>
+                        <td><code>根據這些文獻探討，我的研究目的跟研究方法可以怎麼修改？</code></td>
+                        <td><strong>逆向校準</strong>：讓文獻中的剛體氣動力學理論反過來指導實驗工具（ImageJ, Tracker, Arduino）升級。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>後期：全文統整</strong></td>
+                        <td><code>把前面的合在一起。</code></td>
+                        <td><code>根據目前選定的研究問題，統整以上討論，重新撰寫一份完整的研究大綱,要包含之前討論的內容與面向 完整的研究內容。</code></td>
+                        <td><strong>知識聚合</strong>：最大化利用長上下文記憶，產出無省略、高密度的正式學術計畫書。</td>
                     </tr>
                 </tbody>
             </table>
