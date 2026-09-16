@@ -147,8 +147,8 @@ $$\sigma(\epsilon) = \begin{cases} E^* \epsilon & (\text{線彈性階段}) \\ \s
   ```
 
 * **提示詞核心策略**：
-  * **反事實推演**：假設 3D 模型實驗確認質心極端前移（飛鏢效應），反推此結果對小葉欖仁真實果實演化策略有何物理學詮釋？
-  * **理論突破**：突破傳統「種子必靠旋轉或翻滾減速」的直覺思維，揭示小葉欖仁因具備「階梯式輪生樹冠」，必須依靠「垂直俯衝穿透」才能破解母樹枝葉截留（Canopy Interception）的物理屏障，並藉由前端纖維果皮的彈塑性潰縮吸收著陸衝擊力。
+  * **思維實驗 (Thought Experiment)**：假設 3D 模型實驗確認質心極端前移（飛鏢效應），透過這個設定好的假設條件推導出物理洞見——反推此結果對小葉欖仁真實果實演化策略有何物理學詮釋？
+  * **理論突破**：突破傳統「種子必靠旋轉或翻滾減速」的直覺思維，揭示小葉欖仁因具備「階梯式輪生樹冠」，必須依靠「垂直俯衝穿透」才能克服母樹枝葉截留（Canopy Interception）的物理屏障，並藉由前端纖維果皮的彈塑性潰縮吸收著陸衝擊力。
 
 ---
 
@@ -316,6 +316,14 @@ $$\sigma(\epsilon) = \begin{cases} E^* \epsilon & (\text{線彈性階段}) \\ \s
 ---
 
 ## 📝 提示詞歷史與變更記錄 (Prompt Archive)
+
+### 🔹 [2026-09-16 12:11:44] [Claude Sonnet 4.6 / Antigravity] 變更紀錄
+* **模型/Agent**: Claude Sonnet 4.6 / Antigravity
+* **Prompt 原文**:
+  ```text
+  內容中提到反事實推演 如果改用 thought expienments 思維實驗會更好嗎?這是科學教育較常用的
+  ```
+* **變更摘要**: 採納建議，將階段四提示詞策略標籤由「反事實推演 (Counterfactual Reasoning)」改為「思維實驗 (Thought Experiment)」，更貼合科學教育語境（Gedankenexperiment 傳統）；同步補充「透過設定好的假設條件推導出物理洞見」的說明句；MD 與 HTML 同步更新。
 
 ### 🔹 [2026-09-16 11:58:58] [Claude Sonnet 4.6 / Antigravity] 變更紀錄
 * **模型/Agent**: Claude Sonnet 4.6 / Antigravity
