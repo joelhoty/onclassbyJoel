@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>論文研究與 Prompt 引導實戰筆記：小葉欖仁落體自主定向機制</title>
+    
+    <!-- KaTeX CSS & JavaScript for LaTeX Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #eff6ff;
+            --secondary: #0f172a;
+            --accent-purple: #7c3aed;
+            --accent-teal: #0d9488;
+            --accent-emerald: #059669;
+            --accent-amber: #d97706;
+            --accent-rose: #e11d48;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --code-bg: #0f172a;
+            --code-text: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.75;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08), 0 8px 12px -6px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Header & Top Bar */
+        header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e3a8a 100%);
+            color: #ffffff;
+            padding: 45px 35px;
+            border-bottom: 4px solid var(--primary);
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 2.1rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #ffffff 0%, #93c5fd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p.subtitle {
+            color: #cbd5e1;
+            font-size: 1.05rem;
+            max-width: 950px;
+        }
+
+        .top-action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .metadata-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .meta-badge {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #e2e8f0;
+        }
+
+        .meta-badge.highlight {
+            background: rgba(37, 99, 235, 0.35);
+            border-color: #60a5fa;
+            color: #bfdbfe;
+            font-weight: 600;
+        }
+
+        .export-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .export-btn:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+        }
+
+        /* Content Body */
+        .content-body {
+            padding: 40px;
+        }
+
+        /* TOC */
+        .toc-box {
+            background: var(--primary-light);
+            border-left: 5px solid var(--primary);
+            padding: 22px 28px;
+            border-radius: 10px;
+            margin-bottom: 35px;
+        }
+
+        .toc-box h3 {
+            color: var(--primary-dark);
+            margin-bottom: 12px;
+            font-size: 1.15rem;
+        }
+
+        .toc-box ul {
+            list-style: none;
+            padding-left: 5px;
+        }
+
+        .toc-box li {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .toc-box a {
+            color: #1e40af;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.15s ease;
+        }
+
+        .toc-box a:hover {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+
+        /* Headings */
+        h2.section-title {
+            font-size: 1.6rem;
+            color: #0f172a;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-top: 45px;
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h2.section-title::before {
+            content: "";
+            display: inline-block;
+            width: 8px;
+            height: 24px;
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        h3.sub-title {
+            font-size: 1.25rem;
+            color: #1e293b;
+            margin-top: 28px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        h4 {
+            font-size: 1.05rem;
+            color: #334155;
+            margin-top: 18px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: #334155;
+        }
+
+        /* Abstract Box */
+        .abstract-card {
+            background: #f1f5f9;
+            border-left: 5px solid var(--accent-purple);
+            padding: 24px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .abstract-card h4 {
+            color: var(--accent-purple);
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* Cards & Grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+            border-color: #cbd5e1;
+        }
+
+        .feature-card h4 {
+            color: var(--primary-dark);
+            margin-top: 0;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Prompt Template Box */
+        .prompt-template-card {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-left: 5px solid var(--accent-purple);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .prompt-template-card h4 {
+            color: var(--accent-purple);
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+        }
+
+        /* Callout Box */
+        .callout {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-left: 5px solid var(--accent-emerald);
+            padding: 18px 22px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        .callout.warning {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-left: 5px solid var(--accent-amber);
+        }
+
+        .callout.info {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-left: 5px solid var(--primary);
+        }
+
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+            margin: 22px 0;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            text-align: left;
+            background: #ffffff;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #0f172a;
+            font-weight: 700;
+            padding: 14px 18px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 12px 18px;
+            border-bottom: 1px solid var(--border-color);
+            color: #334155;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        /* Code Blocks */
+        pre {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-family: "Fira Code", Consolas, Monaco, "Courier New", Courier, monospace;
+            font-size: 0.88rem;
+            line-height: 1.6;
+            margin: 20px 0;
+            border: 1px solid #334155;
+        }
+
+        code {
+            font-family: "Fira Code", Consolas, Monaco, "Courier New", Courier, monospace;
+            background: #f1f5f9;
+            color: #0f172a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        pre code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+        }
+
+        /* References & Archive */
+        .references-list {
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+
+        .references-list li {
+            margin-bottom: 10px;
+            font-size: 0.92rem;
+            color: #475569;
+        }
+
+        .prompt-archive-box {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 40px;
+        }
+
+        .prompt-entry {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 18px;
+            margin-top: 15px;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background-color: #ffffff;
+                color: #000000;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                border: none;
+                max-width: 100%;
+            }
+
+            .export-btn, .top-action-bar {
+                display: none !important;
+            }
+
+            header {
+                background: #ffffff !important;
+                color: #000000 !important;
+                border-bottom: 2px solid #000000 !important;
+                padding: 20px 0 !important;
+            }
+
+            header h1 {
+                background: none !important;
+                -webkit-text-fill-color: #000000 !important;
+                color: #000000 !important;
+                font-size: 1.8rem;
+            }
+
+            header p.subtitle {
+                color: #333333 !important;
+            }
+
+            .content-body {
+                padding: 15px 0 !important;
+            }
+
+            pre {
+                white-space: pre-wrap;
+                border: 1px solid #ccc;
+                color: #000000;
+                background: #f9f9f9;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>落體中的自主定向機制：小葉欖仁果實初始釋放姿態對動態穩定性與運動軌跡之影響研究</h1>
+        <p class="subtitle">AI 學術小論文共創、高階 Prompt 工程設計、流體力學建模與仿生空投探針實戰筆記</p>
+        
+        <div class="top-action-bar">
+            <div class="metadata-box">
+                <span class="meta-badge">📅 最後更新時間: 2026-09-16 09:49:04 (UTC+8)</span>
+                <span class="meta-badge highlight">🤖 使用模型: Gemini 3.7 Flash</span>
+                <span class="meta-badge">⚡ 執行 Agent: Antigravity</span>
+                <span class="meta-badge">📂 分類: AI / 論文專題 / 提示詞工程</span>
+            </div>
+            <button class="export-btn" onclick="window.print()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                匯出成 PDF
+            </button>
+        </div>
+    </header>
+
+    <div class="content-body">
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <h3>📑 筆記章節導覽</h3>
+            <ul>
+                <li><a href="#sec-1">單元一：AI 提示詞工程 (Prompt Engineering) 與學術小論文共創方法論深度解析</a>
+                    <ul>
+                        <li><a href="#sec-1-1">1.1 學術專題 AI 提示詞四大核心心法與思維模型</a></li>
+                        <li><a href="#sec-1-2">1.2 新手常見誤區 vs 專家級 Prompt 結構深度對照表</a></li>
+                        <li><a href="#sec-1-3">1.3 科學小論文五階段 Prompt 實戰範本庫 (Prompt Template Library)</a></li>
+                        <li><a href="#sec-1-4">1.4 人機協同科研閉環工作流 (Human-in-the-Loop Co-Creation Workflow)</a></li>
+                    </ul>
+                </li>
+                <li><a href="#sec-2">單元二：小論文專題完整研究計畫書——小葉欖仁落體自主定向機制</a>
+                    <ul>
+                        <li><a href="#sec-2-abstract">・研究摘要 (Abstract)</a></li>
+                        <li><a href="#sec-2-intro">・壹、研究動機與背景 (Introduction)</a></li>
+                        <li><a href="#sec-2-lit">・貳、文獻探討與理論模型 (Literature Review)</a></li>
+                        <li><a href="#sec-2-obj">・參、研究目的與待答問題 (Objectives & Questions)</a></li>
+                        <li><a href="#sec-2-method">・肆、研究方法與實驗設計 (Methodology)</a></li>
+                        <li><a href="#sec-2-results">・伍、預期成果與數據分析 (Expected Results)</a></li>
+                        <li><a href="#sec-2-ref">・陸、參考文獻 (References)</a></li>
+                    </ul>
+                </li>
+                <li><a href="#sec-3">單元三：核心關鍵字概念擴充體系 (Keyword Expansion Framework)</a>
+                    <ul>
+                        <li><a href="#sec-3-1">1. 核心概念剖析 (Core Concepts: 雷諾數、CM-CP 力矩、欠阻尼模型)</a></li>
+                        <li><a href="#sec-3-2">2. 實作與應用範例 (Python 動力學擬合程式碼 & Arduino 控制韌體)</a></li>
+                        <li><a href="#sec-3-3">3. 延伸思考與進階主題 (跨物種散播矩陣 & 仿生空投設計準則)</a></li>
+                    </ul>
+                </li>
+                <li><a href="#sec-4">📝 提示詞歷史與變更記錄 (Prompt Archive)</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 1 -->
+        <h2 id="sec-1" class="section-title">單元一：AI 提示詞工程 (Prompt Engineering) 與學術小論文共創方法論深度解析</h2>
+        <p>在利用大型語言模型（LLM）構思科學小論文、高中科展專題或大專研究計畫時，<strong>「Prompt 的品質決定了研究深度的上限」</strong>。如果提示詞過於籠統（例如：「<em>幫我寫一篇小葉欖仁落體的小論文</em>」），AI 只會產出空泛的科普敘述；唯有透過<strong>結構化限制（Constraints）、物理機制錨定（Grounding）、思考鏈（Chain-of-Thought, CoT）與分步迭代（Iterative Refinement）</strong>，才能引導 AI 產出具備剛體流體力學建模、精確微分方程、嚴謹實驗變因矩陣及開源軟體量化驗證的專業級學術計畫書。</p>
+
+        <h3 id="sec-1-1" class="sub-title">1.1 學術專題 AI 提示詞四大核心心法與思維模型</h3>
+        <div class="card-grid">
+            <div class="feature-card">
+                <h4>🎯 1. 角色語境錨定 (Role & Context Framing)</h4>
+                <p>明確指定 AI 的學術專業背景（如生物流體力學與仿生研究員），設定論文深度為特優專題水準，杜絕口語化表達。</p>
+            </div>
+            <div class="feature-card">
+                <h4>📐 2. 思考鏈與機制約束 (CoT & Mechanism Anchoring)</h4>
+                <p>強制引導模型依循：<code>微觀現象 ➔ 雷諾數定界 ➔ 質心(CM)/壓心(CP)受力分析 ➔ 二階微分方程 ➔ 邊界條件</code>。</p>
+            </div>
+            <div class="feature-card">
+                <h4>🔬 3. 負向約束與防幻覺 (Negative Constraints & Grounding)</h4>
+                <p>禁止 AI 幻想昂貴的高速風洞或不存在的昂貴感測器，限定使用 ImageJ、Tracker 240fps、Arduino 等平民化開源工具鏈。</p>
+            </div>
+            <div class="feature-card">
+                <h4>📑 4. 結構範本約束 (Schema Templating)</h4>
+                <p>強制要求 AI 依照標準學術規範輸出中英文摘要、文獻回顧表、三類變因矩陣與 APA 參考文獻清單。</p>
+            </div>
+        </div>
+
+        <h3 id="sec-1-2" class="sub-title">1.2 新手常見誤區 vs 專家級 Prompt 結構深度對照表</h3>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>構面維度</th>
+                        <th>❌ 新手低效 Prompt (Naive)</th>
+                        <th>✅ 專家級結構化 Prompt (Expert)</th>
+                        <th>AI 輸出品質差異分析</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>題目與動機</strong></td>
+                        <td><code>我想做小葉欖仁種子掉下來的題目，幫我寫動機。</code></td>
+                        <td><code>從小葉欖仁落果的非對稱梭形幾何出發，對比羽毛球力學，探討其空中『被動自校正機制』。請從『樹冠穿透效益』與『微型空投感測器外殼設計』兩大維度撰寫研究動機。</code></td>
+                        <td>從「日常看見落葉」的普通作文，躍升為「具有生態適應與工程仿生價值」的科學專題。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>理論與模型</strong></td>
+                        <td><code>種子掉下來會受到空氣阻力，請寫出公式。</code></td>
+                        <td><code>請考慮落體雷諾數 Re 在 10³~10⁴ 區間，建立剛體質心(CM)與投影壓心(CP)之偏心氣動力矩方程 τ_aero，並推導二階非線性欠阻尼姿態角擺動方程 θ(t) 的解析解。</code></td>
+                        <td>從高中物理的一維空氣阻力質點公式，升級為三維剛體空氣動力學旋轉阻尼振盪模型。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>實驗與量測</strong></td>
+                        <td><code>我要怎麼做實驗量速度和角度？</code></td>
+                        <td><code>設計一組 2.5m 防風垂直落體塔實驗。要求：1. 使用 Arduino 伺服夾爪達成零初速與零角速度釋放；2. 使用 ImageJ 量化無量綱偏心率 ε；3. 透過 240fps 攝影與 Tracker 雙點追蹤萃取姿態角 θ(t)；4. 制定包含 5 組釋放傾角(0°~180°)的操縱、控制與應變變因矩陣。</code></td>
+                        <td>從模糊的「用碼錶和手機拍照」，轉變為具有高重複性、無擾動釋放、像素級校準的正式實驗架構。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>數據與分析</strong></td>
+                        <td><code>幫我算一下實驗數據。</code></td>
+                        <td><code>提供一份完整的 Python 腳本（使用 scipy.optimize.curve_fit），運用 Levenberg-Marquardt 演算法對姿態角時序 θ(t) 進行非線性最小平方回歸，求出衰減係數 γ、固有頻率 ω_d 及過渡高度 H_t，並繪製包含衰減包絡線的圖表。</code></td>
+                        <td>提供可以直接運行的數值分析與論文圖表生成程式，極大提升研究說服力。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 id="sec-1-3" class="sub-title">1.3 科學小論文五階段 Prompt 實戰範本庫 (Prompt Template Library)</h3>
+
+        <div class="prompt-template-card">
+            <h4>📌 階段一：專題破局與創新性選題 Prompt 模板</h4>
+            <pre><code>【角色】：資深流體力學與生物力學學者
+【任務】：為中學生/大專科展設計一份具有高度創新性與科學嚴謹性的研究題目與研究動機。
+【觀察標的】：小葉欖仁（Terminalia mantaly）果實脫落時的非對稱紡錘外型與空中姿態調整現象。
+【思考要求】：
+1. 破除傳統質點自由落體模型，導入「三維剛體旋轉力學」與「被動自對準 (Self-Alignment)」。
+2. 從植物生態學（樹冠穿透 vs 風布散播權衡）與現代工程（無人機無動力空投環境探針）兩個維度展開研究背景。
+3. 輸出包含正式中英文題目、400 字標準學術摘要（背景、方法、量化模型、應用）。</code></pre>
+        </div>
+
+        <div class="prompt-template-card">
+            <h4>📌 階段二：剛體空氣動力學與理論推導 Prompt 模板</h4>
+            <pre><code>【角色】：計算流體力學（CFD）與理論物理專家
+【任務】：建構小葉欖仁果實落體姿態校正的完整物理與數學模型。
+【約束條件】：
+1. 計算特徵長度與速度下的雷諾數 (Re) 範圍，並引用 Field (1997) 與 Andersen (2005) 的沉降相圖（穩態、擺動、翻滾、混沌）。
+2. 借鑑 Cohen (2015) 羽毛球力學，定義質心 (CM) 與壓心 (CP)，推導氣動恢復力矩公式 τ_aero = -0.5 * ρ * v² * S * d_CM-CP * Cm(θ)。
+3. 列出帶空氣旋轉阻尼的二階常微分方程（ODE），並在小角度近似下推導欠阻尼解析解 θ(t) = θ_steady + A * exp(-γ*t) * cos(ω_d*t + φ)，明確定義各參數物理意義。</code></pre>
+        </div>
+
+        <div class="prompt-template-card">
+            <h4>📌 階段三：實驗設計與開源工具鏈矩陣 Prompt 模板</h4>
+            <pre><code>【角色】：實驗物理學家與儀器設計工程師
+【任務】：設計一套低成本、高精度且可落地的實驗方法學。
+【設備限制】：限定使用微米電子天平、ImageJ、Arduino 微型電磁爪、240fps 攝影機與 Tracker 視訊分析軟體。
+【輸出要求】：
+1. 樣本前處理與偏心率 ε = (x_CP - x_CM)/L 標定步驟（雙線正交懸掛法 + 背光輪廓二值化）。
+2. 電控零衝量釋放機構設計（確保初速度 v0=0, 初角速度 ω0=0）。
+3. 完整的三類實驗變因控制矩陣表格（操縱變因：0°, 45°, 90°, 135°, 180°；控制變因；應變變因）。
+4. 空間座標校準與 Tracker 雙特徵點（尖端與基部）角度萃取計算式。</code></pre>
+        </div>
+
+        <div class="prompt-template-card">
+            <h4>📌 階段四：數據分析與 Python 數值回歸 Prompt 模板</h4>
+            <pre><code>【角色】：科學計算與資料科學工程師
+【任務】：編寫用於分析高速攝影姿態角數據的 Python 程式碼。
+【技術棧】：Python 3, NumPy, SciPy (scipy.optimize.curve_fit), Matplotlib。
+【程式碼要求】：
+1. 封裝二階欠阻尼振盪模型函數。
+2. 模擬生成含實驗雜訊之 240 fps 時序數據。
+3. 採用 Levenberg-Marquardt 非線性最小平方法擬合未知參數 (θ_steady, A, γ, ω_d, φ) 並計算協方差矩陣標準誤差。
+4. 繪製具有出版品質的擬合曲線圖，包含實驗散佈點、回歸曲線與衰減包絡線。</code></pre>
+        </div>
+
+        <div class="prompt-template-card">
+            <h4>📌 階段五：評審委員視角嚴格審查 (Devil's Advocate Prompt) 模板</h4>
+            <pre><code>【角色】：全國科展特優評審委員與頂級力學期刊審稿人 (Reviewer)
+【任務】：對本篇小論文研究計畫書進行最嚴苛的批判性審查（Red Teaming）。
+【審查重點】：
+1. 質心與壓心的標定方法是否存在系統誤差？
+2. 2.5 米落體塔高度是否足夠使 180° 倒置釋放樣本完成姿態收斂？
+3. 二維平面攝影追蹤是否會忽略物體的三維三軸進動 (Precession) 與自旋 (Spin)？
+4. 針對以上潛在漏洞，提出具體的實驗補強與理論修正建議。</code></pre>
+        </div>
+
+        <h3 id="sec-1-4" class="sub-title">1.4 人機協同科研閉環工作流 (Human-in-the-Loop Co-Creation Workflow)</h3>
+        <p>在實際科研過程中，人類研究員與 AI 應形成緊密的「人機迴路 (Human-in-the-Loop)」：由人類負責真實世界的現象觀察、物理直覺判定與實驗執行；AI 則負責理論文獻檢索整理、多維微分方程推導、程式碼撰寫與反向紅隊審查，從而大幅提升研究效率與論證嚴謹度。</p>
+
+        <!-- Section 2 -->
+        <h2 id="sec-2" class="section-title">單元二：完整學術專題研究計畫書——小葉欖仁落體自主定向機制</h2>
+
+        <div id="sec-2-abstract" class="abstract-card">
+            <h4>落體中的自主定向機制：小葉欖仁果實初始釋放姿態對動態穩定性與運動軌跡之影響研究</h4>
+            <p><strong>Self-Alignment Dynamics: The Effect of Initial Release Orientations on the Attitude Stability and Trajectory of Falling Madagascar Almond Fruits</strong></p>
+            <p style="margin-bottom:0;"><strong>【摘要】</strong>本研究探討小葉欖仁（<em>Terminalia mantaly</em>）天然非對稱紡錘形果實自由下落過程中的「被動動態自校正機制（Passive Self-Alignment Mechanism）」。有別於傳統將種子下落視為均勻質點之簡化模型，本研究從三維剛體空氣動力學出發，首先藉由刀口平衡懸掛法與數位影像輪廓分析（ImageJ），量化果實長軸上「質心（CM）」相對於「幾何投影中心/壓心（CP）」的無量綱偏心率 $\epsilon = \frac{x_{CP} - x_{CM}}{L}$。實驗架設 2.5 公尺高之封閉防風垂直落體塔，利用電控微型伺服夾具以零初速、無轉動衝量之方式，設定五組初始釋放傾角（$\theta_0 = 0^\circ, 45^\circ, 90^\circ, 135^\circ, 180^\circ$）。下落過程由 240 fps 高影格率攝影系統記錄，並導入開源運動分析軟體 Tracker 萃取特徵點，解析果實長軸姿態角 $\theta(t)$、角速度 $\omega(t)$、下落速度 $v_y(t)$ 及水平側向偏移量 $\Delta x$。研究進一步將姿態角時序數據帶入帶阻尼之氣動力矩振盪力學模型進行非線性回歸，量化其校正過渡高度（$H_t$）、衰減係數（$\gamma$）與振盪角頻率（$\omega_d$）。本研究不僅在植物生態學上闡明非典型翅果如何權衡「垂直樹冠穿透」與「橫向受風擴散」，亦在工程上為微型環境監測感測器的無動力定向空投設計提供了具體的仿生力學依據。</p>
+        </div>
+
+        <h3 id="sec-2-intro" class="sub-title">壹、研究動機與背景 (Introduction)</h3>
+        <p><strong>一、生活觀察與問題發想：</strong>小葉欖仁為熱帶與亞熱帶常見行道樹，樹冠層次平展密實。落果脫離枝條時具有隨機初始傾角，但在下落中往往展現出尖端朝下自動對準流線的現象。在中高雷諾數下，非對稱微型物體下墜極易陷入翻滾混沌；小葉欖仁如何以被動結構實現如同「羽毛球」般的自我定向，是兼具物理與生物學魅力的主題。</p>
+        <p><strong>二、植物繁衍策略之空氣動力學折衝：</strong>
+            <br>• <em>樹冠穿透效益 (Canopy Penetration)</em>：尖端朝下能以最小迎風截面積與阻力貫穿濃密樹冠，避免懸掛乾枯。
+            <br>• <em>風布散播效益 (Anemochory)</em>：若誘發擺動或橫置姿態，阻力大幅增加、終端速度下降，可借助側風飄送擴散基因。
+        </p>
+        <p><strong>三、無動力被動姿態修正的仿生需求：</strong>無人機空投微型環境監測探針（如森林火災感知器）無法配置高耗能的主動姿態動量輪。借鑑小葉欖仁的形態偏心設計，能打造零能耗、高可靠度的自對準空投外殼。</p>
+
+        <h3 id="sec-2-lit" class="sub-title">貳、文獻探討與理論模型 (Literature Review)</h3>
+        <p><strong>一、中高雷諾數沉降相圖：</strong>
+        落體雷諾數定義為 $Re = \frac{\rho \cdot v \cdot L}{\mu}$（本實驗區間約 $10^3 \sim 10^4$）。根據 Field et al. (1997) 與 Andersen et al. (2005)，落體隨無量綱轉動慣量 $I^* = \frac{I_{CM}}{\rho L^5}$ 與 $Re$ 存在四大相態：穩態定向沉降 (Steady)、週期性擺動 (Fluttering)、連續翻滾 (Tumbling) 與混沌運動 (Chaotic)。</p>
+
+        <p><strong>二、質心 (CM) 與壓心 (CP) 被動自校正力矩：</strong>
+        根據 Cooke (1992) 及 Cohen et al. (2015) 羽毛球力學，流體阻力作用於壓心 $P_{CP}$，重力與轉動樞紐位於質心 $P_{CM}$。偏心距 $d_{CM-CP} = x_{CP} - x_{CM}$ 產生相對於質心的氣動力矩：
+        $$\tau_{aero} = -\frac{1}{2} \rho v^2 S \cdot d_{CM-CP} \cdot C_m(\theta)$$
+        當質心位於壓心前側（$d_{CM-CP} > 0$）時，力矩為負反饋恢復力矩，使物體具備被動定向穩定性。</p>
+
+        <p><strong>三、二階欠阻尼動態方程：</strong>
+        $$I_{CM} \frac{d^2\theta}{dt^2} + C_{d,rot} \left(\frac{d\theta}{dt}\right) + mg \cdot d_{CM-CP} \sin\theta = 0$$
+        小角度線性化解為：
+        $$\theta(t) = \theta_{steady} + A \cdot e^{-\gamma t} \cdot \cos(\omega_d t + \phi)$$</p>
+
+        <h3 id="sec-2-obj" class="sub-title">參、研究目的與待答問題 (Objectives & Questions)</h3>
+        <div class="callout info">
+            <strong>待答科學問題 (Research Questions)：</strong>
+            <br>• <strong>Q1</strong>：小葉欖仁果實內部質量偏心率 $\epsilon$ 的統計分佈為何？
+            <br>• <strong>Q2</strong>：初始釋放傾角（$0^\circ \sim 180^\circ$）是否均能收斂至穩態向下姿態？垂直過渡高度 $H_t$ 為何？
+            <br>• <strong>Q3</strong>：橫放（$90^\circ$）與倒置（$180^\circ$）是否會跨越臨界值引發連續翻滾相？
+            <br>• <strong>Q4</strong>：姿態校正過程如何影響落體水平側向漂移量 $\Delta x$ 與終端沉降速度 $v_t$？
+        </div>
+
+        <h3 id="sec-2-method" class="sub-title">肆、研究方法與實驗設計 (Methodology)</h3>
+        
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>變因類別</th>
+                        <th>參數名稱</th>
+                        <th>具體設定與操作規範</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>操縱變因</strong></td>
+                        <td>初始釋放傾角 ($\theta_0$)</td>
+                        <td>
+                            定義尖端垂直向下為 $0^\circ$：<br>
+                            1. $\theta_0 = 0^\circ$（尖端朝下）<br>
+                            2. $\theta_0 = 45^\circ$（尖端斜下）<br>
+                            3. $\theta_0 = 90^\circ$（長軸水平橫置）<br>
+                            4. $\theta_0 = 135^\circ$（基部斜下）<br>
+                            5. $\theta_0 = 180^\circ$（基部朝下，尖端倒置）
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>控制變因</strong></td>
+                        <td>環境與幾何標準化</td>
+                        <td>
+                            1. 落體塔高度 2.50 m 封閉無風<br>
+                            2. 恆溫恆濕（$25 \pm 1^\circ\text{C}$，RH $60 \pm 3\%$）<br>
+                            3. Arduino 電控伺服爪零初速 ($v_0=0$)、零角速度 ($\omega_0=0$) 釋放<br>
+                            4. 每組傾角重複測試 15 次
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>應變變因</strong></td>
+                        <td>運動學時序與參數</td>
+                        <td>
+                            1. 長軸姿態角 $\theta(t)$、角速度 $\omega(t)$（Tracker 雙特徵點萃取）<br>
+                            2. 姿態過渡高度 $H_t$（收斂至 $\theta_{steady} \pm 5^\circ$ 所需位移）<br>
+                            3. 終端速度 $v_t$ 與雷諾數 $Re(t)$<br>
+                            4. 著地側向位移 $\Delta x$ 與相態判定 (Steady / Flutter / Tumble)
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 id="sec-2-results" class="sub-title">伍、預期成果與數據分析 (Expected Results & Analysis)</h3>
+        <p>1. <strong>形態偏心驗證</strong>：證實果實鈍基部密度顯著高於尖端，統計平均無量綱偏心率 $\epsilon > 0$。<br>
+        2. <strong>姿態演化與過渡高度</strong>：$\theta_0 = 45^\circ, 135^\circ$ 呈現顯著欠阻尼振盪；若過渡高度 $H_t < 0.8 \, \text{m}$，強力支持樹冠穿透假說。<br>
+        3. <strong>仿生工程標準化</strong>：提供無人機微型環境探針之偏心配置與外殼幾何設計準則。</p>
+
+        <h3 id="sec-2-ref" class="sub-title">陸、參考文獻 (References)</h3>
+        <ol class="references-list">
+            <li>Andersen, A., Pesavento, U., & Wang, Z. J. (2005). Unsteady aerodynamics of fluttering and tumbling plates. <em>Journal of Fluid Mechanics</em>, 541, 65–90.</li>
+            <li>Augspurger, C. K. (1986). Morphology and aerodynamics of wind-dispersed diaspores of Neotropical trees. <em>American Journal of Botany</em>, 73(3), 353–363.</li>
+            <li>Brown, D., & Cox, A. J. (2009). Innovative uses of video analysis in undergraduate physics. <em>The Physics Teacher</em>, 47(3), 145–150.</li>
+            <li>Cohen, C., Texier, B. D., Reyssat, E., Snoeijer, J. H., & Clanet, C. (2015). On the aerodynamics of the shuttlecock. <em>Journal of Fluid Mechanics</em>, 773, 211–233.</li>
+            <li>Cooke, A. J. (1992). An aerodynamic review of the badminton shuttlecock. <em>Sports Engineering</em>, 2(2), 85–98.</li>
+            <li>Field, S. B., Klaus, M., Moore, M. G., & Nori, F. (1997). Chaotic dynamics of falling disks. <em>Nature</em>, 388(6639), 252–254.</li>
+            <li>Kim, B. H., Li, K., Kim, J. T., Park, Y., et al. (2021). Three-dimensional microfliers inspired by wind-dispersed seeds. <em>Nature</em>, 597(7877), 503–510.</li>
+            <li>Marchildon, E. K., Clamen, A., & Gauvin, W. H. (1964). Oscillatory behavior of freely falling spheres and cylinders. <em>Physics of Fluids</em>, 7(12), 2018–2020.</li>
+        </ol>
+
+        <!-- Section 3 -->
+        <h2 id="sec-3" class="section-title">單元三：核心關鍵字概念擴充體系 (Keyword Expansion Framework)</h2>
+
+        <h3 id="sec-3-1" class="sub-title">1. 核心概念剖析 (Core Concepts)</h3>
+        <div class="card-grid">
+            <div class="feature-card">
+                <h4>🌪️ 雷諾數與邊界層分離</h4>
+                <p>在 $Re \approx 10^3 \sim 10^4$ 條件下，紡錘體後方產生非對稱卡門渦街（Vortex Shedding）。若無恢復力矩抑制，物體將進入連續翻滾相。</p>
+            </div>
+            <div class="feature-card">
+                <h4>⚖️ 質心 (CM) 與壓心 (CP) 偏心</h4>
+                <p>偏心率 $\epsilon = \frac{x_{CP} - x_{CM}}{L} > 0$，使阻力形成負反饋力偶，推動尖端朝向下落流線前端，構成被動定向機制。</p>
+            </div>
+            <div class="feature-card">
+                <h4>📉 二階欠阻尼衰減</h4>
+                <p>姿態角隨時間呈指數衰減正弦波：$\theta(t) = \theta_s + A e^{-\gamma t} \cos(\omega_d t + \phi)$，衰減率 $\gamma$ 表徵空氣旋轉阻尼耗散強度。</p>
+            </div>
+        </div>
+
+        <h3 id="sec-3-2" class="sub-title">2. 實作與應用範例 (Practical Examples)</h3>
+        <h4>(1) Python 動力學擬合與模擬程式碼 (Scipy & Matplotlib)</h4>
+        <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
+
+# 二階欠阻尼振盪模型
+def damped_oscillation_model(t, theta_steady, A, gamma, omega_d, phi):
+    return theta_steady + A * np.exp(-gamma * t) * np.cos(omega_d * t + phi)
+
+# 模擬 240 fps 高速攝影擷取數據
+t_exp = np.linspace(0, 0.8, int(0.8 * 240))
+true_params = [0.0, np.radians(45.0), 4.5, 18.0, 0.0]
+noise = np.random.normal(0, np.radians(1.5), size=len(t_exp))
+theta_exp = damped_oscillation_model(t_exp, *true_params) + noise
+
+# 非線性回歸擬合 (Levenberg-Marquardt)
+initial_guess = [0.0, np.radians(40.0), 3.0, 15.0, 0.0]
+popt, pcov = curve_fit(damped_oscillation_model, t_exp, theta_exp, p0=initial_guess)
+
+print(f"擬合阻尼衰減率 gamma: {popt[2]:.3f} s^-1, 固有角頻率 omega_d: {popt[3]:.3f} rad/s")</code></pre>
+
+        <h4>(2) Arduino 電控零衝量定角釋放機構控制程式 (C++)</h4>
+        <pre><code class="language-cpp">#include &lt;Servo.h&gt;
+
+Servo releaseServo;
+const int TRIGGER_PIN = 2;
+const int SERVO_PIN = 9;
+
+void setup() {
+  pinMode(TRIGGER_PIN, INPUT_PULLUP);
+  releaseServo.attach(SERVO_PIN);
+  releaseServo.write(90); // 夾緊初始位置
+}
+
+void loop() {
+  if (digitalRead(TRIGGER_PIN) == LOW) {
+    releaseServo.write(20); // 瞬間極速彈開釋放 (v0=0, ω0=0)
+    while(true); // 鎖定直到重置
+  }
+}</code></pre>
+
+        <h3 id="sec-3-3" class="sub-title">3. 延伸思考與進階主題 (Extensions & Advanced Topics)</h3>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>物種 / 結構</th>
+                        <th>散播模式</th>
+                        <th>主導氣動機制</th>
+                        <th>雷諾數 ($Re$)</th>
+                        <th>姿態穩定策略</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>小葉欖仁 (*Terminalia mantaly*)</strong></td>
+                        <td>重力穿透 / 微弱風布</td>
+                        <td>偏心質心-壓心負反饋力矩</td>
+                        <td>$10^3 \sim 10^4$</td>
+                        <td><strong>被動自我對準 (Passive Self-Alignment)</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>楓樹翅果 (*Acer samara*)</strong></td>
+                        <td>風布自轉 (Autogyration)</td>
+                        <td>單側前緣渦流 (LEV)</td>
+                        <td>$10^2 \sim 10^3$</td>
+                        <td><strong>穩態單翼螺旋自轉</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>蒲公英 (*Taraxacum*)</strong></td>
+                        <td>風布漂浮 (Parachute)</td>
+                        <td>冠毛分離渦環 (Separated Ring)</td>
+                        <td>$10^1 \sim 10^2$</td>
+                        <td><strong>對稱阻力減速傘</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>羽毛球 (Shuttlecock)</strong></td>
+                        <td>人工體育器材</td>
+                        <td>裙部高阻力 + 軟木偏心</td>
+                        <td>$10^4 \sim 10^5$</td>
+                        <td><strong>強氣動力偶翻轉對準</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Section 4 -->
+        <div id="sec-4" class="prompt-archive-box">
+            <h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+            <div class="prompt-entry">
+                <h3>🔹 [2026-09-16 09:46:22] [Gemini 3.7 Flash / Antigravity] 建立紀錄</h3>
+                <p><strong>模型/Agent:</strong> Gemini 3.7 Flash / Antigravity</p>
+                <p><strong>Prompt 原文:</strong></p>
+                <pre><code>C:\Users\User\Desktop\ttt.txt 這是我在學習prompt跟AI討論小論文的內容，幫我整理成詳細的筆記</code></pre>
+                <p><strong>變更摘要:</strong> 整理與重構從 Prompt 引導技巧到「小葉欖仁果實落體自主定向機制」學術小論文的完整筆記，包含流體力學建模、Tracker 影像分析實驗設計、Python 動力學數值擬合實作與仿生工程應用，並同步生成具備 PDF 匯出功能之 HTML 頁面。</p>
+            </div>
+            <div class="prompt-entry" style="margin-top: 15px;">
+                <h3>🔹 [2026-09-16 09:49:04] [Gemini 3.7 Flash / Antigravity] 增修紀錄</h3>
+                <p><strong>模型/Agent:</strong> Gemini 3.7 Flash / Antigravity</p>
+                <p><strong>Prompt 原文:</strong></p>
+                <pre><code>加強對prompt使用的討論</code></pre>
+                <p><strong>變更摘要:</strong> 大幅強化單元一的 Prompt 工程討論，新增「學術專題 Prompt 四大核心心法與思維模型」、「新手常見誤區 vs 專家級 Prompt 結構深度對照表」、「小論文五階段實戰 Prompt 模板庫（破局選題、流體建模、實驗矩陣、Python回歸、紅隊評審）」以及「人機協同科研閉環工作流」，提升學術寫作與 AI 協作的方法論深度。</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false}
+            ],
+            throwOnError: false
+        });
+    });
+</script>
+
+</body>
+</html>

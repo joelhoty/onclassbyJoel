@@ -1,8 +1,8 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-15 15:06:42 (UTC+8)  
+> **最後更新時間**: 2026-09-16 09:46:22 (UTC+8)  
 > **使用模型**: Gemini 3.7 Flash  
-> **執行 Agent**: Antigravity Documentation Specialist  
+> **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 
 ---
@@ -10,6 +10,8 @@
 ## 🎯 工作區主題檔案分類與最後修改日期 (依日期由新至舊排列)
 
 ### 🤖 1. AI / 機器學習與深度學習 (`AI/`)
+* `2026-09-16` | [小葉欖仁落體自主定向機制小論文 (HTML)](./AI/prompt_research_proposal_self_alignment.html) (HTML)
+* `2026-09-16` | [小葉欖仁落體自主定向機制小論文 (MD)](./AI/prompt_research_proposal_self_alignment.md) (MD)
 * `2026-09-15` | [Antigravity CLI b06 手冊 (HTML)](./AI/Antigravity_cli_b06.html) (HTML)
 * `2026-09-15` | [Antigravity CLI b06 手冊 (MD)](./AI/Antigravity_cli_b06.md) (MD)
 * `2026-09-11` | [AI 課程筆記 (09-10)](./AI/ai_0910.html) (HTML)
@@ -112,3 +114,19 @@
   更新index索引
   ```
 - **變更摘要**: 同步將最新完成的繼電器控制電路與 2路磁簧繼電器系列 5 份新檔案 (`relay_spdt_circuit_analysis.html/md`, `relay1.jpg`, `reed_relay_2ch_simulation.html/md`) 納入電子電路 (`ec/`) 索引清單，更新檔案數量統計並維持依日期由新至舊降序排列。
+
+### 🔹 [2026-09-16 09:46:22] [Gemini 3.7 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.7 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  C:\Users\User\Desktop\ttt.txt 這是我在學習prompt跟AI討論小論文的內容，幫我整理成詳細的筆記
+  ```
+- **變更摘要**: 整理小葉欖仁落體自主定向機制小論文筆記 (`prompt_research_proposal_self_alignment.html/md`) 並同步更新 AI 分類清單。
+
+### 🔹 [2026-09-16 09:49:04] [Gemini 3.7 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.7 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  加強對prompt使用的討論
+  ```
+- **變更摘要**: 深度擴充小論文共創之 Prompt 工程方法論，新增「四大核心心法」、「新手 vs 專家對照表」、「五階段實戰 Prompt 模板庫」及「人機協同科研閉環工作流」，同步更新 md 與 html 檔案。
