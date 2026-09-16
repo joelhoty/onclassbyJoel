@@ -1,7 +1,7 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-16 11:40:27 (UTC+8)  
-> **使用模型**: Gemini 3.7 Flash  
+> **最後更新時間**: 2026-09-16 12:10:26 (UTC+8)  
+> **使用模型**: Claude Sonnet 4.6  
 > **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 
