@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 協同科研與小論文發想：提示詞工程 (Prompt Engineering) 實戰指南</title>
+  
+  <!-- MathJax for rendering LaTeX math formulas -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  
+  <!-- Mermaid for flowcharts -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+
+  <style>
+    :root {
+      --primary-color: #1e3a8a;
+      --secondary-color: #2563eb;
+      --accent-color: #0d9488;
+      --warning-color: #b45309;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --code-bg: #f1f5f9;
+      --highlight-bg: #eff6ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+      line-height: 1.8;
+      color: var(--text-main);
+      background-color: var(--bg-color);
+      padding: 2.5rem 1.5rem;
+    }
+
+    .container {
+      max-width: 1020px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 3rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border-color);
+    }
+
+    .header-section {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .title-group h1 {
+      font-size: 2.1rem;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+
+    .metadata-card {
+      background: var(--highlight-bg);
+      border-left: 4px solid var(--secondary-color);
+      padding: 0.75rem 1.25rem;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+    }
+
+    .metadata-card p {
+      margin: 0.2rem 0;
+    }
+
+    .btn-export {
+      background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+      color: #ffffff;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-export:hover {
+      background: linear-gradient(135deg, #1d4ed8, #172554);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin: 2.8rem 0 1.2rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #e0e7ff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      color: #1e40af;
+      margin: 1.8rem 0 0.8rem;
+    }
+
+    h4 {
+      font-size: 1.05rem;
+      color: #0f766e;
+      margin: 1.2rem 0 0.5rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+    }
+
+    .step-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.75rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+      border-top: 4px solid var(--secondary-color);
+    }
+
+    .eval-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    }
+    .eval-card.good {
+      border-left: 5px solid #16a34a;
+      background: #f0fdf4;
+    }
+    .eval-card.warn {
+      border-left: 5px solid #ea580c;
+      background: #fff7ed;
+    }
+    .eval-card.upgrade {
+      border-left: 5px solid #2563eb;
+      background: #eff6ff;
+    }
+
+    .step-badge {
+      display: inline-block;
+      background: #dbeafe;
+      color: #1e40af;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .prompt-box {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 1rem 1.25rem;
+      border-radius: 6px;
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      font-size: 0.92rem;
+      margin: 0.8rem 0;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .optimized-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-left: 4px solid #16a34a;
+      padding: 1rem 1.25rem;
+      border-radius: 0 6px 6px 0;
+      margin: 0.8rem 0;
+      font-size: 0.92rem;
+    }
+
+    .optimized-box .title {
+      font-weight: 700;
+      color: #15803d;
+      margin-bottom: 0.4rem;
+    }
+
+    .analysis-list {
+      margin-left: 1.5rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .analysis-list li {
+      margin-bottom: 0.5rem;
+    }
+
+    .math-block {
+      background: #f8fafc;
+      border-left: 3px solid var(--accent-color);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .blueprint-box {
+      background: #0f172a;
+      color: #38bdf8;
+      padding: 1.25rem;
+      border-radius: 8px;
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin: 1.2rem 0;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      border: 1px solid var(--border-color);
+      padding: 0.85rem 1rem;
+      text-align: left;
+    }
+
+    th {
+      background: #f1f5f9;
+      color: var(--primary-color);
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    .mermaid {
+      background: #f8fafc;
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+
+    .archive-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+
+    .archive-item {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px dashed var(--border-color);
+    }
+    .archive-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      .container {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      .btn-export {
+        display: none !important;
+      }
+      .step-card, .eval-card {
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header-section">
+      <div class="title-group">
+        <h1>🔬 AI 協同科研與小論文發想：提示詞工程實戰指南</h1>
+        <div class="metadata-card">
+          <p><strong>最後更新時間：</strong> 2026-09-16 11:37:26 (UTC+8)</p>
+          <p><strong>使用模型：</strong> Gemini 3.7 Flash</p>
+          <p><strong>執行 Agent：</strong> Antigravity</p>
+          <p><strong>筆記分類：</strong> 生成式 AI / 科研小論文發想 / 提示詞工程 / 流體力學與仿生工程</p>
+        </div>
+      </div>
+      <div>
+        <button class="btn-export" onclick="window.print()">
+          <span>🖨️ 匯出成 PDF / 列印</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 導言 -->
+    <h2>📖 導言與概覽</h2>
+    <p>
+      本筆記將實際與生成式 AI 探討科學小論文（以「<strong>小葉欖仁果實落體姿態機制解析與 3D 仿生自穩空投膠囊之開發</strong>」為案例）的完整深度對話進行<strong>去識別化</strong>，並萃取其背後的提示詞工程架構。
+    </p>
+    <p>
+      除了呈現「<strong>八階段漸進式提示詞鍊 (8-Stage Progressive Prompting Chain)</strong>」與對應產出的學術研究計畫書外，本篇特別收錄<strong>「提示詞使用優缺點深度剖析與進階升級指南」</strong>，為中學生、大學生與科研人員提供從靈感發想、邊界推演、對抗性審查到文獻防偽的全流程 AI 協作手冊。
+    </p>
+
+    <!-- 核心概念 -->
+    <h2>🧠 一、核心概念與物理力學剖析 (Core Concepts & Physics Mechanics)</h2>
+    <p>在學術科研與小論文發想場景中，單次指令往往只能得到泛泛之論。要產出具備深度與可驗證性的研究計畫，必須結合提示詞工程策略與嚴謹的底層科學理論：</p>
+
+    <div class="mermaid">
+flowchart TD
+    A["1. 角色設定與廣度發散<br/>(Role + Divergence)"] --> B["2. 焦點收斂與起步路徑<br/>(Convergence & Roadmap)"]
+    B --> C["3. 假設推演與預期結果<br/>(Hypothesis & Prediction)"]
+    C --> D["4. 極端案例與底層機制<br/>(Edge-case & Mechanism)"]
+    D --> E["5. 應用價值與跨域連結<br/>(Utility & Transfer)"]
+    E --> F["6. 結構化骨架生成<br/>(Structured Drafting)"]
+    F --> G["7. 多維文獻與批判擴展<br/>(Literature Expansion)"]
+    G --> H["8. 全文彙整與格式定稿<br/>(Final Synthesis)"]
+    H -.-> I["★ 評審對抗審查與防呆修訂<br/>(Adversarial Review)"]
+    </div>
+
+    <h3>1. 提示詞工程四大核心策略</h3>
+    <ul class="analysis-list">
+      <li><strong>角色化引導 (Role-Based Inception)</strong>：將 AI 錨定為「高中科學展覽與流體力學指導老師」，啟動具備實驗方法論與學術規範的語料。</li>
+      <li><strong>循序漸進式鏈 (Progressive Prompting)</strong>：將研究拆解為「發散 ➔ 收斂 ➔ 假設 ➔ 邊界探索 ➔ 應用轉化 ➔ 結構骨架 ➔ 文獻深化 ➔ 成果整合」八個推進階段。</li>
+      <li><strong>反向推演與極端假設 (Edge-case Probing)</strong>：藉由極端物理條件（如質心極端前移）刺激 AI 推導被動自正力矩與演化適應意義。</li>
+      <li><strong>模組化規格與格式約束 (Modular Output Formatting)</strong>：嚴格遵循小論文與科展標準結構（題目、摘要、動機、假說、五維文獻、四階段實驗、五大應用、工程藍圖）。</li>
+    </ul>
+
+    <h3>2. 底層科學理論與數學模型</h3>
+
+    <div class="math-block">
+      <h4>(1) 特徵雷諾數與亞臨界過渡流場 (Reynolds Number)</h4>
+      <p>小葉欖仁果實長度 \(L \approx 1.5 \sim 2.5\text{ cm}\)，落體速度 \(v \approx 5 \sim 15\text{ m/s}\)，在標準大氣下：</p>
+      \[ Re = \frac{\rho v L}{\mu} \approx 5 \times 10^3 \sim 3 \times 10^4 \]
+      <p>此區間屬於「亞臨界過渡流場（Subcritical Flow Regime）」，落體後方伴隨週期性渦流脫落（卡門渦街），容易引發三維不規則擺盪與翻滾。</p>
+    </div>
+
+    <div class="math-block">
+      <h4>(2) 質心 (CoM) 與壓力中心 (CoP) 之被動自正恢復力矩 (Restoring Moment)</h4>
+      <p>落體姿態取決於質量中心（Center of Mass, CoM）與氣動壓力中心（Center of Pressure, CoP）的相對軸向位置：</p>
+      <div class="blueprint-box">▲ 氣流方向 (相對風速 V)
+        │
+     ┌──┴──┐
+     │ CoP │  <--- 氣動力作用點 (Center of Pressure)
+     └──┬──┘       產生流體阻力 F_d 與側向升力 F_l
+        │  ▲
+        │  │ 力臂 L_arm
+        │  ▼
+     ┌──┴──┐
+     │ CoM │  <--- 重力作用點 (Center of Mass)
+     └──┬──┘       整體質量集中處
+        │
+        ▼ 下落方向 (重力 W)</div>
+      <p>當落體受擾動產生傾斜攻角 \(\alpha\) 時，作用於 CoP 的空氣動力合力 \(\vec{F}_a\) 與 CoM 之間產生恢復力矩 \(M\)：</p>
+      \[ M = - |\vec{r}_{CoM-CoP}| \cdot |\vec{F}_a| \cdot \sin\alpha \]
+      <ul class="analysis-list">
+        <li><strong>若 CoM 落後於 CoP（重端在後）</strong>：力矩為正回授，攻角 \(\alpha\) 迅速發散，落體陷入劇烈翻滾（Tumbling）。</li>
+        <li><strong>若 CoM 顯著超前於 CoP（重端在前）</strong>：恢復力矩為負回授（\(M < 0\)），產生「<strong>被動自正（Passive Self-Righting）</strong>」俯衝（羽毛球效應），攻角自動收斂至 \(\alpha = 0^\circ\)。</li>
+      </ul>
+    </div>
+
+    <div class="math-block">
+      <h4>(3) 表面微稜的渦流產生器 (Vortex Generator) 整流效應</h4>
+      <p>果實周緣的縱向鈍稜能<strong>強制固定邊界層分離線（Separation Line）</strong>，消除光滑弧面上的隨機非對稱流動分離，大幅平抑橫向升力波動，將三維偏航晃動抑制在單一縱向對稱面內。</p>
+    </div>
+
+    <div class="math-block">
+      <h4>(4) Gibson-Ashby 胞狀固體力學與動能吸收模型</h4>
+      <p>果實中果皮之多孔纖維在高速撞擊時，遵循胞狀材料三階段應力－應變關係：</p>
+      \[ \sigma(\epsilon) = \begin{cases} E^* \epsilon & (\text{線彈性階段}) \\ \sigma_{pl}^* & (\text{塑性屈曲平原階段}) \\ \sigma_{pl}^* \left[ 1 + \left(\frac{\epsilon}{\epsilon_D}\right)^m \right] & (\text{壓實硬化階段}) \end{cases} \]
+      <p>纖維結構在「塑性屈曲平原階段」吸收大量落體動能 \(E_k = \frac{1}{2} m v_t^2\)，作為天然「衝擊潰縮區（Crumple Zone）」以保護後端胚核。</p>
+    </div>
+
+    <!-- 去識別化實戰筆記 -->
+    <h2>🛠️ 二、去識別化實戰筆記：科研發想八階提示詞拆解與完整討論整合</h2>
+
+    <!-- Step 1 -->
+    <div class="step-card">
+      <span class="step-badge">階段一</span>
+      <h3>1. 角色賦予與廣度發散 (Role Setting & Divergence)</h3>
+      <div class="prompt-box">[研究者]：
+你是一個科學老師 我想要研究小葉欖仁種子從樹上落下的相關研究 提供6可行的研究方向跟題目讓我參考</div>
+      <ul class="analysis-list">
+        <li><strong>角色設定</strong>：「你是一個科學老師」➔ 確立受眾程度（適合學生實作的難度與設備規模）。</li>
+        <li><strong>研究主題</strong>：「小葉欖仁種子從樹上落下」➔ 鎖定自然觀察現象。</li>
+        <li><strong>量化產出</strong>：「提供 6 個可行的研究方向跟題目」➔ 給予足夠的比較空間，避免單一解答。</li>
+      </ul>
+      <div class="optimized-box">
+        <div class="title">💡 AI 回饋之 6 大方向亮點</div>
+        <ol style="margin-left: 1.2rem;">
+          <li>落體運動學與終端速度量測</li>
+          <li>表面幾何微稜對空氣阻力之影響</li>
+          <li>種子含水量與自轉角速度之相關性</li>
+          <li>階梯狀樹冠穿透率之統計模擬</li>
+          <li>纖維果皮之撞擊能量吸收與胚胎防護</li>
+          <li><strong>仿生工程：小葉欖仁落體姿態機制解析與 3D 仿生自穩空投膠囊驗證</strong></li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step-card">
+      <span class="step-badge">階段二</span>
+      <h3>2. 主題聚焦與起步引導 (Topic Convergence & Roadmap)</h3>
+      <div class="prompt-box">[研究者]：
+我對方向六：仿生工程與 3D 列印模型驗證有興趣 可以從哪些方向開始</div>
+      <ul class="analysis-list">
+        <li><strong>縮小範圍</strong>：明確選定「方向六（仿生工程 + 3D 列印）」。</li>
+        <li><strong>建立 Roadmap</strong>：建立「形態量測 ➔ CAD 參數化建模 ➔ 3D 列印可變配重模型 ➔ Tracker 運動追蹤 ➔ 穿透與著陸驗證」實作清單。</li>
+      </ul>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step-card">
+      <span class="step-badge">階段三</span>
+      <h3>3. 假設推演與預期結果 (Hypothesis & Outcome Prediction)</h3>
+      <div class="prompt-box">[研究者]：
+預期可能會得到什麼結果</div>
+      <ul class="analysis-list">
+        <li><strong>預期模型建立</strong>：在耗費資源列印前，先推導不同質心比率 \(R_{CoM} = \frac{d_{front}}{L}\) 的運動學行為。</li>
+        <li><strong>三種典型模式預測</strong>：
+          <ul>
+            <li>\(R_{CoM} = 0.25\)（極端前移）：被動自正俯衝，終端速度最高，迎風阻力最小。</li>
+            <li>\(R_{CoM} = 0.50\)（幾何居中）：落葉式不穩定擺盪（Flutter）。</li>
+            <li>\(R_{CoM} = 0.75\)（極端後移）：連續端對端翻滾（Tumble），阻力最大。</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="step-card">
+      <span class="step-badge">階段四</span>
+      <h3>4. 極端案例與理論啟發 (Edge-case Probing & Physics Insights)</h3>
+      <div class="prompt-box">[研究者]：
+假設實驗結果 重心極端前移（像飛鏢/羽毛球）對於小葉欖仁的研究有什麼啟發?</div>
+      <ul class="analysis-list">
+        <li><strong>思想實驗 (Thought Experiment)</strong>：透過「極端重心前移」的反事實假設，探討自然界演化出的種子形態是否為「最佳解」或「局部最優解」。</li>
+        <li><strong>理論突破</strong>：突破傳統「種子必靠旋轉或翻滾減速」的思維，揭示小葉欖仁因具備「階梯式輪生樹冠」，必須依靠「垂直俯衝穿透」才能破解母樹枝葉截留（Canopy Interception）魔咒，並藉由前端纖維果皮吸收撞擊力。</li>
+      </ul>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="step-card">
+      <span class="step-badge">階段五</span>
+      <h3>5. 實用價值與跨領域應用拓展 (Utility & Cross-Domain Application)</h3>
+      <div class="prompt-box">[研究者]：
+是否有實用的價值 可以應用在哪些領域</div>
+      <p><strong>五大跨領域仿生應用拓展：</strong></p>
+      <ul class="analysis-list">
+        <li><strong>1. 智慧林業</strong>：無人機穿透型「仿生植樹膠囊」（穿透雜灌木、防滾落、甘蔗渣/PHA 纖維吸震與保水）。</li>
+        <li><strong>2. 災害防救</strong>：極端環境穿透式環境物聯網探針（無傘直達地面、接地感測針刺入土壤、天線永遠朝天發射 LoRa 訊號）。</li>
+        <li><strong>3. 國防安防</strong>：無人值守地面感測器（UGS）微型低簽象空投彈（無傘低視覺特徵、抗側風偏航、隱蔽定錨）。</li>
+        <li><strong>4. 智慧農業</strong>：密植作物深層生物防治顆粒（穿透玉米/果樹葉幕、根部精準釋放益生菌與藥肥）。</li>
+        <li><strong>5. 航太探測</strong>：微引力/稀薄大氣行星土壤穿透器（火星/小行星極限無動力撞擊定姿與地質探勘）。</li>
+      </ul>
+    </div>
+
+    <!-- Step 6 -->
+    <div class="step-card">
+      <span class="step-badge">階段六</span>
+      <h3>6. 結構化骨架生成 (Structured Drafting)</h3>
+      <div class="prompt-box">[研究者]：
+根據以上的討論 撰寫完整的文件,包含 題目,摘要,動機,文獻探討,研究方法,研究結果（可省略）,結果與討論(可省略）</div>
+      <ul class="analysis-list">
+        <li><strong>標準小論文格式要求</strong>：明確指定題目、中英文摘要、動機、文獻探討、研究方法等標準學術篇章。</li>
+        <li><strong>寬容標註</strong>：指定「結果與討論可先省略/標註預期」，避免 AI 自行胡亂捏造偽造實驗數據，保持學術誠信。</li>
+      </ul>
+    </div>
+
+    <!-- Step 7 -->
+    <div class="step-card">
+      <span class="step-badge">階段七</span>
+      <h3>7. 深度迭代與多維度擴展 (Literature & Discussion Expansion)</h3>
+      <div class="prompt-box">[研究者]：
+增加文獻探討的內容與討論的廣度以及不同面向</div>
+      <p><strong>擴展為五大跨領域核心文獻面向：</strong></p>
+      <ul class="analysis-list">
+        <li><strong>2.1 植物生態適應</strong>：種子傳播動力學、重力傳播 (Barochory) 與簡森－康奈爾假說 (Janzen-Connell Hypothesis)。</li>
+        <li><strong>2.2 非對稱鈍體流體力學</strong>：亞臨界過渡雷諾數 (\(Re \approx 10^4\))、渦流脫落與 CoM-CoP 恢復力矩力學模型。</li>
+        <li><strong>2.3 表面微拓撲氣動整流</strong>：微稜渦流產生器 (Vortex Generator) 效應與分離點鎖定機制。</li>
+        <li><strong>2.4 生物材料衝擊力學</strong>：果皮階層結構、Gibson-Ashby 胞狀固體塑性屈曲吸能模型。</li>
+        <li><strong>2.5 仿生空投工程現況</strong>：現有無人機傘降風偏缺陷、單翼翅果 MAV 與穿透型探針比較。</li>
+      </ul>
+    </div>
+
+    <!-- Step 8 -->
+    <div class="step-card">
+      <span class="step-badge">階段八</span>
+      <h3>8. 全文統整與規格定稿 (Consolidation & Final Synthesis)</h3>
+      <div class="prompt-box">[研究者]：
+統整以上的所有討論 整合成完整的研究文件</div>
+      <p><strong>📐 仿生空投膠囊工程藍圖規範 (Engineering Blueprint)：</strong></p>
+      <div class="blueprint-box">【尾端：輕質通訊與引導艙】
+                           ╱ ╲   ← 縱向微稜整流葉片 (抑制側向偏航與滾轉)
+                          │   │  ← 內建微型全向天線、LoRa 無線傳輸晶片
+                          │   │
+                     【中艙：抗震酬載區】
+                          │ █ │  ← 鋰錳鈕扣電池、環境感測主控電路板
+                          │   │  ← 橡膠阻尼懸吊內襯 (Shock-absorbing Mount)
+                     【前端：重心配重與緩衝貫穿頭】
+                         ╱     ╲  ← 仿外果皮蜂巢潰縮區 (Crumple Zone)
+                        │  ▓▓▓  │  ← 偏心高密度配重 (確保 CoM 前移)
+                        ╰───────╯  ← 硬質金屬接地探針 / 破土尖錐</div>
+    </div>
+
+    <!-- 提示詞評估章節 -->
+    <h2>🎯 三、提示詞工程使用優缺點深入剖析與建議 (Prompt Evaluation & Strategy)</h2>
+
+    <div class="eval-card good">
+      <h3>🌟 1. 優點分析 (Key Strengths)</h3>
+      <ul class="analysis-list">
+        <li><strong>典範級的「漸進式對話鏈 (Progressive Prompting)」</strong>：未一開始粗暴索取整篇論文，而是由淺入深，讓每一輪產出成為下一輪的高密度上下文，模型幾乎無幻覺漂移。</li>
+        <li><strong>高水準的「思想實驗與邊界探索 (Edge-Case Probing)」</strong>：第 4 步提出「重心極端前移（羽毛球/飛鏢）」的極端反事實假設，是激發 AI 產出深層物理機理（恢復力矩、樹冠穿透、纖維潰縮）的最關鍵推手。</li>
+        <li><strong>精準的「防偽標註 (Anti-Hallucination Guardrails)」</strong>：初稿主動註明「研究結果與討論可省略」，有效防止 AI 自行胡亂捏造偽造實驗數據。</li>
+        <li><strong>模組化局部精修 (Iterative Refinement)</strong>：單獨針對文獻探討提出擴充要求，維持了對話的敏捷性與高聚焦度。</li>
+      </ul>
+    </div>
+
+    <div class="eval-card warn">
+      <h3>⚠️ 2. 潛在缺點與盲點 (Limitations & Risks)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 25%;">現有提示詞盲點</th>
+            <th style="width: 35%;">具體表現</th>
+            <th style="width: 40%;">潛在風險 / 影響</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. 角色設定缺少資源限制</strong></td>
+            <td>僅指定<code>你是一個科學老師</code>，未交代學生的年級與學校設備。</td>
+            <td>AI 給出的建議可能超出學生的實驗設備能力（例如需要昂貴風洞或專業 CFD 模擬軟體）。</td>
+          </tr>
+          <tr>
+            <td><strong>2. 指令字數過簡，缺少量化產出指標</strong></td>
+            <td><code>預期可能會得到什麼結果</code>、<code>是否有實用的價值</code> 僅一句話。</td>
+            <td>AI 回答深度易受模型狀態隨機波動，未強制要求提供公式、數據量化級距或比較矩陣。</td>
+          </tr>
+          <tr>
+            <td><strong>3. 未主動防範「幽靈文獻」</strong></td>
+            <td>擴充文獻時未要求標註文獻真實性、DOI 或檢索關鍵字。</td>
+            <td>大型語言模型在擴展文獻時極易「捏造看似合理的假論文篇名與虛擬作者」。</td>
+          </tr>
+          <tr>
+            <td><strong>4. 缺少「評審反對視角 (Devil's Advocate)」</strong></td>
+            <td>全程為順向建構，缺少挑毛病與找漏洞的對抗環節。</td>
+            <td>容易忽略「3D 模型放大 2:1 是否破壞了真實雷諾數相似準則」等實驗設計盲點。</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="eval-card upgrade">
+      <h3>🚀 3. 進階實戰升級模版與建議 (Actionable Upgrades)</h3>
+      
+      <h4>💡 升級建議 1：導入「角色＋限制條件＋現有資源」三位一體起始 Prompt</h4>
+      <div class="prompt-box">你是一位具備 10 年高中科展與小論文評審經驗的物理與生物跨領域名師。
+我目前是高中生，學校具備 3D 列印機（FDM）、手機 240fps 高速攝影與 Tracker 運動分析軟體，無大型專業風洞。
+請在「現有設備切實可行」的前提下，為我規劃 5 個兼具科學原創性、可量測性與低成本的研究題目。</div>
+
+      <h4>💡 升級建議 2：在成文後加入「挑剔評審對抗性審查 (Devil's Advocate)」指令</h4>
+      <div class="prompt-box">請現在切換角色為一位「最嚴格的科展/學術小論文審查委員」，針對這份研究計畫書進行全面質詢。
+請列出 3 個最容易被攻擊的實驗設計漏洞（例如：控制變因是否真正單一？模型等比例放大 2:1 是否破壞了雷諾數相似性？配重公差如何消除？），並指導我如何在論文中撰寫防禦論述。</div>
+
+      <h4>💡 升級建議 3：索取「真實文獻檢索關鍵字與策略」取代讓 AI 生造文獻</h4>
+      <div class="prompt-box">請針對本研究涉及的核心理論（Janzen-Connell 假說、卡門渦街、Gibson-Ashby 吸能模型），提供：
+1. 我可以在 Google Scholar 與 華藝線上圖書館 直接搜尋的 5 組中英文精確關鍵字。
+2. 3 篇真實存在的經典論文篇名、作者與發表年份，並簡述其核心論點如何支持本研究。</div>
+
+      <h4>💡 升級建議 4：要求輸出「標準化實驗數據紀錄表與圖表規劃」</h4>
+      <div class="prompt-box">請為本研究的「研究方法」章節，設計一份 Markdown 格式的【操縱變因配置規格表】與【落體實驗原始數據記錄空白範本】（包含下落時序、終端速度、姿態角、入土深度），並用 ASCII 文字框繪製出高速攝影實驗裝置的架設示意圖。</div>
+    </div>
+
+    <!-- 通用模版套件 -->
+    <h2>📋 四、通用科研小論文發想 Prompt 模版套件</h2>
+    <p>研究者可將上述流程抽象化，套用於任何自然科學或工程科技專案：</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 8%;">步驟</th>
+          <th style="width: 24%;">階段名稱</th>
+          <th style="width: 68%;">萬用 Prompt 模版</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>01</strong></td>
+          <td><strong>設定角色與發散靈感</strong></td>
+          <td><code>你是一位[學科名稱]專家與高中科展指導老師。我對[研究對象/生活現象]很感興趣，請在學校現有資源[列出設備]限制下，提供 5 個兼具科學價值與實作可行性的研究題目，並說明各題目的核心變因。</code></td>
+        </tr>
+        <tr>
+          <td><strong>02</strong></td>
+          <td><strong>鎖定題目與制定路線</strong></td>
+          <td><code>我選擇【[題目名稱]】。請為我規劃實作路線圖，包含實驗所需材料、控制變因、操縱變因、應變變因及第一階段的前置驗證實驗。</code></td>
+        </tr>
+        <tr>
+          <td><strong>03</strong></td>
+          <td><strong>建立理論與推導假設</strong></td>
+          <td><code>基於[相關理論/物理定律]，請推導此實驗在不同操縱變因水準下，預期會產生的 3 種可能趨勢，並解釋其背後的科學原理與數學公式。</code></td>
+        </tr>
+        <tr>
+          <td><strong>04</strong></td>
+          <td><strong>邊界條件與極端推演</strong></td>
+          <td><code>如果我們將[某關鍵變因]推向極端（例如極大化或極小化），系統會發生什麼質變？這對我們理解整體機理有何理論啟發？</code></td>
+        </tr>
+        <tr>
+          <td><strong>05</strong></td>
+          <td><strong>應用場景與產業連結</strong></td>
+          <td><code>此研究成果除了驗證基礎科學原理外，在工程、仿生、環保或民生領域有哪些具體的應用潛力？請列舉 3-5 項具體場景。</code></td>
+        </tr>
+        <tr>
+          <td><strong>06</strong></td>
+          <td><strong>生成研究小論文骨架</strong></td>
+          <td><code>請將上述討論整合成標準小論文架構（含題目、中英文摘要、研究動機、文獻探討、研究設備與方法、預期成果與討論、參考文獻規範）。</code></td>
+        </tr>
+        <tr>
+          <td><strong>07</strong></td>
+          <td><strong>專題深化與文獻檢索</strong></td>
+          <td><code>請針對「文獻探討」章節，提供 5 組可在 Google Scholar 檢索真實文獻的精確關鍵字，並從【基礎理論】、【經典前人研究】與【現代工程應用】三維度深化擴寫。</code></td>
+        </tr>
+        <tr>
+          <td><strong>08</strong></td>
+          <td><strong>評審對抗與防禦審查</strong></td>
+          <td><code>請扮演最挑剔的評審，列出本計畫書 3 大潛在實驗漏洞與變因干擾，並提供相應的實驗修正與論文防禦論述。</code></td>
+        </tr>
+        <tr>
+          <td><strong>09</strong></td>
+          <td><strong>全面校稿與結構定稿</strong></td>
+          <td><code>請統整前述所有擴充與防禦內容，消除前後矛盾，生成一篇邏輯嚴密、術語精確的正式小論文研究計畫書。</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 延伸思考 -->
+    <h2>🔬 五、延伸思考與未來工程突破 (Extensions & Next Steps)</h2>
+    <div class="analysis-list">
+      <p><strong>1. 學術誠信與 AI 幻覺防範 (AI Ethics & Fact-Checking)</strong></p>
+      <ul>
+        <li><strong>文獻核實機制</strong>：AI 生成之引用文獻（如 Augspurger 1986, Gibson-Ashby 1997, Janzen 1970）須逐一檢驗其真實作者、年份、期刊名稱與 DOI，防止幽靈文獻。</li>
+        <li><strong>數據真偽界線</strong>：AI 僅能輔助建立假說與預期理論曲線，所有運動學軌跡與穿透數據必須透過真實 3D 列印模型落體實驗與 Tracker 高速攝影取得。</li>
+      </ul>
+      <p style="margin-top: 1rem;"><strong>2. 邁向工程落地的三大技術挑戰</strong></p>
+      <ul>
+        <li><strong>全生物降解材料（Biodegradability）</strong>：避免空投載具造成山林塑膠微粒污染，未來可導入<strong>真菌菌絲體（Mycelium）</strong>或農業廢棄纖維（蔗渣/竹纖維）熱壓成型外殼。</li>
+        <li><strong>高 G 力抗震灌封技術（High-G Tolerance）</strong>：垂直俯衝撞擊地表瞬間衝擊加速度高達數百 G，需結合非牛頓流體與高分子矽膠灌封（Potting）保護晶片。</li>
+        <li><strong>風洞動態側風驗證（Wind Tunnel Testing）</strong>：進入風洞量化不同側向風速下的自正恢復時間常數（Recovery Time Constant \(\tau\)）。</li>
+      </ul>
+    </div>
+
+    <!-- 提示詞歷史與變更記錄 -->
+    <h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+    <div class="archive-box">
+
+      <div class="archive-item">
+        <h3>🔹 [2026-09-16 11:37:26] [Gemini 3.7 Flash / Antigravity] 變更紀錄</h3>
+        <p><strong>- 模型/Agent：</strong> Gemini 3.7 Flash / Antigravity</p>
+        <p><strong>- Prompt 原文：</strong></p>
+        <div class="prompt-box">加到筆記內容</div>
+        <p><strong>- 變更摘要：</strong> 將「提示詞使用優缺點深度剖析（漸進式對話、邊界探索、防偽標註 vs. 資源限制缺失、幽靈文獻風險、缺乏評審反對視角）」及「進階升級實戰指令模版（角色資源鎖定、挑剔評審對抗審查、真實文獻檢索策略、實驗數據記錄表生成）」完整擴充至筆記第三章節，並更新通用模版庫至九步法。</p>
+      </div>
+
+      <div class="archive-item">
+        <h3>🔹 [2026-09-16 11:32:58] [Gemini 3.7 Flash / Antigravity] 變更紀錄</h3>
+        <p><strong>- 模型/Agent：</strong> Gemini 3.7 Flash / Antigravity</p>
+        <p><strong>- Prompt 原文：</strong></p>
+        <div class="prompt-box">C:\Users\User\Desktop\dsfsfdsd.txt 配合這一份討論的完整內容 加入筆記的討論</div>
+        <p><strong>- 變更摘要：</strong> 深度整合 `dsfsfdsd.txt` 完整科學研究報告內容。增補特徵雷諾數亞臨界流場推導、質心 (CoM) 與壓力中心 (CoP) 恢復力矩數學模型、Gibson-Ashby 胞狀吸能材料力學公式、五維深度文獻探討、五大跨領域工程應用場景、仿生空投膠囊工程藍圖規範與未來材料挑戰。</p>
+      </div>
+
+      <div class="archive-item">
+        <h3>🔹 [2026-09-16 11:30:36] [Gemini 3.7 Flash / Antigravity] 變更紀錄</h3>
+        <p><strong>- 模型/Agent：</strong> Gemini 3.7 Flash / Antigravity</p>
+        <p><strong>- Prompt 原文：</strong></p>
+        <div class="prompt-box">C:\Users\User\Desktop\ddasadasd.txt 這個檔案是我利用prompt跟ai探討小論文題目的紀錄 幫我把姓名去識別化 整理成使用prompt的筆記</div>
+        <p><strong>- 變更摘要：</strong> 讀取桌面對話紀錄並去識別化，提煉科研小論文八階段漸進式提示詞鏈，產出第一版 Markdown 與具備列印功能的 HTML 筆記。</p>
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

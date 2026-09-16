@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-16 09:46:22 (UTC+8)  
+> **最後更新時間**: 2026-09-16 11:40:27 (UTC+8)  
 > **使用模型**: Gemini 3.7 Flash  
 > **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -10,6 +10,8 @@
 ## 🎯 工作區主題檔案分類與最後修改日期 (依日期由新至舊排列)
 
 ### 🤖 1. AI / 機器學習與深度學習 (`AI/`)
+* `2026-09-16` | [AI 協同科研與小論文發想：提示詞工程實戰 (HTML)](./AI/prompt_academic_research_flow.html) (HTML)
+* `2026-09-16` | [AI 協同科研與小論文發想：提示詞工程實戰 (MD)](./AI/prompt_academic_research_flow.md) (MD)
 * `2026-09-16` | [小葉欖仁落體自主定向機制小論文 (HTML)](./AI/prompt_research_proposal_self_alignment.html) (HTML)
 * `2026-09-16` | [小葉欖仁落體自主定向機制小論文 (MD)](./AI/prompt_research_proposal_self_alignment.md) (MD)
 * `2026-09-15` | [Antigravity CLI b06 手冊 (HTML)](./AI/Antigravity_cli_b06.html) (HTML)
