@@ -466,7 +466,7 @@
         
         <div class="top-action-bar">
             <div class="metadata-box">
-                <span class="meta-badge">📅 最後更新時間: 2026-09-16 09:58:48 (UTC+8)</span>
+                <span class="meta-badge">📅 最後更新時間: 2026-09-16 10:11:01 (UTC+8)</span>
                 <span class="meta-badge" style="background: rgba(16, 185, 129, 0.25); border-color: #34d399; color: #a7f3d0; font-weight: 600;">👤 研究者/提問者: 專題研究者 (去識別化)</span>
                 <span class="meta-badge highlight">🤖 使用模型: Gemini 3.7 Flash</span>
                 <span class="meta-badge">⚡ 執行 Agent: Antigravity</span>
@@ -491,11 +491,11 @@
             <ul>
                 <li><a href="#sec-1">單元一：AI 提示詞工程 (Prompt Engineering) 與學術小論文共創方法論深度解析</a>
                     <ul>
-                        <li><a href="#sec-1-1">1.1 學術專題 AI 提示詞四大核心心法與思維模型</a></li>
-                        <li><a href="#sec-1-2">1.2 新手常見誤區 vs 專家級 Prompt 結構深度對照表</a></li>
-                        <li><a href="#sec-1-3">1.3 科學小論文五階段 Prompt 實戰範本庫 (Prompt Template Library)</a></li>
-                        <li><a href="#sec-1-4">1.4 人機協同科研閉環工作流 (Human-in-the-Loop Co-Creation Workflow)</a></li>
-                        <li><a href="#sec-1-5">1.5 研究者 5 輪真實 Prompt 與 AI 生成小論文草稿之互動機制深度解構</a></li>
+                        <li><a href="#sec-1-1">1.1 科研提示詞五大漸進心法與思維模型 (Progressive Research Prompting)</a></li>
+                        <li><a href="#sec-1-2">1.2 「五輪漸進 Prompt」vs「新手常見誤區」深度對照表 (Comparative Analysis)</a></li>
+                        <li><a href="#sec-1-3">1.3 人機協同科研閉環工作流 (Human-in-the-Loop Co-Creation Workflow)</a></li>
+                        <li><a href="#sec-1-4">1.4 實戰案例：五輪真實對話推進機制與學術產出深度解構 (Case Study & Interaction Dynamics)</a></li>
+                        <li><a href="#sec-1-5">1.5 科研進階延伸 Prompt 範本庫 (Advanced Prompt Templates)</a></li>
                     </ul>
                 </li>
                 <li><a href="#sec-2">單元二：小論文專題完整研究計畫書——小葉欖仁落體自主定向機制</a>
@@ -537,32 +537,27 @@
         <div class="card-grid">
             <div class="feature-card">
                 <h4>🎯 1. 角色賦能與發散探索</h4>
-                <p><strong>指令：</strong><code>你是科學老師，我想進行關於小葉欖仁的種子落下的相關研究 ， 提供五個可行的研究問題讓我參考</code></p>
-                <p>探索期以自然語言描述現象，藉由導師角色引導 AI 拋出多角度假說與題目清單。</p>
+                <p><strong>心法：</strong>探索初期以自然語言描述現象並賦予 AI 啟發性角色（如科學老師），引導模型從形態、側風、含水率等多維度發散選題。</p>
             </div>
             <div class="feature-card">
                 <h4>📐 2. 結構搭棚與精準收斂</h4>
-                <p><strong>指令：</strong><code>我要選擇研究問題四：初始釋放姿態... 撰寫研究大綱（結果可省略）</code></p>
-                <p>選定題目後，先搭骨架限制章節，避免一次性生成全文時結構散亂與產生幻覺數據。</p>
+                <p><strong>心法：</strong>選定核心題目後，先搭大綱骨架（標明結果可省略），限制輸出架構，避免內容失焦與產生幻覺數據。</p>
             </div>
             <div class="feature-card">
                 <h4>🌐 3. 聯網檢索與理論深化</h4>
-                <p><strong>指令：</strong><code>把文獻探討寫得更詳細更多面向，可以利用網路搜尋找相關的研究納入</code></p>
-                <p>授權 AI 聯網檢索，主動引入熱帶種子沉降、雷諾數相圖與 Nature 前沿物理機制。</p>
+                <p><strong>心法：</strong>授權 AI 聯網檢索，主動引入國際期刊理論（熱帶種子沉降、雷諾數相圖與 Nature 前沿物理機制）。</p>
             </div>
             <div class="feature-card">
                 <h4>🔄 4. 理論反推方法之逆向校準</h4>
-                <p><strong>指令：</strong><code>根據這些文獻探討，我的研究目的跟研究方法可以怎麼修改</code></p>
-                <p><strong>高階靈魂指令</strong>：引導 AI 用剛才的理論修正實驗設計，使工具鏈（ImageJ, Tracker, Arduino）與理論完全咬合。</p>
+                <p><strong>心法：</strong><strong>高階靈魂指令</strong>。引導 AI 用理論文獻反過來修正實驗設計，使工具鏈（ImageJ, Tracker, Arduino）與理論精確咬合。</p>
             </div>
             <div class="feature-card">
                 <h4>📑 5. 長上下文全域聚合</h4>
-                <p><strong>指令：</strong><code>根據目前選定的研究問題，統整以上討論... 輸出完整的研究內容</code></p>
-                <p>調用長上下文記憶，將前四輪成果無縫聚合成無省略、高密度的正式學術計畫書。</p>
+                <p><strong>心法：</strong>調用長上下文記憶，將前述所有輪次的討論無縫聚合成無省略、高密度的正式學術計畫書全文。</p>
             </div>
         </div>
 
-        <h3 id="sec-1-2" class="sub-title">1.2 「真實五輪漸進 Prompt」vs「新手單向低效 Prompt」深度對照表</h3>
+        <h3 id="sec-1-2" class="sub-title">1.2 「五輪漸進 Prompt」vs「新手常見誤區」深度對照表 (Comparative Analysis)</h3>
         <div class="table-responsive">
             <table>
                 <thead>
@@ -608,50 +603,10 @@
             </table>
         </div>
 
-        <h3 id="sec-1-3" class="sub-title">1.3 科學小論文五階段真實 Prompt 實戰範本庫 (Progressive Prompt Library)</h3>
-        <p>在真實研究流程中，提示詞應當是<strong>簡潔、自然、精準定位當前需求</strong>，隨著對話深入自然帶出專業模型。以下為引導 AI 產出本篇完整專題研究計畫書的標準真實 Prompt 範本：</p>
+        <h3 id="sec-1-3" class="sub-title">1.3 人機協同科研閉環工作流 (Human-in-the-Loop Co-Creation Workflow)</h3>
+        <p>在實際科研過程中，人類研究員與 AI 應形成緊密的「人機迴路 (Human-in-the-Loop)」：由人類負責真實世界的現象觀察、物理直覺判定與實體實驗執行；AI 則負責理論文獻檢索整理、多維微分方程推導、程式碼撰寫與反向紅隊審查，從而大幅提升研究效率與論證嚴謹度。</p>
 
-        <div class="prompt-template-card">
-            <h4>📌 階段一：起始發想與多維度選題探索 Prompt</h4>
-            <pre><code>你是科學老師，我想進行關於小葉欖仁的種子落下的相關研究 ， 提供五個可行的研究問題讓我參考</code></pre>
-            <p style="margin-bottom:0; font-size:0.9rem; color:#64748b;">• <strong>設計意圖：</strong>賦予指導老師角色，以自然語言描述研究標的，要求發散提供多個物理視角。</p>
-        </div>
-
-        <div class="prompt-template-card">
-            <h4>📌 階段二：聚焦核心問題與大綱搭棚 Prompt</h4>
-            <pre><code>我要選擇研究問題四：初始釋放姿態對動態穩定性與軌跡的影響
-撰寫研究大綱，包含題目,摘要,動機,文獻探討,研究方法,研究結果（可省略）,結果與討論(可省略）</code></pre>
-            <p style="margin-bottom:0; font-size:0.9rem; color:#64748b;">• <strong>設計意圖：</strong>做出收斂決策，限定標準論文大綱骨架，避免生成內容偏題。</p>
-        </div>
-
-        <div class="prompt-template-card">
-            <h4>📌 階段三：多面向文獻深化與聯網檢索 Prompt</h4>
-            <pre><code>把文獻探討寫得更詳細更多面向，可以利用網路搜尋找相關的研究納入</code></pre>
-            <p style="margin-bottom:0; font-size:0.9rem; color:#64748b;">• <strong>設計意圖：</strong>要求擴充深度，授權 AI 聯網引入熱帶種子、雷諾數相圖與 Nature 前沿論文。</p>
-        </div>
-
-        <div class="prompt-template-card">
-            <h4>📌 階段四：理論反推實驗設計之逆向校準 Prompt</h4>
-            <pre><code>根據這些文獻探討，我的研究目的跟研究方法可以怎麼修改</code></pre>
-            <p style="margin-bottom:0; font-size:0.9rem; color:#64748b;">• <strong>設計意圖：</strong>逆向驅動 Prompt，讓文獻中的理論模型反過來升級實驗工具鏈（ImageJ, Tracker, Arduino）。</p>
-        </div>
-
-        <div class="prompt-template-card">
-            <h4>📌 階段五：長上下文全域聚合與正式計畫書產出 Prompt</h4>
-            <pre><code>根據目前選定的研究問題，統整以上討論，重新撰寫一份完整的研究大綱,要包含之前討論的內容與面向 完整的研究內容</code></pre>
-            <p style="margin-bottom:0; font-size:0.9rem; color:#64748b;">• <strong>設計意圖：</strong>終極統整指令，調用長上下文記憶，產出無省略、高密度的完整研究計畫書全文。</p>
-        </div>
-
-        <div class="callout info">
-            <strong>💡 進階延伸範本（當小論文草稿完成後使用）：</strong><br>
-            • <strong>數值擬合代碼生成：</strong><code>請根據研究方法中的二階欠阻尼動態模型，撰寫一份 Python 腳本（使用 scipy.optimize.curve_fit 與 Matplotlib），對 240 fps Tracker 萃取之姿態角數據進行非線性最小平方回歸，並繪製包含衰減包絡線的圖表。</code><br>
-            • <strong>評審委員紅隊挑錯：</strong><code>請切換角色為全國科展特優評審委員，對這份研究計畫書進行最嚴格的批判性審查，挑出實驗設計、偏心率標定或 2.5m 落體高度邊界上的潛在漏洞，並提出具體修正建議。</code>
-        </div>
-
-        <h3 id="sec-1-4" class="sub-title">1.4 人機協同科研閉環工作流 (Human-in-the-Loop Co-Creation Workflow)</h3>
-        <p>在實際科研過程中，人類研究員與 AI 應形成緊密的「人機迴路 (Human-in-the-Loop)」：由人類負責真實世界的現象觀察、物理直覺判定與實驗執行；AI 則負責理論文獻檢索整理、多維微分方程推導、程式碼撰寫與反向紅隊審查，從而大幅提升研究效率與論證嚴謹度。</p>
-
-        <h3 id="sec-1-5" class="sub-title">1.5 研究者 5 輪真實 Prompt 與 AI 生成小論文草稿之互動機制深度解構</h3>
+        <h3 id="sec-1-4" class="sub-title">1.4 實戰案例：五輪真實對話推進機制與學術產出深度解構 (Case Study & Interaction Dynamics)</h3>
         <p>本份筆記的研究成果並非透過單一 Prompt 憑空產生，而是專題研究者（去識別化）於 2026-09-16 上午 8:43 至 9:19 期間，透過 <strong>「五輪遞進式對話 (5-Stage Progressive Prompting)」</strong> 逐步引導 AI 從模糊發想淬鍊為專業學術論文的經典案例。以下針對這五輪互動的「提問意圖、AI 反應機制與學術產出價值」進行深度解構：</p>
 
         <div class="card-grid">
@@ -677,18 +632,31 @@
             </div>
         </div>
 
-        <div class="callout info">
+        <div class="callout info" style="margin-top: 15px;">
             <strong>🔹 第 5 輪（09:19）長上下文知識全域聚合 (Global Synthesis)：</strong><br>
             <strong>Prompt 原文：</strong><code>根據目前選定的研究問題，統整以上討論，重新撰寫一份完整的研究大綱,要包含之前討論的內容與面向 完整的研究內容</code><br>
             <strong>互動價值：</strong>發出終極統整指令，AI 調用長上下文記憶，聚合前四輪的題目、大綱、深層文獻與實驗升級，產出完整、無省略的正式學術研究計畫書全文。
         </div>
 
-        <div class="callout">
-            <strong>💡 人機協同寫作小論文的四大成功心法：</strong><br>
-            1. <strong>「分段推進」勝過「一步到位」</strong>：先定題目 ➔ 次搭大綱 ➔ 再深挖文獻 ➔ 接著校準方法 ➔ 最後統整全文。<br>
-            2. <strong>善用</strong> <strong>「逆向驅動 Prompt」</strong>：透過「根據文獻如何修改方法？」引導 AI 檢查研究邏輯一致性。<br>
-            3. <strong>主動約束工具鏈</strong>：在互動中引導 AI 採用平民化開源工具（ImageJ, Tracker, Arduino），避免產出不可落地的虛幻實驗。<br>
-            4. <strong>終極統整指令</strong>：在對話最後發出「統整以上討論，輸出無省略完整內容」，能最大化利用大模型的上下文記憶能力。
+        <h3 id="sec-1-5" class="sub-title">1.5 科研進階延伸 Prompt 範本庫 (Advanced Prompt Templates)</h3>
+        <p>當專題小論文初稿生成後，研究者可利用以下進階提示詞範本，進一步驅動 AI 完成數值擬合代碼生成、評審紅隊審查與實驗異常排錯：</p>
+
+        <div class="prompt-template-card">
+            <h4>📌 範本一：數值擬合與視覺化腳本生成 Prompt</h4>
+            <pre><code>請根據研究方法中的二階欠阻尼動態模型，撰寫一份 Python 腳本（使用 scipy.optimize.curve_fit 與 Matplotlib），對 240 fps Tracker 萃取之姿態角數據進行非線性最小平方回歸，並繪製包含衰減包絡線的圖表。</code></pre>
+            <p style="margin-bottom:0; font-size:0.9rem; color:#64748b;">• <strong>應用時機：</strong>完成實驗數據採集後，要求 AI 撰寫自動化分析與高質量論文圖表繪製程式。</p>
+        </div>
+
+        <div class="prompt-template-card">
+            <h4>📌 範本二：科展評審紅隊批判性審查 Prompt</h4>
+            <pre><code>請切換角色為全國科展特優評審委員，對這份研究計畫書進行最嚴格的批判性審查，挑出實驗設計、偏心率標定或 2.5m 落體高度邊界上的潛在漏洞，並提出具體修正建議。</code></pre>
+            <p style="margin-bottom:0; font-size:0.9rem; color:#64748b;">• <strong>應用時機：</strong>正式定稿前，模擬評審視角挑出實驗漏洞與邏輯斷層，進行反向加固。</p>
+        </div>
+
+        <div class="prompt-template-card">
+            <h4>📌 範本三：硬體韌體與時序控制程式 Prompt</h4>
+            <pre><code>請撰寫一份 Arduino Nano 控制程式，透過伺服馬達實現「按鍵觸發 -> LED倒數3秒 -> 瞬間釋放夾爪 -> 蜂鳴器提示」之零初速落體釋放時序控制。</code></pre>
+            <p style="margin-bottom:0; font-size:0.9rem; color:#64748b;">• <strong>應用時機：</strong>自動化搭建落體實驗裝置，確保操作變因具備高重現性。</p>
         </div>
 
         <!-- Section 2 -->
@@ -941,6 +909,14 @@ void loop() {
                 <p style="margin-bottom: 4px; font-weight: 600;">5. 第五輪（上午 9:18～9:19）— 產出無省略之正式學術研究計畫書全文：</p>
                 <pre><code>根據目前選定的研究問題，統整以上討論，重新撰寫一份完整的研究大綱,要包含之前討論的內容與面向 完整的研究內容</code></pre>
                 <p><strong>變更摘要:</strong> 完整登錄專題研究者自上午 8:43 至 9:19 與 AI 協同推進小論文構思的五輪原始真實提示詞，確立從發想、鎖定題目、文獻深化、方法修正到全文輸出的科研迭代典範。</p>
+            </div>
+            <div class="prompt-entry" style="margin-top: 15px;">
+                <h3>🔹 [2026-09-16 10:11:01] [Gemini 3.7 Flash / Antigravity] 結構精簡與去重複化維護</h3>
+                <p><strong>模型/Agent:</strong> Gemini 3.7 Flash / Antigravity</p>
+                <p><strong>Prompt 原文:</strong></p>
+                <pre><code>檢查是否有重複內容
+go</code></pre>
+                <p><strong>變更摘要:</strong> 執行全域冗餘檢查與結構精簡。重構單元一為五大小節（心法框架、對照矩陣、閉環工作流、五輪案例解構、進階延伸範本庫），徹底消除 5 輪基礎提示詞在四處重複列出的冗餘，移除重複心法總結，並同步校正目錄與 HTML 頁面。</p>
             </div>
         </div>
 
