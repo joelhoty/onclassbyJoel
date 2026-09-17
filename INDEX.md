@@ -27,6 +27,10 @@
 * `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
+* `2026-09-17` | [繼電器控制電路與原理解析 (HTML)](./ec/relay_control_circuits.html) (HTML)
+* `2026-09-17` | [繼電器控制電路與原理解析 (MD)](./ec/relay_control_circuits.md) (MD)
+* `2026-09-17` | [繼電器雙電路實驗相片](./ec/relay_circuits_0917.jpg) (JPG)
+* `2026-09-17` | [Arduino 繼電器控制設計相片](./ec/arduino.jpg) (JPG)
 * `2026-09-15` | [電磁繼電器 SPDT 控制電路 (HTML)](./ec/relay_spdt_circuit_analysis.html) (HTML)
 * `2026-09-15` | [電磁繼電器 SPDT 控制電路 (MD)](./ec/relay_spdt_circuit_analysis.md) (MD)
 * `2026-09-15` | [2路磁簧繼電器動態模擬 (HTML)](./ec/reed_relay_2ch_simulation.html) (HTML)
@@ -154,3 +158,19 @@
   go
   ```
 - **變更摘要**: 執行全域冗餘檢查與結構精簡。消除 5 輪基礎提示詞在四處重複列出的冗餘，移除重複心法總結，重構為五大清晰層次的小節架構。
+
+### 🔹 [2026-09-17 14:22:50] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  將原始的電路設計加入檔案，並利用繪圖進行動態模擬繼電器的運作，另外再設計繼電器磁簧開關與接點的動態展示，最後再增加繼電器的相關應用
+  ```
+- **變更摘要**: 將原始電路圖像嵌入筆記，製作四組包含電路動態、接點機械動作與磁簧開關磁吸之動態互動模擬，並擴充工業、車載與電力系統應用實例。
+
+### 🔹 [2026-09-17 14:36:27] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  C:\Users\User\Desktop\arduino.jpg 加入這一個設計圖與程式解說
+  ```
+- **變更摘要**: 嵌入 Arduino 繼電器控制設計圖 (arduino.jpg)，詳解 C++ 程式碼與 3秒綠燈/1秒紅燈控制邏輯，新增 Arduino 自動化即時動態模擬，並深度解析單晶片直驅線圈之反向電動勢 (Back-EMF) 與電流超載危害，提出電晶體與飛輪二極體工業級保護方案。

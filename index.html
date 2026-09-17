@@ -538,9 +538,30 @@
             <div class="card" data-category="ec">
                 <div class="card-header">
                     <h2 class="card-title">⚡ 電子電路與硬體實驗</h2>
-                    <span class="badge-count">14 檔案</span>
+                    <span class="badge-count">18 檔案</span>
                 </div>
                 <ul class="file-list">
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/relay_control_circuits.html">繼電器控制電路與原理解析 (HTML)</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-17</span>
+                            <span class="tag tag-html">HTML</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/relay_control_circuits.md">繼電器控制電路與原理解析 (MD)</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-17</span>
+                            <span class="tag tag-md">MD</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/relay_circuits_0917.jpg">繼電器雙電路實驗相片</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-17</span>
+                            <span class="tag tag-img">JPG</span>
+                        </div>
+                    </li>
                     <li class="file-item">
                         <a class="file-link" href="./ec/relay_spdt_circuit_analysis.html">電磁繼電器 SPDT 控制電路 (HTML)</a>
                         <div class="file-meta">
@@ -858,31 +879,51 @@
 go</pre>
                 <p><strong>變更摘要:</strong> 執行全域冗餘檢查與結構精簡。消除 5 輪基礎提示詞在四處重複列出的冗餘，移除重複心法總結，重構為五大清晰層次的小節架構。</p>
             </div>
+            <div class="prompt-archive" style="margin-top: 15px;">
+                <h4>🔹 [2026-09-17 14:18:12] [Antigravity / Gemini 3.1 Pro] 建立繼電器控制電路筆記與更新首頁</h4>
+                <p><strong>模型/Agent:</strong> Gemini 3.1 Pro / Antigravity</p>
+                <p><strong>Prompt 原文:</strong></p>
+                <pre>C:\Users\User\Desktop\0917.jpg 這是我設計的兩個繼電器控制電路，兩個設計分別解說繼電器的控制原理，還有控制邏輯。另外補充，繼電器的種類與運作原理，延伸討論到積體電路中繼電器的替代方案</pre>
+                <p><strong>變更摘要:</strong> 建立並更新繼電器控制電路與原理解析筆記 (relay_control_circuits.html/md)，並將其加入 index 檔案的 ec/ 類別頂部。</p>
+            </div>
+            <div class="prompt-archive" style="margin-top: 15px;">
+                <h4>🔹 [2026-09-17 14:22:50] [Antigravity / Gemini 3.8 Flash] 整合原始圖像、多維度動態模擬與磁簧展示</h4>
+                <p><strong>模型/Agent:</strong> Gemini 3.8 Flash / Antigravity</p>
+                <p><strong>Prompt 原文:</strong></p>
+                <pre>將原始的電路設計加入檔案，並利用繪圖進行動態模擬繼電器的運作，另外再設計繼電器磁簧開關與接點的動態展示，最後再增加繼電器的相關應用</pre>
+                <p><strong>變更摘要:</strong> 嵌入原始電路圖片，製作電路切換、機械接點動作與磁簧開關吸合等 4 組互動動態模擬，並擴充工業、車用與電力系統實際應用實例。</p>
+            </div>
+            <div class="prompt-archive" style="margin-top: 15px;">
+                <h4>🔹 [2026-09-17 14:36:27] [Antigravity / Gemini 3.8 Flash] 整合 Arduino 繼電器控制設計與程式解說</h4>
+                <p><strong>模型/Agent:</strong> Gemini 3.8 Flash / Antigravity</p>
+                <p><strong>Prompt 原文:</strong></p>
+                <pre>C:\Users\User\Desktop\arduino.jpg 加入這一個設計圖與程式解說</pre>
+                <p><strong>變更摘要:</strong> 嵌入 Arduino 控制 5V 繼電器設計圖與 C++ 程式詳解，新增第 5 組 Arduino 即時自動循環動畫模擬，並解析 GPIO 超載與 Back-EMF 突波防護規範。</p>
+            </div>
         </div>
     </footer>
 
     <script>
         function filterFiles() {
-            const input = document.getElementById('searchInput');
-            const filter = input.value.toLowerCase();
+            const input = document.getElementById('searchInput').value.toLowerCase();
             const cards = document.querySelectorAll('.card');
 
             cards.forEach(card => {
-                const items = card.querySelectorAll('.file-item');
-                let hasMatch = false;
+                const files = card.querySelectorAll('.file-item');
+                let hasVisibleFile = false;
 
-                items.forEach(item => {
-                    const text = item.textContent.toLowerCase();
-                    if (text.includes(filter)) {
-                        item.style.display = 'flex';
-                        hasMatch = true;
+                files.forEach(file => {
+                    const title = file.textContent.toLowerCase();
+                    if (title.includes(input)) {
+                        file.style.display = '';
+                        hasVisibleFile = true;
                     } else {
-                        item.style.display = 'none';
+                        file.style.display = 'none';
                     }
                 });
 
-                if (hasMatch || filter === '') {
-                    card.style.display = 'flex';
+                if (hasVisibleFile || card.querySelector('.card-title').textContent.toLowerCase().includes(input)) {
+                    card.style.display = '';
                 } else {
                     card.style.display = 'none';
                 }

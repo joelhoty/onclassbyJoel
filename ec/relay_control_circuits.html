@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>繼電器控制電路、內部結構與動態模擬原理解析 (含 Arduino 微控制器實作)</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #0f172a;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-yellow: #f59e0b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            border-radius: 12px;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
+        .header-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: #2563eb;
+            color: white;
+            padding: 0.6rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+        }
+
+        .header-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            margin: 0 0 1rem 0;
+            font-size: 2.1rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            max-width: 780px;
+        }
+
+        .metadata-box {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            font-size: 0.92rem;
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .metadata-item strong {
+            color: #38bdf8;
+        }
+
+        h2 {
+            font-size: 1.55rem;
+            color: #0f172a;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.6rem;
+            margin-top: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            color: #1e3a8a;
+            margin-top: 1.8rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .img-display-box {
+            text-align: center;
+            background: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px dashed #cbd5e1;
+            margin-bottom: 1.5rem;
+        }
+
+        .img-display-box img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        }
+
+        .caption {
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* 模擬器樣式 */
+        .simulator-box {
+            background: #0f172a;
+            color: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+        }
+
+        .sim-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 0.75rem;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .sim-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sim-controls {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .toggle-btn {
+            background: #334155;
+            color: #fff;
+            border: 1px solid #475569;
+            padding: 0.5rem 1.1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn:hover {
+            background: #475569;
+        }
+
+        .toggle-btn.active-on {
+            background: #10b981;
+            border-color: #059669;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+        }
+
+        .sim-canvas-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 280px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sim-status-bar {
+            margin-top: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.3);
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            font-family: ui-monospace, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.88rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .badge-green { background: #065f46; color: #34d399; }
+        .badge-red { background: #991b1b; color: #f87171; }
+        .badge-yellow { background: #854d0e; color: #fde047; }
+        .badge-blue { background: #1e3a8a; color: #60a5fa; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 1rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        pre, code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
+        pre {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 1.25rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        .warning-box {
+            background: #fff7ed;
+            border-left: 5px solid #ea580c;
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box h4 {
+            color: #c2410c;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .app-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+
+        .app-card h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+            color: #1e3a8a;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .archive-box {
+            margin-top: 3.5rem;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.8rem;
+            border-top: 4px solid #64748b;
+        }
+
+        .archive-box h3 {
+            margin-top: 0;
+            color: #334155;
+        }
+
+        .archive-item {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .archive-item h4 {
+            margin: 0 0 0.6rem 0;
+            color: #1d4ed8;
+            font-size: 1rem;
+        }
+
+        @media print {
+            .header-btn, .sim-controls, button {
+                display: none !important;
+            }
+            body { background: white; }
+            .simulator-box { background: #f8fafc; color: #000; border: 1px solid #ccc; box-shadow: none; }
+            .sim-canvas-wrap { background: #ffffff; border: 1px solid #ddd; }
+            .sim-status-bar { color: #000; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <button class="header-btn" onclick="window.print()">🖨️ 匯出成 PDF / 列印</button>
+        <h1>繼電器控制電路、內部結構與動態模擬原理解析</h1>
+        <div class="metadata-box">
+            <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-17 14:36:27 (UTC+8)</div>
+            <div class="metadata-item"><strong>使用模型:</strong> Gemini 3.8 Flash</div>
+            <div class="metadata-item"><strong>執行 Agent:</strong> Antigravity</div>
+            <div class="metadata-item"><strong>實作涵蓋:</strong> 手動雙電路 / Arduino 微控制器自動化 / 接點物理模擬 / 保護電路</div>
+        </div>
+    </header>
+
+    <!-- 原始電路設計展示 -->
+    <div class="card">
+        <h2>📷 原始電路設計與實驗架構</h2>
+        <p>本次實驗由基礎手動控制切換，進階至單晶片自動化控制：</p>
+        <div class="img-display-box">
+            <img src="./relay_circuits_0917.jpg" alt="原始電路設計 - 繼電器控制電路實驗">
+            <div class="caption">圖 1：手動控制實驗 — 4xAA 電池激磁控制 15V 白熾燈泡（上）與 5V 雙色 LED 狀態切換電路（下）</div>
+        </div>
+    </div>
+
+    <!-- 動態模擬器 1 -->
+    <div class="simulator-box">
+        <div class="sim-header">
+            <div class="sim-title">⚡ 動態模擬 1：手動上方電路 — 低壓 (6V) 隔離控制高壓 (15V) 燈泡</div>
+            <div class="sim-controls">
+                <button id="btnCircuit1" class="toggle-btn" onclick="toggleCircuit1()">切換 4xAA 電池開關：OFF</button>
+            </div>
+        </div>
+        <div class="sim-canvas-wrap">
+            <svg id="svgCircuit1" width="840" height="260" viewBox="0 0 840 260">
+                <defs>
+                    <filter id="bulbGlow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="15" result="blur" />
+                        <feMerge>
+                            <feMergeNode in="blur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                    <radialGradient id="bulbRad" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="#fff" />
+                        <stop offset="60%" stop-color="#fef08a" />
+                        <stop offset="100%" stop-color="#eab308" />
+                    </radialGradient>
+                </defs>
+
+                <!-- 左側：4xAA 6V 電池盒 -->
+                <rect x="40" y="50" width="130" height="150" rx="8" fill="#1e293b" stroke="#475569" stroke-width="2" />
+                <text x="105" y="80" fill="#94a3b8" font-size="14" font-weight="bold" text-anchor="middle">4 x AA (6V)</text>
+                <circle cx="80" cy="115" r="10" fill="#334155" />
+                <text x="80" y="119" fill="#94a3b8" font-size="11" text-anchor="middle">-</text>
+                <circle cx="130" cy="115" r="10" fill="#dc2626" />
+                <text x="130" y="119" fill="#fff" font-size="11" text-anchor="middle">+</text>
+                
+                <rect x="75" y="150" width="60" height="24" rx="4" fill="#0f172a" stroke="#64748b" />
+                <circle id="swKnob1" cx="87" cy="162" r="8" fill="#ef4444" transition="cx 0.3s" />
+                <text x="105" y="190" fill="#94a3b8" font-size="11" text-anchor="middle">電池盒滑動開關</text>
+
+                <!-- 中間：繼電器 -->
+                <rect x="290" y="45" width="160" height="160" rx="10" fill="#d97706" stroke="#b45309" stroke-width="3" />
+                <text x="370" y="75" fill="#fef3c7" font-size="15" font-weight="bold" text-anchor="middle">RELAY (5V SPDT)</text>
+                
+                <!-- 線圈 -->
+                <rect x="310" y="95" width="40" height="80" rx="4" fill="#78350f" stroke="#f59e0b" />
+                <path d="M310,105 Q330,95 350,105 Q330,115 310,125 Q330,115 350,125 Q330,135 310,145 Q330,135 350,145" fill="none" stroke="#fbbf24" stroke-width="2.5" />
+                <text x="330" y="190" fill="#fef3c7" font-size="11" text-anchor="middle">線圈</text>
+
+                <!-- 接點與動態手臂 -->
+                <circle cx="390" cy="140" r="4" fill="#fff" />
+                <text x="375" y="144" fill="#fef3c7" font-size="11">COM</text>
+                <circle cx="430" cy="110" r="4" fill="#94a3b8" />
+                <text x="435" y="105" fill="#fef3c7" font-size="11">NC</text>
+                <circle cx="430" cy="165" r="4" fill="#94a3b8" />
+                <text x="435" y="175" fill="#fef3c7" font-size="11">NO</text>
+                <line id="armature1" x1="390" y1="140" x2="426" y2="114" stroke="#e2e8f0" stroke-width="3" stroke-linecap="round" />
+
+                <!-- 導線 -->
+                <path id="ctrlWire1" d="M130,115 L230,115 L230,115 L310,115" fill="none" stroke="#64748b" stroke-width="3" />
+                <path d="M80,115 L80,30 L260,30 L260,155 L310,155" fill="none" stroke="#38bdf8" stroke-width="3" />
+
+                <!-- 右側：15V 電源與燈泡 -->
+                <rect x="670" y="45" width="130" height="85" rx="8" fill="#1e293b" stroke="#475569" stroke-width="2" />
+                <rect x="685" y="55" width="100" height="28" fill="#0f172a" rx="4" />
+                <text id="meterVolt1" x="735" y="74" fill="#38bdf8" font-size="14" font-family="monospace" text-anchor="middle">15.0 V</text>
+                <rect x="685" y="90" width="100" height="28" fill="#0f172a" rx="4" />
+                <text id="meterAmp1" x="735" y="110" fill="#34d399" font-size="14" font-family="monospace" text-anchor="middle">0.0 mA</text>
+
+                <!-- 白熾燈泡 -->
+                <g id="bulbGroup" transform="translate(560, 100)">
+                    <circle cx="20" cy="20" r="24" fill="#334155" stroke="#64748b" stroke-width="2" id="bulbGlass" />
+                    <path d="M13,28 L17,16 L23,16 L27,28" fill="none" stroke="#94a3b8" stroke-width="1.8" id="bulbFilament" />
+                    <rect x="14" y="42" width="12" height="10" fill="#64748b" rx="2" />
+                </g>
+
+                <path id="loadWirePos" d="M670,70 L600,70 L480,70 L480,140 L394,140" fill="none" stroke="#10b981" stroke-width="3" />
+                <path id="loadWireNO" d="M430,165 L520,165 L520,135 L565,135" fill="none" stroke="#64748b" stroke-width="3" />
+                <path id="loadWireNeg" d="M595,135 L620,135 L620,175 L735,175 L735,130" fill="none" stroke="#475569" stroke-width="3" />
+            </svg>
+        </div>
+        <div class="sim-status-bar">
+            <div>控制端狀態：<span id="statCtrl1" class="status-badge badge-red">斷電 (OFF)</span></div>
+            <div>線圈磁場：<span id="statMag1" class="status-badge badge-red">無磁力 (0 Gauss)</span></div>
+            <div>繼電器接點：<span id="statContact1" class="status-badge badge-yellow">COM - NC 閉合</span></div>
+            <div>負載輸出：<span id="statLoad1" class="status-badge badge-red">燈泡熄滅 (0 Lux)</span></div>
+        </div>
+    </div>
+
+    <!-- 動態模擬器 2 -->
+    <div class="simulator-box">
+        <div class="sim-header">
+            <div class="sim-title">🚦 動態模擬 2：手動下方電路 — SPDT 單刀雙擲雙態互斥指示 (紅/綠 LED)</div>
+            <div class="sim-controls">
+                <button id="btnCircuit2" class="toggle-btn" onclick="toggleCircuit2()">激磁控制開關：OFF</button>
+            </div>
+        </div>
+        <div class="sim-canvas-wrap">
+            <svg id="svgCircuit2" width="840" height="260" viewBox="0 0 840 260">
+                <rect x="50" y="30" width="740" height="200" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="3" />
+                
+                <line x1="70" y1="45" x2="770" y2="45" stroke="#ef4444" stroke-width="2" stroke-dasharray="8 4" />
+                <line x1="70" y1="55" x2="770" y2="55" stroke="#3b82f6" stroke-width="2" stroke-dasharray="8 4" />
+                <text x="80" y="42" fill="#ef4444" font-size="11" font-weight="bold">+5.0V (VCC)</text>
+                <text x="80" y="68" fill="#3b82f6" font-size="11" font-weight="bold">GND (0V)</text>
+
+                <rect x="180" y="75" width="170" height="135" rx="8" fill="#ea580c" stroke="#c2410c" stroke-width="3" />
+                <text x="265" y="100" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">5V 繼電器 (SPDT)</text>
+
+                <circle cx="210" cy="180" r="5" fill="#fef08a" />
+                <text x="210" y="200" fill="#fff" font-size="11" text-anchor="middle">Coil 1</text>
+                <circle cx="250" cy="180" r="5" fill="#fef08a" />
+                <text x="250" y="200" fill="#fff" font-size="11" text-anchor="middle">Coil 2</text>
+
+                <circle cx="310" cy="120" r="6" fill="#fff" />
+                <text x="290" y="125" fill="#fff" font-size="11" font-weight="bold">COM</text>
+                
+                <circle cx="335" cy="95" r="5" fill="#cbd5e1" />
+                <text x="340" y="90" fill="#fef3c7" font-size="11">NC</text>
+
+                <circle cx="335" cy="150" r="5" fill="#cbd5e1" />
+                <text x="340" y="165" fill="#fef3c7" font-size="11">NO</text>
+
+                <line id="armature2" x1="310" y1="120" x2="333" y2="98" stroke="#f8fafc" stroke-width="3.5" stroke-linecap="round" />
+
+                <path d="M310,120 L310,45" fill="none" stroke="#ef4444" stroke-width="3" />
+                <path id="wireNC" d="M335,95 L490,95 L490,110" fill="none" stroke="#ef4444" stroke-width="3" />
+                <path id="wireNO" d="M335,150 L590,150 L590,110" fill="none" stroke="#64748b" stroke-width="3" />
+
+                <!-- 紅色 LED -->
+                <g transform="translate(480, 110)">
+                    <rect x="0" y="0" width="20" height="35" rx="3" fill="#d97706" stroke="#92400e" />
+                    <line x1="10" y1="35" x2="10" y2="45" stroke="#64748b" stroke-width="2" />
+                    <circle id="ledRedCircle" cx="10" cy="60" r="14" fill="#7f1d1d" stroke="#ef4444" stroke-width="2" />
+                    <text x="10" y="95" fill="#1e293b" font-size="12" font-weight="bold" text-anchor="middle">紅色 (NC)</text>
+                    <line x1="10" y1="74" x2="10" y2="115" stroke="#3b82f6" stroke-width="2" />
+                </g>
+
+                <!-- 綠色 LED -->
+                <g transform="translate(580, 110)">
+                    <rect x="0" y="0" width="20" height="35" rx="3" fill="#d97706" stroke="#92400e" />
+                    <line x1="10" y1="35" x2="10" y2="45" stroke="#64748b" stroke-width="2" />
+                    <circle id="ledGreenCircle" cx="10" cy="60" r="14" fill="#064e3b" stroke="#10b981" stroke-width="2" />
+                    <text x="10" y="95" fill="#1e293b" font-size="12" font-weight="bold" text-anchor="middle">綠色 (NO)</text>
+                    <line x1="10" y1="74" x2="10" y2="115" stroke="#3b82f6" stroke-width="2" />
+                </g>
+
+                <path d="M490,225 L730,225 L730,55" fill="none" stroke="#3b82f6" stroke-width="3" />
+                <path d="M590,225 L730,225" fill="none" stroke="#3b82f6" stroke-width="3" />
+
+                <!-- 5V 電源面板 -->
+                <g transform="translate(680, 80)">
+                    <rect x="0" y="0" width="95" height="110" rx="6" fill="#1e293b" stroke="#475569" stroke-width="2" />
+                    <rect x="10" y="12" width="75" height="24" fill="#0f172a" rx="3" />
+                    <text x="47" y="28" fill="#38bdf8" font-size="13" font-family="monospace" text-anchor="middle">5.00 V</text>
+                    <rect x="10" y="42" width="75" height="24" fill="#0f172a" rx="3" />
+                    <text id="meterAmp2" x="47" y="58" fill="#34d399" font-size="13" font-family="monospace" text-anchor="middle">11.7 mA</text>
+                    <text x="47" y="95" fill="#94a3b8" font-size="10" text-anchor="middle">DC POWER</text>
+                </g>
+            </svg>
+        </div>
+        <div class="sim-status-bar">
+            <div>激磁狀態：<span id="statCoil2" class="status-badge badge-red">未激磁 (OFF)</span></div>
+            <div>切換端子：<span id="statPin2" class="status-badge badge-yellow">COM 與 NC 導通</span></div>
+            <div>紅色 LED (待機)：<span id="statRed2" class="status-badge badge-green">點亮 (ON)</span></div>
+            <div>綠色 LED (運轉)：<span id="statGreen2" class="status-badge badge-red">熄滅 (OFF)</span></div>
+        </div>
+    </div>
+
+    <!-- 動態展示 3 & 4：內部機械結構與磁簧開關 -->
+    <h2>🔬 繼電器內部機械結構與磁簧開關動態解析</h2>
+
+    <!-- 機械動作剖析 -->
+    <div class="simulator-box">
+        <div class="sim-header">
+            <div class="sim-title">⚙️ 機械展示：電磁繼電器內部接點動作與磁吸物理原理 (EMR Cutaway)</div>
+            <div class="sim-controls">
+                <button id="btnMechEMR" class="toggle-btn" onclick="toggleMechEMR()">電磁線圈通電：OFF</button>
+            </div>
+        </div>
+        <div class="sim-canvas-wrap">
+            <svg id="svgMechEMR" width="800" height="260" viewBox="0 0 800 260">
+                <path d="M120,200 L320,200 L320,80 L290,80 L290,170 L120,170 Z" fill="#64748b" stroke="#334155" stroke-width="2" />
+                <text x="220" y="190" fill="#cbd5e1" font-size="12" text-anchor="middle">鐵軛 (Yoke)</text>
+
+                <rect x="150" y="80" width="50" height="90" rx="3" fill="#94a3b8" stroke="#475569" stroke-width="2" />
+                <text x="175" y="125" fill="#0f172a" font-size="11" font-weight="bold" text-anchor="middle">鐵芯</text>
+                
+                <rect id="mechCoilL" x="125" y="90" width="25" height="70" rx="2" fill="#b45309" stroke="#d97706" />
+                <rect id="mechCoilR" x="200" y="90" width="25" height="70" rx="2" fill="#b45309" stroke="#d97706" />
+                <text x="137" y="130" fill="#fef3c7" font-size="10" text-anchor="middle">繞組</text>
+                <text x="212" y="130" fill="#fef3c7" font-size="10" text-anchor="middle">繞組</text>
+
+                <g id="fluxLines" opacity="0" transition="opacity 0.3s">
+                    <ellipse cx="175" cy="65" rx="40" ry="12" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4 2" />
+                    <ellipse cx="175" cy="55" rx="55" ry="18" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4 2" />
+                    <text x="175" y="40" fill="#38bdf8" font-size="11" text-anchor="middle">強大電磁吸力 B</text>
+                </g>
+
+                <g id="armatureGroup" transform="rotate(0, 315, 75)" transition="transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)">
+                    <rect x="145" y="68" width="170" height="15" rx="2" fill="#475569" stroke="#1e293b" stroke-width="2" />
+                    <circle cx="315" cy="75" r="5" fill="#f8fafc" />
+                    <path d="M290,68 L480,68 L500,105" fill="none" stroke="#eab308" stroke-width="3.5" />
+                    <circle cx="500" cy="105" r="6" fill="#f8fafc" stroke="#ca8a04" stroke-width="2" />
+                    <text x="520" y="110" fill="#facc15" font-size="12" font-weight="bold">COM 動觸點</text>
+                </g>
+
+                <path d="M250,68 Q255,50 260,68 Q265,50 270,68 Q275,50 280,68 L280,30" fill="none" stroke="#94a3b8" stroke-width="2" />
+                <circle cx="280" cy="30" r="3" fill="#64748b" />
+                <text x="250" y="25" fill="#94a3b8" font-size="11">復歸拉簧</text>
+
+                <g transform="translate(470, 75)">
+                    <rect x="0" y="0" width="40" height="10" rx="2" fill="#ef4444" />
+                    <circle cx="30" cy="18" r="6" fill="#f8fafc" stroke="#dc2626" stroke-width="2" />
+                    <text x="50" y="15" fill="#f87171" font-size="12" font-weight="bold">NC (常閉觸點)</text>
+                </g>
+
+                <g transform="translate(470, 140)">
+                    <rect x="0" y="15" width="40" height="10" rx="2" fill="#10b981" />
+                    <circle cx="30" cy="8" r="6" fill="#f8fafc" stroke="#059669" stroke-width="2" />
+                    <text x="50" y="25" fill="#34d399" font-size="12" font-weight="bold">NO (常開觸點)</text>
+                </g>
+
+                <polygon id="sparkFx" points="500,148 505,142 512,149 506,151 508,157 501,152 494,156 498,150 492,145" fill="#fbbf24" opacity="0" />
+            </svg>
+        </div>
+        <div class="sim-status-bar">
+            <div>銜鐵狀態：<span id="statArmature" class="status-badge badge-yellow">由彈簧拉起 (復位)</span></div>
+            <div>接點閉合：<span id="statContacts" class="status-badge badge-red">COM 與 NC 接觸</span></div>
+            <div>機械動作說明：<span id="statMechDesc" style="color: #94a3b8;">線圈未通電，動觸點緊壓 NC；點擊按鈕即可觀看吸合動態。</span></div>
+        </div>
+    </div>
+
+    <!-- 磁簧開關展示 -->
+    <div class="simulator-box">
+        <div class="sim-header">
+            <div class="sim-title">🧲 磁簧展示：磁簧開關 (Reed Switch) 與磁簧繼電器磁化吸合原理</div>
+            <div class="sim-controls">
+                <button id="btnMagnet" class="toggle-btn" onclick="toggleMagnet()">磁場控制：靠近磁鐵</button>
+            </div>
+        </div>
+        <div class="sim-canvas-wrap">
+            <svg id="svgReed" width="800" height="240" viewBox="0 0 800 240">
+                <rect x="220" y="90" width="360" height="60" rx="30" fill="rgba(56, 189, 248, 0.08)" stroke="#38bdf8" stroke-width="2.5" />
+                <text x="400" y="110" fill="#38bdf8" font-size="11" font-family="monospace" text-anchor="middle">惰性氣體保護密封玻璃管 (Glass Capsule)</text>
+
+                <g id="reedLeft">
+                    <line x1="80" y1="120" x2="230" y2="120" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round" />
+                    <path id="bladeL" d="M230,120 L405,117" stroke="#e2e8f0" stroke-width="4" stroke-linecap="round" />
+                    <circle id="contactTipL" cx="405" cy="117" r="4" fill="#fbbf24" />
+                </g>
+
+                <g id="reedRight">
+                    <line x1="570" y1="120" x2="720" y2="120" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round" />
+                    <path id="bladeR" d="M570,120 L395,125" stroke="#e2e8f0" stroke-width="4" stroke-linecap="round" />
+                    <circle id="contactTipR" cx="395" cy="125" r="4" fill="#fbbf24" />
+                </g>
+
+                <g id="magnetGroup" transform="translate(400, 20)" transition="transform 0.4s ease">
+                    <rect x="-45" y="0" width="45" height="24" rx="3" fill="#ef4444" stroke="#dc2626" />
+                    <text x="-22" y="17" fill="#fff" font-size="13" font-weight="bold" text-anchor="middle">N</text>
+                    <rect x="0" y="0" width="45" height="24" rx="3" fill="#3b82f6" stroke="#2563eb" />
+                    <text x="22" y="17" fill="#fff" font-size="13" font-weight="bold" text-anchor="middle">S</text>
+                    <path id="magFlux" d="M-22,24 Q-22,60 0,60 Q22,60 22,24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="3 3" opacity="0" />
+                </g>
+
+                <text id="poleL" x="385" y="110" fill="#38bdf8" font-size="11" font-weight="bold" opacity="0">S 極</text>
+                <text id="poleR" x="415" y="138" fill="#ef4444" font-size="11" font-weight="bold" opacity="0">N 極</text>
+
+                <g transform="translate(700, 160)">
+                    <circle id="reedLed" cx="20" cy="20" r="16" fill="#334155" stroke="#64748b" stroke-width="2" />
+                    <text x="20" y="55" fill="#cbd5e1" font-size="11" text-anchor="middle">受控負載 LED</text>
+                </g>
+            </svg>
+        </div>
+        <div class="sim-status-bar">
+            <div>外加磁場：<span id="statMagField" class="status-badge badge-red">無磁場 (遠離)</span></div>
+            <div>簧片感應磁極：<span id="statPoles" class="status-badge badge-red">無磁化</span></div>
+            <div>開關接觸狀態：<span id="statReedContact" class="status-badge badge-yellow">常開斷開 (Gap 存在)</span></div>
+            <div>受控電路：<span id="statReedCircuit" class="status-badge badge-red">斷路 (LED 熄滅)</span></div>
+        </div>
+    </div>
+
+    <!-- 深入理論：電磁繼電器 vs 磁簧繼電器對比 -->
+    <div class="card">
+        <h2>⚖️ 電磁機械繼電器 (EMR) vs 磁簧繼電器 (Reed Relay) 深度對比</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>評估項目</th>
+                    <th>電磁機械繼電器 (EMR)</th>
+                    <th>磁簧繼電器 (Reed Relay)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>機械結構</strong></td>
+                    <td>線圈、外露鐵芯、擺動銜鐵、拉簧與分立接點</td>
+                    <td>充填惰性氣體密封玻璃管＋雙金屬鐵鎳合金彈性簧片</td>
+                </tr>
+                <tr>
+                    <td><strong>切換反應速度</strong></td>
+                    <td>較慢（約 5 ms ~ 20 ms），受較重銜鐵慣性限制</td>
+                    <td>極快（約 0.2 ms ~ 1.0 ms），簧片質量極輕</td>
+                </tr>
+                <tr>
+                    <td><strong>接點彈跳 (Bounce)</strong></td>
+                    <td>彈跳時間顯著（約 1 ms ~ 5 ms），需防突波設計</td>
+                    <td>微秒級極小彈跳（&lt; 0.5 ms），訊號失真極低</td>
+                </tr>
+                <tr>
+                    <td><strong>耐候與防爆特性</strong></td>
+                    <td>接點易受空氣中濕度氧化、硫化，通斷電弧有粉塵風險</td>
+                    <td>完全氣密（Hermetically Sealed），耐腐蝕、防爆、耐震動</td>
+                </tr>
+                <tr>
+                    <td><strong>驅動功耗</strong></td>
+                    <td>較大（約 200 mW ~ 600 mW，需三極管推動）</td>
+                    <td>極低（約 10 mW ~ 50 mW，許多微控制器可直接驅動）</td>
+                </tr>
+                <tr>
+                    <td><strong>最大負載容量</strong></td>
+                    <td>極高（可達 10A ~ 30A，250VAC，適合動力機械）</td>
+                    <td>較小（通常 &lt; 1A ~ 2A，30VDC，主要用於精密訊號量測）</td>
+                </tr>
+                <tr>
+                    <td><strong>電氣切換壽命</strong></td>
+                    <td>約 10 萬 ~ 100 萬次（受接點電弧燒蝕磨損）</td>
+                    <td>可達 1 億次（10^8 次以上），長效免維護</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Arduino 自動控制電路與程式解說 -->
+    <div class="card">
+        <h2>🤖 Arduino 微控制器自動化繼電器控制與程式深度解析</h2>
+        <p>微控制器（如 Arduino Uno）可以藉由程式輸出精準的毫秒級邏輯電位，達成完全自動化的負載排程切換：</p>
+        
+        <div class="img-display-box">
+            <img src="./arduino.jpg" alt="Arduino Uno 控制繼電器電路設計與 C++ 程式碼 (Tinkercad 模擬)">
+            <div class="caption">圖 2：Tinkercad 平台上的 Arduino Uno 控制 5V 繼電器雙色燈自動化切換系統</div>
+        </div>
+
+        <h3>1. 系統接線架構說明</h3>
+        <ul>
+            <li><strong>控制訊號端 (Arduino)</strong>：
+                <ul>
+                    <li><code>Pin 13</code>（板載 <code>LED_BUILTIN</code>）連接至繼電器線圈正極輸入端（綠線）。</li>
+                    <li><code>GND</code> 連接至繼電器線圈接地負極端（綠線），構成單晶片低壓控制迴路。</li>
+                </ul>
+            </li>
+            <li><strong>外部受控負載端 (麵包板 + 直流電源)</strong>：
+                <ul>
+                    <li>直流穩壓電源設定為 <strong>5.00 V</strong>，負載輸出顯示為 <strong>12.7 mA</strong>。</li>
+                    <li>電源正極接至繼電器 <strong>COM (Common) 共用端</strong>。</li>
+                    <li>繼電器 <strong>NC (常閉端)</strong> 串接電阻至<strong>紅色 LED</strong>；<strong>NO (常開端)</strong> 串接電阻至<strong>綠色 LED</strong>。</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>2. Arduino C++ 原始程式碼清單與逐行解析</h3>
+        <pre><code>// C++ code - Arduino Uno 繼電器自動週期切換
+
+void setup()
+{
+  // 設定數位腳位 13 (LED_BUILTIN) 為輸出模式 (OUTPUT)
+  pinMode(LED_BUILTIN, OUTPUT);
+}
+
+void loop()
+{
+  // 【階段一：線圈通電激磁】輸出 5V 高電位，繼電器吸合至 NO
+  digitalWrite(LED_BUILTIN, HIGH);
+  
+  // 維持通電狀態 3000 毫秒 (3 秒) ➔ 綠燈亮、紅燈滅
+  delay(3000); 
+
+  // 【階段二：線圈釋放斷電】輸出 0V 低電位，繼電器彈簧拉回 NC
+  digitalWrite(LED_BUILTIN, LOW);
+  
+  // 維持斷電狀態 1000 毫秒 (1 秒) ➔ 紅燈亮、綠燈滅
+  delay(1000); 
+}</code></pre>
+
+        <h3>3. 控制時序真值表</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>階段</th>
+                    <th>時長</th>
+                    <th>Pin 13 電位</th>
+                    <th>線圈狀態</th>
+                    <th>銜鐵位置</th>
+                    <th>紅色 LED (NC)</th>
+                    <th>綠色 LED (NO)</th>
+                    <th>外部電流</th>
+                    <th>代表意義</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Phase 1</strong></td>
+                    <td><strong>3.0 秒</strong></td>
+                    <td><code>HIGH</code> (+5V)</td>
+                    <td>激磁吸合</td>
+                    <td>切換至 NO</td>
+                    <td>🔴 熄滅 (OFF)</td>
+                    <td>🟢 <strong>點亮 (ON)</strong></td>
+                    <td>12.7 mA</td>
+                    <td><strong>機具運轉中 (RUN)</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Phase 2</strong></td>
+                    <td><strong>1.0 秒</strong></td>
+                    <td><code>LOW</code> (0V)</td>
+                    <td>斷電釋放</td>
+                    <td>彈簧拉回 NC</td>
+                    <td>🔴 <strong>點亮 (ON)</strong></td>
+                    <td>🟢 熄滅 (OFF)</td>
+                    <td>12.7 mA</td>
+                    <td><strong>系統待機中 (STOP)</strong></td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="font-size: 0.9rem; color: #64748b;">💡 <strong>工程細節說明</strong>：原始截圖程式註解為 <code>// Wait for 1000 millisecond(s)</code>，但實際指令是 <code>delay(3000)</code>。單晶片純粹依照指令參數運算，因此實際綠燈運轉時間為 3 秒。</p>
+    </div>
+
+    <!-- 動態模擬器 5：Arduino 自動化即時動畫 -->
+    <div class="simulator-box">
+        <div class="sim-header">
+            <div class="sim-title">🤖 動態模擬 5：Arduino Uno 自動化週期控制即時模擬 (3s 綠燈 / 1s 紅燈)</div>
+            <div class="sim-controls">
+                <button id="btnArdAuto" class="toggle-btn active-on" onclick="toggleArduinoSim()">暫停自動執行</button>
+                <button class="toggle-btn" onclick="stepArduinoSim()">單步切換</button>
+            </div>
+        </div>
+        <div class="sim-canvas-wrap">
+            <svg id="svgArduino" width="840" height="280" viewBox="0 0 840 280">
+                <!-- Arduino Uno 主板 -->
+                <rect x="40" y="40" width="220" height="200" rx="10" fill="#0284c7" stroke="#0369a1" stroke-width="3" />
+                <text x="150" y="70" fill="#fff" font-size="16" font-weight="bold" text-anchor="middle">ARDUINO UNO R3</text>
+                <!-- ATmega328P DIP 晶片 -->
+                <rect x="80" y="110" width="140" height="35" rx="3" fill="#1e293b" stroke="#334155" />
+                <text x="150" y="132" fill="#94a3b8" font-size="11" font-family="monospace" text-anchor="middle">ATMEGA328P-PU</text>
+                
+                <!-- 板載 Pin 13 測試 LED (L) -->
+                <circle id="ardPin13Led" cx="95" cy="85" r="5" fill="#fde047" stroke="#eab308" filter="drop-shadow(0px 0px 6px #facc15)" />
+                <text x="110" y="89" fill="#fff" font-size="11" font-weight="bold">L (Pin 13)</text>
+
+                <!-- 引腳標示 -->
+                <rect x="50" y="215" width="200" height="15" fill="#1e293b" />
+                <text x="135" y="227" fill="#38bdf8" font-size="10" text-anchor="middle">GND &nbsp;&nbsp; 5V &nbsp;&nbsp; VIN</text>
+                <circle cx="115" cy="222" r="3" fill="#fff" />
+
+                <rect x="50" y="50" width="200" height="15" fill="#1e293b" />
+                <text x="220" y="62" fill="#38bdf8" font-size="10">Pin 13</text>
+                <circle cx="235" cy="57" r="3" fill="#fff" />
+
+                <!-- 訊號線 (Pin 13 -> 繼電器線圈) -->
+                <path id="ardWire13" d="M235,57 L340,57 L340,110 L390,110" fill="none" stroke="#10b981" stroke-width="3.5" />
+                <!-- 接地線 (GND -> 繼電器線圈負極) -->
+                <path d="M115,222 L115,250 L360,250 L360,170 L390,170" fill="none" stroke="#047857" stroke-width="3.5" />
+
+                <!-- 麵包板與繼電器模組 -->
+                <rect x="370" y="60" width="200" height="160" rx="8" fill="#ea580c" stroke="#c2410c" stroke-width="3" />
+                <text x="470" y="85" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">KS2E-M-DC5 (5V)</text>
+
+                <circle cx="400" cy="110" r="5" fill="#fde047" />
+                <text x="425" y="114" fill="#fff" font-size="11">Coil (+)</text>
+                <circle cx="400" cy="170" r="5" fill="#fde047" />
+                <text x="425" y="174" fill="#fff" font-size="11">Coil (-)</text>
+
+                <circle cx="510" cy="140" r="6" fill="#fff" />
+                <text x="480" y="145" fill="#fff" font-size="11" font-weight="bold">COM</text>
+                <circle cx="545" cy="105" r="5" fill="#cbd5e1" />
+                <text x="548" y="100" fill="#fef3c7" font-size="11">NC</text>
+                <circle cx="545" cy="175" r="5" fill="#cbd5e1" />
+                <text x="548" y="190" fill="#fef3c7" font-size="11">NO</text>
+
+                <line id="ardArmature" x1="510" y1="140" x2="542" y2="173" stroke="#fef08a" stroke-width="3.5" stroke-linecap="round" />
+
+                <!-- 負載指示燈 (右側) -->
+                <!-- 紅燈 (NC) -->
+                <path id="ardWireNC" d="M545,105 L660,105" fill="none" stroke="#64748b" stroke-width="3" />
+                <circle id="ardLedRed" cx="680" cy="105" r="15" fill="#7f1d1d" stroke="#ef4444" stroke-width="2" />
+                <text x="710" y="110" fill="#ef4444" font-size="13" font-weight="bold">紅燈 (NC 待機)</text>
+
+                <!-- 綠燈 (NO) -->
+                <path id="ardWireNO" d="M545,175 L660,175" fill="none" stroke="#10b981" stroke-width="3" />
+                <circle id="ardLedGreen" cx="680" cy="175" r="15" fill="#34d399" stroke="#10b981" stroke-width="2" filter="drop-shadow(0px 0px 10px #10b981)" />
+                <text x="710" y="180" fill="#10b981" font-size="13" font-weight="bold">綠燈 (NO 運轉)</text>
+
+                <!-- 5V 負載電源儀表 -->
+                <g transform="translate(640, 20)">
+                    <rect x="0" y="0" width="170" height="45" rx="6" fill="#1e293b" stroke="#475569" />
+                    <text x="85" y="18" fill="#94a3b8" font-size="10" text-anchor="middle">直流負載供電儀表</text>
+                    <text x="85" y="36" fill="#34d399" font-size="14" font-family="monospace" font-weight="bold" text-anchor="middle">5.00V / 12.7mA</text>
+                </g>
+
+                <!-- 倒數進度條 -->
+                <rect x="40" y="258" width="760" height="8" rx="4" fill="#334155" />
+                <rect id="ardProgress" x="40" y="258" width="760" height="8" rx="4" fill="#38bdf8" transition="width 0.1s linear" />
+            </svg>
+        </div>
+        <div class="sim-status-bar">
+            <div>執行指令：<span id="ardCodeStat" class="status-badge badge-blue">digitalWrite(HIGH); delay(3000);</span></div>
+            <div>時序倒數：<span id="ardTimerStat" class="status-badge badge-yellow">3.0 秒 (運轉期)</span></div>
+            <div>繼電器接點：<span id="ardContactStat" class="status-badge badge-green">COM - NO 吸合</span></div>
+            <div>負載狀態：<span id="ardLoadStat" class="status-badge badge-green">🟢 綠燈常亮 (機具運轉)</span></div>
+        </div>
+    </div>
+
+    <!-- 工程保護電路警語與設計規範 -->
+    <div class="card">
+        <h2>🛡️ 工程級硬體防護：單晶片驅動繼電器的標準規範</h2>
+        <div class="warning-box">
+            <h4>⚠️ 為什麼真實硬體絕對不能用 Arduino Pin 直接連接繼電器線圈？</h4>
+            <ol>
+                <li><strong>GPIO 腳位電流超載 (Overcurrent)</strong>：ATmega328P 每個引腳安全電流上限為 <strong>20 mA</strong>，而 5V 繼電器線圈電阻約 70Ω，工作電流高達 <strong>71.4 mA</strong>，直接驅動會造成引腳過熱燒熔。</li>
+                <li><strong>反向電動勢高壓突波 (Back-EMF Kickback)</strong>：線圈為電感負載，在斷電瞬間依 V = -L(di/dt) 會產生高達 <strong>數十至上百伏特 (30V~100V+)</strong> 的反向脈衝，直接打穿單晶片晶圓。</li>
+            </ol>
+        </div>
+
+        <h3>工業級標準驅動電路：NPN 三極管 ＋ 飛輪保護二極體</h3>
+        <pre><code>Arduino MCU                     驅動與保護電路                      繼電器線圈
+───────────                    ──────────────                      ──────────
+                             +5V (系統穩壓電源) ─────────────────────┬──────────┐
+                                                                  │          │
+                                                           ┌──────┴──────┐   │
+                                                           │  線圈 Coil  │   │ 飛輪二極體 (Flyback Diode)
+                                                           └──────┬──────┘   ▲ 1N4007 / 1N4148
+                                                                  │ (反向並聯)│
+                                                                  ├──────────┘
+                                                                  │
+Pin 13 ────[ 1kΩ 限流電阻 ]──── 基極 (B)                          │
+                                    ┌──────┐                      │
+                                    │ NPN  │                      ▼
+                                    │ 三極管 ├───── 集極 (C) ──────┘
+                                    │(2N2222)
+                                    └──────┘
+                                      │ 射極 (E)
+                                      ▼
+                                     GND (系統共同接地)</code></pre>
+        <p><strong>設計要素重點：</strong></p>
+        <ul>
+            <li><strong>三極管 (2N2222 / S8050)</strong>：作為低側開關 (Low-side Switch)，MCU 只需微弱的 1mA 基極電流，即能安全推動 70mA 的線圈電流。</li>
+            <li><strong>飛輪二極體 (1N4007 / 1N4148)</strong>：反向並聯在線圈兩端。斷電瞬間，感應突波經二極體順向導通吸收，將反向電壓箝位在安全的 0.7V。</li>
+        </ul>
+    </div>
+
+    <!-- 提示詞歷史與變更記錄 -->
+    <div class="archive-box">
+        <h3>📝 提示詞歷史與變更記錄 (Prompt Archive)</h3>
+        
+        <div class="archive-item">
+            <h4>🔹 [2026-09-17 14:18:12] [Gemini 3.1 Pro / Antigravity] 建立繼電器雙電路解析筆記</h4>
+            <p><strong>模型/Agent:</strong> Gemini 3.1 Pro / Antigravity</p>
+            <p><strong>Prompt 原文:</strong></p>
+            <pre>C:\Users\User\Desktop\0917.jpg 這是我設計的兩個繼電器控制電路，兩個設計分別解說繼電器的控制原理，還有控制邏輯。另外補充，繼電器的種類與運作原理，延伸討論到積體電路中繼電器的替代方案</pre>
+            <p><strong>變更摘要:</strong> 建立繼電器控制電路與原理解析筆記，包含圖片中兩個電路的運作邏輯分析，並補充繼電器的核心概念及積體電路中的替代方案。</p>
+        </div>
+
+        <div class="archive-item">
+            <h4>🔹 [2026-09-17 14:22:50] [Gemini 3.8 Flash / Antigravity] 整合原始圖像、多維度動態模擬與磁簧展示</h4>
+            <p><strong>模型/Agent:</strong> Gemini 3.8 Flash / Antigravity</p>
+            <p><strong>Prompt 原文:</strong></p>
+            <pre>將原始的電路設計加入檔案，並利用繪圖進行動態模擬繼電器的運作，另外再設計繼電器磁簧開關與接點的動態展示，最後再增加繼電器的相關應用</pre>
+            <p><strong>變更摘要:</strong> 
+              1. 複製並嵌入原始電路設計圖片 (`relay_circuits_0917.jpg`)。<br>
+              2. 打造四套高互動向量動態模擬畫布（上方 15V 燈泡控制、下方 SPDT 雙色 LED 切換、內部機械接點剖面動作、磁簧開關磁吸動態展示）。<br>
+              3. 深入擴充電磁式與磁簧式繼電器對比表及車用、工業、物聯網多元應用實務。
+            </p>
+        </div>
+
+        <div class="archive-item">
+            <h4>🔹 [2026-09-17 14:36:27] [Gemini 3.8 Flash / Antigravity] 整合 Arduino 設計圖、C++ 程式碼解說與自動時序模擬</h4>
+            <p><strong>模型/Agent:</strong> Gemini 3.8 Flash / Antigravity</p>
+            <p><strong>Prompt 原文:</strong></p>
+            <pre>C:\Users\User\Desktop\arduino.jpg 加入這一個設計圖與程式解說</pre>
+            <p><strong>變更摘要:</strong> 
+              1. 嵌入 Arduino 控制 5V 繼電器之 Tinkercad 電路設計圖 (`arduino.jpg`)。<br>
+              2. 逐行解析 Arduino C++ 程式碼架構、時序真值表（3秒綠燈 / 1秒紅燈）。<br>
+              3. 新增「動態模擬 5：Arduino 自動化即時動畫」，視覺化呈現 Pin 13 LED 呼吸閃爍、倒數計時條與繼電器接點週期切換。<br>
+              4. 深度補充單晶片直驅繼電器的 GPIO 超載與反向電動勢 (Back-EMF) 破壞隱患，提供工業級電晶體驅動與飛輪二極體保護電路設計。
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 模擬器 1
+    let c1State = false;
+    function toggleCircuit1() {
+        c1State = !c1State;
+        const btn = document.getElementById('btnCircuit1');
+        const knob = document.getElementById('swKnob1');
+        const armature = document.getElementById('armature1');
+        const bulbGlass = document.getElementById('bulbGlass');
+        const bulbFilament = document.getElementById('bulbFilament');
+        const meterAmp = document.getElementById('meterAmp1');
+        const loadWireNO = document.getElementById('loadWireNO');
+        const ctrlWire = document.getElementById('ctrlWire1');
+        
+        const statCtrl = document.getElementById('statCtrl1');
+        const statMag = document.getElementById('statMag1');
+        const statContact = document.getElementById('statContact1');
+        const statLoad = document.getElementById('statLoad1');
+
+        if (c1State) {
+            btn.textContent = "切換 4xAA 電池開關：ON";
+            btn.className = "toggle-btn active-on";
+            knob.setAttribute("cx", "122");
+            knob.setAttribute("fill", "#10b981");
+
+            armature.setAttribute("x2", "426");
+            armature.setAttribute("y2", "163");
+            armature.setAttribute("stroke", "#fde047");
+
+            ctrlWire.setAttribute("stroke", "#38bdf8");
+            loadWireNO.setAttribute("stroke", "#10b981");
+
+            bulbGlass.setAttribute("fill", "url(#bulbRad)");
+            bulbGlass.setAttribute("filter", "url(#bulbGlow)");
+            bulbFilament.setAttribute("stroke", "#fff");
+            meterAmp.textContent = "14.3 mA";
+
+            statCtrl.className = "status-badge badge-green";
+            statCtrl.textContent = "通電激磁 (~6V)";
+            statMag.className = "status-badge badge-green";
+            statMag.textContent = "電磁吸力強烈 (ON)";
+            statContact.className = "status-badge badge-green";
+            statContact.textContent = "COM - NO 閉合導通";
+            statLoad.className = "status-badge badge-green";
+            statLoad.textContent = "燈泡明亮發光 (~14.3mA)";
+        } else {
+            btn.textContent = "切換 4xAA 電池開關：OFF";
+            btn.className = "toggle-btn";
+            knob.setAttribute("cx", "87");
+            knob.setAttribute("fill", "#ef4444");
+
+            armature.setAttribute("x2", "426");
+            armature.setAttribute("y2", "114");
+            armature.setAttribute("stroke", "#e2e8f0");
+
+            ctrlWire.setAttribute("stroke", "#64748b");
+            loadWireNO.setAttribute("stroke", "#64748b");
+
+            bulbGlass.setAttribute("fill", "#334155");
+            bulbGlass.removeAttribute("filter");
+            bulbFilament.setAttribute("stroke", "#94a3b8");
+            meterAmp.textContent = "0.0 mA";
+
+            statCtrl.className = "status-badge badge-red";
+            statCtrl.textContent = "斷電 (OFF)";
+            statMag.className = "status-badge badge-red";
+            statMag.textContent = "無磁力 (0 Gauss)";
+            statContact.className = "status-badge badge-yellow";
+            statContact.textContent = "COM - NC 閉合 (NO 斷開)";
+            statLoad.className = "status-badge badge-red";
+            statLoad.textContent = "燈泡熄滅 (0 Lux)";
+        }
+    }
+
+    // 模擬器 2
+    let c2State = false;
+    function toggleCircuit2() {
+        c2State = !c2State;
+        const btn = document.getElementById('btnCircuit2');
+        const armature = document.getElementById('armature2');
+        const wireNC = document.getElementById('wireNC');
+        const wireNO = document.getElementById('wireNO');
+        const redLed = document.getElementById('ledRedCircle');
+        const greenLed = document.getElementById('ledGreenCircle');
+
+        const statCoil = document.getElementById('statCoil2');
+        const statPin = document.getElementById('statPin2');
+        const statRed = document.getElementById('statRed2');
+        const statGreen = document.getElementById('statGreen2');
+
+        if (c2State) {
+            btn.textContent = "激磁控制開關：ON (吸合)";
+            btn.className = "toggle-btn active-on";
+            
+            armature.setAttribute("y2", "148");
+            wireNC.setAttribute("stroke", "#64748b");
+            wireNO.setAttribute("stroke", "#10b981");
+
+            redLed.setAttribute("fill", "#7f1d1d");
+            redLed.removeAttribute("filter");
+            greenLed.setAttribute("fill", "#34d399");
+            greenLed.setAttribute("filter", "drop-shadow(0px 0px 8px #10b981)");
+
+            statCoil.className = "status-badge badge-green";
+            statCoil.textContent = "通電激磁 (ON)";
+            statPin.className = "status-badge badge-green";
+            statPin.textContent = "COM 與 NO 導通";
+            statRed.className = "status-badge badge-red";
+            statRed.textContent = "熄滅 (OFF)";
+            statGreen.className = "status-badge badge-green";
+            statGreen.textContent = "亮起 (ON)";
+        } else {
+            btn.textContent = "激磁控制開關：OFF (常態)";
+            btn.className = "toggle-btn";
+
+            armature.setAttribute("y2", "98");
+            wireNC.setAttribute("stroke", "#ef4444");
+            wireNO.setAttribute("stroke", "#64748b");
+
+            redLed.setAttribute("fill", "#ef4444");
+            redLed.setAttribute("filter", "drop-shadow(0px 0px 8px #ef4444)");
+            greenLed.setAttribute("fill", "#064e3b");
+            greenLed.removeAttribute("filter");
+
+            statCoil.className = "status-badge badge-red";
+            statCoil.textContent = "未激磁 (OFF)";
+            statPin.className = "status-badge badge-yellow";
+            statPin.textContent = "COM 與 NC 導通";
+            statRed.className = "status-badge badge-green";
+            statRed.textContent = "點亮 (ON)";
+            statGreen.className = "status-badge badge-red";
+            statGreen.textContent = "熄滅 (OFF)";
+        }
+    }
+
+    // 模擬器 3
+    let mechEMRState = false;
+    function toggleMechEMR() {
+        mechEMRState = !mechEMRState;
+        const btn = document.getElementById('btnMechEMR');
+        const armatureGroup = document.getElementById('armatureGroup');
+        const fluxLines = document.getElementById('fluxLines');
+        const spark = document.getElementById('sparkFx');
+        const statArmature = document.getElementById('statArmature');
+        const statContacts = document.getElementById('statContacts');
+        const statMechDesc = document.getElementById('statMechDesc');
+
+        if (mechEMRState) {
+            btn.textContent = "電磁線圈通電：ON (磁吸)";
+            btn.className = "toggle-btn active-on";
+
+            armatureGroup.setAttribute("transform", "rotate(9, 315, 75)");
+            fluxLines.setAttribute("opacity", "1");
+
+            spark.setAttribute("opacity", "1");
+            setTimeout(() => spark.setAttribute("opacity", "0"), 350);
+
+            statArmature.className = "status-badge badge-green";
+            statArmature.textContent = "銜鐵受磁力吸合 (拉伸彈簧)";
+            statContacts.className = "status-badge badge-green";
+            statContacts.textContent = "COM 脫離 NC 撞擊閉合 NO";
+            statMechDesc.textContent = "電流在鐵芯產生強磁場，克服彈簧力拉下銜鐵，完成開關切換。";
+        } else {
+            btn.textContent = "電磁線圈通電：OFF";
+            btn.className = "toggle-btn";
+
+            armatureGroup.setAttribute("transform", "rotate(0, 315, 75)");
+            fluxLines.setAttribute("opacity", "0");
+            spark.setAttribute("opacity", "0");
+
+            statArmature.className = "status-badge badge-yellow";
+            statArmature.textContent = "彈簧拉起復歸 (未吸合)";
+            statContacts.className = "status-badge badge-red";
+            statContacts.textContent = "COM 緊貼常閉觸點 NC";
+            statMechDesc.textContent = "線圈斷電，磁力瞬間消失，復歸拉簧迅速拉回銜鐵回到常閉位置。";
+        }
+    }
+
+    // 模擬器 4
+    let magnetNear = false;
+    function toggleMagnet() {
+        magnetNear = !magnetNear;
+        const btn = document.getElementById('btnMagnet');
+        const magnet = document.getElementById('magnetGroup');
+        const magFlux = document.getElementById('magFlux');
+        const bladeL = document.getElementById('bladeL');
+        const bladeR = document.getElementById('bladeR');
+        const poleL = document.getElementById('poleL');
+        const poleR = document.getElementById('poleR');
+        const reedLed = document.getElementById('reedLed');
+
+        const statMagField = document.getElementById('statMagField');
+        const statPoles = document.getElementById('statPoles');
+        const statReedContact = document.getElementById('statReedContact');
+        const statReedCircuit = document.getElementById('statReedCircuit');
+
+        if (magnetNear) {
+            btn.textContent = "磁場控制：移開磁鐵 (遠離)";
+            btn.className = "toggle-btn active-on";
+
+            magnet.setAttribute("transform", "translate(400, 52)");
+            magFlux.setAttribute("opacity", "1");
+
+            bladeL.setAttribute("d", "M230,120 L400,120");
+            bladeR.setAttribute("d", "M570,120 L400,120");
+
+            poleL.setAttribute("opacity", "1");
+            poleR.setAttribute("opacity", "1");
+
+            reedLed.setAttribute("fill", "#f59e0b");
+            reedLed.setAttribute("filter", "drop-shadow(0px 0px 10px #f59e0b)");
+
+            statMagField.className = "status-badge badge-green";
+            statMagField.textContent = "強磁場覆蓋 (靠近)";
+            statPoles.className = "status-badge badge-green";
+            statPoles.textContent = "左端感應 S 極，右端感應 N 極";
+            statReedContact.className = "status-badge badge-green";
+            statReedContact.textContent = "異性相吸瞬間吸合 (閉合導通)";
+            statReedCircuit.className = "status-badge badge-green";
+            statReedCircuit.textContent = "通電迴路形成 (LED 明亮發光)";
+        } else {
+            btn.textContent = "磁場控制：靠近磁鐵";
+            btn.className = "toggle-btn";
+
+            magnet.setAttribute("transform", "translate(400, 20)");
+            magFlux.setAttribute("opacity", "0");
+
+            bladeL.setAttribute("d", "M230,120 L405,117");
+            bladeR.setAttribute("d", "M570,120 L395,125");
+
+            poleL.setAttribute("opacity", "0");
+            poleR.setAttribute("opacity", "0");
+
+            reedLed.setAttribute("fill", "#334155");
+            reedLed.removeAttribute("filter");
+
+            statMagField.className = "status-badge badge-red";
+            statMagField.textContent = "無磁場 (遠離)";
+            statPoles.className = "status-badge badge-red";
+            statPoles.textContent = "簧片無磁性殘留";
+            statReedContact.className = "status-badge badge-yellow";
+            statReedContact.textContent = "彈性復原分開 (斷開)";
+            statReedCircuit.className = "status-badge badge-red";
+            statReedCircuit.textContent = "斷路 (LED 熄滅)";
+        }
+    }
+
+    // -------------------------------------------------------------
+    // 模擬器 5：Arduino 自動化即時動畫
+    // -------------------------------------------------------------
+    let ardRunning = true;
+    let ardPhase = 1; // 1: HIGH (3s), 2: LOW (1s)
+    let ardRemaining = 3000; // ms
+    const ardInterval = 100; // ms tick
+    let ardTimerId = null;
+
+    function updateArduinoVisuals() {
+        const pin13Led = document.getElementById('ardPin13Led');
+        const wire13 = document.getElementById('ardWire13');
+        const armature = document.getElementById('ardArmature');
+        const wireNC = document.getElementById('ardWireNC');
+        const wireNO = document.getElementById('ardWireNO');
+        const ledRed = document.getElementById('ardLedRed');
+        const ledGreen = document.getElementById('ardLedGreen');
+        const progress = document.getElementById('ardProgress');
+
+        const statCode = document.getElementById('ardCodeStat');
+        const statTimer = document.getElementById('ardTimerStat');
+        const statContact = document.getElementById('ardContactStat');
+        const statLoad = document.getElementById('ardLoadStat');
+
+        const totalPhaseTime = ardPhase === 1 ? 3000 : 1000;
+        const progressPct = (ardRemaining / totalPhaseTime);
+        progress.setAttribute('width', (progressPct * 760).toString());
+
+        if (ardPhase === 1) {
+            // HIGH 階段 (綠燈)
+            pin13Led.setAttribute('fill', '#fde047');
+            pin13Led.setAttribute('filter', 'drop-shadow(0px 0px 8px #facc15)');
+            wire13.setAttribute('stroke', '#10b981');
+
+            armature.setAttribute('y2', '173');
+            wireNC.setAttribute('stroke', '#64748b');
+            wireNO.setAttribute('stroke', '#10b981');
+
+            ledRed.setAttribute('fill', '#7f1d1d');
+            ledRed.removeAttribute('filter');
+            ledGreen.setAttribute('fill', '#34d399');
+            ledGreen.setAttribute('filter', 'drop-shadow(0px 0px 10px #10b981)');
+
+            progress.setAttribute('fill', '#10b981');
+
+            statCode.className = 'status-badge badge-green';
+            statCode.textContent = 'digitalWrite(HIGH); delay(3000);';
+            statTimer.className = 'status-badge badge-green';
+            statTimer.textContent = (ardRemaining / 1000).toFixed(1) + ' 秒 (綠燈運轉)';
+            statContact.className = 'status-badge badge-green';
+            statContact.textContent = 'COM - NO 吸合導通';
+            statLoad.className = 'status-badge badge-green';
+            statLoad.textContent = '🟢 綠燈亮 (機具運轉中)';
+        } else {
+            // LOW 階段 (紅燈)
+            pin13Led.setAttribute('fill', '#475569');
+            pin13Led.removeAttribute('filter');
+            wire13.setAttribute('stroke', '#64748b');
+
+            armature.setAttribute('y2', '107');
+            wireNC.setAttribute('stroke', '#ef4444');
+            wireNO.setAttribute('stroke', '#64748b');
+
+            ledRed.setAttribute('fill', '#ef4444');
+            ledRed.setAttribute('filter', 'drop-shadow(0px 0px 10px #ef4444)');
+            ledGreen.setAttribute('fill', '#064e3b');
+            ledGreen.removeAttribute('filter');
+
+            progress.setAttribute('fill', '#ef4444');
+
+            statCode.className = 'status-badge badge-red';
+            statCode.textContent = 'digitalWrite(LOW); delay(1000);';
+            statTimer.className = 'status-badge badge-yellow';
+            statTimer.textContent = (ardRemaining / 1000).toFixed(1) + ' 秒 (紅燈待機)';
+            statContact.className = 'status-badge badge-yellow';
+            statContact.textContent = 'COM - NC 彈簧復位';
+            statLoad.className = 'status-badge badge-red';
+            statLoad.textContent = '🔴 紅燈亮 (系統待機停機)';
+        }
+    }
+
+    function tickArduino() {
+        if (!ardRunning) return;
+        ardRemaining -= ardInterval;
+        if (ardRemaining <= 0) {
+            if (ardPhase === 1) {
+                ardPhase = 2;
+                ardRemaining = 1000;
+            } else {
+                ardPhase = 1;
+                ardRemaining = 3000;
+            }
+        }
+        updateArduinoVisuals();
+    }
+
+    function toggleArduinoSim() {
+        ardRunning = !ardRunning;
+        const btn = document.getElementById('btnArdAuto');
+        if (ardRunning) {
+            btn.textContent = "暫停自動執行";
+            btn.className = "toggle-btn active-on";
+        } else {
+            btn.textContent = "恢復自動執行";
+            btn.className = "toggle-btn";
+        }
+    }
+
+    function stepArduinoSim() {
+        if (ardPhase === 1) {
+            ardPhase = 2;
+            ardRemaining = 1000;
+        } else {
+            ardPhase = 1;
+            ardRemaining = 3000;
+        }
+        updateArduinoVisuals();
+    }
+
+    ardTimerId = setInterval(tickArduino, ardInterval);
+    updateArduinoVisuals();
+</script>
+
+</body>
+</html>

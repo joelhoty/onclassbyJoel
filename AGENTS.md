@@ -58,6 +58,11 @@
 
 ---
 
+### 5.index.md與index.html 自動更新
+- 在git commit 之前先進行index檔案索引更新
+- git commit 與 git push 後檢查檔案索引是否正確
+---
+
 ## 📁 跨 Agent 目錄分類原則 (Subject Categorization)
 
 所有新增筆記必須依主題分類歸檔至對應資料夾，不得任意放置於根目錄：
