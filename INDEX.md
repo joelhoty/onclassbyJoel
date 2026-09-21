@@ -1,8 +1,8 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-16 12:10:26 (UTC+8)  
-> **使用模型**: Claude Sonnet 4.6  
-> **執行 Agent**: Antigravity  
+> **最後更新時間**: 2026-09-21 16:20:00 (UTC+8)  
+> **使用模型**: Claude Sonnet 5  
+> **執行 Agent**: Claude Code  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 
 ---
@@ -47,6 +47,8 @@
 * `2026-09-01` | [LED 限流電阻原理與實驗](./ec/led.html) (HTML)
 
 ### 🤖 3. 樂高機器人 EV3 / SPIKE (`ev3/`)
+* `2026-09-21` | [馬達控制：Move Steering vs Move Tank 完整教學 (HTML)](./ev3/lego_motor_control.html) (HTML)
+* `2026-09-21` | [馬達控制：Move Steering vs Move Tank 完整教學 (MD)](./ev3/lego_motor_control.md) (MD)
 * `2026-09-14` | [樂高機器人專題筆記首頁](./ev3/index.html) (HTML)
 * `2026-09-14` | [雙感測器邏輯 (HTML)](./ev3/nested_switch_distance_logic.html) (HTML)
 * `2026-09-14` | [雙感測器邏輯解析 (MD)](./ev3/nested_switch_distance_logic.md) (MD)
@@ -174,3 +176,11 @@
   C:\Users\User\Desktop\arduino.jpg 加入這一個設計圖與程式解說
   ```
 - **變更摘要**: 嵌入 Arduino 繼電器控制設計圖 (arduino.jpg)，詳解 C++ 程式碼與 3秒綠燈/1秒紅燈控制邏輯，新增 Arduino 自動化即時動態模擬，並深度解析單晶片直驅線圈之反向電動勢 (Back-EMF) 與電流超載危害，提出電晶體與飛輪二極體工業級保護方案。
+
+### 🔹 [2026-09-21 15:20:00] [Claude Sonnet 5 / Claude Code]
+- **模型/Agent**: Claude Sonnet 5 / Claude Code
+- **Prompt 原文**:
+  ```text
+  整合 LEGO Mindstorm EV3 馬達控制 PDF（Move Steering vs Move Tank、四個實作應用），並新增走正方形的幾何計算與誤差來源詳解章節
+  ```
+- **變更摘要**: 新增 `lego_motor_control.html`，完整整理馬達控制核心參數、Move Steering 差速轉向原理、Move Tank 獨立雙馬達控制、兩者比較決策流程圖、四個對照實作應用（時間/距離/角度/正方形控制），並深入擴充「走正方形」的幾何推導與六大誤差來源（輪胎周長誤差、輪距誤差、轉彎打滑、開迴路無回饋、電池電壓不對稱、累積誤差）與開迴路/閉迴路對策比較，同步更新 EV3 分類索引。

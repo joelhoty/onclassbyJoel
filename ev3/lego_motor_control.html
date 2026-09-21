@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEGO EV3 馬達控制：Move Steering vs Move Tank 完整教學</title>
+    <style>
+        :root {
+            --primary-color: #38bdf8;
+            --primary-dark: #0284c7;
+            --secondary-color: #f1f5f9;
+            --accent-color: #f59e0b;
+            --bg-color: #0b0f19;
+            --card-bg: #161c28;
+            --text-color: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #2a3447;
+            --ev3-red: #ef4444;
+            --ev3-green: #10b981;
+            --ev3-yellow: #f59e0b;
+            --ev3-blue: #3b82f6;
+            --ev3-orange: #f97316;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+            color: #f8fafc;
+            padding: 40px 30px;
+            border-radius: 16px;
+            border: 1px solid #374151;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(56, 189, 248, 0.08);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .badge {
+            display: inline-block;
+            background-color: rgba(56, 189, 248, 0.15);
+            color: var(--primary-color);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+            color: #f8fafc;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #374151;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-pdf {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+            transition: all 0.2s ease;
+            margin-top: 15px;
+        }
+
+        .btn-pdf:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(239, 68, 68, 0.5);
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+        }
+
+        .section-card {
+            background-color: var(--card-bg);
+            border-radius: 14px;
+            padding: 30px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        h2 .step-num {
+            background-color: rgba(56, 189, 248, 0.2);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: #f1f5f9;
+            margin: 20px 0 10px 0;
+        }
+
+        h4 {
+            color: #e2e8f0;
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .info-box {
+            background-color: #132338;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            color: #e2e8f0;
+        }
+
+        .info-box.warning {
+            background-color: #241c12;
+            border-left-color: var(--accent-color);
+        }
+
+        .info-box strong {
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .info-box.warning strong {
+            color: var(--accent-color);
+        }
+
+        .diagram-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: stretch;
+            margin: 20px 0;
+        }
+
+        .diagram-box {
+            flex: 1 1 320px;
+            background-color: #111622;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .diagram-box svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .diagram-title {
+            font-weight: 700;
+            margin-top: 10px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        pre {
+            background-color: #070a12;
+            color: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 10px;
+            font-family: "Consolas", "Courier New", Courier, monospace;
+            font-size: 0.95rem;
+            overflow-x: auto;
+            line-height: 1.5;
+            margin: 15px 0;
+        }
+
+        code .keyword { color: #38bdf8; font-weight: bold; }
+        code .comment { color: #64748b; font-style: italic; }
+        code .function { color: #f43f5e; }
+        code .number { color: #fbbf24; }
+        code .string { color: #4ade80; }
+
+        .block-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .block-item {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            background: #1a2232;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .block-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.85rem;
+            width: fit-content;
+        }
+
+        .block-orange { background-color: #c2410c; }
+        .block-green { background-color: #047857; }
+        .block-yellow { background-color: #b45309; }
+        .block-blue { background-color: #1d4ed8; }
+        .block-red { background-color: #b91c1c; }
+        .block-purple { background-color: #6d28d9; }
+
+        .block-item h4 {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+        }
+
+        .block-item p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0;
+        }
+
+        .ev3-block-mockup {
+            background-color: #0e1420;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: sans-serif;
+        }
+
+        .block-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .visual-block {
+            background-color: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            padding: 8px 14px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 3px 0 #334155;
+            color: #f8fafc;
+        }
+
+        .visual-block.loop {
+            background-color: #2c1b12;
+            border-color: #7c2d12;
+            box-shadow: 0 3px 0 #7c2d12;
+            color: #fdba74;
+        }
+
+        .visual-block.motor {
+            background-color: #122a1b;
+            border-color: #14532d;
+            box-shadow: 0 3px 0 #14532d;
+            color: #86efac;
+        }
+
+        .visual-block.sensor {
+            background-color: #122238;
+            border-color: #1e3a8a;
+            box-shadow: 0 3px 0 #1e3a8a;
+            color: #93c5fd;
+        }
+
+        ol.step-list {
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+
+        ol.step-list li {
+            margin-bottom: 12px;
+            padding-left: 5px;
+        }
+
+        table.param-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+
+        table.param-table th, table.param-table td {
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            text-align: left;
+        }
+
+        table.param-table th {
+            background-color: #1a2333;
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+
+        table.param-table td {
+            background-color: #121824;
+            color: var(--text-color);
+        }
+
+        .tabs-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        @media (max-width: 700px) {
+            .tabs-compare { grid-template-columns: 1fr; }
+        }
+
+        .tab-card {
+            background-color: #111622;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 18px;
+        }
+
+        .tab-card h4 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .tab-card.tank h4 {
+            color: var(--ev3-orange);
+        }
+
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 20px 0;
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 30px;
+        }
+
+        .diagram-legend {
+            list-style: none;
+            margin: 12px 0 0 0;
+            padding: 0;
+            text-align: left;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .diagram-legend li {
+            padding: 4px 0 4px 22px;
+            position: relative;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .diagram-legend li:last-child { border-bottom: none; }
+
+        .diagram-legend li::before {
+            content: "▸";
+            position: absolute;
+            left: 4px;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .diagram-legend strong { color: #f1f5f9; }
+
+        .prompt-archive {
+            background-color: #0e1420;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin: 14px 0;
+        }
+
+        .prompt-archive h3 {
+            margin-top: 0;
+            font-size: 1.05rem;
+        }
+
+        .prompt-archive pre {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 640px) {
+            body { padding: 10px; }
+            header { padding: 25px 15px; }
+            h1 { font-size: 1.6rem; }
+            .section-card { padding: 20px 15px; }
+        }
+
+        @media print {
+            body {
+                background-color: #ffffff !important;
+                color: #0f172a !important;
+                padding: 0 !important;
+            }
+            .container { max-width: 100% !important; width: 100% !important; }
+            header {
+                background: #f8fafc !important;
+                color: #0f172a !important;
+                border: 1px solid #cbd5e1 !important;
+                box-shadow: none !important;
+                padding: 20px !important;
+            }
+            h1, h2, h3, h4 { color: #0f172a !important; }
+            .badge { border-color: #94a3b8 !important; color: #0284c7 !important; }
+            .btn-pdf { display: none !important; }
+            .section-card {
+                background-color: #ffffff !important;
+                border: 1px solid #cbd5e1 !important;
+                box-shadow: none !important;
+                page-break-inside: avoid;
+                color: #0f172a !important;
+            }
+            .diagram-box, .prompt-archive, .info-box, .ev3-block-mockup, .tab-card, .block-item {
+                background-color: #f8fafc !important;
+                border: 1px solid #cbd5e1 !important;
+                color: #0f172a !important;
+                page-break-inside: avoid;
+            }
+            table { page-break-inside: avoid; }
+            th { background-color: #f1f5f9 !important; color: #0f172a !important; }
+            td { color: #0f172a !important; }
+            p, .diagram-legend, .diagram-title { color: #0f172a !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Header -->
+    <header>
+        <span class="badge">LEGO MINDSTORMS EV3 專題教學</span>
+        <h1>馬達控制：Move Steering 與 Move Tank</h1>
+        <p>核心概念、差速轉向原理、兩大控制方塊比較、四個實作應用，以及「走正方形」的幾何計算與誤差來源深度剖析</p>
+
+        <div class="meta-info">
+            <div class="meta-item">🕒 <strong>最後更新時間:</strong> 2026-09-21 16:20:00 (UTC+8)</div>
+            <div class="meta-item">🤖 <strong>使用模型:</strong> Claude Sonnet 5</div>
+            <div class="meta-item">👤 <strong>執行 Agent:</strong> Claude Code</div>
+        </div>
+
+        <div>
+            <button onclick="window.print()" class="btn-pdf">📄 匯出成 PDF / 列印筆記</button>
+        </div>
+    </header>
+
+    <!-- Section 1: 核心概念 -->
+    <div class="section-card">
+        <h2><span class="step-num">1</span> 核心概念：馬達控制參數</h2>
+        <p>在控制樂高機器人馬達時，我們需要將現實世界的動作（例如：前進、轉彎）轉換為馬達可以理解的參數。</p>
+
+        <div class="block-list">
+            <div class="block-item">
+                <span class="block-badge block-green">動力</span>
+                <h4>Power: −100 ~ 100</h4>
+                <p>馬達輸出的力量百分比。正數代表一個方向（如前進），負數代表反方向（如後退），0 代表停止。</p>
+            </div>
+            <div class="block-item">
+                <span class="block-badge block-blue">模式</span>
+                <h4>Mode: 秒 / 角度 / 圈數</h4>
+                <p><strong>秒：</strong>在指定時間內持續運轉，適合不需精準距離的動作。<br><strong>角度：</strong>馬達軸轉動指定度數（一圈 360 度），適合精準短距離控制。<br><strong>圈數：</strong>角度的延伸，適合長距離移動。</p>
+            </div>
+            <div class="block-item">
+                <span class="block-badge block-red">停止方式</span>
+                <h4>Stop Action: 煞車 vs. 滑行</h4>
+                <p><strong>煞車 (Brake)：</strong>立即鎖定馬達，實現精準停止。<br><strong>滑行 (Coast)：</strong>切斷動力，讓其自然減速停止，動作較平順。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Move Steering -->
+    <div class="section-card">
+        <h2><span class="step-num">2</span> Move Steering：差速轉向控制</h2>
+        <p>「Move Steering」是 EV3 中最常用、最直觀的移動控制方塊。它透過一個<strong>「轉向 (Steering)」</strong>值來同時控制左右兩個馬達，實現直線與轉彎動作。其精髓在於<strong>差速控制</strong>：根據設定的轉向值，自動調整左右兩馬達的功率差異。</p>
+
+        <h3>轉向值與左右馬達動力對照（假設總動力 50）</h3>
+        <table class="param-table">
+            <thead>
+                <tr><th>轉向值</th><th>左馬達動力</th><th>右馬達動力</th><th>結果</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>0</code>（直線）</td><td>50</td><td>50</td><td>兩輪速度相同，直線前進</td></tr>
+                <tr><td><code>50</code>（向右中速轉彎）</td><td>50（外側輪，全速）</td><td>25（內側輪，半速）</td><td>左輪較快，畫出平滑弧線向右</td></tr>
+                <tr><td><code>100</code>（向右原地轉彎）</td><td>50（外側輪）</td><td>−50（內側輪，反轉）</td><td>雙輪反向，以自身中心軸轉</td></tr>
+                <tr><td><code>−100</code>（向左原地轉彎）</td><td>−50（內側輪，反轉）</td><td>50（外側輪）</td><td>與 100 相反，向左原地旋轉</td></tr>
+            </tbody>
+        </table>
+
+        <div class="diagram-container">
+            <div class="diagram-box">
+                <svg viewBox="0 0 360 260" width="100%" height="240">
+                    <text x="180" y="25" fill="#f8fafc" font-weight="bold" font-size="14" text-anchor="middle">轉向 = 50（向右弧線）</text>
+                    <rect x="40" y="60" width="280" height="18" rx="9" fill="#334155"/>
+                    <rect x="40" y="60" width="280" height="18" rx="9" fill="#38bdf8"/>
+                    <text x="180" y="73" fill="#0b0f19" font-weight="bold" font-size="11" text-anchor="middle">左馬達 50（外側，全速）</text>
+
+                    <rect x="40" y="100" width="140" height="18" rx="9" fill="#334155"/>
+                    <rect x="40" y="100" width="140" height="18" rx="9" fill="#f59e0b"/>
+                    <text x="110" y="113" fill="#0b0f19" font-weight="bold" font-size="11" text-anchor="middle">右馬達 25（內側，半速）</text>
+
+                    <path d="M 60 160 Q 260 160 260 220" fill="none" stroke="#38bdf8" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#arrowM)"/>
+                    <defs>
+                        <marker id="arrowM" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#38bdf8"/>
+                        </marker>
+                    </defs>
+                    <text x="150" y="245" fill="#94a3b8" font-size="12" text-anchor="middle">外側輪快 + 內側輪慢 → 平滑弧線</text>
+                </svg>
+                <div class="diagram-title">圖 2.1：差速轉向示意（轉向值 50）</div>
+                <ul class="diagram-legend">
+                    <li><strong>藍色長條（左馬達 50）：</strong>長度代表功率大小，藍條佔滿全長，表示外側輪維持「全速」，是整條弧線的推進主力。</li>
+                    <li><strong>橘色長條（右馬達 25）：</strong>長度僅為藍條一半，表示內側輪功率被差速演算法折半，藉此讓內側輪走過較短的弧長。</li>
+                    <li><strong>藍色虛線弧線＋箭頭：</strong>代表機器人實際行走路徑——因外側輪比內側輪多跑一段距離，兩輪軌跡半徑不同，路徑自然彎曲向右。</li>
+                    <li><strong>底部文字：</strong>總結因果關係「外側輪快 + 內側輪慢」是所有平滑轉彎（非原地旋轉）的共同原理，轉向值愈大，兩輪功率差愈大，弧線愈急。</li>
+                </ul>
+            </div>
+            <div class="diagram-box">
+                <svg viewBox="0 0 360 260" width="100%" height="240">
+                    <text x="180" y="25" fill="#f8fafc" font-weight="bold" font-size="14" text-anchor="middle">轉向 = 100（原地旋轉）</text>
+                    <circle cx="180" cy="150" r="70" fill="none" stroke="#334155" stroke-width="2" stroke-dasharray="5,5"/>
+                    <g transform="translate(180,150)">
+                        <rect x="-15" y="-30" width="30" height="60" rx="4" fill="#1e293b" stroke="#94a3b8" stroke-width="2"/>
+                        <path d="M -25 -35 A 35 35 0 0 1 25 -35" fill="none" stroke="#10b981" stroke-width="3" marker-end="url(#arrowM)"/>
+                        <path d="M 25 35 A 35 35 0 0 1 -25 35" fill="none" stroke="#ef4444" stroke-width="3" marker-end="url(#arrowM)"/>
+                    </g>
+                    <text x="180" y="235" fill="#94a3b8" font-size="12" text-anchor="middle">左輪 +50 / 右輪 −50 → 以車身中心自轉</text>
+                </svg>
+                <div class="diagram-title">圖 2.2：原地旋轉 / 軸轉示意（轉向值 100）</div>
+                <ul class="diagram-legend">
+                    <li><strong>灰色虛線圓：</strong>代表機器人車身輪廓在原地旋轉時「掃過」的範圍，圓心即為左右輪連線的中點——旋轉軸心。</li>
+                    <li><strong>中央方塊：</strong>抽象化的機器人本體（俯視圖），其幾何中心固定不動，僅車身角度改變。</li>
+                    <li><strong>綠色箭頭（左輪路徑，正轉）：</strong>左馬達功率 +50，輪子向前滾動，畫出圓弧上半段。</li>
+                    <li><strong>紅色箭頭（右輪路徑，反轉）：</strong>右馬達功率 −50，輪子向後滾動，畫出圓弧下半段，方向與左輪相反。</li>
+                    <li><strong>關鍵洞察：</strong>兩輪速度大小相等、方向相反，是「轉向值 = ±100」時 Move Steering 內部換算的結果，也是唯一能讓機器人「原地不位移、只轉向」的動力組合。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <strong>✅ 特性與優勢：</strong>
+            <p style="margin-bottom:0;">直觀易用（僅需一個轉向參數）、程式簡潔（一個方塊控制兩馬達）、功能全面（結合秒/圈數/角度模式可滿足絕大部分移動需求）。</p>
+        </div>
+    </div>
+
+    <!-- Section 3: Move Tank -->
+    <div class="section-card">
+        <h2><span class="step-num">3</span> Move Tank：獨立雙馬達控制</h2>
+        <p>「Move Tank」讓您<strong>直接、獨立地</strong>設定左右兩個馬達各自的動力，不經過任何「轉向」換算——效果類似戰車兩側履帶各自獨立驅動，因而得名。輸入為<strong>左馬達動力 (Power B): −100~100</strong> 與 <strong>右馬達動力 (Power C): −100~100</strong>，兩數值完全獨立。</p>
+
+        <table class="param-table">
+            <thead>
+                <tr><th>想要的動作</th><th>左馬達動力</th><th>右馬達動力</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>直線前進</td><td>50</td><td>50</td></tr>
+                <tr><td>直線後退</td><td>−50</td><td>−50</td></tr>
+                <tr><td>原地向右旋轉</td><td>50</td><td>−50</td></tr>
+                <tr><td>只有右輪前進、左輪不動（擺動轉彎）</td><td>0</td><td>50</td></tr>
+                <tr><td>兩輪不同速度前進（緩和弧線）</td><td>50</td><td>30</td></tr>
+            </tbody>
+        </table>
+
+        <div class="info-box warning">
+            <strong>⚠️ 特性：</strong>
+            <p style="margin-bottom:0;"><strong>靈活但不直覺：</strong>可做出「Move Steering」做不到的不對稱動作（如單輪擺動轉彎），但需自行計算左右動力，設定較繁瑣。<strong>本質是底層控制：</strong>事實上「Move Steering」就是在內部把「轉向」值換算成左右馬達動力後，再呼叫與「Move Tank」相同的馬達驅動邏輯。因此 Move Tank 可視為更底層、更原始的控制方式，Move Steering 則是它的一層便利包裝。</p>
+        </div>
+    </div>
+
+    <!-- Section 4: 比較與選用時機 -->
+    <div class="section-card">
+        <h2><span class="step-num">4</span> 兩者比較與選用時機</h2>
+
+        <table class="param-table">
+            <thead>
+                <tr><th>比較項目</th><th>Move Steering</th><th>Move Tank</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>控制參數</strong></td><td>轉向 (−100~100) + 動力（1 組）</td><td>左馬達動力 + 右馬達動力（各自獨立設定）</td></tr>
+                <tr><td><strong>直覺性</strong></td><td>高：一個參數即可描述「多右／多左」</td><td>低：需自行換算左右動力關係</td></tr>
+                <tr><td><strong>對稱轉彎（弧線、原地旋轉）</strong></td><td>適合，公式已內建於方塊中</td><td>需自行計算對應的左右動力數值</td></tr>
+                <tr><td><strong>不對稱動作（擺動轉彎、單輪校正）</strong></td><td>無法直接做到</td><td>適合，可任意組合左右動力</td></tr>
+                <tr><td><strong>常見應用場景</strong></td><td>一般巡線、繞障礙、走固定幾何路徑</td><td>特殊轉向動作、左右輪機構不對稱、需精細微調的場合</td></tr>
+            </tbody>
+        </table>
+
+        <div class="diagram-container">
+            <div class="diagram-box">
+                <svg viewBox="0 0 360 260" width="100%" height="240">
+                    <rect x="110" y="10" width="140" height="40" rx="20" fill="#0284c7"/>
+                    <text x="180" y="35" fill="white" font-weight="bold" font-size="13" text-anchor="middle">需要控制機器人移動</text>
+                    <line x1="180" y1="50" x2="180" y2="85" stroke="#64748b" stroke-width="2" marker-end="url(#arrowM2)"/>
+                    <defs>
+                        <marker id="arrowM2" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+                        </marker>
+                    </defs>
+                    <polygon points="180,90 300,150 180,210 60,150" fill="#2a2412" stroke="#f59e0b" stroke-width="2"/>
+                    <text x="180" y="140" fill="#fde047" font-weight="bold" font-size="11" text-anchor="middle">左右輪動力是否</text>
+                    <text x="180" y="155" fill="#fde047" font-weight="bold" font-size="11" text-anchor="middle">可用單一轉向值描述？</text>
+
+                    <line x1="60" y1="150" x2="20" y2="150" stroke="#64748b" stroke-width="2"/>
+                    <line x1="20" y1="150" x2="20" y2="225" stroke="#64748b" stroke-width="2" marker-end="url(#arrowM2)"/>
+                    <text x="35" y="140" fill="#10b981" font-weight="bold" font-size="11">是</text>
+                    <rect x="0" y="228" width="110" height="30" rx="8" fill="#122a1b" stroke="#10b981" stroke-width="2"/>
+                    <text x="55" y="248" fill="#86efac" font-weight="bold" font-size="11" text-anchor="middle">Move Steering</text>
+
+                    <line x1="300" y1="150" x2="340" y2="150" stroke="#64748b" stroke-width="2"/>
+                    <line x1="340" y1="150" x2="340" y2="225" stroke="#64748b" stroke-width="2" marker-end="url(#arrowM2)"/>
+                    <text x="320" y="140" fill="#ef4444" font-weight="bold" font-size="11">否</text>
+                    <rect x="250" y="228" width="110" height="30" rx="8" fill="#2a1215" stroke="#ef4444" stroke-width="2"/>
+                    <text x="305" y="248" fill="#fca5a5" font-weight="bold" font-size="11" text-anchor="middle">Move Tank</text>
+                </svg>
+                <div class="diagram-title">圖 4.1：Move Steering / Move Tank 選用決策流程圖</div>
+                <ul class="diagram-legend">
+                    <li><strong>藍色起點方塊：</strong>任何移動需求的起點——先問「左右輪動力之間，是否存在一個簡單比例關係」。</li>
+                    <li><strong>黃色菱形（判斷節點）：</strong>核心問題是「這個動作能不能只用一個轉向值描述」，例如直線（0）、對稱弧線、原地旋轉（±100）皆可用單一數值涵蓋，屬於「是」；但像「右輪動、左輪完全靜止」這種零與非零並存的組合，找不到對應轉向值，屬於「否」。</li>
+                    <li><strong>綠色分支（是 → Move Steering）：</strong>選擇 Move Steering，程式碼更精簡、可讀性高，適合大多數巡線與規則路徑任務。</li>
+                    <li><strong>紅色分支（否 → Move Tank）：</strong>選擇 Move Tank，雖然需要手動計算左右動力，但能表達任何不對稱動力組合。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <strong>💡 重點提醒：</strong>
+            <p style="margin-bottom:0;">下一節的四個基礎應用，其動作本身都是「對稱動作」（直線、原地旋轉），因此 Move Steering 與 Move Tank 可以設定出<strong>完全等效</strong>的結果——差別只在於「輸入方式」。但只要動作變成不對稱（如擺動轉彎），就只有 Move Tank 能直接做到。</p>
+        </div>
+    </div>
+
+    <!-- Section 5: 四個基礎應用 -->
+    <div class="section-card">
+        <h2><span class="step-num">5</span> 基礎應用實作（各含 Move Steering 與 Move Tank 兩種作法）</h2>
+
+        <h3>應用一：時間控制 — 前進與後退</h3>
+        <p><strong>目標：</strong>前進 5 秒，停止，後退 5 秒，停止。<strong>共同原理：</strong>使用「秒」模式，透過動力值的正負控制方向。</p>
+        <div class="tabs-compare">
+            <div class="tab-card steering">
+                <h4>作法 A：Move Steering</h4>
+                <p>前進：<code>模式:秒 | 轉向:0 | 動力:50 | 秒數:5 | 煞車</code><br>後退：<code>模式:秒 | 轉向:0 | 動力:-50 | 秒數:5 | 煞車</code></p>
+            </div>
+            <div class="tab-card tank">
+                <h4>作法 B：Move Tank</h4>
+                <p>前進：<code>模式:秒 | 左:50 | 右:50 | 秒數:5 | 煞車</code><br>後退：<code>模式:秒 | 左:-50 | 右:-50 | 秒數:5 | 煞車</code></p>
+            </div>
+        </div>
+        <p style="font-size:0.9rem; color:var(--text-muted);">比較：直線動作左右動力相同，兩種方塊本質完全一樣，差別只在於 Move Tank 需要重複輸入兩次相同數值。</p>
+
+        <h3 style="margin-top:30px;">應用二：距離控制 — 精準移動</h3>
+        <p><strong>目標：</strong>前進 100 公分，停止，後退 100 公分，停止。<strong>共同原理：</strong>圈數 = 總距離 / 輪胎周長。範例：輪胎周長 17.6 公分 → 100 / 17.6 ≈ 5.68 圈。</p>
+        <div class="tabs-compare">
+            <div class="tab-card steering">
+                <h4>作法 A：Move Steering</h4>
+                <p>前進：<code>模式:圈數 | 轉向:0 | 動力:50 | 圈數:5.68 | 煞車</code><br>後退：<code>模式:圈數 | 轉向:0 | 動力:-50 | 圈數:5.68 | 煞車</code></p>
+            </div>
+            <div class="tab-card tank">
+                <h4>作法 B：Move Tank</h4>
+                <p>前進：<code>模式:圈數 | 左:50 | 右:50 | 圈數:5.68 | 煞車</code><br>後退：<code>模式:圈數 | 左:-50 | 右:-50 | 圈數:5.68 | 煞車</code></p>
+            </div>
+        </div>
+
+        <h3 style="margin-top:30px;">應用三：角度控制 — 原地旋轉</h3>
+        <p><strong>目標：</strong>原地旋轉 90 度。<strong>共同原理：</strong>馬達圈數 = (輪距 × π × 車身角度 / 360) / 輪胎周長。範例：輪距 12cm、輪胎周長 17.6cm、轉 90 度 → 馬達需轉 0.54 圈。</p>
+        <div class="tabs-compare">
+            <div class="tab-card steering">
+                <h4>作法 A：Move Steering</h4>
+                <p>右轉 90 度：<code>模式:圈數 | 轉向:100 | 動力:40 | 圈數:0.54 | 煞車</code></p>
+            </div>
+            <div class="tab-card tank">
+                <h4>作法 B：Move Tank</h4>
+                <p>右轉 90 度：<code>模式:圈數 | 左:40 | 右:-40 | 圈數:0.54 | 煞車</code></p>
+            </div>
+        </div>
+        <p style="font-size:0.9rem; color:var(--text-muted);">比較：轉向 100 對應「左馬達動力 = −右馬達動力」的原地旋轉，因此兩者結果相同。但若想做「不對稱原地旋轉」（例如只讓右輪反轉、左輪保持不動），Move Steering 做不到，只有 Move Tank 能設定 左:0 | 右:-40 之類的組合。</p>
+
+        <h3 style="margin-top:30px;">應用四：綜合應用 — 走一個正方形</h3>
+        <p><strong>目標：</strong>重複「前進 50 公分」與「右轉 90 度」四次。<strong>共同原理：</strong>使用「迴圈」方塊，將直線移動和原地轉彎打包執行。計算：前進 50 公分 ≈ 2.84 圈；右轉 90 度 ≈ 0.54 圈。</p>
+        <div class="tabs-compare">
+            <div class="tab-card steering">
+                <h4>作法 A：全程使用 Move Steering</h4>
+                <p>迴圈 4 次，內含：<br>前進：<code>模式:圈數 | 轉向:0 | 動力:50 | 圈數:2.84 | 煞車</code><br>轉彎：<code>模式:圈數 | 轉向:100 | 動力:40 | 圈數:0.54 | 煞車</code></p>
+            </div>
+            <div class="tab-card tank">
+                <h4>作法 B：全程使用 Move Tank</h4>
+                <p>迴圈 4 次，內含：<br>前進：<code>模式:圈數 | 左:50 | 右:50 | 圈數:2.84 | 煞車</code><br>轉彎：<code>模式:圈數 | 左:40 | 右:-40 | 圈數:0.54 | 煞車</code></p>
+            </div>
+        </div>
+
+        <div class="ev3-block-mockup">
+            <div class="block-row">
+                <div class="visual-block loop">🔄 迴圈 × 4</div>
+            </div>
+            <div style="margin: 10px 0 10px 30px; border-left: 3px dashed #334155; padding-left: 15px;">
+                <div style="margin-bottom: 8px;">
+                    <div class="visual-block motor" style="display:inline-flex;">🚗 Move Steering：轉向 0 / 動力 50 / 圈數 2.84（前進 50cm）</div>
+                </div>
+                <div>
+                    <div class="visual-block motor" style="display:inline-flex;">🔁 Move Steering：轉向 100 / 動力 40 / 圈數 0.54（右轉 90°）</div>
+                </div>
+            </div>
+            <div class="block-row">
+                <div class="visual-block loop">🔄 結束迴圈</div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <strong>💡 混用建議：</strong>
+            <p style="margin-bottom:0;">兩種作法可以混用，例如直線段用 Move Steering（設定較快、可讀性高），轉彎段若未來想改成擺動轉彎則改用 Move Tank，兩種方塊在同一程式中並用是常見做法。</p>
+        </div>
+    </div>
+
+    <!-- Section 6: 走正方形的幾何與誤差來源深度剖析 -->
+    <div class="section-card">
+        <h2><span class="step-num">6</span> 走正方形深度剖析：幾何計算與誤差來源</h2>
+        <p>「走一個正方形」看似只是應用四的簡單重複，但實際在場地上執行時，機器人常常走不回原點、四個角越轉越歪。本節深入拆解背後的幾何公式，以及造成正方形「走不準」的各種誤差來源與對策。</p>
+
+        <h3>6.1 完整幾何推導</h3>
+        <p>要讓機器人精準走出邊長 <em>L</em> 的正方形，需要把「距離」與「旋轉角度」都換算成馬達圈數，這牽涉兩個獨立的物理量：</p>
+
+        <div class="info-box">
+            <strong>📏 直線段：距離 → 圈數</strong>
+            <p style="margin-bottom:0;"><code style="color: var(--primary-color);">圈數 = 邊長 L / 輪胎周長 C</code>，其中 <code>C = π × 輪胎直徑</code>。此換算只與輪胎規格有關，與機器人結構（輪距）無關。</p>
+        </div>
+
+        <div class="info-box">
+            <strong>🔄 轉角段：車身旋轉角度 → 馬達圈數</strong>
+            <p style="margin-bottom:0;"><code style="color: var(--accent-color);">馬達圈數 = (輪距 W × π × 車身角度 θ / 360) / 輪胎周長 C</code>。此公式的原理是：機器人原地旋轉時，兩輪各自畫出一個半徑為「輪距的一半」的圓弧；車身轉 θ 度，輪子實際要在地面滾動的弧長為 <code>(W × π × θ) / 360</code>，再除以輪胎周長換算成馬達圈數。</p>
+        </div>
+
+        <div class="diagram-container">
+            <div class="diagram-box">
+                <svg viewBox="0 0 360 260" width="100%" height="240">
+                    <text x="180" y="25" fill="#f8fafc" font-weight="bold" font-size="14" text-anchor="middle">轉角公式的幾何來源</text>
+                    <g transform="translate(180,150)">
+                        <rect x="-15" y="-30" width="30" height="60" rx="4" fill="#1e293b" stroke="#94a3b8" stroke-width="2"/>
+                        <line x1="-15" y1="-30" x2="-15" y2="30" stroke="#f59e0b" stroke-width="2"/>
+                        <line x1="15" y1="-30" x2="15" y2="30" stroke="#f59e0b" stroke-width="2"/>
+                        <line x1="0" y1="-45" x2="0" y2="45" stroke="#64748b" stroke-width="1" stroke-dasharray="3,3"/>
+                        <text x="0" y="-50" fill="#fde047" font-size="12" text-anchor="middle" font-weight="bold">輪距 W</text>
+                        <path d="M -15 -30 A 45 45 0 0 1 15 -30" fill="none" stroke="#10b981" stroke-width="3" marker-end="url(#arrowM)"/>
+                        <text x="0" y="-70" fill="#86efac" font-size="11" text-anchor="middle">左輪弧長 = Wπθ/360</text>
+                        <path d="M 15 30 A 45 45 0 0 1 -15 30" fill="none" stroke="#ef4444" stroke-width="3" marker-end="url(#arrowM)"/>
+                        <text x="0" y="72" fill="#fca5a5" font-size="11" text-anchor="middle">右輪弧長 = Wπθ/360（反向）</text>
+                    </g>
+                </svg>
+                <div class="diagram-title">圖 6.0：原地旋轉時左右輪的圓弧幾何</div>
+                <ul class="diagram-legend">
+                    <li><strong>黃色虛線＋「輪距 W」標示：</strong>兩輪中心之間的距離，是轉角公式中唯一與車身結構有關的參數。</li>
+                    <li><strong>橘色兩條短線：</strong>代表左右兩個輪子的位置，分別位於旋轉軸心（車身中心）左右各 W/2 處。</li>
+                    <li><strong>綠色弧線（左輪路徑）：</strong>車身旋轉 θ 度時，左輪以半徑 W/2 畫出的圓弧，弧長即公式中的 <code>Wπθ/360</code>。</li>
+                    <li><strong>紅色弧線（右輪路徑）：</strong>與左輪弧長相同，但方向相反，兩輪弧長相加後車身淨位移為零——這正是「原地」旋轉的幾何本質。</li>
+                </ul>
+            </div>
+            <div class="diagram-box">
+                <svg viewBox="0 0 360 320" width="100%" height="300">
+                    <rect x="60" y="40" width="240" height="240" fill="none" stroke="#334155" stroke-width="3" stroke-dasharray="8,4"/>
+                    <circle cx="60" cy="280" r="6" fill="#38bdf8"/>
+                    <text x="60" y="305" fill="#38bdf8" font-size="12" text-anchor="middle" font-weight="bold">起點/終點</text>
+
+                    <path d="M 60 280 L 60 40" stroke="#10b981" stroke-width="4" marker-end="url(#arrowSq)"/>
+                    <text x="35" y="160" fill="#86efac" font-size="12" font-weight="bold" transform="rotate(-90,35,160)">前進 L</text>
+                    <defs>
+                        <marker id="arrowSq" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981"/>
+                        </marker>
+                    </defs>
+                    <path d="M 40 60 A 25 25 0 0 1 60 40" fill="none" stroke="#f59e0b" stroke-width="3" marker-end="url(#arrowSq)"/>
+                    <text x="20" y="45" fill="#fde047" font-size="11" font-weight="bold">轉90°</text>
+
+                    <path d="M 60 40 L 300 40" stroke="#10b981" stroke-width="4" marker-end="url(#arrowSq)"/>
+                    <path d="M 280 20 A 25 25 0 0 1 300 40" fill="none" stroke="#f59e0b" stroke-width="3" marker-end="url(#arrowSq)"/>
+
+                    <path d="M 300 40 L 300 280" stroke="#10b981" stroke-width="4" marker-end="url(#arrowSq)"/>
+                    <path d="M 320 260 A 25 25 0 0 1 300 280" fill="none" stroke="#f59e0b" stroke-width="3" marker-end="url(#arrowSq)"/>
+
+                    <path d="M 300 280 L 60 280" stroke="#10b981" stroke-width="4" marker-end="url(#arrowSq)"/>
+                    <path d="M 80 300 A 25 25 0 0 1 60 280" fill="none" stroke="#f59e0b" stroke-width="3" marker-end="url(#arrowSq)"/>
+                </svg>
+                <div class="diagram-title">圖 6.1：理想正方形路徑（4×直線 + 4×右轉90°）</div>
+                <ul class="diagram-legend">
+                    <li><strong>灰色虛線正方形：</strong>理論上的目標路徑外框，四邊等長、四角皆為 90°。</li>
+                    <li><strong>藍色圓點（起點/終點）：</strong>機器人出發位置；若走法完全準確，繞完一圈後應精確回到這一點、朝向也應與出發時相同。</li>
+                    <li><strong>綠色直線箭頭（4 條）：</strong>對應應用四中的「前進 2.84 圈」直線段，箭頭方向代表機器人前進方向，長度一致代表四邊「理論上」等長。</li>
+                    <li><strong>橘色弧形箭頭（4 個轉角）：</strong>對應「轉向 100、圈數 0.54」的原地旋轉動作，弧線角度即代表車身轉動的 90°。</li>
+                </ul>
+            </div>
+            <div class="diagram-box">
+                <svg viewBox="0 0 360 320" width="100%" height="300">
+                    <rect x="60" y="40" width="240" height="240" fill="none" stroke="#334155" stroke-width="2" stroke-dasharray="4,4"/>
+                    <path d="M 60 280 L 62 42 L 305 46 L 312 268 L 48 262 Z" fill="none" stroke="#ef4444" stroke-width="3"/>
+                    <circle cx="60" cy="280" r="6" fill="#38bdf8"/>
+                    <circle cx="48" cy="262" r="6" fill="#ef4444"/>
+                    <text x="30" y="255" fill="#fca5a5" font-size="11" font-weight="bold">實際終點</text>
+                    <line x1="60" y1="280" x2="48" y2="262" stroke="#fbbf24" stroke-width="2" stroke-dasharray="3,2"/>
+                    <text x="180" y="310" fill="#94a3b8" font-size="12" text-anchor="middle">每個角的微小誤差會逐圈累積，第四圈回不到起點</text>
+                </svg>
+                <div class="diagram-title">圖 6.2：實際執行時的累積誤差（誇大示意）</div>
+                <ul class="diagram-legend">
+                    <li><strong>灰色虛線正方形：</strong>與圖 6.1 相同的理想目標路徑，作為比對基準。</li>
+                    <li><strong>紅色實線路徑：</strong>機器人實際走出的軌跡——每一段直線因輪胎周長誤差略長或略短，每個轉角因打滑而多轉或少轉幾度，四段累加後路徑明顯偏離正方形。</li>
+                    <li><strong>藍色圓點（理論終點）與紅色圓點（實際終點）：</strong>兩點之間的黃色虛線段即為「位置誤差」，代表繞行一圈後機器人偏離起點的距離——這正是表 6.2 六大誤差來源加總後的最終可見結果。</li>
+                    <li><strong>教學重點：</strong>單一邊或單一轉角的誤差可能小到肉眼難以察覺，但如 6.2 節所述，誤差會隨著迴圈次數「疊加而非抵銷」，因此圖形刻意誇大偏移量以凸顯此現象。</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>6.2 六大誤差來源與對策</h3>
+        <table class="param-table">
+            <thead>
+                <tr><th>誤差來源</th><th>成因</th><th>對正方形的影響</th><th>緩解對策</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>1. 輪胎周長測量誤差</strong></td>
+                    <td>用尺量輪胎直徑本身有誤差，且輪胎受壓後實際接地周長會比理論值略小（輪胎變形效應）</td>
+                    <td>每一段直線都多走或少走一點點距離，四邊長度不一致</td>
+                    <td>直接量測「滾動一整圈的實際地面距離」而非用直徑推算，取多次平均值</td>
+                </tr>
+                <tr>
+                    <td><strong>2. 輪距測量誤差</strong></td>
+                    <td>輪距 W（兩輪胎中心距離）量測不精準，或輪胎本身厚度造成有效接地輪距與量測值不同</td>
+                    <td>轉角公式中 W 直接影響圈數，量錯會讓每次轉彎都固定偏多或偏少幾度</td>
+                    <td>以「原地旋轉 360 度後應回到原朝向」做校正測試，反推真實有效輪距</td>
+                </tr>
+                <tr>
+                    <td><strong>3. 轉彎時的輪胎打滑 (Slip)</strong></td>
+                    <td>原地旋轉時輪胎需要克服較大的側向摩擦力才能滑轉，橡膠輪胎與地面材質摩擦係數不同會造成打滑量不同</td>
+                    <td>打滑會讓馬達「轉了該轉的圈數」但輪子實際在地面移動的角度不足或過度，是轉角誤差的最大來源</td>
+                    <td>降低轉彎時的馬達動力（減少打滑）；改用聚焦於編碼器回饋（見第 4 點）或加裝陀螺儀感測器直接量測實際車身角度</td>
+                </tr>
+                <tr>
+                    <td><strong>4. 開迴路控制、無回饋修正</strong></td>
+                    <td>本節示範的 Move Steering / Move Tank 屬於「開迴路 (Open-Loop)」控制——只下達指令，不檢查實際結果是否達成</td>
+                    <td>一旦前三項誤差發生，系統完全不會自我修正，誤差會持續累積到下一次動作</td>
+                    <td>導入「閉迴路 (Closed-Loop)」控制：用陀螺儀感測器讀取實際旋轉角度來決定何時停止轉彎，而非死板地轉固定圈數</td>
+                </tr>
+                <tr>
+                    <td><strong>5. 電池電壓下降造成雙馬達不對稱</strong></td>
+                    <td>電池電量隨使用時間下降，馬達實際輸出功率也會下降；但兩顆馬達的機械耗損、線材電阻可能略有差異，導致同樣的「動力 50」指令換算出的實際轉速不完全相同</td>
+                    <td>直線段兩輪本應等速卻出現微幅速度差，導致直線逐漸偏移成弧線；多次重複後正方形邊長歪斜</td>
+                    <td>啟用 EV3/SPIKE 馬達內建的角度編碼器做速度閉迴路控制，確保指令動力對應的「實際轉速」一致，不受電壓浮動影響</td>
+                </tr>
+                <tr>
+                    <td><strong>6. 累積誤差 (Cumulative / Compounding Error)</strong></td>
+                    <td>正方形需連續執行 4 次「直線 + 轉彎」，即使每次誤差極小（例如轉角只差 1~2 度），四次之後的角度偏移與位置偏移會疊加放大</td>
+                    <td>這是走正方形「看起來簡單卻很難走準」的根本原因——單次動作誤差不明顯，但迴圈重複會把誤差乘以 4 倍甚至更多（因位置誤差還會隨路徑傳遞）</td>
+                    <td>每完成一邊就做一次「歸零校正」（例如用色感應器偵測地面基準線，或用陀螺歸零重設角度基準），避免誤差無限期累積傳遞到下一邊</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3 style="margin-top:30px;">6.3 開迴路 vs 閉迴路：為什麼「轉固定圈數」注定會有誤差</h3>
+        <p>本文件前面應用一到應用四所有寫法，本質上都是<strong>開迴路控制</strong>：程式只告訴馬達「轉 0.54 圈然後停」，但完全不知道車身實際轉了幾度。這與第一份筆記（<a href="./lego_1.html" style="color: var(--primary-color);">黑色圓圈光感應器尋跡程式設計</a>）中介紹的「比例控制法 (P-Control)」形成鮮明對比——尋跡程式會持續讀取感應器數值並即時修正，屬於<strong>閉迴路控制</strong>，因此才能長時間穩定運行而不累積誤差。</p>
+
+        <div class="info-box warning">
+            <strong>🎯 實務建議：走正方形的三種精度等級</strong>
+            <ul style="padding-left: 20px; margin-top: 8px; margin-bottom:0;">
+                <li><strong>入門（開迴路）：</strong>直接使用本文件的圈數公式，優點是簡單易懂，缺點是誤差會隨圈數累積，適合教學示範。</li>
+                <li><strong>進階（陀螺儀閉迴路）：</strong>轉彎時改用「陀螺感應器」讀取即時角度，改寫成「Switch + Loop：讀取角度 &lt; 目標角度時持續轉動」，可大幅消除打滑造成的角度誤差。</li>
+                <li><strong>高階（陀螺儀 + 編碼器雙回饋）：</strong>直線段同時監控左右馬達編碼器差值做即時速度校正（類似尋跡程式的 P-Control 邏輯），轉彎段用陀螺儀角度回饋，兩者搭配可讓正方形連續繞行數十圈仍幾乎不失準。</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Section 7: Prompt Archive -->
+    <div class="section-card">
+        <h2><span class="step-num">📝</span> 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+
+        <div class="prompt-archive">
+            <h3>🔹 [2026-09-21 16:20:00] [Claude Code / Claude Sonnet 5] 變更紀錄</h3>
+            <p><strong>模型/Agent：</strong>Claude Sonnet 5 / Claude Code</p>
+            <p><strong>Prompt 原文：</strong></p>
+            <pre><code>D:\CLASS_NOTE\ev3\lego_motor_control.html 參考生成指引修改，並讓圖形解釋更詳細</code></pre>
+            <p><strong>變更摘要：</strong>依 AGENTS.md 規範補齊 Metadata Header（更新時間／模型／Agent）、頂部新增「匯出成 PDF / 列印筆記」按鈕與 <code>@media print</code> 樣式、為所有 SVG 圖表（圖 2.1、2.2、4.1、6.1、6.2）新增逐項圖例說明清單，並補繪圖 6.0「原地旋轉輪距幾何圖」解釋轉角公式來源；同步建立對應 <code>lego_motor_control.md</code> 筆記檔並更新 INDEX 索引。</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>LEGO® MINDSTORMS® EV3 馬達控制教學專案設計指南 | 適用於 LabVIEW EV3、EV3 Classroom 軟體環境</p>
+    </footer>
+
+</div>
+
+</body>
+</html>
