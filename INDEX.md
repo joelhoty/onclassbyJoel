@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-22 14:52:00 (UTC+8)  
+> **最後更新時間**: 2026-09-22 15:12:00 (UTC+8)  
 > **使用模型**: Gemini 3.8 Flash  
 > **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -86,7 +86,7 @@
 * `2026-09-15` | [CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計實務教學 (MD)](./design/coreldraw_keychain_design.md) (MD)
 
 ### 📋 9. 工作區指引與核心規範
-* `2026-09-14` | [Multi-Agent 工作區規範](./AGENTS.md) (MD)
+* `2026-09-22` | [Multi-Agent 工作區規範](./AGENTS.md) (MD)
 * `2026-09-11` | [根目錄 AI 課程總覽](./ai_0910.html) (HTML)
 * `2026-09-10` | [筆記生成與更新標準指引](./NOTE_GENERATION_GUIDE.md) (MD)
 * `2026-09-10` | [Antigravity Note Rules](./GEMINI.md) (MD)
@@ -204,5 +204,14 @@
   寫一個arduino程式，pin 7接紅外線感應器，pin 8 接繼電器控制電燈，當感應器有人經過就開燈，人離開範圍後延遲5秒關燈
   ```
 - **變更摘要**: 新增 Arduino 紅外線感測 (PIR Pin 7) 與繼電器 (Relay Pin 8) 控制電燈之完整設計教學 (`arduino_pir_relay_light_control.html` 與 `.md`)，包含非阻塞式 `millis()` 狀態機實作、線上動態模擬器、維恩位移定律、光耦隔離、反馳反電動勢防護與 CDS 晝夜延伸電路設計，同步更新全站索引。
+
+### 🔹 [2026-09-22 15:12:00] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  git psuh
+  ```
+- **變更摘要**: 配合工作區規範第 6 條，於 git commit / push 流程中自動執行索引同步，更新 `AGENTS.md` 規範與修改日期（2026-09-22），並推播至 GitHub 遠端儲存庫。
+
 
 

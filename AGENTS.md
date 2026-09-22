@@ -1,7 +1,7 @@
 # 🤖 AGENTS.md — Multi-Agent Workspace Rule & Note Generation Guidelines
 
 > **適用對象**: 所有在此工作區 (`D:\CLASS_NOTE`) 運作的 AI Agent / Subagent  
-> **最後更新時間**: 2026-09-10 14:51:52 (UTC+8)  
+> **最後更新時間**: 2026-09-22 15:12:00 (UTC+8)  
 > **規範目標**: 建立跨 Agent 統一的筆記生成、更新與提示詞追蹤標準
 
 ---
@@ -45,6 +45,11 @@
 2. html須加上匯出成pdf按鈕
 3. 內容更新時須同時更新md檔與html檔案
 
+### 5.內容
+1. 如果內容包含程式碼，使用程式碼區塊，並加上複製按鈕
+2. 程式碼包含註解
+3. 在程式碼前，增加以流程圖解說程式邏輯
+
 ## 📝 提示詞歷史與變更記錄 (Prompt Archive)
 
 ### 🔹 [YYYY-MM-DD HH:mm:ss] [Agent/Model Name] 變更紀錄
@@ -58,7 +63,7 @@
 
 ---
 
-### 5.index.md與index.html 自動更新
+### 6.index.md與index.html 自動更新
 - 在git commit 之前先進行index檔案索引更新
 - git commit 與 git push 後檢查檔案索引是否正確
 ---
