@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-22 14:26:00 (UTC+8)  
+> **最後更新時間**: 2026-09-22 14:52:00 (UTC+8)  
 > **使用模型**: Gemini 3.8 Flash  
 > **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -27,6 +27,8 @@
 * `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
+* `2026-09-22` | [Arduino 紅外線感應繼電器電燈控制 (HTML)](./ec/arduino_pir_relay_light_control.html) (HTML)
+* `2026-09-22` | [Arduino 紅外線感應繼電器電燈控制 (MD)](./ec/arduino_pir_relay_light_control.md) (MD)
 * `2026-09-22` | [電磁線圈電鈴動態模擬與音效合成系統 (HTML)](./ec/electric_bell_coil_simulation.html) (HTML)
 * `2026-09-22` | [電磁線圈電鈴原理解析與數值模型 (MD)](./ec/electric_bell_coil_simulation.md) (MD)
 * `2026-09-17` | [繼電器控制電路與原理解析 (HTML)](./ec/relay_control_circuits.html) (HTML)
@@ -194,4 +196,13 @@
   利用電子線圈設計一個電鈴的動態模擬跟聲音
   ```
 - **變更摘要**: 新增電磁線圈電鈴動態物理模擬器與音效合成系統 (`electric_bell_coil_simulation.html` 與 `.md`)，包含雙線圈磁場流動、機械自激斷續器、接點電弧微火花、鈴碗非諧波聲學與 Web Audio API 金屬敲擊聲合成，並更新全站索引。
+
+### 🔹 [2026-09-22 14:52:00] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  寫一個arduino程式，pin 7接紅外線感應器，pin 8 接繼電器控制電燈，當感應器有人經過就開燈，人離開範圍後延遲5秒關燈
+  ```
+- **變更摘要**: 新增 Arduino 紅外線感測 (PIR Pin 7) 與繼電器 (Relay Pin 8) 控制電燈之完整設計教學 (`arduino_pir_relay_light_control.html` 與 `.md`)，包含非阻塞式 `millis()` 狀態機實作、線上動態模擬器、維恩位移定律、光耦隔離、反馳反電動勢防護與 CDS 晝夜延伸電路設計，同步更新全站索引。
+
 
