@@ -1,8 +1,8 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-21 16:20:00 (UTC+8)  
-> **使用模型**: Claude Sonnet 5  
-> **執行 Agent**: Claude Code  
+> **最後更新時間**: 2026-09-22 14:26:00 (UTC+8)  
+> **使用模型**: Gemini 3.8 Flash  
+> **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 
 ---
@@ -27,6 +27,8 @@
 * `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
+* `2026-09-22` | [電磁線圈電鈴動態模擬與音效合成系統 (HTML)](./ec/electric_bell_coil_simulation.html) (HTML)
+* `2026-09-22` | [電磁線圈電鈴原理解析與數值模型 (MD)](./ec/electric_bell_coil_simulation.md) (MD)
 * `2026-09-17` | [繼電器控制電路與原理解析 (HTML)](./ec/relay_control_circuits.html) (HTML)
 * `2026-09-17` | [繼電器控制電路與原理解析 (MD)](./ec/relay_control_circuits.md) (MD)
 * `2026-09-17` | [繼電器雙電路實驗相片](./ec/relay_circuits_0917.jpg) (JPG)
@@ -184,3 +186,12 @@
   整合 LEGO Mindstorm EV3 馬達控制 PDF（Move Steering vs Move Tank、四個實作應用），並新增走正方形的幾何計算與誤差來源詳解章節
   ```
 - **變更摘要**: 新增 `lego_motor_control.html`，完整整理馬達控制核心參數、Move Steering 差速轉向原理、Move Tank 獨立雙馬達控制、兩者比較決策流程圖、四個對照實作應用（時間/距離/角度/正方形控制），並深入擴充「走正方形」的幾何推導與六大誤差來源（輪胎周長誤差、輪距誤差、轉彎打滑、開迴路無回饋、電池電壓不對稱、累積誤差）與開迴路/閉迴路對策比較，同步更新 EV3 分類索引。
+
+### 🔹 [2026-09-22 14:26:00] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  利用電子線圈設計一個電鈴的動態模擬跟聲音
+  ```
+- **變更摘要**: 新增電磁線圈電鈴動態物理模擬器與音效合成系統 (`electric_bell_coil_simulation.html` 與 `.md`)，包含雙線圈磁場流動、機械自激斷續器、接點電弧微火花、鈴碗非諧波聲學與 Web Audio API 金屬敲擊聲合成，並更新全站索引。
+

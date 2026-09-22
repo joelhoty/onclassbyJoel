@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ 電磁線圈電鈴 (Electric Bell) 動態物理模擬器與音效合成系統</title>
+    
+    <!-- 引入 KaTeX 數學公式渲染庫 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+        });"></script>
+
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --primary-light: #e0f2fe;
+            --secondary: #d97706;
+            --secondary-dark: #b45309;
+            --accent: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #0f172a;
+            --gray-900: #0f172a;
+            --gray-800: #1e293b;
+            --gray-700: #334155;
+            --gray-600: #475569;
+            --gray-500: #64748b;
+            --gray-300: #cbd5e1;
+            --gray-200: #e2e8f0;
+            --gray-100: #f1f5f9;
+            --gray-50: #f8fafc;
+            --white: #ffffff;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Microsoft JhengHei", sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.7;
+        }
+
+        /* 頂部 Header */
+        header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0369a1 100%);
+            color: var(--white);
+            padding: 2.2rem 1.5rem 1.8rem 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 4px solid var(--primary);
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(2, 132, 199, 0.3);
+            border: 1px solid rgba(56, 189, 248, 0.5);
+            color: #7dd3fc;
+            padding: 0.3rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        h1 {
+            font-size: 2.1rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            color: #cbd5e1;
+            font-size: 1.05rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .meta-box {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1.25rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .meta-box strong {
+            color: #e2e8f0;
+        }
+
+        .action-bar {
+            margin-top: 1.25rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.55rem 1.2rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.92rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 2px 4px rgba(2, 132, 199, 0.4);
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.12);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.22);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .btn-bell-action {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            color: white;
+            padding: 0.75rem 1.8rem;
+            font-size: 1.05rem;
+            border-radius: 9999px;
+            box-shadow: 0 4px 10px rgba(217, 119, 6, 0.4);
+            user-select: none;
+        }
+        .btn-bell-action:hover {
+            background: linear-gradient(135deg, #b45309 0%, #92400e 100%);
+            transform: scale(1.02);
+        }
+        .btn-bell-action:active {
+            transform: scale(0.98);
+        }
+
+        /* 主容器 */
+        main {
+            max-width: 1240px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        /* 模擬器主區塊 */
+        .sim-container {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            margin-bottom: 2.5rem;
+            display: grid;
+            grid-template-columns: 1fr 370px;
+        }
+
+        @media (max-width: 1024px) {
+            .sim-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .canvas-area {
+            background: #111827;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            min-height: 540px;
+        }
+
+        #bellCanvas {
+            max-width: 100%;
+            height: auto;
+            background: #182234;
+            border-radius: var(--radius-md);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.6);
+            display: block;
+        }
+
+        .canvas-overlay-status {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            pointer-events: none;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 0.35rem 0.8rem;
+            border-radius: 9999px;
+            font-size: 0.82rem;
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #64748b;
+        }
+        .status-dot.active {
+            background-color: #10b981;
+            box-shadow: 0 0 8px #10b981;
+        }
+        .status-dot.ringing {
+            background-color: #f59e0b;
+            box-shadow: 0 0 10px #f59e0b;
+            animation: pulse-ring 0.3s infinite alternate;
+        }
+        @keyframes pulse-ring {
+            from { transform: scale(1); opacity: 0.7; }
+            to { transform: scale(1.3); opacity: 1; }
+        }
+
+        /* 模擬控制側欄 */
+        .controls-sidebar {
+            background: #f8fafc;
+            border-left: 1px solid var(--gray-200);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            overflow-y: auto;
+        }
+
+        .control-group {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            padding: 1.1rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .control-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .control-row {
+            margin-bottom: 0.85rem;
+        }
+        .control-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 0.3rem;
+        }
+
+        .control-value {
+            color: var(--primary);
+            font-family: monospace;
+            font-weight: 700;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--gray-200);
+            outline: none;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            background: var(--white);
+            font-size: 0.88rem;
+            color: var(--gray-800);
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* 即時儀表數據表盤 */
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+        }
+
+        .telemetry-card {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            padding: 0.6rem 0.75rem;
+            text-align: center;
+        }
+
+        .telemetry-name {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.2rem;
+        }
+
+        .telemetry-val {
+            font-size: 1.15rem;
+            font-weight: 800;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            color: var(--gray-900);
+        }
+
+        /* 內容卡片與章節樣式 */
+        .content-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gray-200);
+            padding: 2.2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--gray-100);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .section-title::before {
+            content: "";
+            display: inline-block;
+            width: 5px;
+            height: 1.4rem;
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin: 1.5rem 0 0.75rem 0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--gray-700);
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.25rem;
+            color: var(--gray-700);
+        }
+
+        li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* 理論公式展示盒 */
+        .formula-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-left: 5px solid #16a34a;
+            border-radius: var(--radius-md);
+            padding: 1.2rem 1.5rem;
+            margin: 1.25rem 0;
+        }
+
+        .formula-title {
+            font-weight: 700;
+            color: #15803d;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* 比較表格 */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.92rem;
+        }
+
+        .comparison-table th, .comparison-table td {
+            padding: 0.85rem 1.1rem;
+            border: 1px solid var(--gray-200);
+            text-align: left;
+        }
+
+        .comparison-table th {
+            background-color: var(--gray-100);
+            color: var(--gray-800);
+            font-weight: 700;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background-color: var(--gray-50);
+        }
+
+        /* 程式碼區塊 */
+        pre {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 1.2rem;
+            border-radius: var(--radius-md);
+            overflow-x: auto;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            margin: 1.25rem 0;
+        }
+
+        code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
+        /* 歷史提示詞紀錄區塊 */
+        .prompt-archive-box {
+            background-color: #f8fafc;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .prompt-archive-box h3 {
+            margin-top: 0;
+            color: var(--gray-900);
+            border-bottom: 1px dashed var(--gray-300);
+            padding-bottom: 0.5rem;
+        }
+
+        /* 頁尾 */
+        footer {
+            background-color: var(--white);
+            border-top: 1px solid var(--gray-200);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            color: var(--gray-500);
+            font-size: 0.9rem;
+            margin-top: 4rem;
+        }
+
+        /* 列印樣式 (匯出 PDF) */
+        @media print {
+            header {
+                background: white !important;
+                color: black !important;
+                border-bottom: 2px solid #000;
+                padding: 1rem 0;
+            }
+            .action-bar, .controls-sidebar, footer {
+                display: none !important;
+            }
+            .sim-container {
+                grid-template-columns: 1fr !important;
+                border: 1px solid #ccc;
+                box-shadow: none;
+            }
+            .canvas-area {
+                background: white !important;
+            }
+            #bellCanvas {
+                border: 1px solid #000;
+            }
+            .content-card {
+                box-shadow: none !important;
+                border: 1px solid #e2e8f0;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 頁首 Header -->
+    <header>
+        <div class="header-content">
+            <span class="badge">⚡ 電子電路與電磁物理實驗室</span>
+            <h1>電磁線圈電鈴 (Electric Bell) 原理解析與動態模擬器</h1>
+            <p class="subtitle">結合安培磁路吸力、機械斷續器自激振盪與 Web Audio API 非諧波金屬共振合成</p>
+            
+            <div class="meta-box">
+                <span>最後更新時間：<strong>2026-09-22 14:26:00 (UTC+8)</strong></span>
+                <span>使用模型：<strong>Gemini 3.8 Flash</strong></span>
+                <span>執行 Agent：<strong>Antigravity</strong></span>
+            </div>
+
+            <div class="action-bar">
+                <button class="btn btn-primary" onclick="window.print()">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z"/></svg>
+                    📄 匯出成 PDF
+                </button>
+                <a href="./electric_bell_coil_simulation.md" class="btn btn-secondary">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    📘 閱讀 Markdown 筆記
+                </a>
+                <a href="../index.html" class="btn btn-secondary">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    🏠 返回專題目錄
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- 🔔 核心動態模擬器 -->
+        <div class="sim-container">
+            <!-- Canvas 視覺化畫布 -->
+            <div class="canvas-area">
+                <canvas id="bellCanvas" width="800" height="540"></canvas>
+                
+                <div class="canvas-overlay-status">
+                    <div class="status-pill">
+                        <span class="status-dot" id="circuitDot"></span>
+                        <span id="circuitText">電路狀態：待機斷路</span>
+                    </div>
+                    <div class="status-pill">
+                        <span class="status-dot" id="audioDot"></span>
+                        <span id="audioText">音效引擎：就緒 (點擊激活)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 控制側邊欄 -->
+            <div class="controls-sidebar">
+                <!-- 按鈕操作區 -->
+                <div class="control-group" style="text-align: center;">
+                    <div class="control-title" style="justify-content: center;">
+                        <span>🛎️ 電鈴操作控制台</span>
+                    </div>
+                    <button class="btn btn-bell-action" id="ringBtn" style="width: 100%; margin-bottom: 0.6rem;">
+                        🔔 按住按鈕敲響電鈴
+                    </button>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-secondary" id="toggleRingBtn" style="flex: 1; font-size: 0.85rem; color: #1e293b; background: #e2e8f0;">
+                            🔄 連續響鈴鎖定
+                        </button>
+                        <button class="btn btn-secondary" id="singleStrikeBtn" style="flex: 1; font-size: 0.85rem; color: #1e293b; background: #e2e8f0;">
+                            ⚡ 單次敲擊
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 即時動態數據面板 -->
+                <div class="control-group">
+                    <div class="control-title">
+                        <span>📊 即時動態數據監測</span>
+                    </div>
+                    <div class="telemetry-grid">
+                        <div class="telemetry-card">
+                            <div class="telemetry-name">線圈電流 I</div>
+                            <div class="telemetry-val" id="telCurrent">0.00 A</div>
+                        </div>
+                        <div class="telemetry-card">
+                            <div class="telemetry-name">電磁吸力 F</div>
+                            <div class="telemetry-val" id="telForce">0.00 N</div>
+                        </div>
+                        <div class="telemetry-card">
+                            <div class="telemetry-name">敲擊頻率</div>
+                            <div class="telemetry-val" id="telFreq">0.0 Hz</div>
+                        </div>
+                        <div class="telemetry-card">
+                            <div class="telemetry-name">累計敲擊次數</div>
+                            <div class="telemetry-val" id="telCount">0 次</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 參數控制滑桿 -->
+                <div class="control-group">
+                    <div class="control-title">
+                        <span>⚙️ 電磁線圈與機械參數</span>
+                    </div>
+                    <div class="control-row">
+                        <div class="control-label">
+                            <span>電源電壓 (V)</span>
+                            <span class="control-value" id="valVoltage">12 V</span>
+                        </div>
+                        <input type="range" id="paramVoltage" min="3" max="24" step="1" value="12">
+                    </div>
+                    <div class="control-row">
+                        <div class="control-label">
+                            <span>線圈總匝數 (N)</span>
+                            <span class="control-value" id="valTurns">600 匝</span>
+                        </div>
+                        <input type="range" id="paramTurns" min="200" max="1200" step="50" value="600">
+                    </div>
+                    <div class="control-row">
+                        <div class="control-label">
+                            <span>簧片彈性勁度 (k)</span>
+                            <span class="control-value" id="valSpring">適中 (35 N/m)</span>
+                        </div>
+                        <input type="range" id="paramSpring" min="15" max="65" step="5" value="35">
+                    </div>
+                    <div class="control-row">
+                        <div class="control-label">
+                            <span>觸點間隙靈敏度</span>
+                            <span class="control-value" id="valGap">標準 (2.0 mm)</span>
+                        </div>
+                        <input type="range" id="paramGap" min="1.0" max="4.0" step="0.2" value="2.0">
+                    </div>
+                </div>
+
+                <!-- 聲學音訊設定 -->
+                <div class="control-group">
+                    <div class="control-title">
+                        <span>🔊 Web Audio 聲學合成</span>
+                    </div>
+                    <div class="control-row">
+                        <div class="control-label">
+                            <span>鈴鐺規格與材質音調</span>
+                        </div>
+                        <select id="bellSoundPreset">
+                            <option value="1150">🔔 經典黃銅電鈴 (1150 Hz - 穿透響亮)</option>
+                            <option value="1520">🚪 輕巧家用門鈴 (1520 Hz - 清脆高音)</option>
+                            <option value="780">🚨 工業警報鋼鈴 (780 Hz - 厚重低鳴)</option>
+                        </select>
+                    </div>
+                    <div class="control-row">
+                        <div class="control-label">
+                            <span>鈴聲音量 (Volume)</span>
+                            <span class="control-value" id="valVolume">70%</span>
+                        </div>
+                        <input type="range" id="paramVolume" min="0" max="100" step="5" value="70">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 📚 一、核心概念剖析 -->
+        <div class="content-card">
+            <h2 class="section-title">一、核心概念剖析 (Core Concepts)</h2>
+            <p>
+                電鈴（Electric Bell / Trembler Bell）是電磁學發展初期最關鍵的機電一體化發明之一。它將直流電能轉化為電磁吸力，並透過精巧的**斷續器（Interrupter / Make-and-break circuit）**，在完全沒有半導體晶片的純機械條件下，自動形成持續不斷的高頻敲擊振盪。
+            </p>
+
+            <h3>1.1 電磁線圈 (Solenoid) 與雙柱磁路</h3>
+            <p>
+                為了獲得最大磁力，電鈴普遍採用 U 型雙柱軟鐵芯線圈。兩側線圈串聯且繞線方向相反，通電時分別產生強烈的 N 極與 S 極。磁力線由 N 極穿過空氣隙進入軟鐵銜鐵（Armature），再穿過第二個氣隙回到 S 極，構成高封閉度的低磁阻迴路。
+            </p>
+
+            <div class="formula-box">
+                <div class="formula-title">📐 麥克斯韋磁吸力定理 (Maxwell's Lifting Force)</div>
+                氣隙中的磁通密度 $B$ 與兩磁極施加於軟鐵銜鐵上的總磁吸力 $F_{mag}$ 為：
+                $$B = \frac{\mu_0 N I}{2 g(t)}$$
+                $$F_{mag} = 2 \times \left( \frac{B^2 A}{2 \mu_0} \right) = \frac{B^2 A}{\mu_0} = \frac{\mu_0 A N^2 I(t)^2}{4 g(t)^2}$$
+                <ul>
+                    <li>$N$：線圈總匝數；$I$：通過線圈之即時電流；$A$：鐵芯端面截面積；$g(t)$：銜鐵與鐵芯之即時動態氣隙。</li>
+                    <li><strong>平方反比非線性效應</strong>：磁吸力與氣隙平方成反比。當銜鐵越靠近鐵芯，吸力呈幾何級數急遽暴增。</li>
+                </ul>
+            </div>
+
+            <h3>1.2 斷續器自激振盪機制 (Self-Excited Relaxation Oscillator)</h3>
+            <p>電鈴的工作循環由四個動態階段週期性推進：</p>
+            <ol>
+                <li><strong>通電激磁 (Make Phase)</strong>：初始狀態下，彈簧片倚靠接觸螺釘，電路導通。線圈電流依電感特性指數上升，建立磁場。</li>
+                <li><strong>加速與斷開 (Break Phase)</strong>：當磁吸力克服彈簧預緊力時，銜鐵被吸向鐵芯。銜鐵移動使得彈簧片脫離接觸螺釘，電路瞬間斷開！</li>
+                <li><strong>慣性敲擊 (Impact Phase)</strong>：線圈電流中斷、磁場消失，但敲錘已獲得充沛動量，以高速撞擊金屬鈴鐺發出巨響。</li>
+                <li><strong>彈簧復位 (Reset Phase)</strong>：簧片將銜鐵拉回初始位置，重新碰觸調節螺釘，電路再度導通，周而復始（振動頻率一般在 20Hz ~ 50Hz 之間）。</li>
+            </ol>
+
+            <h3>1.3 反電動勢與接點電弧 (Back EMF & Sparking)</h3>
+            <p>
+                線圈本身具有強電感 $L$。當機械觸點分離瞬間，電流迅速歸零（$\frac{di}{dt} \to -\infty$），根據法拉第電磁感應定律：
+            </p>
+            $$\mathcal{E}_{back} = -L \frac{di}{dt}$$
+            <p>
+                接點兩端會感應出數百伏特之高壓脈衝，擊穿空氣產生肉眼可見的微型電弧（火花）。若未加裝突波吸收保護，長年累積會導致接點氧化燒蝕。
+            </p>
+
+            <h3>1.4 金屬鈴鐺聲學特性與非諧波共振 (Inharmonic Acoustics)</h3>
+            <p>
+                金屬鈴鐺（Gong）為三維圓頂金屬薄殼，其振動模式由二維克拉尼圖形（Chladni Patterns）與 Bessel 函數解描述。與琴弦或管樂器整數倍泛音不同，電鈴的泛音為**非整數倍非諧波（Inharmonic Partials）**：
+            </p>
+            <ul>
+                <li><strong>基頻 (Fundamental Mode)</strong>：$f_0$（決定音調核心高低）</li>
+                <li><strong>高階非諧波泛音</strong>：$f_1 \approx 2.14 f_0$、$f_2 \approx 3.25 f_0$、$f_3 \approx 4.88 f_0$、$f_4 \approx 6.27 f_0$</li>
+                <li>這些非諧波泛音快速交織並以不同指數阻尼衰減，構成了金屬鈴鐺特有的「叮鈴鈴」清脆感與金屬碰撞硬衝擊聲。</li>
+            </ul>
+        </div>
+
+        <!-- 🛠️ 二、實作與應用範例 -->
+        <div class="content-card">
+            <h2 class="section-title">二、實作與應用範例 (Practical Examples)</h2>
+
+            <h3>2.1 二階受迫振動物理引擎微分方程</h3>
+            <p>模擬器內部以數值積分法即時計算銜鐵運動位移 $x(t)$ 與速度 $v(t)$：</p>
+            $$m \frac{d^2 x}{dt^2} + c \frac{dx}{dt} + k x = F_{mag}(I, x) + F_{impact}(x)$$
+            <p>
+                當 $x > x_{gong}$ 時，敲錘撞擊金屬鈴，產生彈性反彈係數 $e \approx 0.4$，並觸發聲學引擎發聲；當 $x < x_{contact}$ 時，電路閉合；位移超過接觸極限時，觸點切斷並觸發粒子火花。
+            </p>
+
+            <h3>2.2 Web Audio API 純代碼金屬電鈴合成器</h3>
+            <p>本頁面動態模擬器直接運用瀏覽器內建 Web Audio API，實作非諧波加法合成，無需加載任何外部 MP3 檔案：</p>
+
+            <pre><code>// 敲擊聲音合成演算法核心片斷
+function triggerBellStrike(audioCtx, baseFreq = 1150, volume = 0.7) {
+    const now = audioCtx.currentTime;
+    const partials = [
+        { ratio: 1.00, gain: 0.60, decay: 0.85 }, // 基模
+        { ratio: 2.14, gain: 0.38, decay: 0.50 }, // 泛音 1
+        { ratio: 3.25, gain: 0.25, decay: 0.35 }, // 泛音 2
+        { ratio: 4.88, gain: 0.15, decay: 0.20 }, // 泛音 3
+        { ratio: 6.27, gain: 0.08, decay: 0.10 }  // 泛音 4
+    ];
+
+    const master = audioCtx.createGain();
+    master.gain.setValueAtTime(volume, now);
+    master.connect(audioCtx.destination);
+
+    // 1. 金屬非諧振盪器疊加
+    partials.forEach(p => {
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        osc.frequency.setValueAtTime(baseFreq * p.ratio, now);
+        
+        g.gain.setValueAtTime(0.001, now);
+        g.gain.linearRampToValueAtTime(p.gain, now + 0.0015);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + p.decay);
+        
+        osc.connect(g);
+        g.connect(master);
+        osc.start(now);
+        osc.stop(now + p.decay);
+    });
+
+    // 2. 撞擊微秒級硬噪聲
+    playStrikeTransient(audioCtx, master, now);
+}</code></pre>
+        </div>
+
+        <!-- 🚀 三、延伸思考與進階主題 -->
+        <div class="content-card">
+            <h2 class="section-title">三、延伸思考與進階主題 (Extensions & Advanced Topics)</h2>
+
+            <h3>3.1 直流電鈴與交流電鈴 (AC Bell) 對比</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>評估項目</th>
+                        <th>直流斷續式電鈴 (DC Trembler Bell)</th>
+                        <th>交流極化電鈴 (AC Polarized Bell)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>機械接點 (Contacts)</strong></td>
+                        <td>必備斷續接觸螺釘與彈簧片</td>
+                        <td>無需任何斷開接點（結構更堅固）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>振動驅動原理</strong></td>
+                        <td>機電反饋弛張振盪（自發性振盪）</td>
+                        <td>跟隨交流電正負半週（50Hz / 60Hz）交變磁場</td>
+                    </tr>
+                    <tr>
+                        <td><strong>雙打敲擊 (Double Action)</strong></td>
+                        <td>通常單打（單側敲鈴，彈簧回位）</td>
+                        <td>常採用左右雙鈴碗，交流正負半週各敲一下</td>
+                    </tr>
+                    <tr>
+                        <td><strong>火花磨損與壽命</strong></td>
+                        <td>接點開閉跳火花，有壽命上限</td>
+                        <td>無接點跳火，壽命長達數十年</td>
+                    </tr>
+                    <tr>
+                        <td><strong>歷史與現代應用</strong></td>
+                        <td>早年門鈴、工藝物理教學模型</td>
+                        <td>學校下課鐘、老式電話機振鈴、火警警報</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>3.2 電火花抑制與電磁干擾 (EMI / EMC) 防護</h3>
+            <p>
+                在工業標準中，由於電鈴斷開時高達 $L \frac{di}{dt}$ 的反電動勢會在接點產生電弧，並向空氣輻射幾十兆赫茲（MHz）的射頻雜訊，常導致鄰近感測器與單晶片當機。現代工程設計通常採用以下方案：
+            </p>
+            <ul>
+                <li><strong>RC 突波吸收電路 (Snubber)</strong>：在接觸點兩端並聯一個 $100\Omega$ 碳膜電阻與 $0.1\mu\text{F}$ 聚酯電容，吸收高壓脈衝。</li>
+                <li><strong>飛輪二極體 (Flyback Diode)</strong>：若是直流供電，在線圈兩端反向並聯 1N4007 二極體，使電感能量在內部續流耗散。</li>
+                <li><strong>貴金屬接點</strong>：觸點表面採用鎢鋼或銀鎳合金（AgNi），大幅耐受高溫電弧侵蝕。</li>
+            </ul>
+        </div>
+
+        <!-- 📝 提示詞歷史與變更記錄 -->
+        <div class="prompt-archive-box">
+            <h3>📝 提示詞歷史與變更記錄 (Prompt Archive)</h3>
+            <div style="margin-top: 1rem;">
+                <h4 style="color: #0369a1; margin-bottom: 0.4rem;">🔹 [2026-09-22 14:26:00] [Antigravity / Gemini 3.8 Flash] 變更紀錄</h4>
+                <ul style="margin-bottom: 0.5rem; font-size: 0.9rem;">
+                    <li><strong>模型/Agent</strong>: Gemini 3.8 Flash / Antigravity</li>
+                    <li><strong>Prompt 原文</strong>:
+                        <pre><code>利用電子線圈設計一個電鈴的動態模擬跟聲音</code></pre>
+                    </li>
+                    <li><strong>變更摘要</strong>: 建立電磁線圈電鈴 (Electric Bell) 完整互動模擬器，實現雙線圈磁場流動、機械斷續器自激振盪、觸點高壓火花粒子爆發、金屬鈴碗衝擊聲波漣漪，並透過 Web Audio API 實現高仿真非諧波金屬打擊聲合成。</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>onclassbyJoel 課程教學平台 · 電子電路與電磁物理模擬專題</p>
+        <p style="margin-top: 0.4rem; font-size: 0.82rem;">Generated with Antigravity / Gemini 3.8 Flash · 2026</p>
+    </footer>
+
+    <!-- ⚡ 電鈴模擬器與 Web Audio 核心 JavaScript 引擎 -->
+    <script>
+        // ==========================================
+        // 1. Web Audio API 金屬電鈴聲學引擎
+        // ==========================================
+        class BellAudioEngine {
+            constructor() {
+                this.ctx = null;
+                this.baseFreq = 1150;
+                this.volume = 0.7;
+                this.isReady = false;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioContext();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+                this.isReady = true;
+                const dot = document.getElementById('audioDot');
+                const text = document.getElementById('audioText');
+                if (dot && text) {
+                    dot.classList.add('active');
+                    text.innerText = '音效引擎：音訊已激活 (' + this.baseFreq + ' Hz)';
+                }
+            }
+
+            setBaseFrequency(freq) {
+                this.baseFreq = freq;
+                if (this.isReady) {
+                    document.getElementById('audioText').innerText = '音效引擎：音訊已激活 (' + this.baseFreq + ' Hz)';
+                }
+            }
+
+            setVolume(volPercent) {
+                this.volume = Math.max(0, Math.min(1, volPercent / 100));
+            }
+
+            triggerStrike(intensity = 1.0) {
+                if (!this.isReady || !this.ctx || this.volume <= 0.001) return;
+                
+                const now = this.ctx.currentTime;
+                const master = this.ctx.createGain();
+                master.gain.setValueAtTime(this.volume * Math.min(1.2, intensity), now);
+                master.connect(this.ctx.destination);
+
+                // 金屬鈴鐺非諧波泛音配置 (Bessel 膜共振模態)
+                const partials = [
+                    { ratio: 1.00, gain: 0.65, decay: 0.85 }, // 基模
+                    { ratio: 2.14, gain: 0.42, decay: 0.52 }, // 模態 1 (金屬亮音)
+                    { ratio: 3.25, gain: 0.28, decay: 0.35 }, // 模態 2 (穿透邊緣)
+                    { ratio: 4.88, gain: 0.16, decay: 0.22 }, // 模態 3 (高頻金屬)
+                    { ratio: 6.27, gain: 0.09, decay: 0.12 }  // 模態 4 (極高尖銳)
+                ];
+
+                partials.forEach(p => {
+                    const osc = this.ctx.createOscillator();
+                    const g = this.ctx.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(this.baseFreq * p.ratio, now);
+
+                    // 極快速起音 (1.2ms) 與自然指數衰減
+                    g.gain.setValueAtTime(0.0001, now);
+                    g.gain.linearRampToValueAtTime(p.gain, now + 0.0012);
+                    g.gain.exponentialRampToValueAtTime(0.0001, now + p.decay);
+
+                    osc.connect(g);
+                    g.connect(master);
+
+                    osc.start(now);
+                    osc.stop(now + p.decay + 0.05);
+                });
+
+                // 金屬敲擊硬衝擊噪聲 (Transient Impact Click)
+                const bufferLen = Math.floor(this.ctx.sampleRate * 0.015); // 15ms
+                const buffer = this.ctx.createBuffer(1, bufferLen, this.ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferLen; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.003));
+                }
+
+                const noiseNode = this.ctx.createBufferSource();
+                noiseNode.buffer = buffer;
+
+                const bandpass = this.ctx.createBiquadFilter();
+                bandpass.type = 'bandpass';
+                bandpass.frequency.setValueAtTime(4200, now);
+                bandpass.Q.setValueAtTime(2.5, now);
+
+                const noiseGain = this.ctx.createGain();
+                noiseGain.gain.setValueAtTime(0.35, now);
+                noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.015);
+
+                noiseNode.connect(bandpass);
+                bandpass.connect(noiseGain);
+                noiseGain.connect(master);
+
+                noiseNode.start(now);
+            }
+        }
+
+        const soundEngine = new BellAudioEngine();
+
+        // ==========================================
+        // 2. 物理模擬引擎與 Canvas 渲染架構
+        // ==========================================
+        const canvas = document.getElementById('bellCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // 模擬狀態
+        const state = {
+            // 控制開關
+            isButtonPressed: false,
+            isToggleActive: false,
+            
+            // 物理可調參數
+            voltage: 12,       // V
+            turns: 600,        // 匝
+            coilResistance: 6, // 歐姆
+            springK: 35,       // N/m
+            contactGap: 2.0,   // mm
+            
+            // 即時動態變數
+            isCircuitClosed: true, // 觸點是否接觸
+            current: 0,            // A
+            magneticForce: 0,      // N
+            
+            // 銜鐵敲錘動力學 (以角度 theta 與角速度 omega 模擬剛體轉動)
+            armatureAngle: 0,      // rad (0 為自然靠在接觸螺釘處)
+            armatureVel: 0,        // rad/s
+            
+            // 打擊統計
+            strikeCount: 0,
+            lastStrikeTime: 0,
+            strikeIntervals: [],
+            strikeFrequency: 0,
+            
+            // 視覺特效粒子
+            sparks: [],
+            soundRipples: [],
+            electronPhase: 0,
+            magneticFieldGlow: 0
+        };
+
+        // 幾何座標與尺寸配置 (相對於 Canvas 800x540)
+        const layout = {
+            baseX: 40,
+            baseY: 40,
+            baseW: 720,
+            baseH: 460,
+            
+            // 電磁線圈 (雙柱)
+            coilX: 230,
+            coilTopY: 180,
+            coilBottomY: 300,
+            coilWidth: 130,
+            coilHeight: 70,
+            coreWidth: 110,
+            coreHeight: 30,
+            
+            // 銜鐵支點與旋轉半徑
+            pivotX: 410,
+            pivotY: 390,
+            armatureLength: 170, // 向上延伸至線圈前
+            clapperRodLength: 260, // 向上延伸至鈴鐺旁
+            
+            // 金屬鈴碗 (Gong)
+            gongCenterX: 570,
+            gongCenterY: 140,
+            gongRadius: 75,
+            
+            // 接觸螺釘
+            screwX: 450,
+            screwY: 260
+        };
+
+        // 參數與 UI 綁定
+        function bindControls() {
+            const ringBtn = document.getElementById('ringBtn');
+            const toggleRingBtn = document.getElementById('toggleRingBtn');
+            const singleStrikeBtn = document.getElementById('singleStrikeBtn');
+
+            // 按鈕事件 (支援觸控與滑鼠)
+            const startRing = (e) => {
+                e.preventDefault();
+                soundEngine.init();
+                state.isButtonPressed = true;
+                ringBtn.innerText = '🔔 正在敲響中...';
+                ringBtn.style.background = 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)';
+            };
+            const stopRing = (e) => {
+                e.preventDefault();
+                state.isButtonPressed = false;
+                if (!state.isToggleActive) {
+                    ringBtn.innerText = '🔔 按住按鈕敲響電鈴';
+                    ringBtn.style.background = 'linear-gradient(135deg, #d97706 0%, #b45309 100%)';
+                }
+            };
+
+            ringBtn.addEventListener('mousedown', startRing);
+            window.addEventListener('mouseup', stopRing);
+            ringBtn.addEventListener('touchstart', startRing, { passive: false });
+            window.addEventListener('touchend', stopRing, { passive: false });
+
+            // 連續開關
+            toggleRingBtn.addEventListener('click', () => {
+                soundEngine.init();
+                state.isToggleActive = !state.isToggleActive;
+                if (state.isToggleActive) {
+                    toggleRingBtn.innerText = '⏹️ 停止連續響鈴';
+                    toggleRingBtn.style.background = '#ef4444';
+                    toggleRingBtn.style.color = '#ffffff';
+                } else {
+                    toggleRingBtn.innerText = '🔄 連續響鈴鎖定';
+                    toggleRingBtn.style.background = '#e2e8f0';
+                    toggleRingBtn.style.color = '#1e293b';
+                }
+            });
+
+            // 單次敲擊
+            singleStrikeBtn.addEventListener('click', () => {
+                soundEngine.init();
+                state.armatureVel = -6.5; // 賦予一個前衝初速度
+                triggerSpark(layout.screwX - 10, layout.screwY);
+            });
+
+            // 滑桿事件
+            const paramVoltage = document.getElementById('paramVoltage');
+            const valVoltage = document.getElementById('valVoltage');
+            paramVoltage.addEventListener('input', (e) => {
+                state.voltage = parseFloat(e.target.value);
+                valVoltage.innerText = state.voltage + ' V';
+            });
+
+            const paramTurns = document.getElementById('paramTurns');
+            const valTurns = document.getElementById('valTurns');
+            paramTurns.addEventListener('input', (e) => {
+                state.turns = parseInt(e.target.value);
+                valTurns.innerText = state.turns + ' 匝';
+            });
+
+            const paramSpring = document.getElementById('paramSpring');
+            const valSpring = document.getElementById('valSpring');
+            paramSpring.addEventListener('input', (e) => {
+                state.springK = parseFloat(e.target.value);
+                let label = '適中';
+                if (state.springK < 25) label = '柔軟';
+                else if (state.springK > 50) label = '強硬';
+                valSpring.innerText = `${label} (${state.springK} N/m)`;
+            });
+
+            const paramGap = document.getElementById('paramGap');
+            const valGap = document.getElementById('valGap');
+            paramGap.addEventListener('input', (e) => {
+                state.contactGap = parseFloat(e.target.value);
+                valGap.innerText = `${state.contactGap.toFixed(1)} mm`;
+            });
+
+            // 音效音調與音量
+            const bellSoundPreset = document.getElementById('bellSoundPreset');
+            bellSoundPreset.addEventListener('change', (e) => {
+                soundEngine.setBaseFrequency(parseFloat(e.target.value));
+            });
+
+            const paramVolume = document.getElementById('paramVolume');
+            const valVolume = document.getElementById('valVolume');
+            paramVolume.addEventListener('input', (e) => {
+                const vol = parseInt(e.target.value);
+                valVolume.innerText = vol + '%';
+                soundEngine.setVolume(vol);
+            });
+
+            // 畫布點擊激活 Audio
+            canvas.addEventListener('click', () => {
+                soundEngine.init();
+            });
+        }
+
+        // ==========================================
+        // 3. 火花與聲波粒子視覺特效
+        // ==========================================
+        function triggerSpark(x, y) {
+            const count = 12 + Math.floor(Math.random() * 8);
+            for (let i = 0; i < count; i++) {
+                const angle = (Math.random() * Math.PI * 2);
+                const speed = 1.5 + Math.random() * 4.0;
+                state.sparks.push({
+                    x: x,
+                    y: y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    life: 1.0,
+                    decay: 0.04 + Math.random() * 0.05,
+                    size: 1.5 + Math.random() * 2.5,
+                    color: Math.random() > 0.3 ? '#60a5fa' : '#fef08a'
+                });
+            }
+        }
+
+        function triggerSoundRipple(x, y) {
+            state.soundRipples.push({
+                x: x,
+                y: y,
+                radius: 10,
+                maxRadius: 85,
+                alpha: 0.9,
+                lineWidth: 3
+            });
+        }
+
+        // ==========================================
+        // 4. 動態數值物理步進演算法 (60 FPS)
+        // ==========================================
+        function updatePhysics(dt) {
+            const isPowerOn = state.isButtonPressed || state.isToggleActive;
+
+            // 接點狀態判斷：當銜鐵位移小於間隙極限，接點保持接觸導通
+            // theta < 0 表示朝線圈吸過去
+            const breakThreshold = - (state.contactGap * 0.008); 
+            const wasClosed = state.isCircuitClosed;
+            
+            // 若銜鐵被吸向左方超過閾值，接觸螺釘斷開！
+            if (state.armatureAngle < breakThreshold) {
+                state.isCircuitClosed = false;
+            } else {
+                state.isCircuitClosed = true;
+            }
+
+            // 斷開瞬間產生火花
+            if (wasClosed && !state.isCircuitClosed && state.current > 0.2) {
+                triggerSpark(layout.screwX - 10, layout.screwY);
+            }
+
+            // 電流計算 (考量電感一階暫態上升)
+            const targetCurrent = (isPowerOn && state.isCircuitClosed) ? (state.voltage / state.coilResistance) : 0;
+            const currentTau = 0.015; // 電感時間常數 L/R
+            state.current += (targetCurrent - state.current) * (dt / currentTau);
+
+            // 磁吸力計算 (平方非線性)
+            const baseGap = 0.006; // 6 mm 初始氣隙
+            const effGap = Math.max(0.0008, baseGap + state.armatureAngle * 0.04);
+            const mu0 = 4 * Math.PI * 1e-7;
+            const coreArea = 0.00035; // 3.5 cm^2
+            
+            // 麥克斯韋吸力公式
+            const magForce = (mu0 * coreArea * Math.pow(state.turns * state.current, 2)) / (4 * Math.pow(effGap, 2));
+            state.magneticForce = Math.min(25.0, magForce); // 物理飽和上限
+
+            // 轉矩計算 (Torque)
+            // 磁力矩帶動向左 (負方向)
+            const tauMag = - state.magneticForce * 0.09; 
+            // 彈簧復位力矩 (向右拉回 0 度)
+            const tauSpring = - state.springK * (state.armatureAngle - 0.02) * 0.04;
+            // 阻尼
+            const tauDamping = - 0.045 * state.armatureVel;
+
+            const totalTorque = tauMag + tauSpring + tauDamping;
+            const momentOfInertia = 0.00065; // kg·m^2
+
+            const alpha = totalTorque / momentOfInertia;
+            state.armatureVel += alpha * dt;
+            state.armatureAngle += state.armatureVel * dt;
+
+            // 邊界 1：右側接觸螺釘機械硬限位 (Stop screw)
+            const maxRightAngle = 0.04;
+            if (state.armatureAngle > maxRightAngle) {
+                state.armatureAngle = maxRightAngle;
+                if (state.armatureVel > 0) {
+                    state.armatureVel = - state.armatureVel * 0.25; // 彈跳反彈
+                }
+            }
+
+            // 邊界 2：左側鈴鐺撞擊檢測 (Gong strike!)
+            // 銜鐵向上延伸長度桿上的敲錘球碰到鈴鐺
+            const strikeAngle = -0.068; // 敲到鈴鐺的角度
+            if (state.armatureAngle < strikeAngle) {
+                state.armatureAngle = strikeAngle;
+                
+                // 敲擊碰撞反彈
+                if (state.armatureVel < 0) {
+                    const impactSpeed = Math.abs(state.armatureVel);
+                    state.armatureVel = impactSpeed * 0.45; // 彈性碰撞反彈
+
+                    // 敲擊發聲與波紋特效
+                    if (impactSpeed > 0.8) {
+                        soundEngine.triggerStrike(impactSpeed / 6.0);
+                        triggerSoundRipple(layout.gongCenterX, layout.gongCenterY);
+                        state.strikeCount++;
+
+                        // 計算敲擊頻率
+                        const now = performance.now();
+                        if (state.lastStrikeTime > 0) {
+                            const interval = (now - state.lastStrikeTime) / 1000;
+                            state.strikeIntervals.push(interval);
+                            if (state.strikeIntervals.length > 5) state.strikeIntervals.shift();
+                            const avgInt = state.strikeIntervals.reduce((a, b) => a + b, 0) / state.strikeIntervals.length;
+                            state.strikeFrequency = avgInt > 0 ? (1.0 / avgInt) : 0;
+                        }
+                        state.lastStrikeTime = now;
+                    }
+                }
+            }
+
+            // 若長時間沒敲擊，頻率漸歸零
+            if (performance.now() - state.lastStrikeTime > 500) {
+                state.strikeFrequency *= 0.9;
+            }
+
+            // 更新火花粒子
+            for (let i = state.sparks.length - 1; i >= 0; i--) {
+                const s = state.sparks[i];
+                s.x += s.vx;
+                s.y += s.vy;
+                s.vy += 0.15; // 微重力
+                s.life -= s.decay;
+                if (s.life <= 0) state.sparks.splice(i, 1);
+            }
+
+            // 更新聲波擴散環
+            for (let i = state.soundRipples.length - 1; i >= 0; i--) {
+                const r = state.soundRipples[i];
+                r.radius += 2.5;
+                r.alpha -= 0.028;
+                if (r.alpha <= 0) state.soundRipples.splice(i, 1);
+            }
+
+            // 電流流動相位與磁場光暈
+            if (state.current > 0.1) {
+                state.electronPhase = (state.electronPhase + state.current * 0.4) % 20;
+                state.magneticFieldGlow = Math.min(1.0, state.magneticFieldGlow + dt * 4.0);
+            } else {
+                state.magneticFieldGlow = Math.max(0.0, state.magneticFieldGlow - dt * 6.0);
+            }
+
+            // 更新 UI 數據指示
+            updateTelemetryUI(isPowerOn);
+        }
+
+        function updateTelemetryUI(isPowerOn) {
+            document.getElementById('telCurrent').innerText = state.current.toFixed(2) + ' A';
+            document.getElementById('telForce').innerText = state.magneticForce.toFixed(2) + ' N';
+            document.getElementById('telFreq').innerText = state.strikeFrequency.toFixed(1) + ' Hz';
+            document.getElementById('telCount').innerText = state.strikeCount + ' 次';
+
+            const circuitDot = document.getElementById('circuitDot');
+            const circuitText = document.getElementById('circuitText');
+
+            if (!isPowerOn) {
+                circuitDot.className = 'status-dot';
+                circuitText.innerText = '電路狀態：待機斷路 (電源未按下)';
+            } else if (state.isCircuitClosed) {
+                circuitDot.className = 'status-dot active';
+                circuitText.innerText = '電路狀態：通電激磁中 (接點閉合)';
+            } else {
+                circuitDot.className = 'status-dot ringing';
+                circuitText.innerText = '電路狀態：斷路復位中 (接點脫離)';
+            }
+        }
+
+        // ==========================================
+        // 5. Canvas 高畫質擬真電鈴繪製
+        // ==========================================
+        function drawBell() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. 底板 (精緻胡桃木紋底座)
+            drawWoodBase();
+
+            // 2. 直流電池電源與開關連線
+            drawCircuitAndBattery();
+
+            // 3. 雙柱電磁鐵 (線圈與鐵芯)
+            drawElectromagnet();
+
+            // 4. 接觸螺釘與調節座
+            drawContactScrew();
+
+            // 5. 金屬鈴碗 (Gong)
+            drawGongBell();
+
+            // 6. 運動銜鐵、彈簧片與敲錘
+            drawArmatureAndClapper();
+
+            // 7. 特效層：火花與聲波擴散
+            drawEffects();
+        }
+
+        // 繪製胡桃木底板
+        function drawWoodBase() {
+            ctx.save();
+            ctx.fillStyle = '#2b1d0c';
+            ctx.strokeStyle = '#5c4033';
+            ctx.lineWidth = 4;
+            
+            // 外框圓角
+            roundRect(ctx, layout.baseX, layout.baseY, layout.baseW, layout.baseH, 16);
+            ctx.fill();
+            ctx.stroke();
+
+            // 木紋漸層內襯
+            const grad = ctx.createLinearGradient(layout.baseX, layout.baseY, layout.baseX, layout.baseY + layout.baseH);
+            grad.addColorStop(0, '#3d2817');
+            grad.addColorStop(0.5, '#4a321d');
+            grad.addColorStop(1, '#2c1e12');
+            
+            ctx.fillStyle = grad;
+            roundRect(ctx, layout.baseX + 8, layout.baseY + 8, layout.baseW - 16, layout.baseH - 16, 12);
+            ctx.fill();
+
+            // 固定螺栓裝飾 (四個角落的黃銅螺絲)
+            const screws = [
+                {x: layout.baseX + 24, y: layout.baseY + 24},
+                {x: layout.baseX + layout.baseW - 24, y: layout.baseY + 24},
+                {x: layout.baseX + 24, y: layout.baseY + layout.baseH - 24},
+                {x: layout.baseX + layout.baseW - 24, y: layout.baseY + layout.baseH - 24}
+            ];
+            screws.forEach(s => {
+                ctx.fillStyle = '#d97706';
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, 6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#78350f';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+                // 螺絲十字槽
+                ctx.beginPath();
+                ctx.moveTo(s.x - 3, s.y); ctx.lineTo(s.x + 3, s.y);
+                ctx.moveTo(s.x, s.y - 3); ctx.lineTo(s.x, s.y + 3);
+                ctx.stroke();
+            });
+
+            ctx.restore();
+        }
+
+        // 繪製電池、按鈕與外圍電路
+        function drawCircuitAndBattery() {
+            ctx.save();
+            const batX = 90;
+            const batY = 240;
+
+            // 電池外殼
+            ctx.fillStyle = '#1e293b';
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 2;
+            roundRect(ctx, batX, batY, 50, 90, 6);
+            ctx.fill(); ctx.stroke();
+
+            // 電池正負極標籤
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(batX + 15, batY - 8, 20, 8); // 正極凸柱
+            ctx.fillStyle = '#e2e8f0';
+            ctx.font = 'bold 14px monospace';
+            ctx.fillText('+', batX + 20, batY + 25);
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillText('-', batX + 22, batY + 75);
+            ctx.font = '10px sans-serif';
+            ctx.fillText(state.voltage + 'V DC', batX + 7, batY + 50);
+
+            // 門鈴按鈕開關 (Push Button)
+            const btnX = 100;
+            const btnY = 110;
+            ctx.fillStyle = '#475569';
+            roundRect(ctx, btnX - 15, btnY - 15, 60, 45, 8);
+            ctx.fill(); ctx.stroke();
+
+            const isPushed = state.isButtonPressed || state.isToggleActive;
+            ctx.fillStyle = isPushed ? '#ef4444' : '#10b981';
+            ctx.beginPath();
+            ctx.arc(btnX + 15, btnY + 8, isPushed ? 11 : 14, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.stroke();
+
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '10px sans-serif';
+            ctx.fillText('門鈴按鈕', btnX - 6, btnY + 42);
+
+            // 繪製導線迴路
+            const wires = [
+                // 電池(+) -> 開關
+                { p1: {x: batX + 25, y: batY - 8}, p2: {x: batX + 25, y: btnY + 8} },
+                // 開關 -> 電磁線圈上端
+                { p1: {x: btnX + 15, y: btnY - 15}, p2: {x: 230, y: layout.coilTopY + 15} },
+                // 電磁線圈串聯橋接
+                { p1: {x: 230, y: layout.coilTopY + layout.coilHeight - 15}, p2: {x: 230, y: layout.coilBottomY + 15} },
+                // 電磁線圈下端 -> 接觸螺釘
+                { p1: {x: 230, y: layout.coilBottomY + layout.coilHeight - 15}, p2: {x: layout.screwX, y: layout.coilBottomY + layout.coilHeight - 15}, p3: {x: layout.screwX, y: layout.screwY} },
+                // 銜鐵支點 -> 電池(-)
+                { p1: {x: layout.pivotX, y: layout.pivotY}, p2: {x: layout.pivotX, y: 440}, p3: {x: batX + 25, y: 440}, p4: {x: batX + 25, y: batY + 90} }
+            ];
+
+            ctx.lineWidth = 3.5;
+            wires.forEach(w => {
+                ctx.beginPath();
+                ctx.moveTo(w.p1.x, w.p1.y);
+                if (w.p2) ctx.lineTo(w.p2.x, w.p2.y);
+                if (w.p3) ctx.lineTo(w.p3.x, w.p3.y);
+                if (w.p4) ctx.lineTo(w.p4.x, w.p4.y);
+                
+                // 通電亮銅黃，斷電暗紅褐
+                ctx.strokeStyle = (state.current > 0.1) ? '#f59e0b' : '#78350f';
+                ctx.stroke();
+            });
+
+            // 繪製動態電流粒子 (電子流)
+            if (state.current > 0.1) {
+                ctx.fillStyle = '#67e8f9';
+                const dotDist = 25;
+                for (let i = 0; i < 40; i++) {
+                    const offset = (i * dotDist + state.electronPhase) % 400;
+                    // 簡化在主要導線上的光點流動
+                    ctx.beginPath();
+                    ctx.arc(batX + 25, batY - 8 - (offset % (batY - btnY)), 2.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            ctx.restore();
+        }
+
+        // 繪製雙柱電磁線圈與磁力線
+        function drawElectromagnet() {
+            ctx.save();
+            const { coilX, coilTopY, coilBottomY, coilWidth, coilHeight, coreWidth, coreHeight } = layout;
+
+            // 1. 軟鐵軛 (U-Shaped Iron Yoke 底座背板)
+            ctx.fillStyle = '#475569';
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 2;
+            ctx.fillRect(coilX - 25, coilTopY + 15, 25, coilBottomY - coilTopY + coilHeight - 30);
+            ctx.strokeRect(coilX - 25, coilTopY + 15, 25, coilBottomY - coilTopY + coilHeight - 30);
+
+            // 2. 磁場光暈與磁力線 (激磁時可視化)
+            if (state.magneticFieldGlow > 0.05) {
+                ctx.save();
+                ctx.globalAlpha = state.magneticFieldGlow * 0.7;
+
+                // 兩極端面高斯磁場發光
+                const glowGrad = ctx.createRadialGradient(coilX + coilWidth, coilTopY + coilHeight / 2, 10, coilX + coilWidth, coilTopY + coilHeight / 2, 70);
+                glowGrad.addColorStop(0, 'rgba(56, 189, 248, 0.8)');
+                glowGrad.addColorStop(1, 'rgba(56, 189, 248, 0)');
+                ctx.fillStyle = glowGrad;
+                ctx.beginPath();
+                ctx.arc(coilX + coilWidth, coilTopY + coilHeight / 2, 70, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 彎曲流動磁力線
+                ctx.strokeStyle = '#38bdf8';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([4, 4]);
+                for (let k = -20; k <= 20; k += 10) {
+                    ctx.beginPath();
+                    ctx.moveTo(coilX + coilWidth, coilTopY + coilHeight / 2 + k);
+                    ctx.quadraticCurveTo(coilX + coilWidth + 55, (coilTopY + coilBottomY) / 2 + coilHeight / 2, coilX + coilWidth, coilBottomY + coilHeight / 2 + k);
+                    ctx.stroke();
+                }
+                ctx.setLineDash([]);
+                ctx.restore();
+            }
+
+            // 3. 繪製上下兩個線圈 (立體漆包線繞線紋理)
+            const coils = [coilTopY, coilBottomY];
+            coils.forEach((cy, idx) => {
+                // 突出鐵芯柱 (Iron Core Pole)
+                ctx.fillStyle = '#64748b';
+                ctx.fillRect(coilX, cy + (coilHeight - coreHeight) / 2, coreWidth + 15, coreHeight);
+                ctx.strokeStyle = '#334155';
+                ctx.strokeRect(coilX, cy + (coilHeight - coreHeight) / 2, coreWidth + 15, coreHeight);
+
+                // 漆包線繞線本體 (立體漸層)
+                const coilGrad = ctx.createLinearGradient(coilX, cy, coilX, cy + coilHeight);
+                coilGrad.addColorStop(0, '#b45309');
+                coilGrad.addColorStop(0.3, '#d97706');
+                coilGrad.addColorStop(0.7, '#f59e0b');
+                coilGrad.addColorStop(1, '#78350f');
+
+                ctx.fillStyle = coilGrad;
+                roundRect(ctx, coilX + 10, cy, coilWidth - 10, coilHeight, 8);
+                ctx.fill();
+                ctx.strokeStyle = '#451a03';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                // 線圈繞線細節刻痕
+                ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)';
+                ctx.lineWidth = 1;
+                for (let x = coilX + 18; x < coilX + coilWidth - 5; x += 6) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, cy + 2);
+                    ctx.lineTo(x, cy + coilHeight - 2);
+                    ctx.stroke();
+                }
+
+                // 極性標籤 N / S
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 12px sans-serif';
+                ctx.fillText(idx === 0 ? 'N 極' : 'S 極', coilX + coilWidth - 22, cy + coilHeight / 2 + 4);
+            });
+
+            ctx.restore();
+        }
+
+        // 繪製接觸螺釘與觸點
+        function drawContactScrew() {
+            ctx.save();
+            const { screwX, screwY } = layout;
+
+            // 螺釘安裝支架
+            ctx.fillStyle = '#d97706';
+            ctx.strokeStyle = '#78350f';
+            ctx.lineWidth = 2;
+            roundRect(ctx, screwX + 5, screwY - 25, 20, 50, 4);
+            ctx.fill(); ctx.stroke();
+
+            // 螺釘主體 (螺紋質感)
+            ctx.fillStyle = '#cbd5e1';
+            ctx.fillRect(screwX - 18, screwY - 4, 25, 8);
+            ctx.strokeStyle = '#475569';
+            ctx.strokeRect(screwX - 18, screwY - 4, 25, 8);
+
+            // 調節螺絲頭 (十字槽)
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillRect(screwX + 7, screwY - 8, 12, 16);
+            ctx.strokeRect(screwX + 7, screwY - 8, 12, 16);
+
+            // 白金觸點尖端 (Contact Point Tip)
+            ctx.fillStyle = state.isCircuitClosed ? '#facc15' : '#94a3b8';
+            ctx.beginPath();
+            ctx.arc(screwX - 18, screwY, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 標示文字
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '11px sans-serif';
+            ctx.fillText('調節接觸螺釘', screwX - 15, screwY - 32);
+
+            ctx.restore();
+        }
+
+        // 繪製金屬鈴碗 (Gong)
+        function drawGongBell() {
+            ctx.save();
+            const { gongCenterX, gongCenterY, gongRadius } = layout;
+
+            // 鈴碗支撐金屬柱
+            ctx.fillStyle = '#64748b';
+            ctx.fillRect(gongCenterX - 6, gongCenterY, 12, 120);
+            ctx.strokeStyle = '#334155';
+            ctx.strokeRect(gongCenterX - 6, gongCenterY, 12, 120);
+
+            // 拋光金屬半球鈴碗 (高級黃銅漸層反光)
+            const gongGrad = ctx.createRadialGradient(
+                gongCenterX - 25, gongCenterY - 25, 10,
+                gongCenterX, gongCenterY, gongRadius
+            );
+            gongGrad.addColorStop(0, '#fef08a');
+            gongGrad.addColorStop(0.2, '#facc15');
+            gongGrad.addColorStop(0.6, '#ca8a04');
+            gongGrad.addColorStop(0.9, '#a16207');
+            gongGrad.addColorStop(1, '#713f12');
+
+            ctx.fillStyle = gongGrad;
+            ctx.beginPath();
+            // 上半部碗形
+            ctx.arc(gongCenterX, gongCenterY, gongRadius, Math.PI * 0.82, Math.PI * 2.18, false);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = '#854d0e';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // 鈴碗中央固定大螺母
+            ctx.fillStyle = '#e2e8f0';
+            ctx.beginPath();
+            ctx.arc(gongCenterX, gongCenterY - 10, 10, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#475569';
+            ctx.stroke();
+
+            // 裝飾高光邊緣
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.arc(gongCenterX, gongCenterY, gongRadius - 5, Math.PI * 1.05, Math.PI * 1.45);
+            ctx.stroke();
+
+            ctx.fillStyle = '#f8fafc';
+            ctx.font = 'bold 12px sans-serif';
+            ctx.fillText('金屬鈴碗 (Gong)', gongCenterX - 45, gongCenterY - gongRadius - 12);
+
+            ctx.restore();
+        }
+
+        // 繪製軟鐵銜鐵、彈簧片與敲錘 (旋轉剛體)
+        function drawArmatureAndClapper() {
+            ctx.save();
+            const { pivotX, pivotY, armatureLength, clapperRodLength, screwY } = layout;
+
+            // 移動至支點並應用即時物理角度旋轉
+            ctx.translate(pivotX, pivotY);
+            ctx.rotate(state.armatureAngle);
+
+            // 1. 旋轉支架鉸鏈 (Pivot Bracket)
+            ctx.fillStyle = '#475569';
+            ctx.beginPath();
+            ctx.arc(0, 0, 9, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#1e293b';
+            ctx.stroke();
+
+            // 2. 彈性鋼簧片 (Flexible Spring Steel Leaf)
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillRect(-3, -armatureLength, 6, armatureLength);
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(-3, -armatureLength, 6, armatureLength);
+
+            // 3. 軟鐵銜鐵 (Soft Iron Armature - 正對線圈的厚鐵塊)
+            const ironY = - (pivotY - layout.coilTopY) + 20;
+            const ironH = (layout.coilBottomY - layout.coilTopY) + layout.coilHeight - 40;
+            ctx.fillStyle = '#475569';
+            ctx.strokeStyle = '#0f172a';
+            ctx.lineWidth = 2;
+            roundRect(ctx, -16, ironY, 14, ironH, 3);
+            ctx.fill(); ctx.stroke();
+
+            // 4. 接觸彈片與銀接點 (對齊螺釘高度)
+            const contactRelY = - (pivotY - screwY);
+            ctx.fillStyle = state.isCircuitClosed ? '#facc15' : '#94a3b8';
+            ctx.beginPath();
+            ctx.arc(3, contactRelY, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#ca8a04';
+            ctx.stroke();
+
+            // 5. 敲擊桿 (Striker Rod) - 長桿向上延伸至鈴碗側邊
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(0, -armatureLength);
+            ctx.lineTo(60, -clapperRodLength);
+            ctx.stroke();
+
+            // 6. 敲錘實心金屬球 (Brass Clapper Hammer)
+            const clapperX = 60;
+            const clapperY = -clapperRodLength;
+            
+            const clapperGrad = ctx.createRadialGradient(
+                clapperX - 3, clapperY - 3, 2,
+                clapperX, clapperY, 15
+            );
+            clapperGrad.addColorStop(0, '#fef08a');
+            clapperGrad.addColorStop(0.3, '#f59e0b');
+            clapperGrad.addColorStop(1, '#78350f');
+
+            ctx.fillStyle = clapperGrad;
+            ctx.beginPath();
+            ctx.arc(clapperX, clapperY, 13, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#451a03';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        // 繪製火花與聲波擴散特效
+        function drawEffects() {
+            ctx.save();
+
+            // 1. 接點分離電火花
+            state.sparks.forEach(s => {
+                ctx.fillStyle = s.color;
+                ctx.globalAlpha = s.life;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // 2. 鈴碗撞擊聲波同心擴散環 (Acoustic Ripples)
+            state.soundRipples.forEach(r => {
+                ctx.save();
+                ctx.globalAlpha = r.alpha;
+                ctx.strokeStyle = '#38bdf8';
+                ctx.lineWidth = r.lineWidth;
+                ctx.beginPath();
+                ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.restore();
+            });
+
+            ctx.restore();
+        }
+
+        // 圓角矩形輔助函數
+        function roundRect(c, x, y, w, h, r) {
+            c.beginPath();
+            c.moveTo(x + r, y);
+            c.lineTo(x + w - r, y);
+            c.quadraticCurveTo(x + w, y, x + w, y + r);
+            c.lineTo(x + w, y + h - r);
+            c.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            c.lineTo(x + r, y + h);
+            c.quadraticCurveTo(x, y + h, x, y + h - r);
+            c.lineTo(x, y + r);
+            c.quadraticCurveTo(x, y, x + r, y);
+            c.closePath();
+        }
+
+        // ==========================================
+        // 6. 主動畫迴圈 (Main Animation Loop)
+        // ==========================================
+        let lastTimestamp = performance.now();
+
+        function animate(timestamp) {
+            const dt = Math.min(0.033, (timestamp - lastTimestamp) / 1000); // 限制單幀最大 dt
+            lastTimestamp = timestamp;
+
+            // 採用細粒度多子步進以防止高速穿透
+            const subSteps = 3;
+            const subDt = dt / subSteps;
+            for (let i = 0; i < subSteps; i++) {
+                updatePhysics(subDt);
+            }
+
+            drawBell();
+            requestAnimationFrame(animate);
+        }
+
+        // 初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            bindControls();
+            requestAnimationFrame(animate);
+        });
+    </script>
+</body>
+</html>

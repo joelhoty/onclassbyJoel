@@ -302,9 +302,9 @@
             <p class="subtitle">彙整 AI、電子電路、樂高機器人、數學統計、廟宇人文、平面設計與電腦視覺相關筆記 (檔案依日期由新至舊排列)</p>
             
             <div class="metadata-box">
-                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-21 16:20:00 (UTC+8)</div>
-                <div class="metadata-item"><strong>使用模型:</strong> Claude Sonnet 5</div>
-                <div class="metadata-item"><strong>執行 Agent:</strong> Claude Code</div>
+                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-22 14:26:00 (UTC+8)</div>
+                <div class="metadata-item"><strong>使用模型:</strong> Gemini 3.8 Flash</div>
+                <div class="metadata-item"><strong>執行 Agent:</strong> Antigravity</div>
                 <div class="metadata-item"><strong>GitHub Repo:</strong> <a href="https://github.com/joelhoty/onclassbyJoel" style="color:#38bdf8;" target="_blank">joelhoty/onclassbyJoel</a></div>
             </div>
 
@@ -552,9 +552,23 @@
             <div class="card" data-category="ec">
                 <div class="card-header">
                     <h2 class="card-title">⚡ 電子電路與硬體實驗</h2>
-                    <span class="badge-count">18 檔案</span>
+                    <span class="badge-count">20 檔案</span>
                 </div>
                 <ul class="file-list">
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/electric_bell_coil_simulation.html">電磁線圈電鈴動態模擬與音效合成系統 (HTML)</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-22</span>
+                            <span class="tag tag-html">HTML</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/electric_bell_coil_simulation.md">電磁線圈電鈴原理解析與數值模型 (MD)</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-22</span>
+                            <span class="tag tag-md">MD</span>
+                        </div>
+                    </li>
                     <li class="file-item">
                         <a class="file-link" href="./ec/relay_control_circuits.html">繼電器控制電路與原理解析 (HTML)</a>
                         <div class="file-meta">
@@ -920,6 +934,13 @@ go</pre>
                 <p><strong>Prompt 原文:</strong></p>
                 <pre>整合 LEGO Mindstorm EV3 馬達控制 PDF（Move Steering vs Move Tank、四個實作應用），並新增走正方形的幾何計算與誤差來源詳解章節</pre>
                 <p><strong>變更摘要:</strong> 新增 `lego_motor_control.html`，整合馬達控制參數、Move Steering / Move Tank 原理比較與四個對照實作應用，並深度擴充「走正方形」幾何公式推導與六大誤差來源（輪胎周長、輪距、打滑、開迴路、電壓不對稱、累積誤差）分析，同步更新 EV3 分類索引至 10 份檔案。</p>
+            </div>
+            <div class="prompt-archive" style="margin-top: 15px;">
+                <h4>🔹 [2026-09-22 14:26:00] [Antigravity / Gemini 3.8 Flash] 電磁線圈電鈴動態模擬與音效合成</h4>
+                <p><strong>模型/Agent:</strong> Gemini 3.8 Flash / Antigravity</p>
+                <p><strong>Prompt 原文:</strong></p>
+                <pre>利用電子線圈設計一個電鈴的動態模擬跟聲音</pre>
+                <p><strong>變更摘要:</strong> 建立電磁線圈電鈴動態物理模擬器與音效合成系統 (`electric_bell_coil_simulation.html` 與 `.md`)，實現雙柱線圈磁場流動、機械自激斷續器、接點電弧微火花、鈴碗非諧波聲學與 Web Audio API 金屬敲擊聲合成，並同步更新全站索引。</p>
             </div>
         </div>
     </footer>
