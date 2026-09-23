@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-23 11:58:06 (UTC+8)  
+> **最後更新時間**: 2026-09-23 12:00:54 (UTC+8)  
 > **使用模型**: Gemini 3.8 Flash  
 > **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -240,6 +240,14 @@
   /marp-slide C:\Users\User\Desktop\111999.md tech style
   ```
 - **變更摘要**: 調用 `marp-slide` Skill，將 `111999.md`（新莊土壤液化與地質心理學課堂大綱）轉換為 10 頁具備 GitHub 深色終端機科技風格的 Marp 簡報 (`soil_liquefaction_tech_slides.marp.md` 及 `soil_liquefaction_tech_slides.html`，同步輸出至桌面)，包含主張式標題、高亮狀態卡片、每頁口說演講備忘錄與 AI 生圖 Prompt。
+
+### 🔹 [2026-09-23 12:00:54] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  將marp cli相關的討論整理到0923筆記
+  ```
+- **變更摘要**: 將 Marp 開源生態系（awesome-marp、marp-community-themes、dracula/marp 等）、Marp CLI 自訂主題掛載與無對話編譯指令、五大進階排版技巧（圖文切割、局部樣式、雙欄卡片、Presenter Notes）及 marp-slide 技能實戰成果完整整合至 0923 筆記 (`prompt_doc_summary_to_presentation.md` 與 `.html`)，同步更新全站索引。
 
 
 

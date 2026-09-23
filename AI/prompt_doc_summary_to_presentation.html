@@ -357,10 +357,10 @@
       <div class="title-group">
         <h1>📑 從文件摘要到 10 頁簡報大綱：AI 提示詞工程轉譯與全流程製作指南</h1>
         <div class="metadata-card">
-          <p><strong>最後更新時間：</strong> 2026-09-23 11:42:51 (UTC+8)</p>
+          <p><strong>最後更新時間：</strong> 2026-09-23 12:00:54 (UTC+8)</p>
           <p><strong>使用模型：</strong> Gemini 3.8 Flash</p>
           <p><strong>執行 Agent：</strong> Antigravity</p>
-          <p><strong>筆記分類：</strong> 生成式 AI / 提示詞工程 / 簡報轉換與視覺設計 / AI 自動化工作流</p>
+          <p><strong>筆記分類：</strong> 生成式 AI / 提示詞工程 / 簡報轉換與視覺設計 / AI 自動化工作流 / Marp 生態系</p>
         </div>
       </div>
       <div>
@@ -669,8 +669,105 @@ if __name__ == "__main__":
 </code></pre>
     </div>
 
+    <!-- Marp CLI 開源生態系與 marp-slide 實戰 -->
+    <h2>🎨 五、Marp CLI 主題生態系、進階排版技巧與 marp-slide 技能實戰</h2>
+    <p>
+      在現代 AI 與開發者簡報工作流中，<strong>Marp (Markdown Presentation Ecosystem)</strong> 已成為將結構化文字轉化為專業投影片的標竿工具。除了預設主題外，社群與開源生態系提供了豐富的主題庫、排版技巧與 Agent 技能擴充。
+    </p>
+
+    <h3>1. Marp GitHub 開源生態系與精選主題庫</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>專案名稱 / GitHub Repo</th>
+          <th>風格定位與視覺特色</th>
+          <th>最佳應用場景</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong><a href="https://github.com/marp-team/awesome-marp" target="_blank">marp-team/awesome-marp</a></strong></td>
+          <td><strong>官方權威資源目錄</strong>：收錄全網 Marp 主題、外掛插件、VS Code 擴充與範例。</td>
+          <td>搜尋各類社群主題與工具的第一站。</td>
+        </tr>
+        <tr>
+          <td><strong><a href="https://github.com/marp-team/marp-community-themes" target="_blank">marp-team/marp-community-themes</a></strong></td>
+          <td>官方社群認證的主題畫廊，維護高相容性與跨平台的 CSS 主題。</td>
+          <td>挑選穩定、跨環境不跑版的標準主題。</td>
+        </tr>
+        <tr>
+          <td><strong><a href="https://github.com/cunhapaulo/marpstyle" target="_blank">cunhapaulo/marpstyle</a></strong></td>
+          <td>簡約現代商務風，嚴格校調標題比例、行距與卡片邊界。</td>
+          <td>商業提案、企業季度報告、專案簡報。</td>
+        </tr>
+        <tr>
+          <td><strong><a href="https://github.com/dracula/marp" target="_blank">dracula/marp</a></strong></td>
+          <td>經典暗黑開發者風格（Dracula Theme），高對比霓虹紫綠配色。</td>
+          <td>技術分享會、黑客松、程式碼教學。</td>
+        </tr>
+        <tr>
+          <td><strong>Beam / academic-marp</strong></td>
+          <td>仿造 LaTeX Beamer 學術風格，支援定理證明框與雙欄公式。</td>
+          <td>論文發表、學術研討會、數理科展報告。</td>
+        </tr>
+        <tr>
+          <td><strong><a href="https://github.com/y-tsutsu/marp-themes" target="_blank">y-tsutsu/marp-themes</a></strong></td>
+          <td>日本社群高質感扁平漸層與卡片設計，留白優雅。</td>
+          <td>精緻公開演講、課堂互動分享。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>2. Marp CLI 主題掛載與無對話自動化編譯</h3>
+    <div class="mermaid">
+flowchart LR
+    MD["Marp Markdown (.md)"] --> CLI["Marp CLI 編譯引擎"]
+    CSS["主題樣式庫 (--theme-set ./themes)"] --> CLI
+    CLI -->|--html| HTML["互動網頁簡報 (.html)"]
+    CLI -->|--pdf| PDF["高解析印刷 PDF (.pdf)"]
+    CLI -->|--pptx| PPTX["PowerPoint 投影片 (.pptx)"]
+    </div>
+
+    <div class="code-container">
+      <div class="code-header">
+        <span>Powershell / Bash Commands</span>
+        <button class="btn-copy" onclick="copyCode(this)">📋 複製指令</button>
+      </div>
+      <pre><code># 引入外部主題資料夾並輸出 HTML (加上 --no-stdin 避免終端管線等待)
+npx @marp-team/marp-cli@latest --no-stdin --theme-set ./.agents/skills/marp-slide/assets presentation.md -o presentation.html
+
+# 輸出高解析 PDF
+npx @marp-team/marp-cli@latest --no-stdin --theme-set ./.agents/skills/marp-slide/assets --pdf presentation.md -o presentation.pdf
+
+# 輸出 PPTX 投影片
+npx @marp-team/marp-cli@latest --no-stdin --theme-set ./.agents/skills/marp-slide/assets --pptx presentation.md -o presentation.pptx</code></pre>
+    </div>
+
+    <h3>3. Marp 五大進階設計 Skills（排版黑魔法）</h3>
+    <div class="feature-card">
+      <ol>
+        <li><strong>圖文分割背景（Split Backgrounds）</strong>：語法 <code>![bg right:40% 85%](image.png)</code>，自動形成左文字、右概念圖的現代雜誌佈局。</li>
+        <li><strong>單頁局部樣式覆蓋（<code>&lt;style scoped&gt;</code>）</strong>：在該頁宣告 <code>&lt;style scoped&gt; section { background: #7f1d1d; } &lt;/style&gt;</code>，僅改變當前頁面色彩。</li>
+        <li><strong>版面模式指令（Class Directives）</strong>：<code>&lt;!-- _class: lead --&gt;</code> 啟用首頁引導模式（文字置中放大）；<code>&lt;!-- _class: invert --&gt;</code> 切換反白對比。</li>
+        <li><strong>CSS Grid / Flexbox 雙欄卡片容器</strong>：透過原生 HTML <code>&lt;div class="grid-2"&gt;</code> 與 <code>&lt;div class="card"&gt;</code>，實現雙欄論點對照或終端狀態卡。</li>
+        <li><strong>雙螢幕演講者備忘錄（Presenter Notes）</strong>：口說與生圖提示詞放入 <code>&lt;!-- --&gt;</code> 註解，簡報時按鍵盤 <strong><code>P</code></strong> 鍵即開啟講者雙螢幕檢視模式。</li>
+      </ol>
+    </div>
+
+    <h3>4. Agent Skill <code>marp-slide</code> (softaworks/agent-toolkit) 實戰整合</h3>
+    <div class="feature-card">
+      <p><strong>安裝指令：</strong><code>npx skills add softaworks/agent-toolkit --skill marp-slide</code></p>
+      <p><strong>內建 7 大風格庫：</strong><code>tech</code>（深色科技代碼風）、<code>business</code>（商務卡片風）、<code>minimal</code>（極簡現代風）、<code>dark</code>（霓虹深黑風）、<code>gradient</code>（動態漸變風）、<code>colorful</code>（活潑粉彩風）、<code>default</code>（經典米藍風）。</p>
+      <p><strong>實戰案例展示（新莊土壤液化與地質心理學）：</strong></p>
+      <ul>
+        <li>Markdown 簡報原始碼：<code>AI/soil_liquefaction_tech_slides.marp.md</code>（桌面同步檔：<code>111999_tech_slides.marp.md</code>）</li>
+        <li>Marp CLI 編譯 HTML 簡報：<code>AI/soil_liquefaction_tech_slides.html</code>（桌面同步檔：<code>111999_tech_slides.html</code>）</li>
+        <li>特色亮點：終端機符號標題、<code>stat-badge</code> 數據高亮、<code>terminal-card</code> 核心結論框、原生講者備忘錄。</li>
+      </ul>
+    </div>
+
     <!-- 後續完成簡報全流程指南 -->
-    <h2>🛠️ 五、後續如何完成高質感簡報的全流程指南 (End-to-End Workflow)</h2>
+    <h2>🛠️ 六、後續如何完成高質感簡報的全流程指南 (End-to-End Workflow)</h2>
 
     <div class="mermaid">
 flowchart LR
@@ -798,7 +895,7 @@ flowchart LR
     </table>
 
     <!-- 延伸思考 -->
-    <h2>🔬 六、延伸思考與進階主題 (Extensions & Advanced Topics)</h2>
+    <h2>🔬 七、延伸思考與進階主題 (Extensions & Advanced Topics)</h2>
     <div class="feature-card">
       <h4>1. 資訊蒸餾的熵減與保真度 (Information Entropy & Loss Metric)</h4>
       <p>
@@ -825,6 +922,14 @@ flowchart LR
       <p><strong>- Prompt 原文：</strong></p>
       <div class="prompt-box">C:\Users\User\Desktop\0923-11.txt 這是我利用提示詞將文件進行摘要與簡報大綱轉換的練習，整理成筆記 並提供建議跟修改方向，以及後續如何完成簡報的方法</div>
       <p><strong>- 變更摘要：</strong> 讀取桌面提示詞練習文檔，深入剖析「同儕摘要 ➔ 10 頁 15 分鐘簡報大綱轉化」之提示詞工程架構。解析認知負荷理論、主張式標題法與雙碼理論；提供原始提示詞評析、升級版二階段提示詞範本、Marp 自動轉換 Python 腳本（含 Mermaid 邏輯流程圖與複製按鈕）、AI 視覺風格一致性秘訣、四步驟簡報落地指南與 15 分鐘時間節奏控制表。同時生成 Markdown 與 HTML 雙格式筆記，支援一鍵匯出 PDF 列印。</p>
+    </div>
+
+    <div class="archive-item">
+      <h3>🔹 [2026-09-23 12:00:54] [Gemini 3.8 Flash / Antigravity] 變更紀錄</h3>
+      <p><strong>- 模型/Agent：</strong> Gemini 3.8 Flash / Antigravity</p>
+      <p><strong>- Prompt 原文：</strong></p>
+      <div class="prompt-box">將marp cli相關的討論整理到0923筆記</div>
+      <p><strong>- 變更摘要：</strong> 將 Marp 開源主題生態系（awesome-marp、marp-community-themes、dracula/marp 等）、Marp CLI 主題掛載方式（--theme-set 與內嵌 CSS）、五大排版進階技巧（圖文切割、scoped 樣式、雙欄 Grid、Presenter Notes）、agent-toolkit marp-slide 技能安裝使用方法與新莊土壤液化 Tech Style 簡報實戰成果，深度整合至 0923 筆記中。</p>
     </div>
 
   </div>
