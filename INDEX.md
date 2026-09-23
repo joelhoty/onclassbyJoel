@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-22 15:12:00 (UTC+8)  
+> **最後更新時間**: 2026-09-23 11:42:51 (UTC+8)  
 > **使用模型**: Gemini 3.8 Flash  
 > **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -10,6 +10,8 @@
 ## 🎯 工作區主題檔案分類與最後修改日期 (依日期由新至舊排列)
 
 ### 🤖 1. AI / 機器學習與深度學習 (`AI/`)
+* `2026-09-23` | [從文件摘要到 10 頁簡報大綱：AI 提示詞工程轉譯與全流程製作指南 (HTML)](./AI/prompt_doc_summary_to_presentation.html) (HTML)
+* `2026-09-23` | [從文件摘要到 10 頁簡報大綱：AI 提示詞工程轉譯與全流程製作指南 (MD)](./AI/prompt_doc_summary_to_presentation.md) (MD)
 * `2026-09-16` | [AI 協同科研與小論文發想：提示詞工程實戰 (HTML)](./AI/prompt_academic_research_flow.html) (HTML)
 * `2026-09-16` | [AI 協同科研與小論文發想：提示詞工程實戰 (MD)](./AI/prompt_academic_research_flow.md) (MD)
 * `2026-09-16` | [小葉欖仁落體自主定向機制小論文 (HTML)](./AI/prompt_research_proposal_self_alignment.html) (HTML)
@@ -212,6 +214,14 @@
   git psuh
   ```
 - **變更摘要**: 配合工作區規範第 6 條，於 git commit / push 流程中自動執行索引同步，更新 `AGENTS.md` 規範與修改日期（2026-09-22），並推播至 GitHub 遠端儲存庫。
+
+### 🔹 [2026-09-23 11:42:51] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  C:\Users\User\Desktop\0923-11.txt 這是我利用提示詞將文件進行摘要與簡報大綱轉換的練習，整理成筆記 並提供建議跟修改方向，以及後續如何完成簡報的方法
+  ```
+- **變更摘要**: 新增提示詞工程實戰筆記 (`prompt_doc_summary_to_presentation.html` 與 `.md`)，深入剖析文件摘要與 10 頁簡報大綱轉譯架構、認知負荷理論、18字法則、主張式標題法與雙碼理論；提供升級版二階段提示詞模版、Marp 自動轉換腳本（含 Mermaid 邏輯流程圖與複製按鈕）、AI 生圖風格一致性方案與 15 分鐘演講節奏分配表，並更新全站索引。
 
 
 

@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>從文件摘要到 10 頁簡報大綱：AI 提示詞工程轉譯與全流程製作指南</title>
+  
+  <!-- MathJax for mathematical formulas -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  
+  <!-- Mermaid for flowcharts -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+
+  <style>
+    :root {
+      --primary-color: #1e3a8a;
+      --secondary-color: #2563eb;
+      --accent-color: #0d9488;
+      --warning-color: #b45309;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --code-bg: #0f172a;
+      --highlight-bg: #eff6ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+      line-height: 1.8;
+      color: var(--text-main);
+      background-color: var(--bg-color);
+      padding: 2.5rem 1.5rem;
+    }
+
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 3rem;
+      border-radius: 14px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border-color);
+    }
+
+    .header-section {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .title-group h1 {
+      font-size: 2.1rem;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+      font-weight: 800;
+    }
+
+    .metadata-card {
+      background: var(--highlight-bg);
+      border-left: 4px solid var(--secondary-color);
+      padding: 0.85rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+    }
+
+    .metadata-card p {
+      margin: 0.25rem 0;
+    }
+
+    .metadata-card strong {
+      color: #1e40af;
+    }
+
+    .btn-export {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #ffffff;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-export:hover {
+      background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(239, 68, 68, 0.5);
+    }
+
+    h2 {
+      font-size: 1.55rem;
+      color: var(--primary-color);
+      margin: 3rem 0 1.2rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 2px solid #e0e7ff;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      color: #1e40af;
+      margin: 2rem 0 0.9rem;
+    }
+
+    h4 {
+      font-size: 1.1rem;
+      color: #0f766e;
+      margin: 1.3rem 0 0.5rem;
+    }
+
+    p {
+      margin-bottom: 1.1rem;
+    }
+
+    ul, ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    li {
+      margin-bottom: 0.4rem;
+    }
+
+    /* Cards */
+    .feature-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      border-left: 5px solid var(--secondary-color);
+    }
+
+    .eval-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.25rem;
+      margin: 1.5rem 0;
+    }
+
+    .eval-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.35rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+
+    .eval-card.good {
+      border-top: 4px solid #16a34a;
+      background: #f0fdf4;
+    }
+
+    .eval-card.warn {
+      border-top: 4px solid #ea580c;
+      background: #fff7ed;
+    }
+
+    .eval-card.upgrade {
+      border-top: 4px solid #2563eb;
+      background: #eff6ff;
+    }
+
+    .eval-card h4 {
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+      background: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      border: 1px solid var(--border-color);
+    }
+
+    th, td {
+      padding: 0.9rem 1.1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    tr:hover {
+      background: #f8fafc;
+    }
+
+    /* Code Container with Copy Button */
+    .code-container {
+      position: relative;
+      margin: 1.5rem 0;
+      background: var(--code-bg);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    }
+
+    .code-header {
+      background: #1e293b;
+      padding: 0.5rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      font-family: monospace;
+      border-bottom: 1px solid #334155;
+    }
+
+    .btn-copy {
+      background: #334155;
+      color: #f8fafc;
+      border: 1px solid #475569;
+      padding: 0.3rem 0.75rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-copy:hover {
+      background: #475569;
+      color: #ffffff;
+    }
+
+    .btn-copy.copied {
+      background: #16a34a;
+      border-color: #16a34a;
+      color: white;
+    }
+
+    pre {
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: "Consolas", "Courier New", monospace;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+      background: transparent;
+      margin: 0;
+    }
+
+    /* Prompt Box */
+    .prompt-box {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 1.25rem;
+      border-radius: 8px;
+      font-family: "Consolas", monospace;
+      font-size: 0.92rem;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      border-left: 4px solid var(--accent-color);
+      margin: 1rem 0;
+    }
+
+    .mermaid {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border-color);
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Archive */
+    .archive-item {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border-left: 5px solid #6366f1;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+    .badge-green { background: #dcfce7; color: #15803d; }
+    .badge-orange { background: #ffedd5; color: #c2410c; }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      .container {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      .btn-export, .btn-copy {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- 頂部與元資料 -->
+    <header class="header-section">
+      <div class="title-group">
+        <h1>📑 從文件摘要到 10 頁簡報大綱：AI 提示詞工程轉譯與全流程製作指南</h1>
+        <div class="metadata-card">
+          <p><strong>最後更新時間：</strong> 2026-09-23 11:42:51 (UTC+8)</p>
+          <p><strong>使用模型：</strong> Gemini 3.8 Flash</p>
+          <p><strong>執行 Agent：</strong> Antigravity</p>
+          <p><strong>筆記分類：</strong> 生成式 AI / 提示詞工程 / 簡報轉換與視覺設計 / AI 自動化工作流</p>
+        </div>
+      </div>
+      <div>
+        <button class="btn-export" onclick="window.print()">
+          🖨️ 匯出成 PDF / 列印
+        </button>
+      </div>
+    </header>
+
+    <!-- 導言與概覽 -->
+    <h2>📖 導言與全流程架構</h2>
+    <p>
+      在學術分享、課堂報告與專案推進中，<strong>「將長篇厚重的文件/文獻轉化為易懂、具備說服力的簡報」</strong>是每位研究者與學生的高頻關鍵任務。
+    </p>
+    <p>
+      本練習所採用的提示詞設計（Prompt Design），採用了精確的「<strong>二階段漏斗式架構</strong>」：
+      第一階段專注於「低認知負擔同儕摘要（Peer-Oriented Summary）」，第二階段轉譯為「10 頁、15 分鐘行動主張導向簡報大綱與生圖提示詞」。
+    </p>
+
+    <div class="mermaid">
+flowchart TD
+    RawDoc["原始厚重文件<br/>(Raw Document)"] --> P1["階段一：知識精煉與降維<br/>(Peer-Oriented Summary)"]
+    
+    subgraph S1 ["第一階段：認知過濾"]
+        P1 --> F1["3~5 項核心觀點"]
+        P1 --> F2["2~3 個名詞通俗解釋"]
+        P1 --> F3["嚴格約束：≤ 500字 + 防幻覺"]
+    end
+    
+    S1 --> P2["階段二：視覺與敘事重構<br/>(10-Slide Deck Framing)"]
+    
+    subgraph S2 ["第二階段：認知傳達"]
+        P2 --> S2A["主張式標題 (Assertion)"]
+        P2 --> S2B["極簡要點 (≤ 18字/點)"]
+        P2 --> S2C["同儕對話口說 (Dialogue)"]
+        P2 --> S2D["生成式生圖提示 (Visual Prompt)"]
+    end
+    
+    S2 --> S3["第三階段：多工具落地交付<br/>(Marp / Gamma / Canva / Slide)"]
+    </div>
+
+    <!-- 核心概念剖析 -->
+    <h2>🧠 一、核心概念剖析 (Core Concepts)</h2>
+    <div class="feature-card">
+      <h3>1. 認知負荷理論 (Cognitive Load Theory) 與「18 字法則」</h3>
+      <p>
+        聽眾的大腦無法同時處理「大量眼看文字」與「耳聽口述聲音」，這被稱為<strong>注意力分散效應（Split-Attention Effect）</strong>。
+        限制「每點 &le; 18 字、每頁 3 點」，符合心理學<strong>米勒定律（Miller's Law）</strong>的 \(7 \pm 2\) 資訊組塊（Chunks）極限，強迫投影片回歸「視覺錨點」而非提詞機。
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <h3>2. 主張－證據架構 (Assertion-Evidence Framework)</h3>
+      <p>
+        傳統簡報習慣使用「內容介紹」、「背景概述」等標籤式標題，聽眾無法瞬間掌握核心觀點。
+        <strong>主張式標題法</strong>要求標題必須是「一句完整的結論、論點或反直覺提問」，再以圖表與精煉要點作為證明證據。
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <h3>3. 雙碼理論 (Dual-Coding Theory) 與生圖提示詞設計</h3>
+      <p>
+        根據 Paivio 雙碼理論，大腦分別以「語言代碼」與「圖像代碼」儲存記憶。當兩者同步啟動時，長期記憶留存率大幅提升。
+        提示詞中為每頁生成<strong>專屬 AI 影像生成提示詞（AI Image Generation Prompt）</strong>，能精準將抽象邏輯視覺化。
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <h3>4. 漸進式兩階段生成 (Two-Stage Progressive Generation)</h3>
+      <p>
+        避免一次性命令大語言模型直接輸出 10 頁簡報而造成「上下文注意力分散」與「事實幻覺」。
+        先進行高保真 500 字蒸餾，再進行分頁演繹，確保資訊保真度（Fidelity）。
+      </p>
+    </div>
+
+    <!-- 原始提示詞診斷與評析 -->
+    <h2>🔍 二、原始提示詞診斷與全方位評析 (Prompt Diagnosis)</h2>
+    
+    <div class="eval-grid">
+      <div class="eval-card good">
+        <h4>✅ 優點亮點 (Strengths)</h4>
+        <ul>
+          <li><strong>受眾鎖定高中同學</strong>：語氣自動調校為親切、生活化，去除論文官僚調性。</li>
+          <li><strong>邊界極度清晰</strong>：限制 500 字內、每點 &le; 18 字，給予 LLM 嚴密的物理約束。</li>
+          <li><strong>主張式標題思維</strong>：禁用「介紹」、「內容」，逼出高張力觀點。</li>
+          <li><strong>首尾呼應</strong>：第 1 頁目標定調，最後 1 頁提供可執行下一步。</li>
+          <li><strong>防幻覺規範</strong>：嚴格保留原文觀點，不增補未提及數據。</li>
+        </ul>
+      </div>
+
+      <div class="eval-card warn">
+        <h4>⚠️ 潛在盲點 (Weaknesses)</h4>
+        <ul>
+          <li><strong>時間預算未切分</strong>：15 分鐘平均分配每頁 1.5 分鐘不切實際，核心頁與引言需要不同權重。</li>
+          <li><strong>生圖風格缺乏統一錨定</strong>：未指定生圖風格（如向量插畫、3D 等），容易產生視覺混亂。</li>
+          <li><strong>缺乏排版構圖指引</strong>：未提示版面佈局（如左右對比、三欄卡片、大數字強調）。</li>
+          <li><strong>口說缺乏情緒鉤子</strong>：僅要求一句口說，缺少課堂互動與問答破冰設計。</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 升級版提示詞模版 -->
+    <h2>🚀 三、升級版二階段提示詞模版 (Upgraded Prompts)</h2>
+    <p>以下為經過診斷強化後的完整實戰提示詞，可直接複製至 Gemini、Claude 或 ChatGPT 使用：</p>
+
+    <h3>🔹 階段一：同儕導向高保真文摘提示詞</h3>
+    <div class="code-container">
+      <div class="code-header">
+        <span>Prompt Template: Peer-Oriented Summary</span>
+        <button class="btn-copy" onclick="copyCode(this)">📋 複製提示詞</button>
+      </div>
+      <pre><code>請閱讀我所提供的檔案內容，為【沒看過原文的高中同學】撰寫一份易懂且精確的課堂報告摘要。
+
+【輸出架構規範】
+1. 💡 核心亮點（3-5 點）：每點請以「粗體主張標題 + 1 句白話生活化解釋」呈現。
+2. 🔑 關鍵名詞通俗解碼（2-3 個）：以高中生生活經驗做類比，說明該名詞的物理意義或核心原理。
+3. 🎯 一句話 takeaways：用一句震撼或富啟發性的話總結全文價值。
+
+【嚴格邊界限制】
+- 總字數上限：嚴格控制在 450 ~ 500 字以內。
+- 零幻覺原則：嚴格保留原文事實與論點，嚴禁加入原文未提及之數據、年代或推論。
+- 語系與修辭：繁體中文（台灣習慣用詞，如：程式、軟體、資料、陣列，禁出現大陸語彙）。
+- 語氣：親切、清晰、有熱忱的同儕分享語調。</code></pre>
+    </div>
+
+    <h3>🔹 階段二：10 頁高張力簡報大綱與風格一致性生圖提示詞</h3>
+    <div class="code-container">
+      <div class="code-header">
+        <span>Prompt Template: 10-Slide Deck & Style-Consistent Image Prompts</span>
+        <button class="btn-copy" onclick="copyCode(this)">📋 複製提示詞</button>
+      </div>
+      <pre><code>基於上述摘要與原文，請為我設計一份標準 10 頁、演講時長 15 分鐘的高中課堂分享簡報大綱。
+
+【基本設定】
+- 聽眾：未接觸過此題目的高中同班同學（需降低專業門檻，重視共鳴感）
+- 場合：課堂專題報告（氣氛輕鬆、互動性強，非死板評審競賽）
+- 視覺風格基調：【極簡扁平科技插畫風格 Minimalist Tech Vector Illustration, 雙色調藍青配色, 乾淨白色背景】，確保全套簡報生圖風格高度一致。
+
+【每頁必須依序包含以下 6 項資訊】：
+1. 頁碼與時間預算：標註「第 X 頁 / 建議演講時間：X 分鐘」。
+2. 頁標題：嚴禁「介紹」、「背景」等名詞標籤；必須採用「反直覺提問」或「具體主張結論」。
+3. 投影片重點（3 點）：每點嚴格不超過 18 字，採動詞開頭的簡明短句。
+4. 建議版面配置（Layout Hint）：說明該頁適合之排版（例如：左右兩欄對照、大數據強調卡片、流程時間軸、滿版意境圖）。
+5. 口說台詞導引（Speaker's Script）：2 句以內的高中生口語對話，包含引起共鳴的日常比喻或設問。
+6. 影像生成提示詞（AI Image Prompt）：
+   - 提供可直接複製至 Midjourney / DALL-E 3 / Bing 的英文 Prompt。
+   - 結構規範：[Subject action], [Minimalist flat vector illustration style, blue and teal color palette], [clean white isolated background, 16:9 ratio, no text inside image].
+
+【總體章節編排限制】
+- 第 1 頁：明確破冰並點出「本演講能帶給同學什麼啟發」。
+- 第 2~3 頁：痛點與現實問題引發共鳴。
+- 第 4~7 頁：核心原理、技術拆解與實驗發現（深入淺出）。
+- 第 8~9 頁：實際應用場景與未來想像。
+- 第 10 頁：清晰可執行的「下一步行動指南（Call To Action）」與 Q&A 互動提問。
+- 嚴禁捏造數據，全文繁體中文（生圖提示詞採英文以確保渲染品質）。</code></pre>
+    </div>
+
+    <!-- 自動化轉換腳本與流程圖 -->
+    <h2>💻 四、自動化實作：大綱轉 Marp 簡報格式解析腳本</h2>
+    <p>
+      將 AI 產出的大綱文字，透過 Python 正則解析自動格式化為 <strong>Marp (Markdown Presentation)</strong> 格式，可直接在 VS Code 一鍵預覽並匯出成 PDF 或 PPTX。
+    </p>
+
+    <!-- 程式邏輯流程圖 -->
+    <h4>📌 程式邏輯處理流程圖 (Mermaid)</h4>
+    <div class="mermaid">
+flowchart TD
+    Start["讀取 AI 產出的簡報大綱文字檔案 (.txt / .md)"] --> Parse["正則表示式 (Regex) 解析各頁區塊"]
+    Parse --> Extract1["萃取頁碼與標題 (Slide Title)"]
+    Parse --> Extract2["萃取 3 項重點 (Bullet Points, ≤18字)"]
+    Parse --> Extract3["萃取口說提示 (Speaker Notes)"]
+    Parse --> Extract4["萃取 AI 生圖提示詞 (Image Prompt)"]
+    
+    Extract1 & Extract2 & Extract3 & Extract4 --> Formatter["組裝為 Marp 格式投影片語法"]
+    Formatter --> AddHeader["加入 Marp Frontmatter (主題: gaia, 16:9)"]
+    AddHeader --> AddSlideDivider["自動插入頁面分隔符號 (---)"]
+    AddSlideDivider --> Output["輸出為 presentation_deck.marp.md"]
+    Output --> Export["利用 VS Code Marp 插件一鍵匯出 HTML / PDF / PPTX"]
+    </div>
+
+    <div class="code-container">
+      <div class="code-header">
+        <span>Python: outline_to_marp.py</span>
+        <button class="btn-copy" onclick="copyCode(this)">📋 複製程式碼</button>
+      </div>
+      <pre><code># -*- coding: utf-8 -*-
+"""
+簡報大綱自動轉 Marp Markdown 工具
+功能：將結構化的 AI 簡報大綱文字，自動解析並格式化為相容於 Marp 的簡報檔案。
+支援功能：自動頁面分割 (---)、投影片要點排版、演講者備忘稿 (&lt;!-- comment --&gt;) 與生圖提示備忘。
+"""
+
+import os
+import re
+
+def convert_outline_to_marp(input_file_path: str, output_file_path: str):
+    """
+    讀取原始大綱並轉譯為 Marp 語法簡報
+    """
+    if not os.path.exists(input_file_path):
+        print(f"[錯誤] 找不到輸入檔案: {input_file_path}")
+        return
+
+    with open(input_file_path, 'r', encoding='utf-8') as f:
+        raw_content = f.read()
+
+    # 定義 Marp 標頭檔 (Frontmatter)
+    marp_header = """---
+marp: true
+theme: gaia
+_class: lead
+paginate: true
+backgroundColor: #f8fafc
+color: #1e293b
+style: |
+  section {
+    font-family: 'Segoe UI', 'Noto Sans TC', sans-serif;
+    font-size: 28px;
+    padding: 40px 60px;
+  }
+  h1 {
+    color: #1e40af;
+    font-size: 42px;
+    margin-bottom: 20px;
+  }
+  h2 {
+    color: #2563eb;
+    font-size: 34px;
+  }
+  footer {
+    font-size: 14px;
+    color: #94a3b8;
+  }
+---
+
+"""
+
+    slides = []
+    # 根據「第 X 頁」切分章節
+    slide_chunks = re.split(r'(?=第\s*\d+\s*頁)', raw_content)
+
+    for chunk in slide_chunks:
+        chunk = chunk.strip()
+        if not chunk:
+            continue
+
+        lines = chunk.split('\n')
+        slide_title = ""
+        bullet_points = []
+        speaker_note = ""
+        image_prompt = ""
+
+        for line in lines:
+            line_str = line.strip()
+            # 辨識標題
+            if "頁標題" in line_str or line_str.startswith("###") or "第" in line_str and "頁" in line_str:
+                clean_title = re.sub(r'^(第\s*\d+\s*頁|頁標題[:：]|###|\d+\.|\s)+', '', line_str).strip()
+                if clean_title:
+                    slide_title = clean_title
+            # 辨識重點要點
+            elif re.match(r'^[-*•\d\)]', line_str) and "口說" not in line_str and "圖像" not in line_str:
+                clean_point = re.sub(r'^[-*•\d\.\)\s]+', '', line_str).strip()
+                if clean_point:
+                    bullet_points.append(clean_point)
+            # 辨識口說台詞
+            elif "口說" in line_str or "台詞" in line_str:
+                speaker_note = re.sub(r'^(建議口說重點[:：]|口說台詞[:：]|\s)+', '', line_str).strip()
+            # 辨識生圖提示詞
+            elif "圖像" in line_str or "生圖" in line_str or "Prompt" in line_str:
+                image_prompt = re.sub(r'^(適合搭配的圖像類型[:：]|影像生成提示詞[:：]|\s)+', '', line_str).strip()
+
+        # 組裝單頁 Marp 投影片 Markdown
+        slide_md = []
+        if slide_title:
+            slide_md.append(f"## {slide_title}\n")
+        
+        if bullet_points:
+            for pt in bullet_points:
+                slide_md.append(f"- {pt}")
+            slide_md.append("")
+
+        # 將生圖提示與口說重點放入演講者備忘稿 (Presenter Notes)
+        notes_block = []
+        if speaker_note:
+            notes_block.append(f"🗣️ 口說重點：{speaker_note}")
+        if image_prompt:
+            notes_block.append(f"🎨 建議圖像/生圖Prompt：{image_prompt}")
+
+        if notes_block:
+            slide_md.append("&lt;!--")
+            slide_md.extend(notes_block)
+            slide_md.append("--&gt;\n")
+
+        slides.append("\n".join(slide_md))
+
+    # 合併所有投影片，中間以 '---' 隔開
+    final_output = marp_header + "\n---\n\n".join(slides)
+
+    with open(output_file_path, 'w', encoding='utf-8') as f:
+        f.write(final_output)
+
+    print(f"[成功] 已成功將簡報大綱轉換為 Marp 檔案：{output_file_path}")
+
+if __name__ == "__main__":
+    print("Marp 自動轉換模組已就緒。")
+</code></pre>
+    </div>
+
+    <!-- 後續完成簡報全流程指南 -->
+    <h2>🛠️ 五、後續如何完成高質感簡報的全流程指南 (End-to-End Workflow)</h2>
+
+    <div class="mermaid">
+flowchart LR
+    A["步驟一：大綱確認與修訂<br/>(Outline Review)"] --> B["步驟二：AI 視覺生成<br/>(Image Generation)"]
+    B --> C["步驟三：版面組裝與排版<br/>(Deck Assembling)"]
+    C --> D["步驟四：計時彩排與互動設計<br/>(Rehearsal & Delivery)"]
+    </div>
+
+    <h3>步驟一：大綱的人機協同微調 (Human Review)</h3>
+    <ul>
+      <li><strong>18 字極速檢核</strong>：每點嚴格控制在 18 字以內，剔除所有贅詞。</li>
+      <li><strong>設計三段情緒弧線（Emotional Arc）</strong>：第 1 頁破冰拋出日常痛點；第 5 頁揭曉核心原理解謎；第 10 頁呼籲行動。</li>
+    </ul>
+
+    <h3>步驟二：AI 影像生成與風格一致性掌控</h3>
+    <ul>
+      <li><strong>風格定錨句（Style Anchor）</strong>：全套圖片共用相同的結尾描述，如：<code>Minimalist flat vector illustration style, blue and teal color palette, clean white background, 16:9 ratio</code>。</li>
+      <li><strong>推薦免翻牆或易用工具</strong>：
+        <strong>Recraft.ai</strong>（向量與圖示首選，可輸出 SVG/PNG）、
+        <strong>Microsoft Designer / DALL-E 3</strong>（完全免費、中文語意理解優異）、
+        <strong>Midjourney v6</strong>（使用 <code>--sref</code> 風格參考維持全套色調一致）。
+      </li>
+    </ul>
+
+    <h3>步驟三：簡報排版工具選型與落地</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>途徑與工具</th>
+          <th>適用場景與特色</th>
+          <th>輸出與相容性</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>途徑 A：Gamma.app / Canva AI</strong></td>
+          <td>極速排版。直接貼上大綱，AI 自動配置文字卡片與配圖，5 分鐘搞定。</td>
+          <td>可直接網頁投影，支援匯出 PPTX / PDF。</td>
+        </tr>
+        <tr>
+          <td><strong>途徑 B：Marp for VS Code</strong></td>
+          <td>工程師、注重排版結構與版本控制者。透過 Markdown 快速維護投影片。</td>
+          <td>一鍵匯出 HTML 網頁簡報、高畫質 PDF 與 PPTX。</td>
+        </tr>
+        <tr>
+          <td><strong>途徑 C：Microsoft PowerPoint / Google 簡報</strong></td>
+          <td>適合套用校系既定母片、需要高度客製化動畫與排版者。</td>
+          <td>標準 .pptx，全球課堂相容度最高。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>步驟四：15 分鐘課堂時間節奏分配表</h3>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 10%;">頁碼</th>
+          <th style="width: 20%;">頁面任務</th>
+          <th style="width: 15%;">建議時間</th>
+          <th>演講口說與肢體互動要點</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>P1</strong></td>
+          <td>封面與開場 Hook</td>
+          <td>1.0 min</td>
+          <td>以生活痛點設問破冰，眼神接觸同學，先激發好奇心再切入主題。</td>
+        </tr>
+        <tr>
+          <td><strong>P2</strong></td>
+          <td>痛點情境共鳴</td>
+          <td>1.5 min</td>
+          <td>講述同學生活常遇到的難題，讓大家覺得「這跟我切身相關」。</td>
+        </tr>
+        <tr>
+          <td><strong>P3</strong></td>
+          <td>現有瓶頸與盲點</td>
+          <td>1.5 min</td>
+          <td>點出大家平時直覺思考的盲區，營造資訊落差。</td>
+        </tr>
+        <tr>
+          <td><strong>P4</strong></td>
+          <td>核心概念登場</td>
+          <td>1.5 min</td>
+          <td>放緩語速，以投影片圖像為視覺錨點，拆解關鍵概念。</td>
+        </tr>
+        <tr>
+          <td><strong>P5</strong></td>
+          <td>底層原理與運作機制</td>
+          <td>2.0 min</td>
+          <td>全場高潮！運用生活化類比（齒輪、水流）解釋深層機制。</td>
+        </tr>
+        <tr>
+          <td><strong>P6</strong></td>
+          <td>實證數據與案例發現</td>
+          <td>2.0 min</td>
+          <td>指著具體數據或對比圖，以客觀事實強化論證說服力。</td>
+        </tr>
+        <tr>
+          <td><strong>P7</strong></td>
+          <td>優缺點與邊界探討</td>
+          <td>1.5 min</td>
+          <td>展現客觀批判性思考：何時適用？何時可能失效？</td>
+        </tr>
+        <tr>
+          <td><strong>P8</strong></td>
+          <td>未來展望與跨界應用</td>
+          <td>1.5 min</td>
+          <td>打開想像力，說明這個想法如何延伸至其他領域或未來生活。</td>
+        </tr>
+        <tr>
+          <td><strong>P9</strong></td>
+          <td>3 點帶得走的乾貨複習</td>
+          <td>1.0 min</td>
+          <td>肯定自信，引導大家快速在大腦中複誦核心結論。</td>
+        </tr>
+        <tr>
+          <td><strong>P10</strong></td>
+          <td>行動號召 (CTA) & Q&A</td>
+          <td>1.5 min</td>
+          <td>給予課後 5 分鐘能立刻動手嘗試的小任務，熱情邀請同學提問。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 延伸思考 -->
+    <h2>🔬 六、延伸思考與進階主題 (Extensions & Advanced Topics)</h2>
+    <div class="feature-card">
+      <h4>1. 資訊蒸餾的熵減與保真度 (Information Entropy & Loss Metric)</h4>
+      <p>
+        從 5,000 字長文壓縮到 10 頁簡報，本質上是高維資訊的「有損壓縮」。
+        演講者不是百科全書，目標是建立同學的心智模型（Mental Model），細微推導與數學證明應放入備忘稿或講義。
+      </p>
+      <h4>2. 費曼學習法（Feynman Technique）在課堂簡報的極致實踐</h4>
+      <p>
+        「如果你無法用通俗的語言讓同桌同學聽懂，代表你尚未真正理解它。」
+        課堂簡報是檢驗自己對知識掌握度的最佳壓力測試。
+      </p>
+      <h4>3. 多模態 AI（Multimodal AI）全自動生成簡報的未來趨勢</h4>
+      <p>
+        新一代多模態模型（如 Gemini 2.5 / 3.0 Pro）已具備直接閱讀長篇 PDF 並輸出可編輯向量簡報圖表的能力。
+        講者的不可替代性將更集中在「現場氣氛互動、個人故事性（Storytelling）與情感連結」。
+      </p>
+    </div>
+
+    <!-- 提示詞歷史與變更記錄 -->
+    <h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+    <div class="archive-item">
+      <h3>🔹 [2026-09-23 11:42:51] [Gemini 3.8 Flash / Antigravity] 變更紀錄</h3>
+      <p><strong>- 模型/Agent：</strong> Gemini 3.8 Flash / Antigravity</p>
+      <p><strong>- Prompt 原文：</strong></p>
+      <div class="prompt-box">C:\Users\User\Desktop\0923-11.txt 這是我利用提示詞將文件進行摘要與簡報大綱轉換的練習，整理成筆記 並提供建議跟修改方向，以及後續如何完成簡報的方法</div>
+      <p><strong>- 變更摘要：</strong> 讀取桌面提示詞練習文檔，深入剖析「同儕摘要 ➔ 10 頁 15 分鐘簡報大綱轉化」之提示詞工程架構。解析認知負荷理論、主張式標題法與雙碼理論；提供原始提示詞評析、升級版二階段提示詞範本、Marp 自動轉換 Python 腳本（含 Mermaid 邏輯流程圖與複製按鈕）、AI 視覺風格一致性秘訣、四步驟簡報落地指南與 15 分鐘時間節奏控制表。同時生成 Markdown 與 HTML 雙格式筆記，支援一鍵匯出 PDF 列印。</p>
+    </div>
+
+  </div>
+
+  <script>
+    // 程式碼與提示詞複製功能
+    function copyCode(btn) {
+      const container = btn.closest('.code-container');
+      const codeElement = container.querySelector('code');
+      const textToCopy = codeElement.innerText;
+
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '✅ 已複製！';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(err => {
+        console.error('複製失敗:', err);
+      });
+    }
+  </script>
+
+</body>
+</html>
