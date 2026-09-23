@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "marp-slide": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "skillPath": "skills/marp-slide/SKILL.md",
+      "computedHash": "73f1da9e6938b404525a6e33fb19033dcda3358a79d5b9aeecde73a13c049831"
+    }
+  }
+}

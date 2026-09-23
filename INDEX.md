@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-23 11:46:00 (UTC+8)  
+> **最後更新時間**: 2026-09-23 11:58:06 (UTC+8)  
 > **使用模型**: Gemini 3.8 Flash  
 > **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -10,6 +10,8 @@
 ## 🎯 工作區主題檔案分類與最後修改日期 (依日期由新至舊排列)
 
 ### 🤖 1. AI / 機器學習與深度學習 (`AI/`)
+* `2026-09-23` | [新莊土壤液化與地質心理學 10 頁 Marp 簡報 (Tech Style) (HTML)](./AI/soil_liquefaction_tech_slides.html) (HTML)
+* `2026-09-23` | [新莊土壤液化與地質心理學 10 頁 Marp 簡報 (Tech Style) (MD)](./AI/soil_liquefaction_tech_slides.marp.md) (MD)
 * `2026-09-23` | [從文件摘要到 10 頁簡報大綱：AI 提示詞工程轉譯與全流程製作指南 (HTML)](./AI/prompt_doc_summary_to_presentation.html) (HTML)
 * `2026-09-23` | [從文件摘要到 10 頁簡報大綱：AI 提示詞工程轉譯與全流程製作指南 (MD)](./AI/prompt_doc_summary_to_presentation.md) (MD)
 * `2026-09-16` | [AI 協同科研與小論文發想：提示詞工程實戰 (HTML)](./AI/prompt_academic_research_flow.html) (HTML)
@@ -230,6 +232,14 @@
   git commit and push
   ```
 - **變更摘要**: 依工作區規範第 6 條執行 Git 提交與推播同步程序，確認檔案索引完整並記錄提示詞歷程，將最新進度推播至 GitHub 遠端儲存庫。
+
+### 🔹 [2026-09-23 11:58:06] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  /marp-slide C:\Users\User\Desktop\111999.md tech style
+  ```
+- **變更摘要**: 調用 `marp-slide` Skill，將 `111999.md`（新莊土壤液化與地質心理學課堂大綱）轉換為 10 頁具備 GitHub 深色終端機科技風格的 Marp 簡報 (`soil_liquefaction_tech_slides.marp.md` 及 `soil_liquefaction_tech_slides.html`，同步輸出至桌面)，包含主張式標題、高亮狀態卡片、每頁口說演講備忘錄與 AI 生圖 Prompt。
 
 
 
