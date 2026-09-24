@@ -302,9 +302,9 @@
             <p class="subtitle">彙整 AI、電子電路、樂高機器人、數學統計、廟宇人文、平面設計與電腦視覺相關筆記 (檔案依日期由新至舊排列)</p>
             
             <div class="metadata-box">
-                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-24 14:36:35 (UTC+8)</div>
-                <div class="metadata-item"><strong>使用模型:</strong> Gemini 3.8 Flash</div>
-                <div class="metadata-item"><strong>執行 Agent:</strong> Antigravity</div>
+                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-24 22:52:00 (UTC+8)</div>
+                <div class="metadata-item"><strong>使用模型:</strong> Cursor Grok 4.6</div>
+                <div class="metadata-item"><strong>執行 Agent:</strong> Cursor Grok 4.6</div>
                 <div class="metadata-item"><strong>GitHub Repo:</strong> <a href="https://github.com/joelhoty/onclassbyJoel" style="color:#38bdf8;" target="_blank">joelhoty/onclassbyJoel</a></div>
             </div>
 
@@ -580,9 +580,23 @@
             <div class="card" data-category="ec">
                 <div class="card-header">
                     <h2 class="card-title">⚡ 電子電路與硬體實驗</h2>
-                    <span class="badge-count">28 檔案</span>
+                    <span class="badge-count">30 檔案</span>
                 </div>
                 <ul class="file-list">
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/car_radio_traffic_broadcast_rds_ta_tunnel.html">車用收音機路況／事件廣播：隧道插播、RDS-TA 與相關技術 (HTML)</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-24</span>
+                            <span class="tag tag-html">HTML</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/car_radio_traffic_broadcast_rds_ta_tunnel.md">車用收音機路況／事件廣播：隧道插播、RDS-TA 與相關技術 (MD)</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-24</span>
+                            <span class="tag tag-md">MD</span>
+                        </div>
+                    </li>
                     <li class="file-item">
                         <a class="file-link" href="./ec/arduino_pir_relay_delay.html">Arduino PIR (Pin 4) 繼電器 (Pin 2) 延遲 5 秒照明 (HTML)</a>
                         <div class="file-meta">
@@ -1102,6 +1116,14 @@ go</pre>
                 <p><strong>Prompt 原文:</strong></p>
                 <pre>流程圖的走線盡量不要交叉</pre>
                 <p><strong>變更摘要:</strong> 重構 PIR 繼電器延遲照明筆記（`ec/arduino_pir_relay_delay.md` 與 `ec/arduino_pir_relay_delay.html`）中的 Mermaid 流程圖架構，採用平行左右雙分支結構（左側有人開燈與刷新、右側無人計時與熄滅）並行向下推進，並統一匯流至底部單一循環收斂節點（delay 20ms），最後以單一外環回繞主迴圈，徹底消除流程圖中的線條交錯糾纏，實現平面化清晰走線。</p>
+            </div>
+            <div class="prompt-archive" style="margin-top: 15px;">
+                <h4>🔹 [2026-09-24 22:52:00] [Cursor Grok 4.6] 車用收音機隧道插播與 RDS-TA 筆記歸檔提交</h4>
+                <p><strong>模型/Agent:</strong> Cursor Grok 4.6</p>
+                <p><strong>Prompt 原文:</strong></p>
+                <pre>同步git
+go</pre>
+                <p><strong>變更摘要:</strong> 拉取遠端 27 筆提交後，將根目錄草稿歸檔為 `ec/car_radio_traffic_broadcast_rds_ta_tunnel.md` 與對應 HTML（含匯出 PDF 按鈕與程式碼複製按鈕），補齊 Metadata／Prompt Archive，更新全站電子電路索引至 30 份檔案後提交推送。</p>
             </div>
         </div>
     </footer>

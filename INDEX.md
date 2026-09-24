@@ -1,8 +1,8 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-24 14:36:35 (UTC+8)  
-> **使用模型**: Gemini 3.8 Flash  
-> **執行 Agent**: Antigravity  
+> **最後更新時間**: 2026-09-24 22:52:00 (UTC+8)  
+> **使用模型**: Cursor Grok 4.6  
+> **執行 Agent**: Cursor Grok 4.6  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 
 ---
@@ -31,6 +31,8 @@
 * `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
+* `2026-09-24` | [車用收音機路況／事件廣播：隧道插播、RDS-TA 與相關技術 (HTML)](./ec/car_radio_traffic_broadcast_rds_ta_tunnel.html) (HTML)
+* `2026-09-24` | [車用收音機路況／事件廣播：隧道插播、RDS-TA 與相關技術 (MD)](./ec/car_radio_traffic_broadcast_rds_ta_tunnel.md) (MD)
 * `2026-09-24` | [Arduino PIR (Pin 4) 繼電器 (Pin 2) 延遲 5 秒照明 (HTML)](./ec/arduino_pir_relay_delay.html) (HTML)
 * `2026-09-24` | [Arduino PIR (Pin 4) 繼電器 (Pin 2) 延遲 5 秒照明 (MD)](./ec/arduino_pir_relay_delay.md) (MD)
 * `2026-09-24` | [Arduino PIR 與繼電器實驗相片](./ec/pir0924.jpg) (JPG)
@@ -294,6 +296,15 @@
   流程圖的走線盡量不要交叉
   ```
 - **變更摘要**: 重構 PIR 繼電器延遲照明筆記（`ec/arduino_pir_relay_delay.md` 與 `ec/arduino_pir_relay_delay.html`）中的 Mermaid 流程圖，採用平行左右雙分支與單一底部收斂節點（delay 20ms），使各分支由上而下無交叉匯入，徹底消除線條糾纏與交錯，大幅提升流程圖可讀性。
+
+### 🔹 [2026-09-24 22:52:00] [Cursor Grok 4.6] 變更紀錄
+- **模型/Agent**: Cursor Grok 4.6
+- **Prompt 原文**:
+  ```text
+  同步git
+  go
+  ```
+- **變更摘要**: 拉取遠端 27 筆提交後，將根目錄草稿 `20260924-car-radio-traffic-broadcast-rds-ta-tunnel.md` 歸檔為 `ec/car_radio_traffic_broadcast_rds_ta_tunnel.md` 與對應 HTML，補齊 Metadata／Prompt Archive／匯出 PDF 按鈕，並更新全站索引後提交推送。
 
 
 
