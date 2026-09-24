@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-23 12:00:54 (UTC+8)  
+> **最後更新時間**: 2026-09-24 13:58:22 (UTC+8)  
 > **使用模型**: Gemini 3.8 Flash  
 > **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -31,6 +31,9 @@
 * `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
+* `2026-09-24` | [Arduino 數位控制繼電器電路與進階應用解析 (HTML)](./ec/arduino_relay.html) (HTML)
+* `2026-09-24` | [Arduino 數位控制繼電器電路與進階應用解析 (MD)](./ec/arduino_relay.md) (MD)
+* `2026-09-24` | [Arduino 數位控制繼電器電路相片](./ec/arduino_relay.jpg) (JPG)
 * `2026-09-22` | [Arduino 紅外線感應繼電器電燈控制 (HTML)](./ec/arduino_pir_relay_light_control.html) (HTML)
 * `2026-09-22` | [Arduino 紅外線感應繼電器電燈控制 (MD)](./ec/arduino_pir_relay_light_control.md) (MD)
 * `2026-09-22` | [電磁線圈電鈴動態模擬與音效合成系統 (HTML)](./ec/electric_bell_coil_simulation.html) (HTML)
@@ -248,6 +251,14 @@
   將marp cli相關的討論整理到0923筆記
   ```
 - **變更摘要**: 將 Marp 開源生態系（awesome-marp、marp-community-themes、dracula/marp 等）、Marp CLI 自訂主題掛載與無對話編譯指令、五大進階排版技巧（圖文切割、局部樣式、雙欄卡片、Presenter Notes）及 marp-slide 技能實戰成果完整整合至 0923 筆記 (`prompt_doc_summary_to_presentation.md` 與 `.html`)，同步更新全站索引。
+
+### 🔹 [2026-09-24 13:58:22] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  C:\Users\User\Desktop\20260924-1.jpg 這是我的第一個數位控制繼電器電路，幫我整理成筆記 arduino_relay，並延伸這個基本電路的應用想法
+  ```
+- **變更摘要**: 整理使用者的第一個數位控制繼電器模擬電路 (`arduino_relay.html` 與 `.md`)，診斷 Tinkercad 晶片驚嘆號原因（過電流與反電動勢），詳解 NPN 電晶體與光耦標準驅動架構，提供基礎阻塞與進階非阻塞程式碼，展開 5 大實用延伸應用與強電安全守則，並同步更新全站檔案索引與首頁導覽。
 
 
 

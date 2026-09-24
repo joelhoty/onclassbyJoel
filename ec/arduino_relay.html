@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Arduino 數位控制繼電器電路與進階應用解析 (arduino_relay)</title>
+    
+    <!-- KaTeX 數學公式支援 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false}
+            ],
+            throwOnError: false
+        });"></script>
+
+    <!-- Prism 程式碼高亮 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <!-- Mermaid 流程圖 -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #eff6ff;
+            --secondary: #0f172a;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-amber: #f59e0b;
+            --accent-indigo: #6366f1;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1060px;
+            margin: 0 auto;
+        }
+
+        /* 頁首 Header */
+        header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.3;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .metadata-box {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 0.9rem 1.25rem;
+            font-size: 0.9rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.75rem;
+            border-left: 4px solid var(--accent-amber);
+        }
+
+        /* 內容卡片 */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 2.2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        h2 {
+            font-size: 1.55rem;
+            color: var(--secondary);
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            color: #334155;
+            margin: 1.5rem 0 0.75rem 0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        ul, ol {
+            margin-bottom: 1.25rem;
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* 警告與高亮框 */
+        .alert {
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin: 1.25rem 0;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .alert-warning {
+            background-color: #fffbeb;
+            border-left: 5px solid var(--accent-amber);
+            color: #92400e;
+        }
+
+        .alert-danger {
+            background-color: #fef2f2;
+            border-left: 5px solid var(--accent-red);
+            color: #991b1b;
+        }
+
+        .alert-info {
+            background-color: #f0fdf4;
+            border-left: 5px solid var(--accent-green);
+            color: #166534;
+        }
+
+        .alert-icon {
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        /* 圖片容器 */
+        .image-container {
+            text-align: center;
+            margin: 1.5rem 0;
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .image-caption {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* 程式碼容器與複製按鈕 */
+        .code-container {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #334155;
+            color: #f8fafc;
+            border: 1px solid #475569;
+            padding: 0.35rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .copy-btn:hover {
+            background: #2563eb;
+            border-color: #2563eb;
+        }
+
+        pre[class*="language-"] {
+            border-radius: 8px;
+            margin: 0;
+        }
+
+        /* 比較表格 */
+        .table-responsive {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        /* 互動動態模擬器 */
+        .sim-container {
+            background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            color: white;
+            margin: 1.5rem 0 2rem 0;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+            border: 1px solid #334155;
+        }
+
+        .sim-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .sim-header h3 {
+            color: #38bdf8;
+            margin: 0;
+            font-size: 1.35rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sim-controls {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .sim-btn {
+            padding: 0.65rem 1.25rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sim-btn-toggle {
+            background: #2563eb;
+            color: white;
+        }
+
+        .sim-btn-toggle:hover {
+            background: #1d4ed8;
+            transform: scale(1.02);
+        }
+
+        .sim-btn-auto {
+            background: #10b981;
+            color: white;
+        }
+
+        .sim-btn-auto:hover {
+            background: #059669;
+        }
+
+        .sim-btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .sim-btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        /* 儀表板卡片 */
+        .sim-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dash-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .dash-card.active {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.12);
+        }
+
+        .dash-title {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .dash-value {
+            font-size: 1.4rem;
+            font-weight: 800;
+            font-family: monospace;
+        }
+
+        /* 繼電器結構圖動態畫布 */
+        .relay-visualizer {
+            background: #090d16;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #1e293b;
+            position: relative;
+        }
+
+        .relay-box {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .coil-unit, .switch-unit, .load-unit {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 1.2rem;
+            text-align: center;
+            min-width: 170px;
+        }
+
+        .coil-icon {
+            font-size: 2.5rem;
+            margin: 0.5rem 0;
+            transition: all 0.3s;
+        }
+
+        .coil-unit.energized .coil-icon {
+            filter: drop-shadow(0 0 10px #38bdf8);
+            transform: scale(1.1);
+        }
+
+        .bulb-icon {
+            font-size: 3rem;
+            filter: grayscale(100%);
+            opacity: 0.3;
+            transition: all 0.3s ease;
+        }
+
+        .bulb-icon.lit {
+            filter: grayscale(0%) drop-shadow(0 0 18px #facc15);
+            opacity: 1;
+            transform: scale(1.15);
+        }
+
+        .switch-arm {
+            font-family: monospace;
+            font-size: 1.1rem;
+            padding: 0.5rem;
+            background: #1e293b;
+            border-radius: 6px;
+            margin-top: 0.5rem;
+        }
+
+        .sim-console {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            color: #a7f3d0;
+            height: 120px;
+            overflow-y: auto;
+        }
+
+        /* 提示詞記錄卡片 */
+        .archive-card {
+            background: #f8fafc;
+            border-left: 4px solid var(--accent-indigo);
+            padding: 1.25rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        @media print {
+            body {
+                background: white;
+                color: black;
+                padding: 0;
+            }
+            .action-bar, .sim-controls, .copy-btn {
+                display: none !important;
+            }
+            .card {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                page-break-inside: avoid;
+            }
+            header {
+                background: #1e293b !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- 頁首 Header -->
+    <header>
+        <div class="header-top">
+            <div>
+                <h1>⚡ Arduino 數位控制繼電器電路與進階應用解析</h1>
+                <p style="margin-top: 0.5rem; opacity: 0.9;">Tinkercad Circuits 異常診斷、電晶體驅動保護、非阻塞架構與 5 大物聯網智慧控制延伸實踐</p>
+            </div>
+            <div class="action-bar">
+                <button class="btn btn-primary" onclick="window.print()">🖨️ 匯出成 PDF / 列印筆記</button>
+                <a class="btn btn-secondary" href="../index.html">🏠 返回首頁索引</a>
+            </div>
+        </div>
+
+        <div class="metadata-box">
+            <div>📅 <strong>最後更新時間:</strong> 2026-09-24 13:58:22 (UTC+8)</div>
+            <div>🤖 <strong>使用模型:</strong> Gemini 3.8 Flash</div>
+            <div>💼 <strong>執行 Agent:</strong> Antigravity</div>
+            <div>📁 <strong>學門分類:</strong> 電子電路與硬體實驗 (<code>ec/</code>)</div>
+        </div>
+    </header>
+
+    <!-- 系統導論與實驗電路觀測 -->
+    <div class="card">
+        <h2>📖 系統導論與實驗電路觀測</h2>
+        <p>在微控制器（MCU，如 Arduino、ESP32）的實務開發中，單晶片本體僅能處理 $3.3\text{V} \sim 5\text{V}$ 的弱電低功率數位訊號，而日常家電（AC 110V/220V 電燈、風扇）或工控致動器（DC 12V/24V 抽水馬達、電磁閥）則需要大電壓與大電流驅動。<strong>電磁繼電器（Electromechanical Relay, EMR）</strong> 是實現「<strong>以微弱數位訊號，安全隔離並切換大功率負載</strong>」最核心的電氣橋樑。</p>
+
+        <div class="image-container">
+            <img src="./arduino_relay.jpg" alt="Arduino 數位控制繼電器電路接線圖 (Tinkercad Circuits)">
+            <div class="image-caption">▲ 使用者的第一個數位控制繼電器模擬電路 (Tinkercad Circuits 截圖)</div>
+        </div>
+
+        <h3>🔍 實驗架構元件與接線分析</h3>
+        <ul>
+            <li><strong>微控制器</strong>：Arduino Uno R3，透過 USB 連接埠獲取 $5\text{V}$ 電源。</li>
+            <li><strong>數位控制引腳</strong>：Pin 2 設定為 <code>OUTPUT</code> 輸出模式。</li>
+            <li><strong>切換元件</strong>：小型訊號電磁繼電器（型號 <code>KS2E-M-DC5</code>，線圈額定 DC 5V，觸點切換容量 1A/125V AC 或 2A/30V DC）。</li>
+            <li><strong>受控回路</strong>：外接獨立直流電源供應器（提供 $5.00\text{V}$，截圖顯示導通電流為 $4.77\text{mA}$），串聯燈泡、限流電阻與繼電器常開開關接點（COM 與 NO）。</li>
+        </ul>
+
+        <div class="alert alert-danger">
+            <div class="alert-icon">⚠️</div>
+            <div>
+                <strong>關鍵工程診斷：為什麼晶片上方會出現警示驚嘆號（`!` 標誌）？</strong><br>
+                在模擬中，Arduino Uno 板載的 ATmega328P 晶片上方出現了警告標誌。這代表電路存在嚴重的潛在硬體危害：
+                <ol style="margin-top:0.5rem; margin-bottom:0;">
+                    <li><strong>GPIO 輸出過電流 (Overcurrent)</strong>：ATmega328P 單一腳位建議安全電流為 $\le 20\text{mA}$（極限 $40\text{mA}$）。KS2E 繼電器線圈電阻僅約 $125\Omega \sim 167\Omega$，直接以 Pin 2 驅動會抽載 $30\text{mA} \sim 40\text{mA}$，造成引腳過載發熱與電壓驟降。</li>
+                    <li><strong>缺乏續流二極體（反電動勢擊穿風險）</strong>：線圈為電感元件，當 Pin 2 由 HIGH 轉為 LOW 瞬間，$v_L = L \frac{di}{dt}$ 會感應出數十至數百伏特之極高反向脈衝，在實體電路中會瞬間打穿單晶片 GPIO 內部防護，導致晶片永久損毀。</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- 一、核心概念剖析 -->
+    <div class="card">
+        <h2>🔬 一、核心概念剖析 (Core Concepts)</h2>
+
+        <h3>1.1 繼電器工作原理與接觸拓撲</h3>
+        <p>電磁繼電器主要由<strong>低壓控制端（線圈）</strong>與<strong>高壓負載端（接點）</strong>構成，兩端在電氣上完全物理隔離：</p>
+        <ul>
+            <li><strong>COM (Common, 共同端)</strong>：受控電路電源流入的公共端點。</li>
+            <li><strong>NC (Normally Closed, 常閉端)</strong>：線圈未通電時，由內部復位彈簧拉緊與 COM 導通；線圈通電時斷開。</li>
+            <li><strong>NO (Normally Open, 常開端)</strong>：線圈未通電時斷開；線圈通電激磁後，電磁鐵吸引銜鐵（Armature）將其與 COM 吸合導通。本實驗之燈泡即接在 COM 與 NO 之間。</li>
+        </ul>
+
+        <h3>1.2 標準工程驅動架構：BJT 電晶體開關 + 續流二極體</h3>
+        <p>正規工程設計絕不以 MCU 引腳直推線圈，而是使用 <strong>NPN 電晶體（如 2N2222、SS8050）</strong> 作為低側開關，並於線圈兩端反向並聯 <strong>續流二極體（Flyback Diode，如 1N4007、1N4148）</strong>：</p>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>電路單元</th>
+                        <th>元件型號</th>
+                        <th>核心功能與物理機制</th>
+                        <th>關鍵參數計算</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>開關放大級</strong></td>
+                        <td>NPN (2N2222 / SS8050)</td>
+                        <td>將微弱的 GPIO 信號（數 mA）放大為足以驅動線圈的電流（數十至數百 mA），工作於飽和導通區。</td>
+                        <td>$I_B \ge \frac{I_C}{\beta_{\text{sat}}}$，基極電阻取 $1\text{k}\Omega$，GPIO 僅需輸出 $4.3\text{mA}$。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>續流保護級</strong></td>
+                        <td>二極體 (1N4007 / 1N4148)</td>
+                        <td>斷電瞬間提供電感電流循環迴路，將反向感應電壓鉗位在 $V_{\text{CC}} + 0.7\text{V}$，消除高壓電弧。</td>
+                        <td>耐壓需高於電源電壓，最大正向瞬態電流需能承受線圈飽和電流。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>光耦隔離級</strong></td>
+                        <td>PC817 (光耦合器)</td>
+                        <td>利用紅外發光與光敏受光，實現控制端與功率驅動端完全的電氣接地隔離。</td>
+                        <td>隔離耐壓達 $5000\text{V}_{\text{rms}}$，徹底防止負載端突波反灌 MCU 造成重置或當機。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 線上互動模擬器 -->
+    <div class="sim-container">
+        <div class="sim-header">
+            <h3>🎮 互動實驗室：繼電器數位控制動態響應模擬器</h3>
+            <span style="font-size: 0.9rem; color: #94a3b8;">即時模擬線圈激磁、銜鐵切換與負載響應</span>
+        </div>
+
+        <div class="sim-controls">
+            <button class="sim-btn sim-btn-toggle" onclick="toggleRelayManual()">
+                <span id="btnIcon">⚡</span> <span id="btnText">手動切換 Pin 2 (現為 LOW)</span>
+            </button>
+            <button class="sim-btn sim-btn-auto" onclick="toggleAutoBlink()">
+                🔄 啟動 1 秒循環閃爍 (Auto Blink)
+            </button>
+            <button class="sim-btn sim-btn-danger" onclick="toggleDiodeProtection()">
+                🛡️ 續流二極體保護: <span id="diodeStatusText">已啟用 (安全)</span>
+            </button>
+        </div>
+
+        <div class="sim-dashboard">
+            <div class="dash-card" id="cardPin">
+                <div class="dash-title">Arduino Pin 2 邏輯</div>
+                <div class="dash-value" id="valPin" style="color: #94a3b8;">LOW (0.0 V)</div>
+            </div>
+            <div class="dash-card" id="cardCoil">
+                <div class="dash-title">繼電器線圈狀態</div>
+                <div class="dash-value" id="valCoil" style="color: #94a3b8;">消磁 (0 mA)</div>
+            </div>
+            <div class="dash-card" id="cardContact">
+                <div class="dash-title">開關接點位置</div>
+                <div class="dash-value" id="valContact" style="color: #38bdf8;">COM 連接 NC (常閉)</div>
+            </div>
+            <div class="dash-card" id="cardLoad">
+                <div class="dash-title">受控負載回路</div>
+                <div class="dash-value" id="valLoad" style="color: #cbd5e1;">斷路 (0.00 mA)</div>
+            </div>
+        </div>
+
+        <div class="relay-visualizer">
+            <div class="relay-box">
+                <!-- 線圈側 -->
+                <div class="coil-unit" id="coilUnit">
+                    <div style="font-size: 0.85rem; color: #94a3b8;">【控制側：KS2E 線圈】</div>
+                    <div class="coil-icon" id="coilIcon">🌀</div>
+                    <div style="font-size: 0.8rem; color: #cbd5e1;" id="coilDesc">無磁場產生</div>
+                </div>
+
+                <!-- 開關接點側 -->
+                <div class="switch-unit">
+                    <div style="font-size: 0.85rem; color: #94a3b8;">【銜鐵接點結構】</div>
+                    <div class="switch-arm" id="switchArm">COM ──/ ── NO</div>
+                    <div style="font-size: 0.8rem; color: #cbd5e1; margin-top: 0.5rem;" id="contactDesc">彈簧保持常開狀態</div>
+                </div>
+
+                <!-- 負載燈泡側 -->
+                <div class="load-unit">
+                    <div style="font-size: 0.85rem; color: #94a3b8;">【受控負載：燈泡】</div>
+                    <div class="bulb-icon" id="bulbIcon">💡</div>
+                    <div style="font-size: 0.85rem; font-weight: bold; margin-top: 0.5rem; color: #94a3b8;" id="bulbStatusText">燈泡熄滅 (OFF)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sim-console" id="simConsole">
+            > 模擬系統已就緒。點擊上方按鈕測試 Arduino Pin 2 控制繼電器...<br>
+        </div>
+    </div>
+
+    <!-- 二、實作與程式碼 -->
+    <div class="card">
+        <h2>💻 二、實作與程式碼 (Practical Implementation & Code)</h2>
+
+        <h3>2.1 程式控制邏輯流程圖</h3>
+        <p>在撰寫 Arduino 韌體之前，以流程圖直觀解說主迴圈時序切換與電氣動作邏輯：</p>
+
+        <div class="mermaid">
+        flowchart TD
+            Start([系統開機啟動]) --> Init[初始化 Pin 2 為 OUTPUT 模式]
+            Init --> LoopStart{主迴圈 loop 執行}
+            LoopStart --> HighState[digitalWrite Pin 2, HIGH]
+            HighState --> LogHigh[激磁導通: 線圈通電產生磁場, 銜鐵吸合 COM-NO]
+            LogHigh --> BulbOn[💡 負載燈泡點亮 5V 回路導通, 電流 4.77 mA]
+            BulbOn --> Delay1[保持開燈 1000 毫秒 delay 1000]
+            Delay1 --> LowState[digitalWrite Pin 2, LOW]
+            LowState --> LogLow[消磁釋放: 線圈斷電, 續流二極體吸收感應反電動勢]
+            LogLow --> BulbOff[🌑 負載燈泡熄滅 COM-NO 斷開]
+            BulbOff --> Delay2[保持關燈 1000 毫秒 delay 1000]
+            Delay2 --> LoopStart
+        </div>
+
+        <h3>2.2 基礎版控制程式碼 (對應 Tinkercad 原版實驗)</h3>
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode(this)">📋 複製程式碼</button>
+            <pre><code class="language-cpp">/**
+ * @file arduino_relay_basic.ino
+ * @brief Arduino 數位控制繼電器基礎循環切換程式
+ * @note 透過 Pin 2 輸出高低電位，每隔 1 秒切換一次繼電器開關狀態
+ */
+
+// 定義繼電器控制引腳 (對應 Tinkercad 接線)
+const int RELAY_PIN = 2;
+
+// 定義切換間隔時間 (毫秒)
+const unsigned long SWITCH_INTERVAL = 1000;
+
+void setup() {
+    // 初始化序列埠通訊 (鮑率 9600)，用於監控除錯
+    Serial.begin(9600);
+    Serial.println(F("========================================"));
+    Serial.println(F("⚡ Arduino 數位控制繼電器系統啟動"));
+    Serial.println(F("========================================"));
+
+    // 設定 Pin 2 為數位輸出模式
+    pinMode(RELAY_PIN, OUTPUT);
+
+    // 初始狀態預設為關閉 (LOW)，確保開機時負載不誤動作
+    digitalWrite(RELAY_PIN, LOW);
+    Serial.println(F("狀態: 初始預設關閉 (Pin 2 = LOW)"));
+}
+
+void loop() {
+    // 1. 輸出高電位，驅動繼電器吸合 (若使用低電位觸發模組則相反)
+    digitalWrite(RELAY_PIN, HIGH);
+    Serial.println(F("[動作] 繼電器閉合 (HIGH) ──► 💡 負載燈泡點亮 (4.77 mA)"));
+    delay(SWITCH_INTERVAL); // 保持開燈狀態 1000 毫秒
+
+    // 2. 輸出低電位，釋放繼電器接點斷開
+    digitalWrite(RELAY_PIN, LOW);
+    Serial.println(F("[動作] 繼電器斷開 (LOW)  ──► 🌑 負載燈泡熄滅"));
+    delay(SWITCH_INTERVAL); // 保持關燈狀態 1000 毫秒
+}</code></pre>
+        </div>
+
+        <h3>2.3 進階版非阻塞程式碼 (採用 <code>millis()</code> 狀態機架構)</h3>
+        <p>在真實自動化系統中，使用 <code>delay(1000)</code> 會使 MCU 完全喪失即時響應能力。以下為符合工控標準的非阻塞時間排程架構：</p>
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode(this)">📋 複製程式碼</button>
+            <pre><code class="language-cpp">/**
+ * @file arduino_relay_non_blocking.ino
+ * @brief 採用 millis() 的非阻塞式繼電器排程控制
+ */
+
+const int RELAY_PIN = 2;
+const unsigned long INTERVAL = 1000; // 切換間隔 1 秒
+
+unsigned long previousMillis = 0;   // 記錄前一次狀態翻轉的時間戳
+bool relayState = false;            // 記錄當前繼電器狀態
+
+void setup() {
+    Serial.begin(9600);
+    pinMode(RELAY_PIN, OUTPUT);
+    digitalWrite(RELAY_PIN, LOW);
+    Serial.println(F("⚡ 非阻塞繼電器排程器運作中..."));
+}
+
+void loop() {
+    unsigned long currentMillis = millis();
+
+    // 檢查是否達到切換時間閾值
+    if (currentMillis - previousMillis >= INTERVAL) {
+        previousMillis = currentMillis; // 更新時間基準
+
+        // 翻轉狀態並寫入引腳
+        relayState = !relayState;
+        digitalWrite(RELAY_PIN, relayState ? HIGH : LOW);
+
+        Serial.print(F("目前時間: "));
+        Serial.print(currentMillis);
+        Serial.print(F(" ms | 繼電器狀態: "));
+        Serial.println(relayState ? F("導通 (ON 💡)") : F("斷開 (OFF 🌑)"));
+    }
+
+    // 此處主迴圈無任何卡頓阻塞，可同時執行其他感測器採集或按鈕中斷！
+}</code></pre>
+        </div>
+    </div>
+
+    <!-- 三、基本電路的延伸應用想法 -->
+    <div class="card">
+        <h2>🚀 三、基本電路的延伸應用想法 (Extended Applications)</h2>
+        <p>將此「**數位控制微功率 ➔ 大電流開關**」的基礎電路與感測器、通訊技術結合，可以衍生出多個實用且極具商業價值的自動化系統：</p>
+
+        <h3>💡 應用 1：智慧感測走廊節能照明系統 (PIR + CDS 雙條件觸發)</h3>
+        <ul>
+            <li><strong>需求情境</strong>：玄關、走廊或地下室電燈常開耗電，忘記關燈浪費公電。</li>
+            <li><strong>硬體組合</strong>：Arduino + HC-SR501 紅外線人體感測器 + 光敏電阻模組（CDS）+ 繼電器。</li>
+            <li><strong>核心控制邏輯</strong>：
+                <pre><code class="language-cpp">int lightVal = analogRead(A0); // 環境光度
+int motionVal = digitalRead(7); // 人體動態
+// 唯有環境昏暗且偵測到有人經過時才觸發開燈，人走後延遲 30 秒自動熄滅
+if (motionVal == HIGH && lightVal < 400) {
+    digitalWrite(RELAY_PIN, HIGH);
+    lastMotionTime = millis();
+}</code></pre>
+            </li>
+        </ul>
+
+        <h3>🌱 應用 2：智慧植栽與農園自動澆水系統 (Smart Irrigation)</h3>
+        <ul>
+            <li><strong>需求情境</strong>：出差旅行時盆栽缺水乾枯，人工澆灌無法根據土壤水分定量。</li>
+            <li><strong>硬體組合</strong>：電容式土壤濕度感測器 + 12V 直流沉水抽水馬達 + 繼電器控制模組。</li>
+            <li><strong>磁滯區間防抖動演算法</strong>：為防止土壤濕度在臨界值附近微幅震盪導致繼電器快速頻繁彈跳（Chattering 損壞接點），採用**雙閾值控制**（濕度低於 30% 啟動抽水，抽到高於 65% 才停機）。</li>
+        </ul>
+
+        <h3>🌡️ 應用 3：環境精準恆溫與防潮排風系統 (Thermostat & Ventilation)</h3>
+        <ul>
+            <li><strong>需求情境</strong>：3D 列印耗材防潮箱、爬蟲保溫箱或伺服器機櫃需維持特定工作溫度。</li>
+            <li><strong>硬體組合</strong>：DHT22 / DS18B20 數位溫度感測器 + 雙路繼電器模組。</li>
+            <li><strong>致動雙向控制</strong>：
+                <ul>
+                    <li><strong>第一路繼電器（加熱側）</strong>：接 PTC 發熱板，溫度 $T &lt; 20^\circ\text{C}$ 時啟動加熱。</li>
+                    <li><strong>第二路繼電器（散熱側）</strong>：接 12V 強力排風扇，溫度 $T &gt; 32^\circ\text{C}$ 時啟動排風。</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>📱 應用 4：IoT 智慧家電遠端插座與定時排程器 (ESP32 / Wi-Fi)</h3>
+        <ul>
+            <li><strong>技術升級路徑</strong>：將主控板換成具備 Wi-Fi / 藍牙功能的 <strong>ESP32</strong>。</li>
+            <li><strong>實現功能</strong>：
+                <ul>
+                    <li>接入 <strong>Home Assistant</strong> 開源智慧家庭平台或 Apple HomeKit。</li>
+                    <li>支援手機 App / Web UI 遠端即時遙控家電啟閉。</li>
+                    <li>搭配雲端 NTP 網路校時，設定離峰電價時段自動開啟電熱水器或電動自行車充電。</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>⚖️ 應用 5：機械繼電器 (EMR) vs 固態繼電器 (SSR) 選型評比</h3>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>特性項目</th>
+                        <th>機械電磁繼電器 (EMR, 本實驗所用)</th>
+                        <th>固態繼電器 (SSR, Solid State Relay)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>內部構造</strong></td>
+                        <td>電磁鐵吸引機械接觸金屬片導通</td>
+                        <td>半導體元件（光耦 + 雙向可控矽 Triac 或 MOSFET）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>切換動作聲音</strong></td>
+                        <td>有清脆明亮的機械「喀噠」聲</td>
+                        <td>完全靜音（無任何活動機械接點）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>開關反應速度</strong></td>
+                        <td>較慢（約 $5\text{ms} \sim 15\text{ms}$）</td>
+                        <td>極快（微秒級，支援低頻 PWM 調光調溫）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>接觸火花與壽命</strong></td>
+                        <td>斷開感性負載時接點易產生電弧，約數十萬次</td>
+                        <td>無電弧火花，壽命極長（數千萬次以上）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>導通壓降與發熱</strong></td>
+                        <td>接觸電阻極低，導通時本體基本不發熱</td>
+                        <td>存在管壓降（約 $1\text{V} \sim 1.5\text{V}$），大電流時需散熱片</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 四、市電高壓接線安全守則 -->
+    <div class="card">
+        <h2>⚠️ 四、市電高壓 (AC 110V/220V) 接線安全守則</h2>
+        <div class="alert alert-warning">
+            <div class="alert-icon">⚡</div>
+            <div>
+                <strong>實體交流強電實驗前務必詳閱以下安全三原則：</strong>
+                <ol style="margin-top:0.5rem; margin-bottom:0;">
+                    <li><strong>嚴禁切斷中性線（Neutral, N）</strong>：繼電器接點必須**串聯於火線（Live, L）**。若誤切中線，雖然燈具熄滅，但燈具內部仍充斥對地 110V/220V 高電位，人體誤觸將發生致命觸電！</li>
+                    <li><strong>感性負載加裝 RC 阻容吸收器（Snubber）</strong>：切換風扇、馬達等感性負載時，接點分斷瞬間會產生數千伏特火花電弧，應跨接 $0.1\mu\text{F} + 100\Omega$ 吸收回路保護繼電器接點。</li>
+                    <li><strong>高低壓電路物理隔離淨距</strong>：PCB 佈線時，弱電微控制器走線與強電高壓端子之間應保持至少 $3\text{mm} \sim 5\text{mm}$ 以上的安全爬電距離（Creepage Distance），防止高壓電弧擊穿。</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- 提示詞歷史與變更記錄 -->
+    <div class="card">
+        <h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+        <div class="archive-card">
+            <h3 style="margin-top:0; font-size:1.1rem; color: #1e293b;">🔹 [2026-09-24 13:58:22] [Gemini 3.8 Flash / Antigravity] 變更紀錄</h3>
+            <p><strong>模型/Agent</strong>: Gemini 3.8 Flash / Antigravity</p>
+            <p><strong>Prompt 原文</strong>:</p>
+            <div class="code-container">
+                <button class="copy-btn" onclick="copyCode(this)">📋 複製 Prompt</button>
+                <pre><code class="language-text">C:\Users\User\Desktop\20260924-1.jpg 這是我的第一個數位控制繼電器電路，幫我整理成筆記 arduino_relay，並延伸這個基本電路的應用想法</code></pre>
+            </div>
+            <p><strong>變更摘要</strong>: 剖析使用者於 Tinkercad 設計的第一個 Arduino 繼電器控制電路，診斷微控制器出現警示驚嘆號（`!`）的根本原因（GPIO 輸出過電流與缺乏續流二極體產生反電動勢），詳解 NPN 電晶體驅動與光耦隔離標準電路，提供基礎阻塞與進階非阻塞完整程式碼，並展開 5 大實用延伸應用與交流強電安全規範。</p>
+        </div>
+    </div>
+
+</div>
+
+<!-- 互動模擬器邏輯 JavaScript -->
+<script>
+    let isPinHigh = false;
+    let isAutoBlink = false;
+    let autoIntervalId = null;
+    let isDiodeProtected = true;
+
+    const valPin = document.getElementById('valPin');
+    const valCoil = document.getElementById('valCoil');
+    const valContact = document.getElementById('valContact');
+    const valLoad = document.getElementById('valLoad');
+
+    const cardPin = document.getElementById('cardPin');
+    const cardCoil = document.getElementById('cardCoil');
+    const cardContact = document.getElementById('cardContact');
+    const cardLoad = document.getElementById('cardLoad');
+
+    const coilUnit = document.getElementById('coilUnit');
+    const coilIcon = document.getElementById('coilIcon');
+    const coilDesc = document.getElementById('coilDesc');
+    const switchArm = document.getElementById('switchArm');
+    const contactDesc = document.getElementById('contactDesc');
+    const bulbIcon = document.getElementById('bulbIcon');
+    const bulbStatusText = document.getElementById('bulbStatusText');
+    const btnText = document.getElementById('btnText');
+    const btnIcon = document.getElementById('btnIcon');
+    const diodeStatusText = document.getElementById('diodeStatusText');
+    const simConsole = document.getElementById('simConsole');
+
+    function logConsole(msg) {
+        const time = new Date().toLocaleTimeString();
+        simConsole.innerHTML += `[${time}] ${msg}<br>`;
+        simConsole.scrollTop = simConsole.scrollHeight;
+    }
+
+    function updateSimulationUI() {
+        if (isPinHigh) {
+            // Pin 2 HIGH
+            valPin.innerText = "HIGH (5.0 V)";
+            valPin.style.color = "#38bdf8";
+            cardPin.classList.add('active');
+
+            valCoil.innerText = "激磁導通 (~40 mA)";
+            valCoil.style.color = "#f59e0b";
+            cardCoil.classList.add('active');
+            coilUnit.classList.add('energized');
+            coilDesc.innerText = "電磁鐵吸合銜鐵";
+
+            valContact.innerText = "COM 連接 NO (常開導通)";
+            valContact.style.color = "#10b981";
+            switchArm.innerText = "COM ───==─── NO";
+            switchArm.style.color = "#10b981";
+            contactDesc.innerText = "接點閉合，負載回路導通";
+
+            valLoad.innerText = "導通 (4.77 mA)";
+            valLoad.style.color = "#facc15";
+            cardLoad.classList.add('active');
+            bulbIcon.classList.add('lit');
+            bulbStatusText.innerText = "💡 燈泡點亮 (ON)";
+            bulbStatusText.style.color = "#facc15";
+
+            btnText.innerText = "手動切換 Pin 2 (現為 HIGH)";
+            btnIcon.innerText = "💡";
+        } else {
+            // Pin 2 LOW
+            valPin.innerText = "LOW (0.0 V)";
+            valPin.style.color = "#94a3b8";
+            cardPin.classList.remove('active');
+
+            valCoil.innerText = "消磁釋放 (0 mA)";
+            valCoil.style.color = "#94a3b8";
+            cardCoil.classList.remove('active');
+            coilUnit.classList.remove('energized');
+            coilDesc.innerText = "無磁場產生";
+
+            valContact.innerText = "COM 連接 NC (常閉)";
+            valContact.style.color = "#94a3b8";
+            switchArm.innerText = "COM ──/ ── NO";
+            switchArm.style.color = "#cbd5e1";
+            contactDesc.innerText = "彈簧復歸，負載回路斷開";
+
+            valLoad.innerText = "斷路 (0.00 mA)";
+            valLoad.style.color = "#cbd5e1";
+            cardLoad.classList.remove('active');
+            bulbIcon.classList.remove('lit');
+            bulbStatusText.innerText = "🌑 燈泡熄滅 (OFF)";
+            bulbStatusText.style.color = "#94a3b8";
+
+            btnText.innerText = "手動切換 Pin 2 (現為 LOW)";
+            btnIcon.innerText = "⚡";
+        }
+    }
+
+    function toggleRelayManual() {
+        if (isAutoBlink) {
+            clearInterval(autoIntervalId);
+            isAutoBlink = false;
+            logConsole("自動閃爍已手動停止。");
+        }
+        applyPinState(!isPinHigh);
+    }
+
+    function applyPinState(newState) {
+        const oldState = isPinHigh;
+        isPinHigh = newState;
+
+        if (!oldState && isPinHigh) {
+            logConsole("🟢 Pin 2 輸出 HIGH ➔ 線圈通電產生磁吸力 ➔ 接點吸合 ➔ 💡 燈泡點亮 (4.77 mA)");
+        } else if (oldState && !isPinHigh) {
+            if (isDiodeProtected) {
+                logConsole("🔴 Pin 2 輸出 LOW ➔ 線圈斷電 ➔ 🛡️ 續流二極體成功吸收反電動勢 ➔ 燈泡熄滅");
+            } else {
+                logConsole("💥 ⚠️ 警告！無續流二極體！線圈產生高達 80V 反向感應脈衝逆灌 Pin 2！ATmega328P 顯示警告驚嘆號 `!`！");
+            }
+        }
+        updateSimulationUI();
+    }
+
+    function toggleAutoBlink() {
+        if (isAutoBlink) {
+            clearInterval(autoIntervalId);
+            isAutoBlink = false;
+            logConsole("⏹️ 停止 1 秒循環閃爍。");
+        } else {
+            isAutoBlink = true;
+            logConsole("▶️ 啟動 1 秒循環閃爍 (模擬 setup & loop 執行)...");
+            applyPinState(true);
+            autoIntervalId = setInterval(() => {
+                applyPinState(!isPinHigh);
+            }, 1000);
+        }
+    }
+
+    function toggleDiodeProtection() {
+        isDiodeProtected = !isDiodeProtected;
+        diodeStatusText.innerText = isDiodeProtected ? "已啟用 (安全)" : "已移除 (危險!)";
+        diodeStatusText.style.color = isDiodeProtected ? "#10b981" : "#ef4444";
+        logConsole(isDiodeProtected ? "🛡️ 續流二極體已裝上 (反電動勢將被鉗位在 +5.7V)。" : "⚠️ 續流二極體已拔除！關斷時將產生致命高壓反衝脈衝！");
+    }
+
+    // 複製程式碼工具函數
+    function copyCode(btn) {
+        const pre = btn.nextElementSibling;
+        const code = pre.querySelector('code').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+            const originalText = btn.innerText;
+            btn.innerText = "✅ 已複製！";
+            btn.style.background = "#10b981";
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.background = "#334155";
+            }, 2000);
+        }).catch(err => {
+            alert("複製失敗，請手動選取複製");
+        });
+    }
+
+    // 初始狀態更新
+    updateSimulationUI();
+</script>
+
+</body>
+</html>
