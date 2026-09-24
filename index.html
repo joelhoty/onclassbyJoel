@@ -302,7 +302,7 @@
             <p class="subtitle">彙整 AI、電子電路、樂高機器人、數學統計、廟宇人文、平面設計與電腦視覺相關筆記 (檔案依日期由新至舊排列)</p>
             
             <div class="metadata-box">
-                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-24 14:05:18 (UTC+8)</div>
+                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-24 14:13:32 (UTC+8)</div>
                 <div class="metadata-item"><strong>使用模型:</strong> Gemini 3.8 Flash</div>
                 <div class="metadata-item"><strong>執行 Agent:</strong> Antigravity</div>
                 <div class="metadata-item"><strong>GitHub Repo:</strong> <a href="https://github.com/joelhoty/onclassbyJoel" style="color:#38bdf8;" target="_blank">joelhoty/onclassbyJoel</a></div>
@@ -1060,6 +1060,13 @@ go</pre>
                 <p><strong>Prompt 原文:</strong></p>
                 <pre>正規工程設計絕不以 MCU 引腳直推線圈，而是使用 NPN 電晶體（如 2N2222、SS8050） 作為低側開關，並於線圈兩端反向並聯 續流二極體（Flyback Diode，如 1N4007、1N4148）：  加入這個的說明跟接線模擬圖</pre>
                 <p><strong>變更摘要:</strong> 深度擴充 `arduino_relay.md` 與 `arduino_relay.html`，詳解 NPN 低側開關原理、基極飽和電阻計算 ($1\text{k}\Omega$)、開機防誤動下拉電阻 ($10\text{k}\Omega$)、續流二極體反電動勢消弧與鉗位物理過程 (1N4007 vs 1N4148 對比)，繪製高精度 SVG 向量實體電路接線模擬拓撲圖與各接腳 Pinout 對照表，並升級互動模擬器中的反電動勢瞬態脈衝偵測功能。</p>
+            </div>
+            <div class="prompt-archive" style="margin-top: 15px;">
+                <h4>🔹 [2026-09-24 14:13:32] [Antigravity / Gemini 3.8 Flash] NPN 低側開關與續流二極體保護之功能與工作原理解析</h4>
+                <p><strong>模型/Agent:</strong> Gemini 3.8 Flash / Antigravity</p>
+                <p><strong>Prompt 原文:</strong></p>
+                <pre>補充說明 NPN 電晶體低側開關與續流二極體保護 的功能與工作原理</pre>
+                <p><strong>變更摘要:</strong> 深入剖析 NPN 低側開關三大功能（電流緩衝放大、共地參考驅動、零功耗開關）與雙接面載子傳輸機制（截止 vs 深度飽和 Hard Saturation），詳解電感線圈楞次定律極性翻轉、反電動勢消弧與一階 RL 指數放電方程式，並擴充二極體選型指南（1N4148、1N4007、1N5819 肖特基）。</p>
             </div>
         </div>
     </footer>

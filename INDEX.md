@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-24 14:05:18 (UTC+8)  
+> **最後更新時間**: 2026-09-24 14:13:32 (UTC+8)  
 > **使用模型**: Gemini 3.8 Flash  
 > **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -267,6 +267,15 @@
   正規工程設計絕不以 MCU 引腳直推線圈，而是使用 NPN 電晶體（如 2N2222、SS8050） 作為低側開關，並於線圈兩端反向並聯 續流二極體（Flyback Diode，如 1N4007、1N4148）：  加入這個的說明跟接線模擬圖
   ```
 - **變更摘要**: 深度擴充 `arduino_relay.md` 與 `arduino_relay.html` 的工程驅動模組，詳解低側開關工作機制、NPN 深度飽和條件與基極限流/下拉電阻推導、續流二極體消弧物理過程與 1N4007/1N4148 選型對比；增補 ASCII/SVG 實體接線模擬拓撲圖與腳位清單對照表，並同步升級互動模擬器之反電動勢高壓瞬態偵測。
+
+### 🔹 [2026-09-24 14:13:32] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  補充說明 NPN 電晶體低側開關與續流二極體保護 的功能與工作原理
+  ```
+- **變更摘要**: 深入剖析 NPN 低側開關三大功能（電流緩衝放大、共地參考驅動、零功耗開關）與雙接面載子傳輸機制（截止 vs 深度飽和 Hard Saturation），詳解電感線圈楞次定律極性翻轉、反電動勢消弧與一階 RL 指數放電方程式，並擴充二極體選型指南（1N4148、1N4007、1N5819 肖特基）。
+
 
 
 

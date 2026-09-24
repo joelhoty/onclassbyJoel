@@ -539,7 +539,7 @@
         </div>
 
         <div class="metadata-box">
-            <div>📅 <strong>最後更新時間:</strong> 2026-09-24 14:05:18 (UTC+8)</div>
+            <div>📅 <strong>最後更新時間:</strong> 2026-09-24 14:13:32 (UTC+8)</div>
             <div>🤖 <strong>使用模型:</strong> Gemini 3.8 Flash</div>
             <div>💼 <strong>執行 Agent:</strong> Antigravity</div>
             <div>📁 <strong>學門分類:</strong> 電子電路與硬體實驗 (<code>ec/</code>)</div>
@@ -589,42 +589,58 @@
             <li><strong>NO (Normally Open, 常開端)</strong>：線圈未通電時斷開；線圈通電激磁後，電磁鐵吸引銜鐵（Armature）將其與 COM 吸合導通。本實驗之燈泡即接在 COM 與 NO 之間。</li>
         </ul>
 
-        <h3>1.2 正規工程設計：NPN 電晶體低側開關與續流二極體保護</h3>
+        <h3>1.2 正規工程設計：NPN 電晶體低側開關與續流二極體保護之深度剖析</h3>
         <p>正規電子工程設計中，<strong>絕對嚴禁由微控制器 GPIO 直接驅動電感線圈</strong>。業界標準解法是採用 <strong>NPN 雙極性接面電晶體（BJT，如 2N2222、SS8050）</strong> 作為<strong>低側開關（Low-Side Switch）</strong>，並於線圈兩端反向並聯 <strong>續流二極體（Flyback / Freewheeling Diode，如 1N4007、1N4148）</strong>：</p>
 
-        <div class="alert alert-info">
-            <div class="alert-icon">💡</div>
-            <div>
-                <strong>A. 為什麼業界一致採用「低側開關 (Low-Side Switch)」架構？</strong><br>
-                負載（線圈）跨接在電源正極（$+5\text{V}$）與電晶體集極（C）之間；電晶體射極（E）直接接至系統參考地（$\text{GND}$）。<br>
-                <strong>控制優勢</strong>：因為射極電位 $V_E = 0\text{V}$，微控制器 Pin 2 只要輸出高電位（$+5\text{V}$ 或 $+3.3\text{V}$），基-射極電壓 $V_{BE} = 0.7\text{V} > 0$，即可極其輕鬆使電晶體飽和導通。若採高側開關（High-Side），開關置於 $+5\text{V}$ 端，控制端必須提供等於或高於 $+5\text{V}$ 才能截止，當面對 $3.3\text{V}$ 現代 MCU（如 ESP32、RP2040）時將無法正常關斷，大幅增加電路複雜度。
-            </div>
+        <!-- 深入一：NPN 電晶體低側開關功能與原理 -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.5rem; margin: 1.5rem 0;">
+            <h4 style="color: #1e40af; font-size: 1.15rem; margin-bottom: 0.75rem;">📌 深入剖析一：NPN 電晶體「低側開關」的功能與半導體工作原理</h4>
+            
+            <p><strong>1. 三大核心功能：</strong></p>
+            <ul>
+                <li><strong>電流緩衝與功率放大（Current Amplification）</strong>：微控制器單一 GPIO 建議安全電流僅約 $\le 5\text{mA}$，而繼電器線圈需要 $40\text{mA} \sim 100\text{mA}$。NPN 電晶體擔任「小電流閥門」，Arduino Pin 2 僅需輸出微弱的基極電流（$I_B \approx 4.3\text{mA}$），即可輕鬆打通高達 $40\text{mA}$ 的線圈回路。</li>
+                <li><strong>共地參考驅動便利性（Ground-Referenced Driving）</strong>：將開關元件配置於「負載與系統地（GND）之間」稱為<strong>低側開關（Low-Side Switch）</strong>。由於射極直接接 GND（$V_E = 0\text{V}$），無論線圈端電壓多高，微控制器的邏輯 HIGH 電位（$5\text{V}$ 或 $3.3\text{V}$）始終能直接相對於 GND 建立穩定的基-射極導通電壓（$V_{BE} \approx 0.7\text{V}$）。</li>
+                <li><strong>免除高側浮動驅動困境</strong>：若開關置於 $+5\text{V}$ 與線圈之間（高側開關），開關導通時射極電位會抬升至接近 $+5\text{V}$，控制端必須提供更高或浮動的控制信號才能關斷，面對 $3.3\text{V}$ 現代 MCU 時將無法正常關斷，電路複雜度大增。</li>
+            </ul>
+
+            <p style="margin-top:1rem;"><strong>2. 微觀半導體載子傳輸與兩大極限狀態：</strong></p>
+            <ul>
+                <li><strong>狀態 A：截止狀態（Cut-off，開關斷開，Pin 2 = LOW / 0V）</strong><br>
+                    基-射極電壓 $V_{BE} = 0\text{V} < 0.5\text{V}$，無法克服矽半導體內建電位障壁，基極電流 $I_B = 0$。集極至射極之間阻抗極大（吉歐級斷路），集極漏電流 $I_{CEO} \approx 0$。線圈兩端電位皆為 $+5\text{V}$，無電流通行，電磁鐵不激磁，接點復歸。</li>
+                <li><strong>狀態 B：深度飽和導通狀態（Hard Saturation，開關閉合，Pin 2 = HIGH / 5V）</strong><br>
+                    Pin 2 輸出 $+5\text{V}$ 經 $1\text{k}\Omega$ 電阻向基極注入充沛載子，$V_{BE} \approx 0.7\text{V}$ 導通。由於注入的 $I_B$ 遠超線性放大所需，集-基接面也轉為正偏，集-射極電位差被壓至物理極限——<strong>飽和壓降 $V_{CE(sat)} \approx 0.1\text{V} \sim 0.2\text{V}$</strong>，等效於閉合開關。線圈獲得全額 $4.8\text{V}$ 電壓激磁吸合。<br>
+                    <em>此時電晶體功耗 $P_Q = V_{CE(sat)} \times I_C \approx 0.2\text{V} \times 40\text{mA} = 8\text{mW}$，電晶體本體完全不發熱！</em></li>
+            </ul>
+
+            <p style="margin-top:1rem;"><strong>3. 精確參數計算與下拉電阻角色：</strong></p>
+            <ul>
+                <li><strong>基極限流電阻 $R_B$（強制增益 $\beta_{\text{forced}} = 10$）</strong>：
+                    $$I_B \ge \frac{I_C}{\beta_{\text{forced}}} = \frac{40\text{mA}}{10} = 4\text{mA} \implies R_B = \frac{5.0\text{V} - 0.7\text{V}}{4\text{mA}} \approx 1075\Omega \implies \text{標準選用 } 1\text{k}\Omega$$
+                </li>
+                <li><strong>防浮接下拉電阻 $R_{PD} (10\text{k}\Omega)$</strong>：單晶片在開機重置瞬間，引腳處於高阻抗懸空態（High-Z）。空間中的電磁干擾極易感應至高阻基極引發繼電器誤跳動。並聯 $10\text{k}\Omega$ 電阻於基極至 GND，可將開機初始電位死死鎖定在 $0\text{V}$。</li>
+            </ul>
         </div>
 
-        <h3>B. 深度飽和導通區（Hard Saturation）與精確電阻計算</h3>
-        <p>為避免電晶體落入主動放大區而大量發燙損耗，必須讓電晶體處於<strong>深度飽和區</strong>（此時 $V_{CE(sat)} \approx 0.1\text{V} \sim 0.2\text{V}$，功耗趨近於零）：</p>
-        <ul>
-            <li><strong>線圈飽和負載電流</strong>：
-                $$I_C = \frac{V_{\text{CC}} - V_{CE(sat)}}{R_{\text{coil}}} = \frac{5.0\text{V} - 0.2\text{V}}{120\Omega} \approx 40\text{mA}$$
-            </li>
-            <li><strong>基極飽和驅動電流（工程強制增益 $\beta_{\text{forced}} = 10$）</strong>：
-                $$I_B \ge \frac{I_C}{\beta_{\text{forced}}} = \frac{40\text{mA}}{10} = 4\text{mA}$$
-            </li>
-            <li><strong>基極限流電阻 $R_B$ 計算</strong>：
-                $$R_B = \frac{V_{\text{MCU}} - V_{BE}}{I_B} = \frac{5.0\text{V} - 0.7\text{V}}{4\text{mA}} \approx 1075\Omega \implies \text{標準選用 } 1\text{k}\Omega$$
-                <em>（此時 Arduino Pin 2 僅需輸出 $4.3\text{mA}$，負載降低超過 90%，完全處於極安全工作範圍！）</em>
-            </li>
-            <li><strong>基極下拉電阻 $R_{PD} (10\text{k}\Omega)$ 的關鍵安全作用</strong>：
-                在 MCU 剛開機通電、重置或韌體尚未執行到 <code>pinMode</code> 前，引腳處於高阻抗懸空態（High-Z）。空間中的電磁干擾雜訊極易耦合進高阻抗基極導致繼電器意外抽動。加入 $10\text{k}\Omega$ 下拉電阻可將基極死死鎖定在 $0\text{V}$，確保開機絕無誤動作。
-            </li>
-        </ul>
+        <!-- 深入二：續流二極體保護功能與原理 -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.5rem; margin: 1.5rem 0;">
+            <h4 style="color: #1e40af; font-size: 1.15rem; margin-bottom: 0.75rem;">📌 深入剖析二：續流二極體（Flyback Diode）的功能與電磁消弧原理</h4>
+            
+            <p><strong>1. 兩大核心功能：</strong></p>
+            <ul>
+                <li><strong>反向自感高壓鉗位（Inductive Kickback Clamping）</strong>：將開關切斷瞬間線圈產生的破壞性反向感應尖峰電壓安全鉗位在 $+5.7\text{V}$，防止擊穿電晶體的 $V_{CEO}$ 與單晶片 GPIO。</li>
+                <li><strong>電磁能量消耗安全閉環（Energy Dissipation Loop）</strong>：為線圈磁場中儲存的電磁能量提供循環泄放路徑，消除電弧火花與高頻電磁干擾（EMI）。</li>
+            </ul>
 
-        <h3>C. 續流二極體（Flyback Diode）消弧與反電動勢鉗位物理機制</h3>
-        <ul>
-            <li><strong>電晶體導通時</strong>：二極體陰極（帶銀色色環端）接 $+5\text{V}$，陽極接集極（約 $0.2\text{V}$），處於逆向截止狀態，完全無損耗。</li>
-            <li><strong>電晶體截止瞬間</strong>：電流瞬間被切斷，線圈產生巨大自感電動勢 $v_L = L \frac{di}{dt}$。為抗拒電流歸零，線圈下端電位瞬間飆升至 $+60\text{V} \sim +200\text{V}$！</li>
-            <li><strong>安全鉗位回路</strong>：當線圈下端電壓高於 $+5.7\text{V}$ 時，續流二極體瞬間正向導通，形成「線圈 ➔ 二極體 ➔ 線圈」的閉環泄放路徑，將反峰電壓安全鉗位在 $+5.7\text{V}$，保護 2N2222 與 Arduino 晶片不受高壓衝擊。</li>
-        </ul>
+            <p style="margin-top:1rem;"><strong>2. 楞次定律極性翻轉與一階 RL 衰減歷程：</strong></p>
+            <ul>
+                <li><strong>電感電流不突變特性</strong>：線圈儲存磁場能量 $E = \frac{1}{2} L I_0^2$，其端電壓遵循法拉第感應定律 $v_L(t) = L \frac{di}{dt}$。</li>
+                <li><strong>穩態導通時</strong>：電流向下流，線圈端子為「**上正下負**」（下端集極電位 $0.2\text{V}$）。續流二極體陰極在 $+5\text{V}$、陽極在 $0.2\text{V}$，處於反向偏壓截止狀態。</li>
+                <li><strong>斷開瞬間極性驟變（致命高壓）</strong>：電晶體截止瞬間，電流急劇歸零（$\frac{di}{dt} \to -\infty$）。依據<strong>楞次定律（Lenz's Law）</strong>，線圈產生抗拒電流消失的自感電動勢，<strong>線圈極性瞬間反轉為「上負下正」</strong>！線圈下端電壓暴衝至 $V_C = V_{\text{CC}} + |v_L| \ge 65\text{V} \sim 250\text{V}$，若無二極體將瞬間摧毀電晶體與 MCU。</li>
+                <li><strong>二極體順向導通與指數衰減</strong>：有二極體時，線圈下端電壓剛升至 $+5.7\text{V}$（$V_{\text{CC}} + V_F$），二極體即刻順向導通，形成「線圈下端 ➔ 二極體 ➔ 線圈上端」的局部閉合放電回路。電流依一階 RL 指數平滑衰減：
+                    $$i(t) = I_0 \cdot e^{-\frac{R_{\text{total}}}{L} t} \quad \left(R_{\text{total}} = R_{\text{coil}} + R_{\text{diode}}\right)$$
+                    磁場能量在數毫秒內於線圈電阻與二極體管壓降上轉為微量熱能釋放，集極電壓全程被安全鉗位在 **$+5.7\text{V}$**。</li>
+            </ul>
+        </div>
 
         <div class="table-responsive">
             <table>
@@ -645,9 +661,9 @@
                     </tr>
                     <tr>
                         <td><strong>續流保護級</strong></td>
-                        <td>二極體 (1N4007 / 1N4148)</td>
+                        <td>二極體 (1N4007 / 1N4148 / 1N5819)</td>
                         <td>斷電瞬間提供電感電流循環迴路，將反向感應電壓鉗位在 $V_{\text{CC}} + 0.7\text{V}$，消除高壓電弧。</td>
-                        <td><strong>1N4148</strong>：反應時間極快 ($4\text{ns}$)，適合小訊號繼電器；<br><strong>1N4007</strong>：耐壓 $1000\text{V}/1\text{A}$，突波耐受力強，通用性廣。</td>
+                        <td><strong>1N4148</strong>：反應時間極快 ($4\text{ns}$)，適合小訊號繼電器；<br><strong>1N4007</strong>：耐壓 $1000\text{V}/1\text{A}$，突波耐受力強，通用性廣；<br><strong>1N5819</strong>：肖特基超低壓降 ($0.3\text{V}$)，鉗位在 $+5.3\text{V}$。</td>
                     </tr>
                     <tr>
                         <td><strong>光耦隔離級</strong></td>
@@ -1153,6 +1169,17 @@ if (motionVal == HIGH && lightVal < 400) {
                 <pre><code class="language-text">正規工程設計絕不以 MCU 引腳直推線圈，而是使用 NPN 電晶體（如 2N2222、SS8050） 作為低側開關，並於線圈兩端反向並聯 續流二極體（Flyback Diode，如 1N4007、1N4148）：  加入這個的說明跟接線模擬圖</code></pre>
             </div>
             <p><strong>變更摘要</strong>: 深度擴充正規工程驅動架構說明，詳解 NPN 電晶體低側開關原理、基極飽和電阻計算 ($1\text{k}\Omega$)、開機防誤動下拉電阻 ($10\text{k}\Omega$)、續流二極體反電動勢消弧與鉗位物理過程 (1N4007 vs 1N4148 對比)，繪製高精度 SVG 向量實體電路接線模擬拓撲圖與各接腳 Pinout 對照表，並升級互動模擬器中的反電動勢瞬態脈衝偵測功能。</p>
+        </div>
+
+        <div class="archive-card" style="margin-top:1.5rem;">
+            <h3 style="margin-top:0; font-size:1.1rem; color: #1e293b;">🔹 [2026-09-24 14:13:32] [Gemini 3.8 Flash / Antigravity] 變更紀錄</h3>
+            <p><strong>模型/Agent</strong>: Gemini 3.8 Flash / Antigravity</p>
+            <p><strong>Prompt 原文</strong>:</p>
+            <div class="code-container">
+                <button class="copy-btn" onclick="copyCode(this)">📋 複製 Prompt</button>
+                <pre><code class="language-text">補充說明 NPN 電晶體低側開關與續流二極體保護 的功能與工作原理</code></pre>
+            </div>
+            <p><strong>變更摘要</strong>: 深度補強 NPN 電晶體低側開關三大功能（電流放大緩衝、共地參考驅動、零功耗開關）與微觀雙接面載子傳輸機制（截止態 vs 深度飽和態及強制增益公式），詳解電感線圈楞次定律極性驟變、法拉第電磁感應反衝機制、一階 RL 指數衰減放電方程與二極體選型指南（1N4148 vs 1N4007 vs 1N5819 肖特基）。</p>
         </div>
     </div>
 
