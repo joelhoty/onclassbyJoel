@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💡 Arduino 紅外線人體感測器 (Pin 4) 與繼電器 (Pin 2) 延遲 5 秒照明控制系統</title>
+    
+    <!-- Prism 程式碼高亮 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <!-- Mermaid 流程圖 -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #eff6ff;
+            --secondary: #0f172a;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-amber: #f59e0b;
+            --accent-indigo: #6366f1;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1060px;
+            margin: 0 auto;
+        }
+
+        /* 頁首 Header */
+        header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.95rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.3;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .metadata-box {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 0.9rem 1.25rem;
+            font-size: 0.9rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.75rem;
+            border-left: 4px solid var(--accent-amber);
+        }
+
+        /* 內容卡片 */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 2.2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        h2 {
+            font-size: 1.55rem;
+            color: var(--secondary);
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            color: #334155;
+            margin: 1.5rem 0 0.75rem 0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        ul, ol {
+            margin-bottom: 1.25rem;
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* 警告與高亮框 */
+        .alert {
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin: 1.25rem 0;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .alert-warning {
+            background-color: #fffbeb;
+            border-left: 5px solid var(--accent-amber);
+            color: #92400e;
+        }
+
+        .alert-info {
+            background-color: #f0fdf4;
+            border-left: 5px solid var(--accent-green);
+            color: #166534;
+        }
+
+        .alert-icon {
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        /* 圖片容器 */
+        .image-container {
+            text-align: center;
+            margin: 1.5rem 0;
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .image-caption {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* 程式碼容器與複製按鈕 */
+        .code-container {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #334155;
+            color: #f8fafc;
+            border: 1px solid #475569;
+            padding: 0.35rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .copy-btn:hover {
+            background: #2563eb;
+            border-color: #2563eb;
+        }
+
+        pre[class*="language-"] {
+            border-radius: 8px;
+            margin: 0;
+        }
+
+        /* 表格樣式 */
+        .table-responsive {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        /* 互動動態模擬器 */
+        .sim-container {
+            background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            color: white;
+            margin: 1.5rem 0 2rem 0;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+            border: 1px solid #334155;
+        }
+
+        .sim-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .sim-header h3 {
+            color: #38bdf8;
+            margin: 0;
+            font-size: 1.35rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sim-controls {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .sim-btn {
+            padding: 0.65rem 1.25rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sim-btn-motion {
+            background: #ef4444;
+            color: white;
+        }
+        .sim-btn-motion:hover { background: #dc2626; transform: scale(1.02); }
+
+        .sim-btn-leave {
+            background: #475569;
+            color: white;
+        }
+        .sim-btn-leave:hover { background: #334155; }
+
+        .sim-btn-reset {
+            background: #0284c7;
+            color: white;
+        }
+        .sim-btn-reset:hover { background: #0369a1; }
+
+        /* 儀表板卡片 */
+        .sim-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dash-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .dash-card.active {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.12);
+        }
+
+        .dash-title {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .dash-value {
+            font-size: 1.35rem;
+            font-weight: 800;
+            font-family: monospace;
+        }
+
+        /* 倒數進度條 */
+        .progress-box {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #334155;
+        }
+
+        .progress-bar-bg {
+            background: #1e293b;
+            border-radius: 6px;
+            height: 14px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-bar-fill {
+            background: linear-gradient(90deg, #10b981 0%, #38bdf8 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .bulb-display {
+            text-align: center;
+            padding: 1.5rem;
+            background: #090d16;
+            border-radius: 10px;
+            border: 1px solid #1e293b;
+            margin-bottom: 1.5rem;
+        }
+
+        .bulb-icon {
+            font-size: 3.5rem;
+            filter: grayscale(100%);
+            opacity: 0.3;
+            transition: all 0.3s ease;
+        }
+
+        .bulb-icon.lit {
+            filter: grayscale(0%) drop-shadow(0 0 22px #facc15);
+            opacity: 1;
+            transform: scale(1.15);
+        }
+
+        .sim-console {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            color: #a7f3d0;
+            height: 130px;
+            overflow-y: auto;
+        }
+
+        /* 提示詞記錄卡片 */
+        .archive-card {
+            background: #f8fafc;
+            border-left: 4px solid var(--accent-indigo);
+            padding: 1.25rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        @media print {
+            body { background: white; color: black; padding: 0; }
+            .action-bar, .sim-controls, .copy-btn { display: none !important; }
+            .card { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+            header { background: #1e293b !important; color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- 頁首 Header -->
+    <header>
+        <div class="header-top">
+            <div>
+                <h1>💡 Arduino 紅外線人體感測器 (Pin 4) 與繼電器 (Pin 2) 延遲 5 秒照明控制系統</h1>
+                <p style="margin-top: 0.5rem; opacity: 0.9;">人來燈亮、持續刷新、離開精確延遲 5 秒熄滅與防閃爍回跳演算法</p>
+            </div>
+            <div class="action-bar">
+                <button class="btn btn-primary" onclick="window.print()">🖨️ 匯出成 PDF / 列印筆記</button>
+                <a class="btn btn-secondary" href="../index.html">🏠 返回首頁索引</a>
+            </div>
+        </div>
+
+        <div class="metadata-box">
+            <div>📅 <strong>最後更新時間:</strong> 2026-09-24 14:25:34 (UTC+8)</div>
+            <div>🤖 <strong>使用模型:</strong> Gemini 3.8 Flash</div>
+            <div>💼 <strong>執行 Agent:</strong> Antigravity</div>
+            <div>📁 <strong>學門分類:</strong> 電子電路與硬體實驗 (<code>ec/</code>)</div>
+        </div>
+    </header>
+
+    <!-- 系統導論與實驗電路 -->
+    <div class="card">
+        <h2>📖 系統導論與實驗電路</h2>
+        <p>在自動節能走廊燈、玄關感應燈與智慧建築照明設計中，「**人來燈亮、人走後延遲 5 秒自動熄滅**」是最標準且實用的數位控制場景。本專案依據使用者的實驗接線，使用 **Arduino Uno R3** 微控制器，將 **PIR 紅外線人體動態感測器** 連接至 **Pin 4** 作為輸入觸發端，將 **小型電磁繼電器（KS2E-M-DC5）** 連接至 **Pin 2** 作為負載開關輸出端，安全控制獨立電源回路中的負載燈泡。</p>
+
+        <div class="image-container">
+            <img src="./pir0924.jpg" alt="Arduino PIR Pin 4 與 繼電器 Pin 2 延遲 5 秒電路圖">
+            <div class="image-caption">▲ 使用者在 Tinkercad Circuits 搭建的 PIR (Pin 4) + 繼電器 (Pin 2) 控制電路截圖</div>
+        </div>
+
+        <h3>🔌 引腳接線對照清單 (Wiring Pinout)</h3>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>模組 / 元件</th>
+                        <th>端子引腳 (Pin)</th>
+                        <th>連接 Arduino 端點</th>
+                        <th>電氣角色與功能</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="3"><strong>PIR 人體紅外線感測器</strong></td>
+                        <td>VCC (紅線)</td>
+                        <td>Arduino 5V</td>
+                        <td>模組主電源供電</td>
+                    </tr>
+                    <tr>
+                        <td>GND (黑線)</td>
+                        <td>Arduino GND</td>
+                        <td>共地參考基準</td>
+                    </tr>
+                    <tr>
+                        <td>OUT / Signal (藍線)</td>
+                        <td><strong>Digital Pin 4</strong></td>
+                        <td>數位輸入：有人時輸出 HIGH，無人時輸出 LOW</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2"><strong>繼電器線圈控制側</strong></td>
+                        <td>Coil (+) (綠線)</td>
+                        <td><strong>Digital Pin 2</strong></td>
+                        <td>數位輸出：HIGH 激磁吸合開燈，LOW 斷開熄滅</td>
+                    </tr>
+                    <tr>
+                        <td>Coil (-) (綠線)</td>
+                        <td>Arduino GND</td>
+                        <td>線圈接地回路</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2"><strong>受控負載燈泡側</strong></td>
+                        <td>COM (共同端)</td>
+                        <td>燈泡限流電阻後端</td>
+                        <td>負載回路樞紐開關</td>
+                    </tr>
+                    <tr>
+                        <td>NO (常開端)</td>
+                        <td>外接直流 5.00V 電源負極 (-)</td>
+                        <td>平時斷開，繼電器吸合時閉合通電點亮燈泡</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 線上互動模擬器 -->
+    <div class="sim-container">
+        <div class="sim-header">
+            <h3>🎮 互動實驗室：PIR 人體感測與 5 秒延遲關燈動態模擬器</h3>
+            <span style="font-size: 0.9rem; color: #94a3b8;">即時模擬人體走動觸發、5 秒倒數與中途回跳</span>
+        </div>
+
+        <div class="sim-controls">
+            <button class="sim-btn sim-btn-motion" onclick="triggerMotion()">
+                🚨 模擬有人進入 / 持續活動 (Pin 4 = HIGH)
+            </button>
+            <button class="sim-btn sim-btn-leave" onclick="triggerLeave()">
+                🍃 模擬人已離開 (Pin 4 = LOW, 啟動 5 秒倒數)
+            </button>
+            <button class="sim-btn sim-btn-reset" onclick="resetSim()">
+                🔄 重置系統
+            </button>
+        </div>
+
+        <div class="sim-dashboard">
+            <div class="dash-card" id="cardPir">
+                <div class="dash-title">PIR 感測器 (Pin 4)</div>
+                <div class="dash-value" id="valPir" style="color: #94a3b8;">LOW (無人)</div>
+            </div>
+            <div class="dash-card" id="cardRelay">
+                <div class="dash-title">繼電器控制 (Pin 2)</div>
+                <div class="dash-value" id="valRelay" style="color: #94a3b8;">LOW (斷開)</div>
+            </div>
+            <div class="dash-card" id="cardTimer">
+                <div class="dash-title">5 秒關燈倒數計時</div>
+                <div class="dash-value" id="valTimer" style="color: #38bdf8;">靜止 (0.0 秒)</div>
+            </div>
+        </div>
+
+        <!-- 倒數進度條 -->
+        <div class="progress-box">
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #cbd5e1;">
+                <span>關燈緩衝倒數計時進度</span>
+                <span id="progressText">0%</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressBar"></div>
+            </div>
+        </div>
+
+        <!-- 燈泡狀態即時動態 -->
+        <div class="bulb-display">
+            <div class="bulb-icon" id="bulbIcon">💡</div>
+            <div style="margin-top: 0.5rem; font-weight: bold; font-size: 1.1rem; color: #94a3b8;" id="bulbStatusText">電燈已熄滅 (繼電器斷開)</div>
+        </div>
+
+        <div class="sim-console" id="simConsole">
+            > 系統啟動就緒。點擊上方按鈕測試人體進入與 5 秒延遲熄滅...<br>
+        </div>
+    </div>
+
+    <!-- 核心概念剖析 -->
+    <div class="card">
+        <h2>🔬 一、核心控制邏輯與時序機制 (Core Concepts)</h2>
+        <div class="alert alert-info">
+            <div class="alert-icon">⚡</div>
+            <div>
+                <strong>為什麼必須採用 <code>millis()</code> 非阻塞式架構？</strong><br>
+                若使用 <code>delay(5000)</code>，Arduino 在整整 5 秒內會被完全卡死無法執行任何運算。若人在第 2 秒折返，由於單晶片被卡住而無法讀取 Pin 4，電燈依然會在第 5 秒強制熄滅！<br>
+                改用 <strong><code>millis()</code> 時間戳記</strong> 比對，CPU 主迴圈以每秒數萬次高速運行，既能精準執行 5 秒倒數，又能隨時在微秒級捕捉到人員重新進入的訊號，實現「持續刷新」與「防閃爍回跳」。
+            </div>
+        </div>
+
+        <h3>四大核心行為準則</h3>
+        <ol>
+            <li><strong>即時開燈</strong>：只要偵測到人體移動（Pin 4 = HIGH），在數毫秒內將 Pin 2 輸出 HIGH 驅動繼電器開燈。</li>
+            <li><strong>持續活動刷新（Retriggering）</strong>：當人持續在範圍內活動時，系統持續刷新時間戳 <code>lastMotionTime = millis()</code>，維持常亮。</li>
+            <li><strong>離去延遲 5 秒（Off Delay）</strong>：當人離開（Pin 4 = LOW），系統啟動 5 秒倒數計時；5 秒內無人再度進入，斷開繼電器關燈。</li>
+            <li><strong>中途回跳防閃爍（Anti-Flicker）</strong>：在 5 秒倒數期間若人再次走動，立即重置倒數並保持燈亮，徹底避免頻繁啟閉。</li>
+        </ol>
+    </div>
+
+    <!-- 程式流程圖與程式碼 -->
+    <div class="card">
+        <h2>💻 二、程式流程圖與實作程式碼 (Code)</h2>
+
+        <h3>2.1 系統邏輯流程圖</h3>
+        <div class="mermaid">
+        flowchart TD
+            Start([系統開機啟動]) --> Init[初始化 Pin 4 為 INPUT<br>初始化 Pin 2 為 OUTPUT<br>繼電器預設關閉 LOW]
+            Init --> LoopStart{主迴圈 loop 執行}
+            
+            LoopStart --> ReadPIR[讀取 Pin 4 PIR 感測器數值]
+            ReadPIR --> CheckMotion{Pin 4 是否為 HIGH 有人?}
+            
+            CheckMotion -- 是 (偵測到移動) --> ResetTimer[刷新最後活動時間<br>lastMotionTime = millis]
+            ResetTimer --> CheckLightOn{目前電燈是否已開?}
+            CheckLightOn -- 尚未開啟 --> TurnOn[digitalWrite Pin 2, HIGH<br>繼電器吸合, 💡 電燈點亮]
+            CheckLightOn -- 已開啟 --> KeepOn[維持常亮狀態]
+            TurnOn --> LoopStart
+            KeepOn --> LoopStart
+            
+            CheckMotion -- 否 (感測器為 LOW 無人) --> CheckLightState{目前電燈是否開著?}
+            CheckLightState -- 電燈開著 (倒數中) --> CheckTimeout{millis - lastMotionTime >= 5000ms?}
+            CheckLightState -- 電燈本來就是關的 --> Idle[保持關閉靜止狀態]
+            
+            CheckTimeout -- 未滿 5 秒 --> CountingDown[維持開燈, 繼續倒數中...]
+            CheckTimeout -- 已滿 5 秒 --> TurnOff[digitalWrite Pin 2, LOW<br>繼電器斷開, 🌑 電燈熄滅]
+            
+            CountingDown --> LoopStart
+            TurnOff --> LoopStart
+            Idle --> LoopStart
+        </div>
+
+        <h3>2.2 工業級標準非阻塞程式碼 (推薦實務採用)</h3>
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode(this)">📋 複製程式碼</button>
+            <pre><code class="language-cpp">/**
+ * @file arduino_pir_relay_delay5s.ino
+ * @brief Arduino PIR 人體感測器 (Pin 4) 控制繼電器 (Pin 2) 延遲 5 秒關燈程式
+ * @note 採用非阻塞 millis() 狀態機架構，具備活動持續刷新與中途回跳防閃爍機制
+ */
+
+// 引腳定義 (嚴格對應使用者電路接線)
+const int PIR_PIN   = 4; // 紅外線感測器信號輸出 (OUT)
+const int RELAY_PIN = 2; // 繼電器控制輸入 (IN / Coil)
+
+// 時間常數定義
+const unsigned long OFF_DELAY_TIME = 5000; // 人離開後的關燈延遲時間 (5000毫秒 = 5秒)
+
+// 系統狀態變數
+unsigned long lastMotionTime = 0; // 記錄最後一次偵測到動態的時間戳 (毫秒)
+bool lightState = false;          // 記錄當前電燈狀態 (true: 開燈 / false: 關燈)
+int lastPirReading = LOW;         // 記錄前一次 PIR 讀數，用於事件邊緣觸發提示
+
+void setup() {
+    // 啟用序列埠監控 (鮑率 9600 bps)，便於除錯與即時觀測
+    Serial.begin(9600);
+    Serial.println(F("=================================================="));
+    Serial.println(F("💡 Arduino PIR (Pin 4) + 繼電器 (Pin 2) 延遲照明系統啟動"));
+    Serial.println(F("=================================================="));
+
+    // 設定引腳模式
+    pinMode(PIR_PIN, INPUT);
+    pinMode(RELAY_PIN, OUTPUT);
+
+    // 初始狀態：預設關閉繼電器，確保開機安全
+    digitalWrite(RELAY_PIN, LOW);
+    lightState = false;
+
+    Serial.println(F("[系統狀態] 感測器暖機就緒，電燈初始為關閉 (Pin 2 = LOW)"));
+}
+
+void loop() {
+    unsigned long currentMillis = millis(); // 取得目前系統開機毫秒數
+    int pirValue = digitalRead(PIR_PIN);   // 讀取 Pin 4 紅外線感測信號 (HIGH / LOW)
+
+    // --- 1. 感測器狀態變化事件監控輸出 ---
+    if (pirValue != lastPirReading) {
+        if (pirValue == HIGH) {
+            Serial.println(F("\n[事件觸發] 🚨 偵測到人體移動！(Pin 4 = HIGH)"));
+        } else {
+            Serial.println(F("\n[事件觸發] 🍃 人已離開感應範圍 (Pin 4 = LOW)，啟動 5 秒倒數關燈計時..."));
+        }
+        lastPirReading = pirValue;
+    }
+
+    // --- 2. 核心邏輯處理 ---
+    if (pirValue == HIGH) {
+        // 【情況 A：有人在感應範圍內】
+        lastMotionTime = currentMillis; // 持續刷新活動時間基準
+
+        if (!lightState) {
+            // 原本是關燈狀態 ──► 立即開燈
+            digitalWrite(RELAY_PIN, HIGH);
+            lightState = true;
+            Serial.println(F("[動作執行] ⚡ 繼電器吸合 (Pin 2 = HIGH) ──► 💡 電燈已點亮"));
+        }
+    } else {
+        // 【情況 B：無人 (Pin 4 = LOW)】
+        if (lightState) {
+            // 目前電燈仍開著，判斷是否超過 5 秒
+            unsigned long elapsedTime = currentMillis - lastMotionTime;
+
+            if (elapsedTime >= OFF_DELAY_TIME) {
+                // 已超過 5 秒 ──► 正式關閉電燈
+                digitalWrite(RELAY_PIN, LOW);
+                lightState = false;
+                Serial.println(F("[動作執行] ⏰ 延遲 5 秒已滿！繼電器釋放 (Pin 2 = LOW) ──► 🌑 電燈已熄滅"));
+            } else {
+                // 還在 5 秒倒數計時中，每秒印出一次剩餘秒數
+                static unsigned long lastLogTime = 0;
+                if (currentMillis - lastLogTime >= 1000) {
+                    lastLogTime = currentMillis;
+                    unsigned long remainingSeconds = (OFF_DELAY_TIME - elapsedTime + 999) / 1000;
+                    Serial.print(F("[倒數計時] 關燈倒數中... 剩餘: "));
+                    Serial.print(remainingSeconds);
+                    Serial.println(F(" 秒"));
+                }
+            }
+        }
+    }
+
+    delay(20); // 微幅延遲 20ms，防止 CPU 緊密空轉並具備軟體消抖作用
+}</code></pre>
+        </div>
+
+        <h3>2.3 簡易版程式碼 (適合初學體驗)</h3>
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode(this)">📋 複製程式碼</button>
+            <pre><code class="language-cpp">/**
+ * @file arduino_pir_relay_simple.ino
+ * @brief 簡易版 PIR 控制繼電器程式 (含 5 秒延遲)
+ */
+
+void setup() {
+    pinMode(4, INPUT);  // Pin 4 連接 PIR 感測器
+    pinMode(2, OUTPUT); // Pin 2 連接 繼電器
+    digitalWrite(2, LOW);
+}
+
+void loop() {
+    if (digitalRead(4) == HIGH) {
+        digitalWrite(2, HIGH); // 偵測到人體，開燈
+    } else {
+        delay(5000);          // 無人時等待 5 秒
+        digitalWrite(2, LOW);  // 5 秒後關燈
+    }
+}</code></pre>
+        </div>
+    </div>
+
+    <!-- 工程防護重要提醒 -->
+    <div class="card">
+        <h2>⚠️ 三、工程防護重要提醒 (實體接線必讀)</h2>
+        <div class="alert alert-warning">
+            <div class="alert-icon">⚡</div>
+            <div>
+                <strong>實體電路製作注意事項：</strong>
+                <ol style="margin-top:0.5rem; margin-bottom:0;">
+                    <li><strong>電晶體開關驅動</strong>：微控制器 GPIO 輸出電流有限（建議 $\le 20\text{mA}$），直接推動線圈易燒毀 MCU 引腳。實體接線時請務必在 Pin 2 與線圈之間加入 <strong>NPN 電晶體（如 2N2222，基極串聯 1kΩ 電阻）</strong>。</li>
+                    <li><strong>並聯續流二極體（1N4007）</strong>：繼電器線圈斷開時會產生極高反電動勢，必須在線圈兩端反向並聯 <strong>1N4007 續流二極體</strong> 消除感應尖波。</li>
+                    <li><strong>商用繼電器模組</strong>：市售 Arduino 5V 繼電器模組板載已內建光耦與電晶體保護，可直接連接 Pin 2 安全驅動。</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- 提示詞歷史與變更記錄 -->
+    <div class="card">
+        <h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+        <div class="archive-card">
+            <h3 style="margin-top:0; font-size:1.1rem; color: #1e293b;">🔹 [2026-09-24 14:25:34] [Gemini 3.8 Flash / Antigravity] 變更紀錄</h3>
+            <p><strong>模型/Agent</strong>: Gemini 3.8 Flash / Antigravity</p>
+            <p><strong>Prompt 原文</strong>:</p>
+            <div class="code-container">
+                <button class="copy-btn" onclick="copyCode(this)">📋 複製 Prompt</button>
+                <pre><code class="language-text">C:\Users\User\Desktop\pir0924.jpg 寫一個arudino的程式， 人體紅外線感應器 pin 4, 繼電器 pin2, 人體紅外線感應器偵測到移動，繼電器開啟電燈，離開後延遲5秒</code></pre>
+            </div>
+            <p><strong>變更摘要</strong>: 依據使用者提供的電路接線截圖（PIR 接 Pin 4，繼電器接 Pin 2），建立專題筆記 `arduino_pir_relay_delay.md` 與 `arduino_pir_relay_delay.html`，設計工業級非阻塞式 `millis()` 控制程式，具備 5 秒精確離去倒數、持續刷新與防閃爍回跳機制，繪製 Mermaid 邏輯流程圖、接線對照清單與線上互動模擬器。</p>
+        </div>
+    </div>
+
+</div>
+
+<!-- 模擬器腳本 -->
+<script>
+    let isHumanPresent = false;
+    let lightOn = false;
+    let lastMotionTimestamp = 0;
+    let virtualMillis = 0;
+    const DELAY_MS = 5000;
+
+    const valPir = document.getElementById('valPir');
+    const valRelay = document.getElementById('valRelay');
+    const valTimer = document.getElementById('valTimer');
+    const cardPir = document.getElementById('cardPir');
+    const cardRelay = document.getElementById('cardRelay');
+    const bulbIcon = document.getElementById('bulbIcon');
+    const bulbStatusText = document.getElementById('bulbStatusText');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const simConsole = document.getElementById('simConsole');
+
+    function logConsole(msg) {
+        const time = new Date().toLocaleTimeString();
+        simConsole.innerHTML += `[${time}] ${msg}<br>`;
+        simConsole.scrollTop = simConsole.scrollHeight;
+    }
+
+    function triggerMotion() {
+        isHumanPresent = true;
+        logConsole("🚨 【感應事件】人體進入感測範圍 (Pin 4 = HIGH)！刷新計時...");
+        if (!lightOn) {
+            lightOn = true;
+            logConsole("⚡ 【繼電器閉合】Pin 2 輸出 HIGH ──► 💡 燈泡點亮！");
+        }
+        updateUI(0);
+    }
+
+    function triggerLeave() {
+        if (isHumanPresent) {
+            isHumanPresent = false;
+            logConsole("🍃 【感應事件】人已離開 (Pin 4 = LOW)，啟動 5 秒倒數關燈計時...");
+        }
+    }
+
+    function resetSim() {
+        isHumanPresent = false;
+        lightOn = false;
+        lastMotionTimestamp = 0;
+        virtualMillis = 0;
+        simConsole.innerHTML = '> 系統已重置。<br>';
+        updateUI(0);
+    }
+
+    function updateUI(remaining) {
+        // PIR 顯示
+        if (isHumanPresent) {
+            valPir.innerText = 'HIGH (有人)';
+            valPir.style.color = '#ef4444';
+            cardPir.classList.add('active');
+        } else {
+            valPir.innerText = 'LOW (無人)';
+            valPir.style.color = '#94a3b8';
+            cardPir.classList.remove('active');
+        }
+
+        // 繼電器與燈泡
+        if (lightOn) {
+            valRelay.innerText = 'HIGH (吸合導通)';
+            valRelay.style.color = '#10b981';
+            cardRelay.classList.add('active');
+            bulbIcon.classList.add('lit');
+            bulbStatusText.innerText = '💡 電燈已點亮 (繼電器導通)';
+            bulbStatusText.style.color = '#facc15';
+        } else {
+            valRelay.innerText = 'LOW (斷開關閉)';
+            valRelay.style.color = '#94a3b8';
+            cardRelay.classList.remove('active');
+            bulbIcon.classList.remove('lit');
+            bulbStatusText.innerText = '🌑 電燈已熄滅 (繼電器斷開)';
+            bulbStatusText.style.color = '#94a3b8';
+        }
+
+        // 倒數與進度條
+        if (lightOn && !isHumanPresent) {
+            const sec = (remaining / 1000).toFixed(1);
+            valTimer.innerText = sec + ' 秒';
+            valTimer.style.color = '#f59e0b';
+            const pct = Math.max(0, Math.min(100, ((DELAY_MS - remaining) / DELAY_MS) * 100));
+            progressBar.style.width = pct + '%';
+            progressText.innerText = '倒數中 ' + Math.round(pct) + '%';
+        } else if (lightOn && isHumanPresent) {
+            valTimer.innerText = '持續常亮中';
+            valTimer.style.color = '#10b981';
+            progressBar.style.width = '0%';
+            progressText.innerText = '持續刷新';
+        } else {
+            valTimer.innerText = '靜止 (0.0 秒)';
+            valTimer.style.color = '#94a3b8';
+            progressBar.style.width = '0%';
+            progressText.innerText = '0%';
+        }
+    }
+
+    // 模擬器輪詢主迴圈 (每 50ms 一次)
+    setInterval(() => {
+        virtualMillis += 50;
+
+        if (isHumanPresent) {
+            lastMotionTimestamp = virtualMillis;
+            updateUI(0);
+        } else {
+            if (lightOn) {
+                const elapsed = virtualMillis - lastMotionTimestamp;
+                const remaining = Math.max(0, DELAY_MS - elapsed);
+
+                if (elapsed >= DELAY_MS) {
+                    lightOn = false;
+                    logConsole("⏰ 【時間到】延遲 5 秒已滿！Pin 2 輸出 LOW ──► 🌑 電燈熄滅。");
+                    updateUI(0);
+                } else {
+                    updateUI(remaining);
+                }
+            } else {
+                updateUI(0);
+            }
+        }
+    }, 50);
+
+    // 複製程式碼
+    function copyCode(btn) {
+        const pre = btn.nextElementSibling;
+        const code = pre.querySelector('code').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+            const originalText = btn.innerText;
+            btn.innerText = "✅ 已複製！";
+            btn.style.background = "#10b981";
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.background = "#334155";
+            }, 2000);
+        }).catch(err => {
+            alert("複製失敗，請手動選取複製");
+        });
+    }
+
+    updateUI(0);
+</script>
+
+</body>
+</html>

@@ -302,7 +302,7 @@
             <p class="subtitle">彙整 AI、電子電路、樂高機器人、數學統計、廟宇人文、平面設計與電腦視覺相關筆記 (檔案依日期由新至舊排列)</p>
             
             <div class="metadata-box">
-                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-24 14:13:32 (UTC+8)</div>
+                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-24 14:25:34 (UTC+8)</div>
                 <div class="metadata-item"><strong>使用模型:</strong> Gemini 3.8 Flash</div>
                 <div class="metadata-item"><strong>執行 Agent:</strong> Antigravity</div>
                 <div class="metadata-item"><strong>GitHub Repo:</strong> <a href="https://github.com/joelhoty/onclassbyJoel" style="color:#38bdf8;" target="_blank">joelhoty/onclassbyJoel</a></div>
@@ -580,9 +580,30 @@
             <div class="card" data-category="ec">
                 <div class="card-header">
                     <h2 class="card-title">⚡ 電子電路與硬體實驗</h2>
-                    <span class="badge-count">25 檔案</span>
+                    <span class="badge-count">28 檔案</span>
                 </div>
                 <ul class="file-list">
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/arduino_pir_relay_delay.html">Arduino PIR (Pin 4) 繼電器 (Pin 2) 延遲 5 秒照明 (HTML)</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-24</span>
+                            <span class="tag tag-html">HTML</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/arduino_pir_relay_delay.md">Arduino PIR (Pin 4) 繼電器 (Pin 2) 延遲 5 秒照明 (MD)</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-24</span>
+                            <span class="tag tag-md">MD</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/pir0924.jpg">Arduino PIR 與繼電器實驗相片</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-24</span>
+                            <span class="tag tag-img">JPG</span>
+                        </div>
+                    </li>
                     <li class="file-item">
                         <a class="file-link" href="./ec/arduino_relay.html">Arduino 數位控制繼電器電路與進階應用解析 (HTML)</a>
                         <div class="file-meta">
@@ -1067,6 +1088,13 @@ go</pre>
                 <p><strong>Prompt 原文:</strong></p>
                 <pre>補充說明 NPN 電晶體低側開關與續流二極體保護 的功能與工作原理</pre>
                 <p><strong>變更摘要:</strong> 深入剖析 NPN 低側開關三大功能（電流緩衝放大、共地參考驅動、零功耗開關）與雙接面載子傳輸機制（截止 vs 深度飽和 Hard Saturation），詳解電感線圈楞次定律極性翻轉、反電動勢消弧與一階 RL 指數放電方程式，並擴充二極體選型指南（1N4148、1N4007、1N5819 肖特基）。</p>
+            </div>
+            <div class="prompt-archive" style="margin-top: 15px;">
+                <h4>🔹 [2026-09-24 14:25:34] [Antigravity / Gemini 3.8 Flash] Arduino PIR (Pin 4) 繼電器 (Pin 2) 延遲 5 秒照明控制</h4>
+                <p><strong>模型/Agent:</strong> Gemini 3.8 Flash / Antigravity</p>
+                <p><strong>Prompt 原文:</strong></p>
+                <pre>C:\Users\User\Desktop\pir0924.jpg 寫一個arudino的程式， 人體紅外線感應器 pin 4, 繼電器 pin2, 人體紅外線感應器偵測到移動，繼電器開啟電燈，離開後延遲5秒</pre>
+                <p><strong>變更摘要:</strong> 依據使用者最新電路接線圖（PIR 接 Pin 4，繼電器接 Pin 2），建立專題筆記 `arduino_pir_relay_delay.md` 與 `arduino_pir_relay_delay.html`，設計具備持續活動刷新、離去 5 秒精確延遲與防閃爍回跳機制的非阻塞式 `millis()` 程式碼，繪製系統邏輯流程圖、接線對照清單與線上互動模擬器，同步更新全站索引至 28 份電子電路檔案。</p>
             </div>
         </div>
     </footer>
