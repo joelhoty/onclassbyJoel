@@ -1,6 +1,6 @@
 # 💡 Arduino 紅外線人體感測器 (Pin 4) 與繼電器 (Pin 2) 延遲 5 秒照明控制系統
 
-> **最後更新時間**: 2026-09-24 14:25:34 (UTC+8)  
+> **最後更新時間**: 2026-09-24 14:36:35 (UTC+8)  
 > **使用模型**: Gemini 3.8 Flash  
 > **執行 Agent**: Antigravity  
 
@@ -64,35 +64,39 @@
 
 ## 💻 二、程式邏輯流程圖與實作程式碼 (Code)
 
-### 2.1 系統邏輯流程圖 (Mermaid Flowchart)
+### 2.1 系統邏輯流程圖 (Mermaid Flowchart，無交叉走線架構)
 
-在撰寫程式前，以下流程圖展示了核心狀態判斷與計時切換機制：
+在撰寫程式前，以下流程圖採用**左右平行雙分支**與**底部單一匯流收斂設計**，由上至下依序執行，徹底消除線條交錯糾纏：
 
 ```mermaid
 flowchart TD
     Start([系統開機啟動]) --> Init[初始化 Pin 4 為 INPUT<br>初始化 Pin 2 為 OUTPUT<br>繼電器預設關閉 LOW]
     Init --> LoopStart{主迴圈 loop 執行}
-    
-    LoopStart --> ReadPIR[讀取 Pin 4 PIR 感測器數值]
-    ReadPIR --> CheckMotion{Pin 4 是否為 HIGH 有人?}
-    
+    LoopStart --> ReadPIR[讀取 Pin 4 感測信號]
+    ReadPIR --> CheckMotion{Pin 4 是否為 HIGH?}
+
+    %% 左側平行分支：有人活動 (HIGH)
     CheckMotion -- 是 (偵測到移動) --> ResetTimer[刷新最後活動時間<br>lastMotionTime = millis]
     ResetTimer --> CheckLightOn{目前電燈是否已開?}
-    CheckLightOn -- 尚未開啟 --> TurnOn[digitalWrite Pin 2, HIGH<br>繼電器吸合, 💡 電燈點亮]
-    CheckLightOn -- 已開啟 --> KeepOn[維持常亮狀態]
-    TurnOn --> LoopStart
-    KeepOn --> LoopStart
-    
-    CheckMotion -- 否 (感測器為 LOW 無人) --> CheckLightState{目前電燈是否開著?}
-    CheckLightState -- 電燈開著 (倒數中) --> CheckTimeout{millis - lastMotionTime >= 5000ms?}
-    CheckLightState -- 電燈本來就是關的 --> Idle[保持關閉靜止狀態]
-    
-    CheckTimeout -- 未滿 5 秒 --> CountingDown[維持開燈, 繼續倒數中...]
-    CheckTimeout -- 已滿 5 秒 --> TurnOff[digitalWrite Pin 2, LOW<br>繼電器斷開, 🌑 電燈熄滅]
-    
-    CountingDown --> LoopStart
-    TurnOff --> LoopStart
-    Idle --> LoopStart
+    CheckLightOn -- 尚未開啟 (原為關) --> TurnOn[Pin 2 = HIGH<br>繼電器吸合, 💡 點亮電燈]
+    CheckLightOn -- 已經開啟 (維持開) --> KeepOn[維持常亮狀態]
+
+    %% 右側平行分支：無人離開 (LOW)
+    CheckMotion -- 否 (無人/離開) --> CheckLightState{目前電燈是否開著?}
+    CheckLightState -- 本來就是關的 --> Idle[保持關閉靜態]
+    CheckLightState -- 開燈中 (啟動倒數) --> CheckTimeout{離去是否超過 5 秒?<br>millis - lastMotionTime >= 5000}
+    CheckTimeout -- 未滿 5 秒 --> CountingDown[倒數計時緩衝中<br>保持開燈]
+    CheckTimeout -- 已滿 5 秒 --> TurnOff[Pin 2 = LOW<br>繼電器斷開, 🌑 熄滅電燈]
+
+    %% 底部統一收斂匯合 (平行向下，絕無交叉走線)
+    TurnOn --> EndCycle[循環收斂節點<br>delay 20ms 消抖微休]
+    KeepOn --> EndCycle
+    Idle --> EndCycle
+    CountingDown --> EndCycle
+    TurnOff --> EndCycle
+
+    %% 單一外環回繞主迴圈
+    EndCycle --> LoopStart
 ```
 
 ---
@@ -238,3 +242,12 @@ void loop() {
   C:\Users\User\Desktop\pir0924.jpg 寫一個arudino的程式， 人體紅外線感應器 pin 4, 繼電器 pin2, 人體紅外線感應器偵測到移動，繼電器開啟電燈，離開後延遲5秒
   ```
 - **變更摘要**: 依據使用者提供的電路接線截圖（PIR 接 Pin 4，繼電器接 Pin 2），建立專題筆記 `arduino_pir_relay_delay.md` 與 `arduino_pir_relay_delay.html`，設計工業級非阻塞式 `millis()` 控制程式，具備 5 秒精確離去倒數、持續刷新與防閃爍回跳機制，繪製 Mermaid 邏輯流程圖與實體接線對照清單。
+
+### 🔹 [2026-09-24 14:36:35] [Gemini 3.8 Flash / Antigravity] 變更紀錄
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  流程圖的走線盡量不要交叉
+  ```
+- **變更摘要**: 重構 Mermaid 流程圖結構，採用平行左右雙分支（左側偵測移動開燈/維持、右側離開計時/關閉）向下推進，並匯流至底部單一循環收斂節點（delay 20ms）後以單一外環回繞主迴圈，徹底消除流程圖中的線條交錯糾纏，實現平面化無交叉走線。
+

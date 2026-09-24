@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-24 14:25:34 (UTC+8)  
+> **最後更新時間**: 2026-09-24 14:36:35 (UTC+8)  
 > **使用模型**: Gemini 3.8 Flash  
 > **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -286,6 +286,15 @@
   C:\Users\User\Desktop\pir0924.jpg 寫一個arudino的程式， 人體紅外線感應器 pin 4, 繼電器 pin2, 人體紅外線感應器偵測到移動，繼電器開啟電燈，離開後延遲5秒
   ```
 - **變更摘要**: 依據使用者最新電路接線圖（PIR 接 Pin 4，繼電器接 Pin 2），建立專題筆記 `arduino_pir_relay_delay.md` 與 `arduino_pir_relay_delay.html`，設計具備持續活動刷新、離去 5 秒精確延遲與防閃爍回跳機制的非阻塞式 `millis()` 程式碼，繪製系統邏輯流程圖與實體接線對照表，並同步更新全站檔案索引與首頁導覽。
+
+### 🔹 [2026-09-24 14:36:35] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  流程圖的走線盡量不要交叉
+  ```
+- **變更摘要**: 重構 PIR 繼電器延遲照明筆記（`ec/arduino_pir_relay_delay.md` 與 `ec/arduino_pir_relay_delay.html`）中的 Mermaid 流程圖，採用平行左右雙分支與單一底部收斂節點（delay 20ms），使各分支由上而下無交叉匯入，徹底消除線條糾纏與交錯，大幅提升流程圖可讀性。
+
 
 
 

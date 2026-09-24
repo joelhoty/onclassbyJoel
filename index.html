@@ -302,7 +302,7 @@
             <p class="subtitle">彙整 AI、電子電路、樂高機器人、數學統計、廟宇人文、平面設計與電腦視覺相關筆記 (檔案依日期由新至舊排列)</p>
             
             <div class="metadata-box">
-                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-24 14:25:34 (UTC+8)</div>
+                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-24 14:36:35 (UTC+8)</div>
                 <div class="metadata-item"><strong>使用模型:</strong> Gemini 3.8 Flash</div>
                 <div class="metadata-item"><strong>執行 Agent:</strong> Antigravity</div>
                 <div class="metadata-item"><strong>GitHub Repo:</strong> <a href="https://github.com/joelhoty/onclassbyJoel" style="color:#38bdf8;" target="_blank">joelhoty/onclassbyJoel</a></div>
@@ -1095,6 +1095,13 @@ go</pre>
                 <p><strong>Prompt 原文:</strong></p>
                 <pre>C:\Users\User\Desktop\pir0924.jpg 寫一個arudino的程式， 人體紅外線感應器 pin 4, 繼電器 pin2, 人體紅外線感應器偵測到移動，繼電器開啟電燈，離開後延遲5秒</pre>
                 <p><strong>變更摘要:</strong> 依據使用者最新電路接線圖（PIR 接 Pin 4，繼電器接 Pin 2），建立專題筆記 `arduino_pir_relay_delay.md` 與 `arduino_pir_relay_delay.html`，設計具備持續活動刷新、離去 5 秒精確延遲與防閃爍回跳機制的非阻塞式 `millis()` 程式碼，繪製系統邏輯流程圖、接線對照清單與線上互動模擬器，同步更新全站索引至 28 份電子電路檔案。</p>
+            </div>
+            <div class="prompt-archive" style="margin-top: 15px;">
+                <h4>🔹 [2026-09-24 14:36:35] [Antigravity / Gemini 3.8 Flash] PIR 繼電器控制流程圖無交叉走線重構</h4>
+                <p><strong>模型/Agent:</strong> Gemini 3.8 Flash / Antigravity</p>
+                <p><strong>Prompt 原文:</strong></p>
+                <pre>流程圖的走線盡量不要交叉</pre>
+                <p><strong>變更摘要:</strong> 重構 PIR 繼電器延遲照明筆記（`ec/arduino_pir_relay_delay.md` 與 `ec/arduino_pir_relay_delay.html`）中的 Mermaid 流程圖架構，採用平行左右雙分支結構（左側有人開燈與刷新、右側無人計時與熄滅）並行向下推進，並統一匯流至底部單一循環收斂節點（delay 20ms），最後以單一外環回繞主迴圈，徹底消除流程圖中的線條交錯糾纏，實現平面化清晰走線。</p>
             </div>
         </div>
     </footer>
