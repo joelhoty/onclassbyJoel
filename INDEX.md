@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-24 22:52:00 (UTC+8)  
+> **最後更新時間**: 2026-09-24 23:03:00 (UTC+8)  
 > **使用模型**: Cursor Grok 4.6  
 > **執行 Agent**: Cursor Grok 4.6  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -31,6 +31,8 @@
 * `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
+* `2026-09-24` | [車用收音機事件廣播 14 頁 Marp 簡報 (Tech Theme) (HTML)](./ec/car_radio_traffic_broadcast_rds_ta_tunnel_slides.html) (HTML)
+* `2026-09-24` | [車用收音機事件廣播 14 頁 Marp 簡報 (Tech Theme) (MD)](./ec/car_radio_traffic_broadcast_rds_ta_tunnel.marp.md) (MD)
 * `2026-09-24` | [車用收音機路況／事件廣播：隧道插播、RDS-TA 與相關技術 (HTML)](./ec/car_radio_traffic_broadcast_rds_ta_tunnel.html) (HTML)
 * `2026-09-24` | [車用收音機路況／事件廣播：隧道插播、RDS-TA 與相關技術 (MD)](./ec/car_radio_traffic_broadcast_rds_ta_tunnel.md) (MD)
 * `2026-09-24` | [Arduino PIR (Pin 4) 繼電器 (Pin 2) 延遲 5 秒照明 (HTML)](./ec/arduino_pir_relay_delay.html) (HTML)
@@ -305,6 +307,30 @@
   go
   ```
 - **變更摘要**: 拉取遠端 27 筆提交後，將根目錄草稿 `20260924-car-radio-traffic-broadcast-rds-ta-tunnel.md` 歸檔為 `ec/car_radio_traffic_broadcast_rds_ta_tunnel.md` 與對應 HTML，補齊 Metadata／Prompt Archive／匯出 PDF 按鈕，並更新全站索引後提交推送。
+
+### 🔹 [2026-09-24 22:55:00] [Cursor Grok 4.6] 變更紀錄
+- **模型/Agent**: Cursor Grok 4.6
+- **Prompt 原文**:
+  ```text
+  利用marp cli將 @20260924-car-radio-traffic-broadcast-rds-ta-tunnel.md 轉換成html
+  ```
+- **變更摘要**: 以 Marp CLI 產出 14 頁簡報 `ec/car_radio_traffic_broadcast_rds_ta_tunnel.marp.md` 與 `_slides.html`。
+
+### 🔹 [2026-09-24 23:00:00] [Cursor Grok 4.6] 變更紀錄
+- **模型/Agent**: Cursor Grok 4.6
+- **Prompt 原文**:
+  ```text
+  可以改為 tech theme嗎？
+  ```
+- **變更摘要**: 簡報改掛 marp-slide 正式 tech 主題並重新編譯 HTML，同步更新全站電子電路索引。
+
+### 🔹 [2026-09-24 23:03:00] [Cursor Grok 4.6] 變更紀錄
+- **模型/Agent**: Cursor Grok 4.6
+- **Prompt 原文**:
+  ```text
+  git commit and push
+  ```
+- **變更摘要**: 提交車用收音機事件廣播 Marp 簡報（Tech Theme）、主題 CSS 與索引更新，並推播至 GitHub。
 
 
 

@@ -330,3 +330,19 @@ PIARC（世界道路協會）把這類功能稱為 **Voice Break-In（VBI）**�
   go
   ```
 - **變更摘要**: 依工作區規範將根目錄草稿歸檔至 `ec/`，補齊 Metadata Header 與 Prompt Archive，同步產出 HTML（含匯出 PDF 按鈕），並更新全站 INDEX 後提交推送。
+
+### 🔹 [2026-09-24 22:55:00] [Cursor Grok 4.6] 變更紀錄
+- **模型/Agent**: Cursor Grok 4.6
+- **Prompt 原文**:
+  ```text
+  利用marp cli將 @20260924-car-radio-traffic-broadcast-rds-ta-tunnel.md 轉換成html
+  ```
+- **變更摘要**: 以 Marp CLI 將筆記轉成 14 頁 Tech 風格簡報（`ec/car_radio_traffic_broadcast_rds_ta_tunnel.marp.md` 與 `_slides.html`）。
+
+### 🔹 [2026-09-24 23:00:00] [Cursor Grok 4.6] 變更紀錄
+- **模型/Agent**: Cursor Grok 4.6
+- **Prompt 原文**:
+  ```text
+  可以改為 tech theme嗎？
+  ```
+- **變更摘要**: 簡報改掛 marp-slide 正式 tech 主題（`theme: tech` + `ec/marp-theme-tech.css`），並以 Marp CLI 重新編譯 HTML。
