@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-24 13:58:22 (UTC+8)  
+> **最後更新時間**: 2026-09-24 14:05:18 (UTC+8)  
 > **使用模型**: Gemini 3.8 Flash  
 > **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -259,6 +259,15 @@
   C:\Users\User\Desktop\20260924-1.jpg 這是我的第一個數位控制繼電器電路，幫我整理成筆記 arduino_relay，並延伸這個基本電路的應用想法
   ```
 - **變更摘要**: 整理使用者的第一個數位控制繼電器模擬電路 (`arduino_relay.html` 與 `.md`)，診斷 Tinkercad 晶片驚嘆號原因（過電流與反電動勢），詳解 NPN 電晶體與光耦標準驅動架構，提供基礎阻塞與進階非阻塞程式碼，展開 5 大實用延伸應用與強電安全守則，並同步更新全站檔案索引與首頁導覽。
+
+### 🔹 [2026-09-24 14:05:18] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  正規工程設計絕不以 MCU 引腳直推線圈，而是使用 NPN 電晶體（如 2N2222、SS8050） 作為低側開關，並於線圈兩端反向並聯 續流二極體（Flyback Diode，如 1N4007、1N4148）：  加入這個的說明跟接線模擬圖
+  ```
+- **變更摘要**: 深度擴充 `arduino_relay.md` 與 `arduino_relay.html` 的工程驅動模組，詳解低側開關工作機制、NPN 深度飽和條件與基極限流/下拉電阻推導、續流二極體消弧物理過程與 1N4007/1N4148 選型對比；增補 ASCII/SVG 實體接線模擬拓撲圖與腳位清單對照表，並同步升級互動模擬器之反電動勢高壓瞬態偵測。
+
 
 
 

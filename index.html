@@ -302,7 +302,7 @@
             <p class="subtitle">彙整 AI、電子電路、樂高機器人、數學統計、廟宇人文、平面設計與電腦視覺相關筆記 (檔案依日期由新至舊排列)</p>
             
             <div class="metadata-box">
-                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-24 13:58:22 (UTC+8)</div>
+                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-24 14:05:18 (UTC+8)</div>
                 <div class="metadata-item"><strong>使用模型:</strong> Gemini 3.8 Flash</div>
                 <div class="metadata-item"><strong>執行 Agent:</strong> Antigravity</div>
                 <div class="metadata-item"><strong>GitHub Repo:</strong> <a href="https://github.com/joelhoty/onclassbyJoel" style="color:#38bdf8;" target="_blank">joelhoty/onclassbyJoel</a></div>
@@ -1053,6 +1053,13 @@ go</pre>
                 <p><strong>Prompt 原文:</strong></p>
                 <pre>C:\Users\User\Desktop\20260924-1.jpg 這是我的第一個數位控制繼電器電路，幫我整理成筆記 arduino_relay，並延伸這個基本電路的應用想法</pre>
                 <p><strong>變更摘要:</strong> 剖析使用者於 Tinkercad 設計的第一個 Arduino 繼電器控制電路，診斷微控制器出現警示驚嘆號（`!`）的根本原因（GPIO 輸出過電流與缺乏續流二極體產生反電動勢），詳解 NPN 電晶體驅動與光耦隔離標準電路，提供基礎阻塞與進階非阻塞完整程式碼，展開 5 大實用延伸應用與交流強電安全規範，同步更新全站索引至 25 份電子電路檔案。</p>
+            </div>
+            <div class="prompt-archive" style="margin-top: 15px;">
+                <h4>🔹 [2026-09-24 14:05:18] [Antigravity / Gemini 3.8 Flash] NPN 低側開關與續流二極體保護接線模擬強化</h4>
+                <p><strong>模型/Agent:</strong> Gemini 3.8 Flash / Antigravity</p>
+                <p><strong>Prompt 原文:</strong></p>
+                <pre>正規工程設計絕不以 MCU 引腳直推線圈，而是使用 NPN 電晶體（如 2N2222、SS8050） 作為低側開關，並於線圈兩端反向並聯 續流二極體（Flyback Diode，如 1N4007、1N4148）：  加入這個的說明跟接線模擬圖</pre>
+                <p><strong>變更摘要:</strong> 深度擴充 `arduino_relay.md` 與 `arduino_relay.html`，詳解 NPN 低側開關原理、基極飽和電阻計算 ($1\text{k}\Omega$)、開機防誤動下拉電阻 ($10\text{k}\Omega$)、續流二極體反電動勢消弧與鉗位物理過程 (1N4007 vs 1N4148 對比)，繪製高精度 SVG 向量實體電路接線模擬拓撲圖與各接腳 Pinout 對照表，並升級互動模擬器中的反電動勢瞬態脈衝偵測功能。</p>
             </div>
         </div>
     </footer>
