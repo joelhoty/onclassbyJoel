@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-26 23:10:00 (UTC+8)  
+> **最後更新時間**: 2026-09-26 23:53:02 (UTC+8)  
 > **使用模型**: Claude Opus 5.5 (claude-opus-5-5)  
 > **執行 Agent**: Claude Code  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -104,6 +104,51 @@
 * `2026-09-22` | [Multi-Agent 工作區規範](./AGENTS.md) (MD)
 * `2026-09-10` | [筆記生成與更新標準指引](./NOTE_GENERATION_GUIDE.md) (MD)
 * `2026-09-10` | [Antigravity Note Rules](./GEMINI.md) (MD)
+
+---
+
+## 🛠️ 修正檔案紀錄 (Correction Log)
+
+2026-09-26 全站概念與敘述正確性審查，共修正 36 個檔案；各檔修正內容詳見該檔最下方的「提示詞歷史與變更記錄」。
+
+| 檔案路徑 | 檔案名稱 | 修正日期 | 修正之模型代號 |
+| :--- | :--- | :--- | :--- |
+| [`ai_0910.html`](./ai_0910.html) | 根目錄 AI 課程總覽 | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`AI/ai_0910.html`](./AI/ai_0910.html) | AI 課程筆記 (09-10) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`AI/ai_1.html`](./AI/ai_1.html) | AI 基礎單元 1 | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`AI/ai_2.html`](./AI/ai_2.html) | AI 基礎單元 2 (HTML) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`AI/ai_class_0902.html`](./AI/ai_class_0902.html) | AI 課程筆記 (09-02) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`AI/ai_cnn.html`](./AI/ai_cnn.html) | CNN 卷積神經網路解析 | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`AI/learning_plan_attention_first.html`](./AI/learning_plan_attention_first.html) | Attention-First 學習計畫 | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`AI/soil_liquefaction_tech_slides.html`](./AI/soil_liquefaction_tech_slides.html) | 新莊土壤液化與地質心理學 10 頁 Marp 簡報 (Tech Style) (HTML) | 2026-09-26 23:01:14 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`AI/soil_liquefaction_tech_slides.marp.md`](./AI/soil_liquefaction_tech_slides.marp.md) | 新莊土壤液化與地質心理學 10 頁 Marp 簡報 (Tech Style) (MD) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`dance/cd.html`](./dance/cd.html) | 舞蹈美學與動作分析筆記 | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`design/coreldraw_keychain_design.html`](./design/coreldraw_keychain_design.html) | CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計 | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`design/coreldraw_keychain_design.md`](./design/coreldraw_keychain_design.md) | CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計 (MD) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ec/arduino_pir_relay_delay.html`](./ec/arduino_pir_relay_delay.html) | Arduino PIR (Pin 4) 繼電器 (Pin 2) 延遲 5 秒照明 (HTML) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ec/arduino_pir_relay_delay.md`](./ec/arduino_pir_relay_delay.md) | Arduino PIR (Pin 4) 繼電器 (Pin 2) 延遲 5 秒照明 (MD) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ec/arduino_pir_relay_light_control.html`](./ec/arduino_pir_relay_light_control.html) | Arduino 紅外線感應繼電器電燈控制 (HTML) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ec/arduino_pir_relay_light_control.md`](./ec/arduino_pir_relay_light_control.md) | Arduino 紅外線感應繼電器電燈控制 (MD) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ec/arduino_relay.html`](./ec/arduino_relay.html) | Arduino 數位控制繼電器電路與進階應用解析 (HTML) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ec/arduino_relay.md`](./ec/arduino_relay.md) | Arduino 數位控制繼電器電路與進階應用解析 (MD) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ec/car_radio_traffic_broadcast_rds_ta_tunnel.marp.md`](./ec/car_radio_traffic_broadcast_rds_ta_tunnel.marp.md) | 車用收音機事件廣播 14 頁 Marp 簡報 (Tech Theme) (MD) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ec/car_radio_traffic_broadcast_rds_ta_tunnel_slides.html`](./ec/car_radio_traffic_broadcast_rds_ta_tunnel_slides.html) | 車用收音機事件廣播 14 頁 Marp 簡報 (Tech Theme) (HTML) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ec/ec_1.html`](./ec/ec_1.html) | 基礎電路實驗 1 | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ec/electric_bell_coil_simulation.html`](./ec/electric_bell_coil_simulation.html) | 電磁線圈電鈴動態模擬與音效合成系統 (HTML) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ec/electric_bell_coil_simulation.md`](./ec/electric_bell_coil_simulation.md) | 電磁線圈電鈴原理解析與數值模型 (MD) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ec/led.html`](./ec/led.html) | LED 限流電阻原理與實驗 | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ec/ohm.html`](./ec/ohm.html) | 歐姆定律計算與工具 | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ec/reed_relay_2ch_simulation.html`](./ec/reed_relay_2ch_simulation.html) | 2路磁簧繼電器動態模擬 (HTML) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ec/reed_relay_2ch_simulation.md`](./ec/reed_relay_2ch_simulation.md) | 2路磁簧繼電器原理剖析 (MD) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ec/relay_control_circuits.html`](./ec/relay_control_circuits.html) | 繼電器控制電路與原理解析 (HTML) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ec/relay_control_circuits.md`](./ec/relay_control_circuits.md) | 繼電器控制電路與原理解析 (MD) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ec/relay_spdt_circuit_analysis.md`](./ec/relay_spdt_circuit_analysis.md) | 電磁繼電器 SPDT 控制電路 (MD) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ev3/distance_audio_feedback_research.md`](./ev3/distance_audio_feedback_research.md) | 距離音訊回饋研究提案 | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ev3/lego_0907.html`](./ev3/lego_0907.html) | 樂高專題紀錄 (09-07) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ev3/lego_1.html`](./ev3/lego_1.html) | 樂高基礎控制單元 1 | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`ev3/nested_switch_distance_logic.md`](./ev3/nested_switch_distance_logic.md) | 雙感測器邏輯解析 (MD) | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`temple/temple_map.html`](./temple/temple_map.html) | 嘉義市歷史廟宇 GIS 地圖 | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
+| [`yolo/README.md`](./yolo/README.md) | YOLO 手勢偵測說明文檔 | 2026-09-26 23:01:05 | Claude Opus 5.5 (claude-opus-5-5) / Claude Code |
 
 ---
 
@@ -342,3 +387,11 @@
   go
   ```
 - **變更摘要**: 全站概念與敘述正確性審查：修正 23 份筆記（36 個 md/html 檔）的技術錯誤（繼電器接線圖短路錯誤、P 控制器正負號、廟宇年代分級門檻、電鈴吸力公式、光耦隔離與反電動勢觀念、AI 模型架構敘述、舞蹈劇名等），各檔最下方追加變更紀錄；索引同步更新修改日期與排序後提交推送。
+
+### 🔹 [2026-09-26 23:53:02] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 新增修正檔案紀錄表
+- **模型/Agent**: Claude Opus 5.5 (claude-opus-5-5) / Claude Code
+- **Prompt 原文**:
+  ```text
+  在index.html下方加入修正檔案紀錄（檔案路徑/名稱/日期/修正之模型代號)
+  ```
+- **變更摘要**: 於索引下方新增「修正檔案紀錄」表格，列出 2026-09-26 內容審查所修正的 36 個檔案之路徑、名稱、修正日期與修正之模型代號（index.html 與 INDEX.md 同步）。

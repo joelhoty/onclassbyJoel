@@ -292,6 +292,16 @@
                 break-inside: avoid;
             }
         }
+        .fix-log { max-width: 1200px; margin: 0 auto 2rem; padding: 0 16px; }
+        .fix-log h2 { font-size: 1.3rem; margin-bottom: 0.4rem; }
+        .fix-log-note { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.8rem; }
+        .fix-log-scroll { overflow-x: auto; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: var(--shadow); }
+        .fix-log table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        .fix-log th, .fix-log td { padding: 8px 12px; border-bottom: 1px solid var(--border-color); text-align: left; vertical-align: top; }
+        .fix-log th { background: var(--bg-color); white-space: nowrap; }
+        .fix-log td:nth-child(3), .fix-log td:nth-child(4) { white-space: nowrap; }
+        .fix-log td a { color: var(--primary-color); text-decoration: none; }
+        .fix-log code { font-size: 0.82rem; }
     </style>
 </head>
 <body>
@@ -302,7 +312,7 @@
             <p class="subtitle">彙整 AI、電子電路、樂高機器人、數學統計、廟宇人文、平面設計與電腦視覺相關筆記 (檔案依日期由新至舊排列)</p>
             
             <div class="metadata-box">
-                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-26 23:10:00 (UTC+8)</div>
+                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-26 23:53:02 (UTC+8)</div>
                 <div class="metadata-item"><strong>使用模型:</strong> Claude Opus 5.5 (claude-opus-5-5)</div>
                 <div class="metadata-item"><strong>執行 Agent:</strong> Claude Code</div>
                 <div class="metadata-item"><strong>GitHub Repo:</strong> <a href="https://github.com/joelhoty/onclassbyJoel" style="color:#38bdf8;" target="_blank">joelhoty/onclassbyJoel</a></div>
@@ -954,6 +964,236 @@
         </div>
     </main>
 
+    <section class="fix-log" id="fix-log">
+        <h2>🛠️ 修正檔案紀錄 (Correction Log)</h2>
+        <p class="fix-log-note">2026-09-26 全站概念與敘述正確性審查，共修正 36 個檔案；各檔修正內容詳見該檔最下方的「提示詞歷史與變更記錄」。</p>
+        <div class="fix-log-scroll">
+            <table>
+                <thead>
+                    <tr><th>檔案路徑</th><th>檔案名稱</th><th>修正日期</th><th>修正之模型代號</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><a href="./ai_0910.html"><code>ai_0910.html</code></a></td>
+                        <td>根目錄 AI 課程總覽</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./AI/ai_0910.html"><code>AI/ai_0910.html</code></a></td>
+                        <td>AI 課程筆記 (09-10)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./AI/ai_1.html"><code>AI/ai_1.html</code></a></td>
+                        <td>AI 基礎單元 1</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./AI/ai_2.html"><code>AI/ai_2.html</code></a></td>
+                        <td>AI 基礎單元 2 (HTML)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./AI/ai_class_0902.html"><code>AI/ai_class_0902.html</code></a></td>
+                        <td>AI 課程筆記 (09-02)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./AI/ai_cnn.html"><code>AI/ai_cnn.html</code></a></td>
+                        <td>CNN 卷積神經網路解析</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./AI/learning_plan_attention_first.html"><code>AI/learning_plan_attention_first.html</code></a></td>
+                        <td>Attention-First 學習計畫</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./AI/soil_liquefaction_tech_slides.html"><code>AI/soil_liquefaction_tech_slides.html</code></a></td>
+                        <td>新莊土壤液化與地質心理學 10 頁 Marp 簡報 (Tech Style) (HTML)</td>
+                        <td>2026-09-26 23:01:14</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./AI/soil_liquefaction_tech_slides.marp.md"><code>AI/soil_liquefaction_tech_slides.marp.md</code></a></td>
+                        <td>新莊土壤液化與地質心理學 10 頁 Marp 簡報 (Tech Style) (MD)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./dance/cd.html"><code>dance/cd.html</code></a></td>
+                        <td>舞蹈美學與動作分析筆記</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./design/coreldraw_keychain_design.html"><code>design/coreldraw_keychain_design.html</code></a></td>
+                        <td>CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./design/coreldraw_keychain_design.md"><code>design/coreldraw_keychain_design.md</code></a></td>
+                        <td>CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計 (MD)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ec/arduino_pir_relay_delay.html"><code>ec/arduino_pir_relay_delay.html</code></a></td>
+                        <td>Arduino PIR (Pin 4) 繼電器 (Pin 2) 延遲 5 秒照明 (HTML)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ec/arduino_pir_relay_delay.md"><code>ec/arduino_pir_relay_delay.md</code></a></td>
+                        <td>Arduino PIR (Pin 4) 繼電器 (Pin 2) 延遲 5 秒照明 (MD)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ec/arduino_pir_relay_light_control.html"><code>ec/arduino_pir_relay_light_control.html</code></a></td>
+                        <td>Arduino 紅外線感應繼電器電燈控制 (HTML)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ec/arduino_pir_relay_light_control.md"><code>ec/arduino_pir_relay_light_control.md</code></a></td>
+                        <td>Arduino 紅外線感應繼電器電燈控制 (MD)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ec/arduino_relay.html"><code>ec/arduino_relay.html</code></a></td>
+                        <td>Arduino 數位控制繼電器電路與進階應用解析 (HTML)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ec/arduino_relay.md"><code>ec/arduino_relay.md</code></a></td>
+                        <td>Arduino 數位控制繼電器電路與進階應用解析 (MD)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ec/car_radio_traffic_broadcast_rds_ta_tunnel.marp.md"><code>ec/car_radio_traffic_broadcast_rds_ta_tunnel.marp.md</code></a></td>
+                        <td>車用收音機事件廣播 14 頁 Marp 簡報 (Tech Theme) (MD)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ec/car_radio_traffic_broadcast_rds_ta_tunnel_slides.html"><code>ec/car_radio_traffic_broadcast_rds_ta_tunnel_slides.html</code></a></td>
+                        <td>車用收音機事件廣播 14 頁 Marp 簡報 (Tech Theme) (HTML)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ec/ec_1.html"><code>ec/ec_1.html</code></a></td>
+                        <td>基礎電路實驗 1</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ec/electric_bell_coil_simulation.html"><code>ec/electric_bell_coil_simulation.html</code></a></td>
+                        <td>電磁線圈電鈴動態模擬與音效合成系統 (HTML)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ec/electric_bell_coil_simulation.md"><code>ec/electric_bell_coil_simulation.md</code></a></td>
+                        <td>電磁線圈電鈴原理解析與數值模型 (MD)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ec/led.html"><code>ec/led.html</code></a></td>
+                        <td>LED 限流電阻原理與實驗</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ec/ohm.html"><code>ec/ohm.html</code></a></td>
+                        <td>歐姆定律計算與工具</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ec/reed_relay_2ch_simulation.html"><code>ec/reed_relay_2ch_simulation.html</code></a></td>
+                        <td>2路磁簧繼電器動態模擬 (HTML)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ec/reed_relay_2ch_simulation.md"><code>ec/reed_relay_2ch_simulation.md</code></a></td>
+                        <td>2路磁簧繼電器原理剖析 (MD)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ec/relay_control_circuits.html"><code>ec/relay_control_circuits.html</code></a></td>
+                        <td>繼電器控制電路與原理解析 (HTML)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ec/relay_control_circuits.md"><code>ec/relay_control_circuits.md</code></a></td>
+                        <td>繼電器控制電路與原理解析 (MD)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ec/relay_spdt_circuit_analysis.md"><code>ec/relay_spdt_circuit_analysis.md</code></a></td>
+                        <td>電磁繼電器 SPDT 控制電路 (MD)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ev3/distance_audio_feedback_research.md"><code>ev3/distance_audio_feedback_research.md</code></a></td>
+                        <td>距離音訊回饋研究提案</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ev3/lego_0907.html"><code>ev3/lego_0907.html</code></a></td>
+                        <td>樂高專題紀錄 (09-07)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ev3/lego_1.html"><code>ev3/lego_1.html</code></a></td>
+                        <td>樂高基礎控制單元 1</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./ev3/nested_switch_distance_logic.md"><code>ev3/nested_switch_distance_logic.md</code></a></td>
+                        <td>雙感測器邏輯解析 (MD)</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./temple/temple_map.html"><code>temple/temple_map.html</code></a></td>
+                        <td>嘉義市歷史廟宇 GIS 地圖</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><a href="./yolo/README.md"><code>yolo/README.md</code></a></td>
+                        <td>YOLO 手勢偵測說明文檔</td>
+                        <td>2026-09-26 23:01:05</td>
+                        <td>Claude Opus 5.5 (claude-opus-5-5) / Claude Code</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
     <footer>
         <div class="footer-content">
             <h3>📝 提示詞歷史與變更記錄 (Prompt Archive)</h3>
@@ -1169,6 +1409,13 @@ go</pre>
 確認概念與解釋說明都是正確的
 go</pre>
                 <p><strong>變更摘要:</strong> 全站概念與敘述正確性審查：修正 23 份筆記（36 個 md/html 檔）的技術錯誤（繼電器接線圖短路錯誤、P 控制器正負號、廟宇年代分級門檻、電鈴吸力公式、光耦隔離與反電動勢觀念、AI 模型架構敘述、舞蹈劇名等），各檔最下方追加變更紀錄；索引同步更新修改日期與排序後提交推送。</p>
+            </div>
+            <div class="prompt-archive" style="margin-top: 15px;">
+                <h4>🔹 [2026-09-26 23:53:02] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 新增修正檔案紀錄表</h4>
+                <p><strong>模型/Agent:</strong> Claude Opus 5.5 (claude-opus-5-5) / Claude Code</p>
+                <p><strong>Prompt 原文:</strong></p>
+                <pre>在index.html下方加入修正檔案紀錄（檔案路徑/名稱/日期/修正之模型代號)</pre>
+                <p><strong>變更摘要:</strong> 於索引下方新增「修正檔案紀錄」表格，列出 2026-09-26 內容審查所修正的 36 個檔案之路徑、名稱、修正日期與修正之模型代號（index.html 與 INDEX.md 同步）。</p>
             </div>
         </div>
     </footer>
