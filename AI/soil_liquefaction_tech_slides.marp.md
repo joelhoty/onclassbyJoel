@@ -383,7 +383,7 @@ Community residents in a town hall wearing augmented reality glasses, looking at
 
 - **打破鴕鳥心態**：辨識出樂觀偏誤與資訊迴避，用理性科學取代僥倖安慰
 - **今晚動手兩件事**：
-  1. 上網至內政部「地質敏感區查詢系統」輸入自家地址
+  1. 上網至經濟部地質調查及礦業管理中心「土壤液化潛勢查詢系統」輸入自家地址
   2. 動手檢查高重衣櫃與書架，安裝 L 型金屬防倒扣件
 - **參與水文文史走讀**：探索鄰里水文歷史地名（如港底、埤角），重塑環境記憶
 
@@ -397,4 +397,19 @@ Community residents in a town hall wearing augmented reality glasses, looking at
 
 🎨 影像生成 Prompt：
 A high school student in a cozy bedroom actively securing a tall bookshelf to the wall using safety brackets, with an open laptop nearby displaying a map query system, warm evening lighting, practical realistic action --ar 16:9
+-->
+
+<!--
+## 📝 提示詞歷史與變更記錄 (Prompt Archive)
+
+### 🔹 [2026-09-26 23:01:05] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 變更紀錄
+- **模型/Agent**: Claude Opus 5.5 (claude-opus-5-5) / Claude Code
+- **Prompt 原文**:
+  ```text
+  檢視所有檔案內容中的敘述與說明，確認概念與敘述的正確性
+  修正後，將修改內容，附加在每個檔案的最下方區塊並標誌時間戳記與模型代號
+  確認概念與解釋說明都是正確的
+  ```
+- **變更摘要**: 全面檢視概念與敘述正確性並修正：
+  - 土壤液化查詢主管機關：經濟部地質調查及礦業管理中心「土壤液化潛勢查詢系統」（原寫內政部地質敏感區查詢系統）
 -->

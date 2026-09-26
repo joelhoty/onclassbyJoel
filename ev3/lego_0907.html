@@ -425,7 +425,7 @@
                 </div>
                 <div class="card">
                     <h4>2. Play Once (播放一次即往下執行)</h4>
-                    <p><strong>行為：</strong>聲音開始播放的瞬間，程式會<b>檔即向下執行</b>下一個積木，聲音會在背景繼續發聲。</p>
+                    <p><strong>行為：</strong>聲音開始播放的瞬間，程式會<b>立即向下執行</b>下一個積木，聲音會在背景繼續發聲。</p>
                     <p><strong>適用場景：</strong>機器人一邊向前移動、一邊發出警報聲或開機音效。</p>
                 </div>
             </div>
@@ -433,7 +433,7 @@
             <div class="card" style="margin-top: 1rem;">
                 <h4>3. Repeat (重複循環播放)</h4>
                 <p><strong>行為：</strong>聲音會不斷循環播放，程式不會被阻塞，會持續向下執行其他積木，直到遇到 <code>Stop</code> 聲音積木或程式結束。</p>
-                <p><strong>適用場景：</strong>連續警示燈/警報聲、背景背景音樂。</p>
+                <p><strong>適用場景：</strong>連續警示燈/警報聲、背景音樂。</p>
             </div>
 
             <div class="highlight-box tip">
@@ -453,7 +453,7 @@
                 <code>[Sound Block: Play Note -> C5, 0.5s] (Wait for Completion)</code>
             </div>
 
-            <h3>範例 2：倒車警報器 (Frequency Sweep Siren)</h3>
+            <h3>範例 2：倒車警報器 (間歇嗶聲 Intermittent Beep)</h3>
             <p><strong>邏輯說明：</strong>模擬車輛倒車時，利用迴圈頻率變化的逼逼聲。</p>
             <div class="highlight-box">
                 <code>Loop (重複 5 次) ➔ [Sound Block: Play Tone -> 1000Hz, 0.2s] (Wait for Completion) ➔ [Wait Block -> 0.2s]</code>
@@ -468,9 +468,9 @@
             <h3>範例 4：經典搖滾樂曲 — Europe《The Final Countdown》前奏合成器旋律</h3>
             <p><strong>樂理與節奏設計：</strong>《The Final Countdown》前奏以極具爆發力的 Synth 旋律著稱。在 EV3 的 <code>Play Note</code> 積木中，我們可以將音符長度與節拍做如下換算（單位：秒）：</p>
             <ul>
-                <li><strong>短拍 (八分音符 1/8 Beat)：</strong>設定為 <code>0.15 秒</code></li>
-                <li><strong>中拍 (四分音符 1/4 Beat)：</strong>設定為 <code>0.30 秒</code></li>
-                <li><strong>長拍 (半音符 1/2 Beat)：</strong>設定為 <code>0.60 秒</code></li>
+                <li><strong>短拍 (八分音符，半拍)：</strong>設定為 <code>0.15 秒</code></li>
+                <li><strong>中拍 (四分音符，一拍)：</strong>設定為 <code>0.30 秒</code></li>
+                <li><strong>長拍 (二分音符，兩拍)：</strong>設定為 <code>0.60 秒</code></li>
                 <li><strong>所有積木 Play Type：</strong>均設定為 <code>Wait for Completion (0)</code> 確保拍子準確不重疊。</li>
             </ul>
 
@@ -509,7 +509,7 @@
                         <td>積木 4</td>
                         <td><code>E4</code> (Mi)</td>
                         <td>0.60s</td>
-                        <td>半音符 (拉長)</td>
+                        <td>二分音符 (拉長)</td>
                     </tr>
                     <tr>
                         <td rowspan="5"><strong>第二句 (高音轉折)</strong></td>
@@ -565,7 +565,7 @@
                         <td>積木 13</td>
                         <td><code>E4</code> (Mi)</td>
                         <td>0.60s</td>
-                        <td>半音符 (拉長)</td>
+                        <td>二分音符 (拉長)</td>
                     </tr>
                     <tr>
                         <td rowspan="5"><strong>第四句 (經典下行收尾)</strong></td>
@@ -1218,7 +1218,7 @@ while True:
                     <p>在複雜程式中（如循線或避障），當感測器讀值異常或程式走到未預期的分支時，輸出特定音頻（如高音 BEEP 表示讀到黑色，低音 BEEP 表示讀到白色）。這比每次都停下來看 LCD 螢幕更有效率。</p>
                 </div>
                 <div class="card">
-                    <h4>🔊 2. 距離反饋蜂鸣器 (Distance Audio Feedback)</h4>
+                    <h4>🔊 2. 距離反饋蜂鳴器 (Distance Audio Feedback)</h4>
                     <p>結合超音波感測器 (Ultrasonic Sensor)，將測得的距離數值經由數學公式轉換為聲音頻率 (Frequency) 或發聲間隔（距離越近，音調越高、嗶嗶聲越急促），模擬汽車倒車雷達。（詳細完整實作請參閱第 6 章專題）</p>
                 </div>
                 <div class="card">
@@ -1252,7 +1252,7 @@ while True:
 
             <div class="card" style="margin-top: 1rem;">
                 <h4>3. 官方音訊格式標準：.RSF / Uncompressed WAV</h4>
-                <p>EV3 官方僅原生支援 <code>.rsf</code> (Robot Sound File) 專用格式與低採樣率 WAV 檔（規格限制：<strong>8-bit / 16-bit, 單聲道 Mono, 採樣率 8kHz~16kHz</strong>）。</p>
+                <p>EV3 官方僅原生支援 <code>.rsf</code> (Robot Sound File) 專用格式與低採樣率 WAV 檔（規格限制：<strong>8-bit、單聲道 Mono、取樣率 8 kHz</strong>）。</p>
             </div>
 
             <h3>🛠️ 解決方案：如何在 EV3 上實現播放 MP3 / 音樂？</h3>
@@ -1261,12 +1261,12 @@ while True:
             <div class="highlight-box">
                 <h5>實作步驟：</h5>
                 <ol>
-                    <li><strong>轉檔：</strong>使用 Audacity、Format Factory 等工具，將 MP3 轉為 <code>WAV 格式 (16-bit, 16000 Hz 採樣率, 單聲道 Mono)</code>。</li>
+                    <li><strong>轉檔：</strong>使用 Audacity、Format Factory 等工具，將 MP3 轉為 <code>WAV 格式 (單聲道 Mono；匯入 Sound Editor 後會轉為 8 kHz / 8-bit 的 .rsf)</code>。</li>
                     <li><strong>裁切：</strong>因容量限制，建議將音樂截取為 5~15 秒精簡片段。</li>
                     <li><strong>匯入：</strong>打開 EV3 Software 標籤選單 ➔ 選擇 <strong>Sound Editor (聲音編輯器)</strong> ➔ 匯入 WAV 檔並轉換儲存為 <code>.rsf</code> 格式匯入專案。</li>
                     <li><strong>播放：</strong>使用 Sound Block 的 <code>Play File</code> 模式調用該音檔。</li>
                 </ol>
-                <p>⚠️ <strong>限制：</strong>音質會因採樣率降至 16kHz 而變低（類似電話語音音質），且無法播放數分鐘的完整長曲。</p>
+                <p>⚠️ <strong>限制：</strong>音質會因降為 8 kHz / 8-bit 而變低（類似電話語音音質），且無法播放數分鐘的完整長曲。</p>
             </div>
 
             <h4>方案 B：進階玩家途徑 — 使用 Linux 第三方系統 ev3dev + Python (打破容量與格式限制)</h4>
@@ -1323,7 +1323,7 @@ subprocess.Popen(["mpg123", "-q", "/home/robot/music/bgm.mp3"])
                         <td>Scratch 3.0 積木引擎</td>
                         <td>v1.5.3+</td>
                         <td>Windows 10/11, macOS, iOS (iPad), Android, Chromebook</td>
-                        <td>積木拼接、無數據線、全平台一致體驗、支援嵌入式 Python</td>
+                        <td>積木拼接、無數據線、全平台一致體驗、不支援 Python（Python 請改用 EV3 MicroPython）</td>
                         <td><a href="https://education.lego.com/en-us/downloads/mindstorms-ev3/software" target="_blank">EV3 Classroom 官方下載頁</a></td>
                     </tr>
                     <tr>
@@ -1353,5 +1353,20 @@ subprocess.Popen(["mpg123", "-q", "/home/robot/music/bgm.mp3"])
         </p>
     </footer>
 
+
+<section style="max-width:1100px;margin:32px auto;padding:0 16px;">
+<h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+
+<div style="border-left:4px solid #2563eb;padding:12px 16px;margin:16px 0;background:rgba(37,99,235,0.06);border-radius:6px;" data-archive="claude-review-2026-09-26">
+<h3 style="margin-top:0;">🔹 [2026-09-26 23:01:05] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 變更紀錄</h3>
+<p><strong>模型/Agent</strong>: Claude Opus 5.5 (claude-opus-5-5) / Claude Code</p>
+<p><strong>Prompt 原文</strong>:</p>
+<pre><code>檢視所有檔案內容中的敘述與說明，確認概念與敘述的正確性
+修正後，將修改內容，附加在每個檔案的最下方區塊並標誌時間戳記與模型代號
+確認概念與解釋說明都是正確的</code></pre>
+<p><strong>變更摘要</strong>: 全面檢視概念與敘述正確性並修正：</p>
+<ul><li>EV3 Classroom 不支援 Python；EV3 .rsf 音檔為 8-bit、8 kHz 單聲道</li><li>音符時值：八分音符半拍、四分音符一拍、二分音符兩拍（「半音符」非正確術語）；範例 2 為間歇嗶聲而非掃頻</li><li>錯字與簡體字修正</li></ul>
+</div>
+</section>
 </body>
 </html>

@@ -243,7 +243,7 @@
   <h1>🎨 CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計實務教學</h1>
 
   <div class="metadata">
-    <p><strong>最後更新時間</strong>: 2026-09-15 09:33:54 (UTC+8)</p>
+    <p><strong>最後更新時間</strong>: 2026-09-26 23:01:05 (UTC+8)</p>
     <p><strong>使用模型</strong>: Gemini 3.6 Flash</p>
     <p><strong>執行 Agent</strong>: CorelDRAW Design Specialist</p>
   </div>
@@ -314,7 +314,7 @@
       </div>
       <div class="algo-step-item">
         <strong>4. 貝茲曲線擬合</strong>
-        <p style="font-size: 13px; color: #555; margin-top: 6px;">利用最小二乘法與 Potrace 將像素路徑擬合為包含控制點的三次方貝茲曲線。</p>
+        <p style="font-size: 13px; color: #555; margin-top: 6px;">利用最小二乘法等曲線擬合方法（如開源的 Potrace；CorelDRAW PowerTrace 實際演算法未公開）將像素路徑擬合為包含控制點的三次方貝茲曲線。</p>
       </div>
     </div>
   </div>
@@ -356,7 +356,7 @@
       </tr>
       <tr>
         <td><strong>檔案量成長曲線</strong></td>
-        <td>隨著圖像實體尺寸與 DPI 增加呈現幾何級數暴增</td>
+        <td>隨尺寸與 DPI 呈平方成長（DPI 加倍，像素數約變 4 倍）</td>
         <td>僅取決於圖形邊界與節點 (Node) 數量，尺寸放大檔案大小不變</td>
       </tr>
     </tbody>
@@ -365,7 +365,7 @@
   <h3>4. 解析度 (Resolution / DPI) 與檔案匯入/匯出</h3>
   <h4>(1) DPI (Dots Per Inch) 概念</h4>
   <ul>
-    <li><strong>DPI (每英吋點數)</strong>：代表一英吋長度內包含的像素數量。</li>
+    <li><strong>DPI (每英吋點數)</strong>：代表一英吋長度內包含的像素數量（對數位影像而言嚴格說法是 PPI；DPI 原指印表機每英吋墨點數，軟體中常混用）。</li>
     <li><strong>網頁/螢幕顯示</strong>：一般為 <code>72 DPI</code> 或 <code>96 DPI</code>。</li>
     <li><strong>印刷與描繪品質</strong>：建議至少 <code>300 DPI</code> 以上。解析度過低時，點陣圖邊緣模糊，描繪點陣圖時容易產生過多雜點或曲線扭曲。</li>
   </ul>
@@ -380,7 +380,7 @@
   <h3>5. 解散群組 (Ungroup) 與 建立界線 (Create Boundary)</h3>
   <ul>
     <li><strong>解散群組 (Ungroup / <code>Ctrl + U</code>)</strong>：描繪完成的向量圖預設為一個整體群組。執行解散群組後，可單獨選取、刪除背景色塊或修補線條細節。</li>
-    <li><strong>建立界線 (Create Boundary / 舊稱或口語常稱為「建議界線」)</strong>：
+    <li><strong>建立界線 (Create Boundary / 常被誤寫為「建議界線」)</strong>：
       <ul>
         <li><strong>演算原理</strong>：CorelDRAW 會計算所有選取向量物件的外圍聯集邊界（Union Outer Boundary），並自動生成一條<strong>完全封閉的幾何曲線 (Closed Curve)</strong>。</li>
         <li><strong>關鍵價值</strong>：這條封閉曲線正是雷射切割機進行切割（Cut Path）所必需的外部輪廓！</li>
@@ -435,7 +435,7 @@
   <p>若原始圖片解析度過低，描繪出的邊界可能出現斷線，導致「建立界線」失敗。</p>
   <ul>
     <li>使用 <code>形狀工具</code> 將開口節點拖曳重疊並點擊 <code>連接兩個節點</code>。</li>
-    <li>或使用 <code>智慧型填款工具 (Smart Fill Tool)</code> 在封閉區域點擊，重新生成單一封閉物件。</li>
+    <li>或使用 <code>智慧型填色工具 (Smart Fill Tool)</code> 在封閉區域點擊，重新生成單一封閉物件。</li>
   </ul>
 
   <h3>3. 工業生產與加工注意事項 (Manufacturing & Materials)</h3>
@@ -463,7 +463,18 @@
       </li>
       <li><strong>變更摘要</strong>: 補充點陣圖轉換為向量圖之四階段演算法原理（色彩量化、邊緣檢測、輪廓追蹤、貝茲曲線擬合）與轉換前後之完整特徵差異對照表。</li>
     </ul>
-  </div>
+  
+<div style="border-left:4px solid #2563eb;padding:12px 16px;margin:16px 0;background:rgba(37,99,235,0.06);border-radius:6px;" data-archive="claude-review-2026-09-26">
+<h3 style="margin-top:0;">🔹 [2026-09-26 23:01:05] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 變更紀錄</h3>
+<p><strong>模型/Agent</strong>: Claude Opus 5.5 (claude-opus-5-5) / Claude Code</p>
+<p><strong>Prompt 原文</strong>:</p>
+<pre><code>檢視所有檔案內容中的敘述與說明，確認概念與敘述的正確性
+修正後，將修改內容，附加在每個檔案的最下方區塊並標誌時間戳記與模型代號
+確認概念與解釋說明都是正確的</code></pre>
+<p><strong>變更摘要</strong>: 全面檢視概念與敘述正確性並修正：</p>
+<ul><li>Potrace 為開源演算法，CorelDRAW PowerTrace 實際演算法未公開</li><li>點陣圖檔案大小隨 DPI 呈平方成長（非幾何級數）；補充 DPI／PPI 區別</li><li>「全部解散群組」無預設快捷鍵；「建議界線」為誤寫；「智慧型填款工具」→「智慧型填色工具」</li></ul>
+</div>
+</div>
 
 </div>
 

@@ -392,7 +392,7 @@
 
                 <ul>
                     <li><span class="highlight-badge badge-green">Tokenization (詞元化)</span> 採用 Byte Pair Encoding (BPE) 等演算法，將原始文字拆解為 Subword 詞元（例如文字 "Antigravity" 被拆為 "Anti" + "gravity"），有效控制字典大小並解決未登錄詞 (OOV) 問題。</li>
-                    <li><span class="highlight-badge badge-gold">位置編碼 (Positional Encoding)</span> Transformer 本身具備置換不變性（無法感知順序），因此需要引入位置資訊。現代 GPT 廣泛採用 <strong>RoPE (Rotary Position Embedding, 旋轉位置編碼)</strong>，賦予模型極強的相對位置感知與上下文外推能力。</li>
+                    <li><span class="highlight-badge badge-gold">位置編碼 (Positional Encoding)</span> 自注意力本身具備置換等變性（無法感知順序），因此需要引入位置資訊。GPT-2／GPT-3 使用可學習的絕對位置編碼；LLaMA 等許多開源 LLM 採用 <strong>RoPE (Rotary Position Embedding, 旋轉位置編碼)</strong>，提供相對位置資訊並便於擴展上下文長度（OpenAI 近期模型細節未公開）。</li>
                 </ul>
 
                 <h3 id="gpt-training">1.2 訓練過程 (Three-Stage Training Pipeline)</h3>
@@ -442,7 +442,7 @@
                             <tr>
                                 <td><strong>架構參數</strong></td>
                                 <td>模型參數量 (<i>N</i>)</td>
-                                <td>權重總數（如 GPT-3 175B, GPT-4 採 MoE 架構約 1.8 萬億總參數/220B 激活參數）。決定模型的記憶與推理上限。</td>
+                                <td>權重總數（如 GPT-3 175B, GPT-4 參數量 OpenAI 未公開，外界流傳「約 1.8 兆參數 MoE」屬非官方推測）。決定模型的記憶與推理上限。</td>
                             </tr>
                             <tr>
                                 <td><strong>架構參數</strong></td>
@@ -482,7 +482,7 @@
 [高維原始影片 (H×W×T)] ──> [3D Video VAE Encoder] ──> [時空 Latent 特徵]
                                                                │ (壓縮空間與時間)
                                                                ▼
-[提示詞 Prompt] ──(GPT-4V Recaption)──> [Text Token] ──> [DiT (Diffusion Transformer)]
+[提示詞 Prompt] ──(GPT 擴寫 Prompt)──> [Text Token] ──> [DiT (Diffusion Transformer)]
                                                                │ (時空 Patch 去噪)
                                                                ▼
 [去噪後 Latent 特徵] ──> [3D Video VAE Decoder] ──> [輸出 1080p 高清影片]
@@ -493,7 +493,7 @@
                 <p>Sora 採用了由 William Peebles 和 Saining Xie 提出的 <strong>DiT 架構</strong>：</p>
                 <ul>
                     <li>將圖像/影片 Latent 轉化為一維 Token 序列，直接使用標準 Transformer 進行處理。</li>
-                    <li>實證證明：隨著訓練計算量 (Compute Cost) 的增加，DiT 的影片生成畫質與時空一致性呈對數線性提升（符合 Scaling Law）。</li>
+                    <li>實證證明：隨著訓練計算量 (Compute Cost) 的增加，DiT 的影片生成畫質與時空一致性明顯提升（技術報告以不同算力的樣本對比展示擴展效果）。</li>
                 </ul>
 
                 <h3 id="sora-patches">2.2 時空潛在塊 (Spatiotemporal Latent Patches)</h3>
@@ -513,7 +513,7 @@
                 <h3 id="sora-caption">2.4 高精度文字重標註 (Recaptioning Technique)</h3>
                 <p>為了使影片模型能精確聽懂複雜的 Prompt 指令，OpenAI 引入了在 DALL-E 3 驗證成功的 Recaptioning 技術：</p>
                 <ul>
-                    <li>利用視覺語言大模型（如 GPT-4V）為訓練集中數百萬支影片生成 <strong>極度詳盡的描述</strong>（精確描述背景、人物動作、光影、鏡頭運鏡走向）。</li>
+                    <li>先訓練一個高度描述性的字幕模型（captioner），為訓練集中的影片生成 <strong>極度詳盡的描述</strong>（精確描述背景、人物動作、光影、鏡頭運鏡走向）。</li>
                     <li>推論時，用戶輸入的簡短 Prompt 會先由 GPT 擴充為高細節描述，大幅改善文字與影片畫面內容的精確對齊。</li>
                 </ul>
 
@@ -541,11 +541,11 @@
                 <div class="grid-2">
                     <div class="inner-card">
                         <h4>1. Flow Matching (流匹配採樣)</h4>
-                        <p>全面取代傳統 DDPM / DDIM。Flow Matching 透過建構直線採樣路徑 (Straight ODE Trajectory)，能在僅需 10~20 步去噪疊代下生成超高畫質影片，大幅提升生成速度。</p>
+                        <p>已成為許多新一代模型（如 SD3、FLUX 與多數新影片模型）的主流訓練框架。Flow Matching 透過建構較直的採樣路徑 (Straight ODE Trajectory)，能以較少的去噪步數生成高畫質影片，提升生成速度。</p>
                     </div>
                     <div class="inner-card">
                         <h4>2. 3D Causal VAE (因果時空 VAE)</h4>
-                        <p>傳統 VAE 在時間軸上容易洩漏未來的資訊。3D Causal VAE 遵守時間因果性，只依賴當前與過去幀，支援無限時長影片的流式 (Streaming) 連續生成。</p>
+                        <p>傳統 VAE 在時間軸上容易洩漏未來的資訊。3D Causal VAE 遵守時間因果性，只依賴當前與過去幀，有利於長影片的分段／流式 (Streaming) 生成。</p>
                     </div>
                     <div class="inner-card">
                         <h4>3. 原生聲畫同步 (Native Audio Integration)</h4>
@@ -590,7 +590,7 @@
                                 <td><strong>Wan 2.1 (萬象)</strong></td>
                                 <td>阿里巴巴 (Alibaba)</td>
                                 <td>3D Causal VAE + Advanced DiT</td>
-                                <td><strong>當前最強開源影片大模型</strong>。高效壓縮架構，可在消費級 GPU (如 RTX 4090) 部署與微調。</td>
+                                <td><strong>代表性開源影片大模型</strong>（後續已有 Wan 2.2 等新版）。高效壓縮架構，可在消費級 GPU (如 RTX 4090) 部署與微調。</td>
                                 <td><span class="highlight-badge badge-green">完全開源 (Apache 2.0)</span></td>
                             </tr>
                             <tr>
@@ -671,5 +671,20 @@
         <p>© 2026 AI Class Study Notes | Generated & Organized for User Study</p>
     </footer>
 
+
+<section style="max-width:1100px;margin:32px auto;padding:0 16px;">
+<h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+
+<div style="border-left:4px solid #2563eb;padding:12px 16px;margin:16px 0;background:rgba(37,99,235,0.06);border-radius:6px;" data-archive="claude-review-2026-09-26">
+<h3 style="margin-top:0;">🔹 [2026-09-26 23:01:05] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 變更紀錄</h3>
+<p><strong>模型/Agent</strong>: Claude Opus 5.5 (claude-opus-5-5) / Claude Code</p>
+<p><strong>Prompt 原文</strong>:</p>
+<pre><code>檢視所有檔案內容中的敘述與說明，確認概念與敘述的正確性
+修正後，將修改內容，附加在每個檔案的最下方區塊並標誌時間戳記與模型代號
+確認概念與解釋說明都是正確的</code></pre>
+<p><strong>變更摘要</strong>: 全面檢視概念與敘述正確性並修正：</p>
+<ul><li>GPT-4 參數量未公開，1.8 兆 MoE 屬非官方推測；GPT-2/3 使用學習式絕對位置編碼，RoPE 常見於 LLaMA 等開源模型</li><li>Sora 以自訓練 captioner 重標註、以 GPT 擴寫 Prompt（非 GPT-4V）；刪除「對數線性」無根據敘述</li><li>Flow Matching、3D Causal VAE、Wan 2.1 等敘述去除過度宣稱</li></ul>
+</div>
+</section>
 </body>
 </html>

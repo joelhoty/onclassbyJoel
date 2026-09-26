@@ -687,7 +687,7 @@
         <p class="subtitle">詳細原理剖析、下一個詞預測機制 (Next-Token Prediction) 與 Diffusion Model 加噪去噪生成動態展示</p>
         
         <div class="metadata-box">
-            <div class="meta-badge">📅 <strong>最後更新時間:</strong> 2026-09-11 09:49:32 (UTC+8)</div>
+            <div class="meta-badge">📅 <strong>最後更新時間:</strong> 2026-09-26 23:01:05 (UTC+8)</div>
             <div class="meta-badge">🧠 <strong>使用模型:</strong> Gemini 3.6 Flash</div>
             <div class="meta-badge">⚡ <strong>執行 Agent:</strong> Antigravity Agent</div>
         </div>
@@ -726,7 +726,7 @@
                     <div class="card-icon">🧠</div>
                     <h4>3. LLMs (Large Language Models, 大語言模型)</h4>
                     <p><strong>核心定義：</strong> 擁有數十億至數千億級別參數的巨型神經網路模型（如 GPT-4, Llama 3, Gemini, Claude）。</p>
-                    <p><strong>湧現能力 (Emergent Abilities)：</strong> 當模型參數規模與訓練資料量突破臨界值時，模型會突發性具備邏輯推理、跨語言翻譯與程式碼寫作能力。</p>
+                    <p><strong>湧現能力 (Emergent Abilities)：</strong> 當模型參數規模與訓練資料量突破臨界值時，模型在推理、翻譯、寫程式等任務上的表現可能出現看似突然的躍升（學界對這是真正的「突現」還是評估指標造成的現象仍有爭論）。</p>
                 </div>
 
                 <div class="concept-card">
@@ -736,7 +736,7 @@
                     <p><strong>微調主流類型：</strong></p>
                     <ul>
                         <li><strong>SFT (Supervised Fine-Tuning)：</strong> 指令微調，學習高質量的問答對。</li>
-                        <li><strong>PEFT / LoRA (低秩適應)：</strong> 凍結原模型 99% 參數，僅訓練低秩矩陣，極大降低顯存門檻。</li>
+                        <li><strong>PEFT / LoRA (低秩適應)：</strong> 凍結原模型全部權重，僅訓練新增的低秩矩陣（通常不到原參數量的 1%），極大降低顯存門檻。</li>
                         <li><strong>RLHF / DPO：</strong> 結合人類偏好反饋進行強化學習對齊。</li>
                     </ul>
                 </div>
@@ -753,7 +753,7 @@
                 $$ P(x_1, x_2, \dots, x_T) = \prod_{t=1}^{T} P(x_t \mid x_1, x_2, \dots, x_{t-1}) $$
             </div>
 
-            <p>經由 <strong>Tokenization (BPE)</strong> 轉為 Token ID，傳入包含 <strong>Positional Encoding</strong> 與 <strong>Causal Self-Attention</strong> 的 Transformer Decoder 層，最後通過 Softmax 輸出 Logits 概率：</p>
+            <p>經由 <strong>Tokenization (BPE)</strong> 轉為 Token ID，傳入包含 <strong>Positional Encoding</strong> 與 <strong>Causal Self-Attention</strong> 的 Transformer Decoder 層，最後輸出 Logits，再經 Softmax 轉為機率：</p>
 
             <div class="formula-box">
                 $$ P(y_i) = \frac{\exp(z_i / T)}{\sum_{j} \exp(z_j / T)} $$
@@ -894,7 +894,7 @@
             </div>
 
             <h3>5. Latent Diffusion Models (LDM / Stable Diffusion)</h3>
-            <p>直接在高清像素空間（如 \(1024 \times 1024 \times 3\)）做擴散計算極慢。Stable Diffusion 採用 <strong>VAE (變分自編碼器)</strong> 將圖片壓縮至隱空間 (Latent Space, 例如 \(64 \times 64 \times 4\))，在 Latent 空間進行加噪與去噪，計算速度提升幾十倍！</p>
+            <p>直接在高清像素空間（如 \(512 \times 512 \times 3\)）做擴散計算極慢。Stable Diffusion 採用 <strong>VAE (變分自編碼器)</strong> 將圖片壓縮至隱空間 (Latent Space, 例如 \(64 \times 64 \times 4\)，長寬各縮小 8 倍)，在 Latent 空間進行加噪與去噪，計算速度提升幾十倍！</p>
         </section>
 
         <!-- 第五單元：動態互動展示 二 (Diffusion Simulator) -->
@@ -1075,7 +1075,18 @@
                     - <strong>變更摘要:</strong> 修復頁面中的 LaTeX 數學公式渲染機制。引入 KaTeX 數學函式庫 CDN，修正包含自迴歸條件機率 \(P(x_t|x_{<t})\)、Softmax 公式、前向加噪高斯分布 \(q(x_t|x_{t-1})\)、重參數化公式 \(x_t = \sqrt{\bar{\alpha}_t}x_0 + \sqrt{1-\bar{\alpha}_t}\epsilon\)、U-Net MSE 損失函數 \(\mathcal{L}_{\text{simple}}(\theta)\) 及 CFG 公式之語法標記，並加上離線備用 (Fallback) 排版渲染 logic。
                 </div>
             </div>
-        </div>
+        
+<div class="archive-entry" style="border-left:4px solid #2563eb;padding:12px 16px;margin:16px 0;background:rgba(37,99,235,0.06);border-radius:6px;" data-archive="claude-review-2026-09-26">
+<h3 style="margin-top:0;">🔹 [2026-09-26 23:01:05] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 變更紀錄</h3>
+<p><strong>模型/Agent</strong>: Claude Opus 5.5 (claude-opus-5-5) / Claude Code</p>
+<p><strong>Prompt 原文</strong>:</p>
+<pre><code>檢視所有檔案內容中的敘述與說明，確認概念與敘述的正確性
+修正後，將修改內容，附加在每個檔案的最下方區塊並標誌時間戳記與模型代號
+確認概念與解釋說明都是正確的</code></pre>
+<p><strong>變更摘要</strong>: 全面檢視概念與敘述正確性並修正：</p>
+<ul><li>LoRA 凍結全部原權重、只訓練新增低秩矩陣；Softmax 將 Logits 轉為機率</li><li>SD 潛在空間例：512×512×3 → 64×64×4（8 倍下採樣，原寫 1024）</li><li>湧現能力補充學界爭論</li></ul>
+</div>
+</div>
         
         <div style="text-align: center; margin-top: 30px; font-size: 0.85rem; color: #64748b;">
             D:\CLASS_NOTE\AI\ai_0910.html • 課程總結與多模態動態模擬筆記

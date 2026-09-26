@@ -360,7 +360,7 @@
         <button class="header-btn" onclick="window.print()">🖨️ 匯出成 PDF / 列印</button>
         <h1>繼電器控制電路、內部結構與動態模擬原理解析</h1>
         <div class="metadata-box">
-            <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-17 14:36:27 (UTC+8)</div>
+            <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-26 23:01:05 (UTC+8)</div>
             <div class="metadata-item"><strong>使用模型:</strong> Gemini 3.8 Flash</div>
             <div class="metadata-item"><strong>執行 Agent:</strong> Antigravity</div>
             <div class="metadata-item"><strong>實作涵蓋:</strong> 手動雙電路 / Arduino 微控制器自動化 / 接點物理模擬 / 保護電路</div>
@@ -701,7 +701,7 @@
                 </tr>
                 <tr>
                     <td><strong>電氣切換壽命</strong></td>
-                    <td>約 10 萬 ~ 100 萬次（受接點電弧燒蝕磨損）</td>
+                    <td>電氣約 10 萬次級（受接點電弧燒蝕磨損）；機械約 1000 萬次</td>
                     <td>可達 1 億次（10^8 次以上），長效免維護</td>
                 </tr>
             </tbody>
@@ -894,7 +894,7 @@ void loop()
             <h4>⚠️ 為什麼真實硬體絕對不能用 Arduino Pin 直接連接繼電器線圈？</h4>
             <ol>
                 <li><strong>GPIO 腳位電流超載 (Overcurrent)</strong>：ATmega328P 每個引腳安全電流上限為 <strong>20 mA</strong>，而 5V 繼電器線圈電阻約 70Ω，工作電流高達 <strong>71.4 mA</strong>，直接驅動會造成引腳過熱燒熔。</li>
-                <li><strong>反向電動勢高壓突波 (Back-EMF Kickback)</strong>：線圈為電感負載，在斷電瞬間依 V = -L(di/dt) 會產生高達 <strong>數十至上百伏特 (30V~100V+)</strong> 的反向脈衝，直接打穿單晶片晶圓。</li>
+                <li><strong>反向電動勢高壓突波 (Back-EMF Kickback)</strong>：線圈為電感負載，在斷電瞬間依 V = -L(di/dt) 若以電晶體驅動且無續流二極體，集極端會出現高達 <strong>數十至上百伏特</strong> 的反向脈衝；由腳位直驅時，反向感應電流則會強迫流經 MCU 內部 ESD 防護二極體，反覆承受可能損毀腳位。</li>
             </ol>
         </div>
 
@@ -921,7 +921,7 @@ Pin 13 ────[ 1kΩ 限流電阻 ]──── 基極 (B)                 
         <p><strong>設計要素重點：</strong></p>
         <ul>
             <li><strong>三極管 (2N2222 / S8050)</strong>：作為低側開關 (Low-side Switch)，MCU 只需微弱的 1mA 基極電流，即能安全推動 70mA 的線圈電流。</li>
-            <li><strong>飛輪二極體 (1N4007 / 1N4148)</strong>：反向並聯在線圈兩端。斷電瞬間，感應突波經二極體順向導通吸收，將反向電壓箝位在安全的 0.7V。</li>
+            <li><strong>飛輪二極體 (1N4007 / 1N4148)</strong>：反向並聯在線圈兩端。斷電瞬間，感應突波經二極體順向導通吸收，將線圈反向電壓箝位在約 0.7V（集極電壓不超過 V<sub>CC</sub> + 0.7V）。</li>
         </ul>
     </div>
 
@@ -961,7 +961,18 @@ Pin 13 ────[ 1kΩ 限流電阻 ]──── 基極 (B)                 
               4. 深度補充單晶片直驅繼電器的 GPIO 超載與反向電動勢 (Back-EMF) 破壞隱患，提供工業級電晶體驅動與飛輪二極體保護電路設計。
             </p>
         </div>
-    </div>
+    
+<div class="archive-item" style="border-left:4px solid #2563eb;padding:12px 16px;margin:16px 0;background:rgba(37,99,235,0.06);border-radius:6px;" data-archive="claude-review-2026-09-26">
+<h3 style="margin-top:0;">🔹 [2026-09-26 23:01:05] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 變更紀錄</h3>
+<p><strong>模型/Agent</strong>: Claude Opus 5.5 (claude-opus-5-5) / Claude Code</p>
+<p><strong>Prompt 原文</strong>:</p>
+<pre><code>檢視所有檔案內容中的敘述與說明，確認概念與敘述的正確性
+修正後，將修改內容，附加在每個檔案的最下方區塊並標誌時間戳記與模型代號
+確認概念與解釋說明都是正確的</code></pre>
+<p><strong>變更摘要</strong>: 全面檢視概念與敘述正確性並修正：</p>
+<ul><li>KS2E-M-DC5 為 KEMET 產品（原誤植為 OMRON）</li><li>反電動勢敘述區分直驅與電晶體驅動；1 kΩ 基極電阻實際約 4 mA（非 1~2 mA）；0.7V 箝位指線圈反向電壓</li><li>光耦隔離需移除 JD-VCC 跳線並獨立供電；EMR 壽命改為電氣約 10 萬次、機械約 1000 萬次</li><li>磁簧片為退火處理的軟磁材料（非「磁化熱處理」）；封裝氣體改為乾燥氮氣等保護氣體</li></ul>
+</div>
+</div>
 </div>
 
 <script>

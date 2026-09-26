@@ -432,7 +432,7 @@
             <div class="card card-highlight">
                 <h4>💡 為什麼 LED 必須串聯限流電阻？</h4>
                 <p style="font-size: 0.95rem;">
-                    發光二極體 (LED) 具備指數型伏安特性 (I-V Curve)。當外加順向偏壓超過導通門檻 V<sub>F</sub> 後，<strong>電壓只要微幅增加 0.1V，通過的電流便會成倍暴增</strong>。若直接跨接於固定電壓源，將迅速引發熱崩潰 (Thermal Runaway) 而燒毀。限流電阻的作用即在於吸收多餘電壓並穩定工作電流。
+                    發光二極體 (LED) 具備指數型伏安特性 (I-V Curve)。當外加順向偏壓超過導通門檻 V<sub>F</sub> 後，<strong>電壓只要微幅增加 0.1V，通過的電流便會成倍暴增</strong>。若直接跨接於固定電壓源，電流將失控暴增、過熱燒毀。限流電阻的作用即在於吸收多餘電壓並穩定工作電流。
                 </p>
             </div>
 
@@ -654,7 +654,7 @@ V+ (3V) ── [ 50Ω 共用電阻 ] ──┼                     ├─── 
                 <ul style="margin-left: 1.5rem; font-size: 0.92rem; line-height: 1.7;">
                     <li><strong>製程微小壓降公差：</strong>即便同型號 LED，導通電壓 V<sub>F</sub> 仍有微小差異（如 LED1 = 1.95V, LED2 = 2.05V）。</li>
                     <li><strong>指數型搶電流：</strong>由於二極體 I-V 特性呈指數陡升，V<sub>F</sub> 較低的 LED 1 會搶走 80% 以上電流，造成兩顆亮度嚴重不均。</li>
-                    <li><strong>負溫度係數惡性循環：</strong>LED 1 因電流大而發熱，其 V<sub>F</sub> 隨溫度升高進一步降低 (約 -2mV/°C)，進一步吸收更多電流，最終<strong>過熱擊穿燒毀！</strong>LED 1 燒毀開路後，所有電流湧入 LED 2，造成連鎖燒毀！</li>
+                    <li><strong>負溫度係數惡性循環：</strong>LED 1 因電流大而發熱，其 V<sub>F</sub> 隨溫度升高進一步降低 (約 -2mV/°C)，進一步吸收更多電流，最終<strong>過熱擊穿燒毀！</strong>LED 1 燒毀開路後，全部電流改流經 LED 2（本例共用 50Ω 時約 20 mA，已達額定上限；若電阻更小或並聯更多顆，就可能連鎖燒毀）！</li>
                 </ul>
             </div>
 
@@ -771,7 +771,7 @@ V+ (3.0V) ─────┼──── [ R3: 100Ω ] ──── (A) LED 3 (K
                         <td><strong>⚠️ 單顆開路燒毀影響</strong></td>
                         <td>LED1 燒毀，<strong>兩顆同時熄滅</strong></td>
                         <td>LED1 燒毀，<strong>LED2 正常恆亮</strong></td>
-                        <td><span class="badge-danger">LED1 燒毀後，LED2 在幾秒內連鎖過載燒毀</span></td>
+                        <td><span class="badge-danger">LED1 燒毀後，電流全部轉給 LED2（本例約 20mA 已達上限，電阻更小時易連鎖燒毀）</span></td>
                     </tr>
                     <tr>
                         <td><strong>🔋 電源降至 3.0V 現象</strong></td>
@@ -888,7 +888,7 @@ V+ (3.0V) ─────┼──── [ R3: 100Ω ] ──── (A) LED 3 (K
                             <td><strong>電源電壓 (V<sub>CC</sub>)</strong></td>
                             <td>4 &times; 1.5V 電池盒</td>
                             <td><code>6.0 V</code></td>
-                            <td>電壓充裕，即使電池電壓衰減至 4.5V 仍能維持穩定亮度。</td>
+                            <td>電壓充裕；但電池衰減至 4.5V 時，1kΩ 支路電流約降為 2.5 mA（-37%），亮度會明顯變暗。</td>
                         </tr>
                         <tr>
                             <td><strong>LED 順向壓降 (V<sub>F</sub>)</strong></td>
@@ -1094,5 +1094,20 @@ V+ (3.0V) ─────┼──── [ R3: 100Ω ] ──── (A) LED 3 (K
         // 初始化執行一次
         runCalculation();
     </script>
+
+<section style="max-width:1100px;margin:32px auto;padding:0 16px;">
+<h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+
+<div style="border-left:4px solid #2563eb;padding:12px 16px;margin:16px 0;background:rgba(37,99,235,0.06);border-radius:6px;" data-archive="claude-review-2026-09-26">
+<h3 style="margin-top:0;">🔹 [2026-09-26 23:01:05] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 變更紀錄</h3>
+<p><strong>模型/Agent</strong>: Claude Opus 5.5 (claude-opus-5-5) / Claude Code</p>
+<p><strong>Prompt 原文</strong>:</p>
+<pre><code>檢視所有檔案內容中的敘述與說明，確認概念與敘述的正確性
+修正後，將修改內容，附加在每個檔案的最下方區塊並標誌時間戳記與模型代號
+確認概念與解釋說明都是正確的</code></pre>
+<p><strong>變更摘要</strong>: 全面檢視概念與敘述正確性並修正：</p>
+<ul><li>共用 50Ω 電阻時 LED1 開路後 LED2 約 20 mA，已達額定上限但不必然「數秒連鎖燒毀」</li><li>LED 無限流電阻屬過流燒毀；電池降至 4.5V 時 1kΩ 支路電流約 2.5 mA，亮度會明顯變暗</li></ul>
+</div>
+</section>
 </body>
 </html>

@@ -59,7 +59,10 @@ python main.py --camera 0 --conf 0.5 --model yolov8n-pose.pt
 
 ## 🖐️ 支援辨識手勢 (Supported Gestures)
 
-系統內建強大的手部幾何關鍵點分析演算法，能辨識以下多種常見手勢：
+若載入 **21 點手部關鍵點** 的 YOLO pose 模型（例如以 Ultralytics Hand Keypoints 資料集訓練的模型），系統可用手部幾何規則辨識以下手勢。
+
+> ⚠️ 預設的 `yolov8n-pose.pt` 是 COCO **17 點人體姿態** 模型，只能定位手腕位置（畫面會顯示「偵測到手部位置」），**無法**分辨下列手勢。
+
 
 - ✊ **握拳 (Fist)**
 - 🖐️ **張開手掌 (Open Palm)**
@@ -68,7 +71,7 @@ python main.py --camera 0 --conf 0.5 --model yolov8n-pose.pt
 - 👎 **拇指向下 (Thumbs Down)**
 - ☝️ **比 1 / 指點 (Pointing)**
 - 👌 **OK 手勢 (OK Sign)**
-- 🤟 **愛心 / 搖滾 (I Love You)**
+- 🤟 **我愛你手勢 (I Love You)**
 - 3️⃣ **比 3 (Three)**
 - 4️⃣ **比 4 (Four)**
 
@@ -108,6 +111,8 @@ python train_gesture.py --collect --class-name heart --count 30
 ```bash
 python train_gesture.py --train --epochs 30
 ```
+
+> ⚠️ 目前 `train_gesture.py` 只把照片依類別存到 `dataset/images/train/<類別>/`，**不會產生** YOLO 物件偵測所需的標註框檔（`labels/*.txt`），也沒有驗證集；直接用 `yolov8n.pt` 做偵測訓練會找不到標註。可改為：(a) 使用 `yolov8n-cls.pt` 做影像分類（需 `train/`、`val/` 類別資料夾結構），或 (b) 先用 Roboflow、Label Studio 等工具框選手部後再訓練偵測模型。
 - 訓練完成後，最佳權重檔將會自動儲存至 `models/best.pt`。
 
 ### 第三步：使用自訂模型執行實時辨識
@@ -120,6 +125,23 @@ python main.py --model models/best.pt
 
 ## 💡 技術說明 (Technical Highlights)
 
-1. **實時間姿態推論**: 利用 Ultralytics YOLO 高效能神經網路模型，達到每秒 >30 FPS 的即時推論速度。
+1. **實時間姿態推論**: 利用 Ultralytics YOLO 高效能神經網路模型，在具備 GPU 或效能足夠的 CPU 上可達約 30 FPS 以上的即時推論速度（實際依硬體而定）。
 2. **多國語言 HUD 介面**: 透過 PIL/Pillow 動態繪製微軟正黑體，解決傳統 OpenCV 中文字體亂碼問題。
-3. **旋轉無關關鍵點分析 (Rotation-Invariant Analysis)**: 基於手掌中心與關節向量距離計算，不受手掌角度變換影響。
+3. **旋轉無關關鍵點分析 (Rotation-Invariant Analysis)**: 基於手掌中心與關節向量距離計算，對手掌旋轉具一定容忍度（大角度或側面時仍可能誤判）。
+
+---
+
+## 📝 提示詞歷史與變更記錄 (Prompt Archive)
+
+### 🔹 [2026-09-26 23:01:05] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 變更紀錄
+- **模型/Agent**: Claude Opus 5.5 (claude-opus-5-5) / Claude Code
+- **Prompt 原文**:
+  ```text
+  檢視所有檔案內容中的敘述與說明，確認概念與敘述的正確性
+  修正後，將修改內容，附加在每個檔案的最下方區塊並標誌時間戳記與模型代號
+  確認概念與解釋說明都是正確的
+  ```
+- **變更摘要**: 全面檢視概念與敘述正確性並修正：
+  - 預設 yolov8n-pose.pt 為 COCO 17 點人體姿態模型，無法分辨手勢；需 21 點手部關鍵點模型
+  - train_gesture.py 未產生 YOLO 標註框與驗證集，補充可行的分類／標註替代做法
+  - FPS 與旋轉容忍度改為依硬體與角度而定的保守敘述；🤟 為「我愛你」手勢

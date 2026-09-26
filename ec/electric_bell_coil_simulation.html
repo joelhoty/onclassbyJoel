@@ -728,7 +728,7 @@
                 $$F_{mag} = 2 \times \left( \frac{B^2 A}{2 \mu_0} \right) = \frac{B^2 A}{\mu_0} = \frac{\mu_0 A N^2 I(t)^2}{4 g(t)^2}$$
                 <ul>
                     <li>$N$：線圈總匝數；$I$：通過線圈之即時電流；$A$：鐵芯端面截面積；$g(t)$：銜鐵與鐵芯之即時動態氣隙。</li>
-                    <li><strong>平方反比非線性效應</strong>：磁吸力與氣隙平方成反比。當銜鐵越靠近鐵芯，吸力呈幾何級數急遽暴增。</li>
+                    <li><strong>平方反比非線性效應</strong>：磁吸力與氣隙平方成反比。當銜鐵越靠近鐵芯，吸力依平方反比急遽增加。</li>
                 </ul>
             </div>
 
@@ -747,7 +747,7 @@
             </p>
             $$\mathcal{E}_{back} = -L \frac{di}{dt}$$
             <p>
-                接點兩端會感應出數百伏特之高壓脈衝，擊穿空氣產生肉眼可見的微型電弧（火花）。若未加裝突波吸收保護，長年累積會導致接點氧化燒蝕。
+                接點兩端會感應出高壓脈衝；接點剛分離時間隙極小，觸點間的熔融金屬橋與金屬蒸氣會形成肉眼可見的微型電弧（火花）。若未加裝突波吸收保護，長年累積會導致接點氧化燒蝕。
             </p>
 
             <h3>1.4 金屬鈴鐺聲學特性與非諧波共振 (Inharmonic Acoustics)</h3>
@@ -877,7 +877,18 @@ function triggerBellStrike(audioCtx, baseFreq = 1150, volume = 0.7) {
                     <li><strong>變更摘要</strong>: 建立電磁線圈電鈴 (Electric Bell) 完整互動模擬器，實現雙線圈磁場流動、機械斷續器自激振盪、觸點高壓火花粒子爆發、金屬鈴碗衝擊聲波漣漪，並透過 Web Audio API 實現高仿真非諧波金屬打擊聲合成。</li>
                 </ul>
             </div>
-        </div>
+        
+<div style="border-left:4px solid #2563eb;padding:12px 16px;margin:16px 0;background:rgba(37,99,235,0.06);border-radius:6px;" data-archive="claude-review-2026-09-26">
+<h3 style="margin-top:0;">🔹 [2026-09-26 23:01:05] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 變更紀錄</h3>
+<p><strong>模型/Agent</strong>: Claude Opus 5.5 (claude-opus-5-5) / Claude Code</p>
+<p><strong>Prompt 原文</strong>:</p>
+<pre><code>檢視所有檔案內容中的敘述與說明，確認概念與敘述的正確性
+修正後，將修改內容，附加在每個檔案的最下方區塊並標誌時間戳記與模型代號
+確認概念與解釋說明都是正確的</code></pre>
+<p><strong>變更摘要</strong>: 全面檢視概念與敘述正確性並修正：</p>
+<ul><li>2.1 節電磁力公式分母由 2 改為 4，與 1.1 節推導 μ0AN²I²/(4g²) 一致</li><li>修正接點火花成因：為金屬蒸氣電弧（空氣間隙依巴申定律最低約 300 V 才擊穿），刪除「數十伏即擊穿空氣」</li><li>早期電話使用交流振鈴，直流電鈴用途改為門鈴、火警鈴；EMP 改為 EMI／RFI</li></ul>
+</div>
+</div>
     </main>
 
     <footer>

@@ -900,7 +900,7 @@
                     <div class="card" style="background:var(--bg-primary);">
                         <span class="badge">VAE</span>
                         <h4 style="margin-top:0.5rem; margin-bottom:0.3rem;">色彩與細節解碼器</h4>
-                        <p style="font-size:0.88rem;">將低維潛在張量解碼還原為 RGB 像素，修復圖像色彩灰淡、人眼結構與肢體邊緣模糊問題。</p>
+                        <p style="font-size:0.88rem;">將低維潛在張量解碼還原為 RGB 像素，影響色彩飽和度與細部紋理（如色彩灰淡、眼睛與邊緣細節模糊）；肢體結構錯誤主要取決於主模型，VAE 無法修正。</p>
                     </div>
                 </div>
             </div>
@@ -1027,11 +1027,11 @@ Negative Prompt: (worst quality, low quality:1.4), deformed hands, extra fingers
                 <div class="grid-3">
                     <div class="card" style="background:var(--bg-primary);">
                         <h4>原生多模態 (Native Multimodal)</h4>
-                        <p style="font-size:0.88rem; margin-top:0.4rem;">非傳統 LLM 外部掛載 Vision Encoder 的拼接做法，而是在預訓練時即統一跨模態理解，視覺與音訊語意無損失。</p>
+                        <p style="font-size:0.88rem; margin-top:0.4rem;">非傳統 LLM 外部掛載 Vision Encoder 的拼接做法，而是在預訓練時即統一跨模態理解，減少跨模態轉換造成的資訊損失。</p>
                     </div>
                     <div class="card" style="background:var(--bg-primary);">
                         <h4>100萬+ Tokens 長上下文</h4>
-                        <p style="font-size:0.88rem; margin-top:0.4rem;">優化 RoPE 位置編碼與注意力記憶體。在大海撈針 (Needle in a Haystack) 檢索測試中保持 99%+ 準確率。</p>
+                        <p style="font-size:0.88rem; margin-top:0.4rem;">Google 未完全公開其長上下文架構細節；Gemini 1.5 技術報告顯示在大海撈針 (Needle in a Haystack) 檢索測試中達 99%+ 召回率。</p>
                     </div>
                     <div class="card" style="background:var(--bg-primary);">
                         <h4>Code Execution & Agent</h4>
@@ -1171,5 +1171,20 @@ Negative Prompt: (worst quality, low quality:1.4), deformed hands, extra fingers
             });
         });
     </script>
+
+<section style="max-width:1100px;margin:32px auto;padding:0 16px;">
+<h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+
+<div style="border-left:4px solid #2563eb;padding:12px 16px;margin:16px 0;background:rgba(37,99,235,0.06);border-radius:6px;" data-archive="claude-review-2026-09-26">
+<h3 style="margin-top:0;">🔹 [2026-09-26 23:01:05] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 變更紀錄</h3>
+<p><strong>模型/Agent</strong>: Claude Opus 5.5 (claude-opus-5-5) / Claude Code</p>
+<p><strong>Prompt 原文</strong>:</p>
+<pre><code>檢視所有檔案內容中的敘述與說明，確認概念與敘述的正確性
+修正後，將修改內容，附加在每個檔案的最下方區塊並標誌時間戳記與模型代號
+確認概念與解釋說明都是正確的</code></pre>
+<p><strong>變更摘要</strong>: 全面檢視概念與敘述正確性並修正：</p>
+<ul><li>VAE 影響色彩與細部紋理，無法修正肢體結構</li><li>原生多模態為減少資訊損失（非「無損失」）；Gemini 長上下文架構細節未公開，NIAH 99%+ 出自 Gemini 1.5 報告</li></ul>
+</div>
+</section>
 </body>
 </html>

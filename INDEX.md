@@ -1,8 +1,8 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-24 23:03:00 (UTC+8)  
-> **使用模型**: Cursor Grok 4.6  
-> **執行 Agent**: Cursor Grok 4.6  
+> **最後更新時間**: 2026-09-26 23:10:00 (UTC+8)  
+> **使用模型**: Claude Opus 5.5 (claude-opus-5-5)  
+> **執行 Agent**: Claude Code  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 
 ---
@@ -10,8 +10,14 @@
 ## 🎯 工作區主題檔案分類與最後修改日期 (依日期由新至舊排列)
 
 ### 🤖 1. AI / 機器學習與深度學習 (`AI/`)
-* `2026-09-23` | [新莊土壤液化與地質心理學 10 頁 Marp 簡報 (Tech Style) (HTML)](./AI/soil_liquefaction_tech_slides.html) (HTML)
-* `2026-09-23` | [新莊土壤液化與地質心理學 10 頁 Marp 簡報 (Tech Style) (MD)](./AI/soil_liquefaction_tech_slides.marp.md) (MD)
+* `2026-09-26` | [新莊土壤液化與地質心理學 10 頁 Marp 簡報 (Tech Style) (HTML)](./AI/soil_liquefaction_tech_slides.html) (HTML)
+* `2026-09-26` | [新莊土壤液化與地質心理學 10 頁 Marp 簡報 (Tech Style) (MD)](./AI/soil_liquefaction_tech_slides.marp.md) (MD)
+* `2026-09-26` | [AI 課程筆記 (09-10)](./AI/ai_0910.html) (HTML)
+* `2026-09-26` | [CNN 卷積神經網路解析](./AI/ai_cnn.html) (HTML)
+* `2026-09-26` | [AI 課程筆記 (09-02)](./AI/ai_class_0902.html) (HTML)
+* `2026-09-26` | [AI 基礎單元 1](./AI/ai_1.html) (HTML)
+* `2026-09-26` | [AI 基礎單元 2 (HTML)](./AI/ai_2.html) (HTML)
+* `2026-09-26` | [Attention-First 學習計畫](./AI/learning_plan_attention_first.html) (HTML)
 * `2026-09-23` | [從文件摘要到 10 頁簡報大綱：AI 提示詞工程轉譯與全流程製作指南 (HTML)](./AI/prompt_doc_summary_to_presentation.html) (HTML)
 * `2026-09-23` | [從文件摘要到 10 頁簡報大綱：AI 提示詞工程轉譯與全流程製作指南 (MD)](./AI/prompt_doc_summary_to_presentation.md) (MD)
 * `2026-09-16` | [AI 協同科研與小論文發想：提示詞工程實戰 (HTML)](./AI/prompt_academic_research_flow.html) (HTML)
@@ -20,88 +26,82 @@
 * `2026-09-16` | [小葉欖仁落體自主定向機制小論文 (MD)](./AI/prompt_research_proposal_self_alignment.md) (MD)
 * `2026-09-15` | [Antigravity CLI b06 手冊 (HTML)](./AI/Antigravity_cli_b06.html) (HTML)
 * `2026-09-15` | [Antigravity CLI b06 手冊 (MD)](./AI/Antigravity_cli_b06.md) (MD)
-* `2026-09-11` | [AI 課程筆記 (09-10)](./AI/ai_0910.html) (HTML)
 * `2026-09-09` | [AI 課程筆記 (09-09)](./AI/AI_0909.HTML) (HTML)
-* `2026-09-04` | [CNN 卷積神經網路解析](./AI/ai_cnn.html) (HTML)
-* `2026-09-02` | [AI 課程筆記 (09-02)](./AI/ai_class_0902.html) (HTML)
-* `2026-09-02` | [AI 基礎單元 1](./AI/ai_1.html) (HTML)
-* `2026-09-02` | [AI 基礎單元 2 (HTML)](./AI/ai_2.html) (HTML)
 * `2026-09-02` | [AI 基礎單元 2 (HTM)](./AI/ai_2.htm) (HTM)
-* `2026-09-01` | [Attention-First 學習計畫](./AI/learning_plan_attention_first.html) (HTML)
 * `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
-* `2026-09-24` | [車用收音機事件廣播 14 頁 Marp 簡報 (Tech Theme) (HTML)](./ec/car_radio_traffic_broadcast_rds_ta_tunnel_slides.html) (HTML)
-* `2026-09-24` | [車用收音機事件廣播 14 頁 Marp 簡報 (Tech Theme) (MD)](./ec/car_radio_traffic_broadcast_rds_ta_tunnel.marp.md) (MD)
+* `2026-09-26` | [車用收音機事件廣播 14 頁 Marp 簡報 (Tech Theme) (HTML)](./ec/car_radio_traffic_broadcast_rds_ta_tunnel_slides.html) (HTML)
+* `2026-09-26` | [車用收音機事件廣播 14 頁 Marp 簡報 (Tech Theme) (MD)](./ec/car_radio_traffic_broadcast_rds_ta_tunnel.marp.md) (MD)
+* `2026-09-26` | [Arduino PIR (Pin 4) 繼電器 (Pin 2) 延遲 5 秒照明 (HTML)](./ec/arduino_pir_relay_delay.html) (HTML)
+* `2026-09-26` | [Arduino PIR (Pin 4) 繼電器 (Pin 2) 延遲 5 秒照明 (MD)](./ec/arduino_pir_relay_delay.md) (MD)
+* `2026-09-26` | [Arduino 數位控制繼電器電路與進階應用解析 (HTML)](./ec/arduino_relay.html) (HTML)
+* `2026-09-26` | [Arduino 數位控制繼電器電路與進階應用解析 (MD)](./ec/arduino_relay.md) (MD)
+* `2026-09-26` | [Arduino 紅外線感應繼電器電燈控制 (HTML)](./ec/arduino_pir_relay_light_control.html) (HTML)
+* `2026-09-26` | [Arduino 紅外線感應繼電器電燈控制 (MD)](./ec/arduino_pir_relay_light_control.md) (MD)
+* `2026-09-26` | [電磁線圈電鈴動態模擬與音效合成系統 (HTML)](./ec/electric_bell_coil_simulation.html) (HTML)
+* `2026-09-26` | [電磁線圈電鈴原理解析與數值模型 (MD)](./ec/electric_bell_coil_simulation.md) (MD)
+* `2026-09-26` | [繼電器控制電路與原理解析 (HTML)](./ec/relay_control_circuits.html) (HTML)
+* `2026-09-26` | [繼電器控制電路與原理解析 (MD)](./ec/relay_control_circuits.md) (MD)
+* `2026-09-26` | [電磁繼電器 SPDT 控制電路 (MD)](./ec/relay_spdt_circuit_analysis.md) (MD)
+* `2026-09-26` | [2路磁簧繼電器動態模擬 (HTML)](./ec/reed_relay_2ch_simulation.html) (HTML)
+* `2026-09-26` | [2路磁簧繼電器原理剖析 (MD)](./ec/reed_relay_2ch_simulation.md) (MD)
+* `2026-09-26` | [基礎電路實驗 1](./ec/ec_1.html) (HTML)
+* `2026-09-26` | [歐姆定律計算與工具](./ec/ohm.html) (HTML)
+* `2026-09-26` | [LED 限流電阻原理與實驗](./ec/led.html) (HTML)
 * `2026-09-24` | [車用收音機路況／事件廣播：隧道插播、RDS-TA 與相關技術 (HTML)](./ec/car_radio_traffic_broadcast_rds_ta_tunnel.html) (HTML)
 * `2026-09-24` | [車用收音機路況／事件廣播：隧道插播、RDS-TA 與相關技術 (MD)](./ec/car_radio_traffic_broadcast_rds_ta_tunnel.md) (MD)
-* `2026-09-24` | [Arduino PIR (Pin 4) 繼電器 (Pin 2) 延遲 5 秒照明 (HTML)](./ec/arduino_pir_relay_delay.html) (HTML)
-* `2026-09-24` | [Arduino PIR (Pin 4) 繼電器 (Pin 2) 延遲 5 秒照明 (MD)](./ec/arduino_pir_relay_delay.md) (MD)
 * `2026-09-24` | [Arduino PIR 與繼電器實驗相片](./ec/pir0924.jpg) (JPG)
-* `2026-09-24` | [Arduino 數位控制繼電器電路與進階應用解析 (HTML)](./ec/arduino_relay.html) (HTML)
-* `2026-09-24` | [Arduino 數位控制繼電器電路與進階應用解析 (MD)](./ec/arduino_relay.md) (MD)
 * `2026-09-24` | [Arduino 數位控制繼電器電路相片](./ec/arduino_relay.jpg) (JPG)
-* `2026-09-22` | [Arduino 紅外線感應繼電器電燈控制 (HTML)](./ec/arduino_pir_relay_light_control.html) (HTML)
-* `2026-09-22` | [Arduino 紅外線感應繼電器電燈控制 (MD)](./ec/arduino_pir_relay_light_control.md) (MD)
-* `2026-09-22` | [電磁線圈電鈴動態模擬與音效合成系統 (HTML)](./ec/electric_bell_coil_simulation.html) (HTML)
-* `2026-09-22` | [電磁線圈電鈴原理解析與數值模型 (MD)](./ec/electric_bell_coil_simulation.md) (MD)
-* `2026-09-17` | [繼電器控制電路與原理解析 (HTML)](./ec/relay_control_circuits.html) (HTML)
-* `2026-09-17` | [繼電器控制電路與原理解析 (MD)](./ec/relay_control_circuits.md) (MD)
 * `2026-09-17` | [繼電器雙電路實驗相片](./ec/relay_circuits_0917.jpg) (JPG)
 * `2026-09-17` | [Arduino 繼電器控制設計相片](./ec/arduino.jpg) (JPG)
 * `2026-09-15` | [電磁繼電器 SPDT 控制電路 (HTML)](./ec/relay_spdt_circuit_analysis.html) (HTML)
-* `2026-09-15` | [電磁繼電器 SPDT 控制電路 (MD)](./ec/relay_spdt_circuit_analysis.md) (MD)
-* `2026-09-15` | [2路磁簧繼電器動態模擬 (HTML)](./ec/reed_relay_2ch_simulation.html) (HTML)
-* `2026-09-15` | [2路磁簧繼電器原理剖析 (MD)](./ec/reed_relay_2ch_simulation.md) (MD)
 * `2026-09-15` | [繼電器控制電路設計相片](./ec/relay1.jpg) (JPG)
 * `2026-09-10` | [電機電子實驗 (09-10)](./ec/ee_0910.html) (HTML)
 * `2026-09-10` | [LED LaTeX 技術手冊](./ec/LED%20LaTeX%20EE-0910.pdf) (PDF)
 * `2026-09-10` | [LED 電路接線圖](./ec/LED.jpg) (JPG)
 * `2026-09-09` | [S1 AI 電路內容講義](./ec/S1_AI_Content_b06.pdf) (PDF)
-* `2026-09-08` | [基礎電路實驗 1](./ec/ec_1.html) (HTML)
 * `2026-09-08` | [電路實驗相片 1](./ec/20260908.jpg) (JPG)
 * `2026-09-08` | [紅色 LED 限流手冊](./ec/紅色%20LED%20限流電阻工程手冊與計算工具.pdf) (PDF)
-* `2026-09-03` | [歐姆定律計算與工具](./ec/ohm.html) (HTML)
-* `2026-09-01` | [LED 限流電阻原理與實驗](./ec/led.html) (HTML)
 
 ### 🤖 3. 樂高機器人 EV3 / SPIKE (`ev3/`)
+* `2026-09-26` | [雙感測器邏輯解析 (MD)](./ev3/nested_switch_distance_logic.md) (MD)
+* `2026-09-26` | [距離音訊回饋研究提案](./ev3/distance_audio_feedback_research.md) (MD)
+* `2026-09-26` | [樂高專題紀錄 (09-07)](./ev3/lego_0907.html) (HTML)
+* `2026-09-26` | [樂高基礎控制單元 1](./ev3/lego_1.html) (HTML)
 * `2026-09-21` | [馬達控制：Move Steering vs Move Tank 完整教學 (HTML)](./ev3/lego_motor_control.html) (HTML)
 * `2026-09-21` | [馬達控制：Move Steering vs Move Tank 完整教學 (MD)](./ev3/lego_motor_control.md) (MD)
 * `2026-09-14` | [樂高機器人專題筆記首頁](./ev3/index.html) (HTML)
 * `2026-09-14` | [雙感測器邏輯 (HTML)](./ev3/nested_switch_distance_logic.html) (HTML)
-* `2026-09-14` | [雙感測器邏輯解析 (MD)](./ev3/nested_switch_distance_logic.md) (MD)
 * `2026-09-14` | [雙 Switch 邏輯流程圖](./ev3/2swtcih.png) (PNG)
 * `2026-09-14` | [距離轉換音頻曲線圖](./ev3/cm2hz.jpg) (JPG)
-* `2026-09-07` | [距離音訊回饋研究提案](./ev3/distance_audio_feedback_research.md) (MD)
-* `2026-09-07` | [樂高專題紀錄 (09-07)](./ev3/lego_0907.html) (HTML)
-* `2026-08-31` | [樂高基礎控制單元 1](./ev3/lego_1.html) (HTML)
 * `2026-08-31` | [SPIKE 尋跡控制程式](./ev3/lego_spike_line_follower.py) (Python)
 
 ### 📐 4. 數學與機率統計 (`math/`)
 * `2026-09-03` | [數學與機率分布筆記 01](./math/math_01.html) (HTML)
 
 ### 🏯 5. 廟宇文化與 GIS 地圖 (`temple/`)
+* `2026-09-26` | [嘉義市歷史廟宇 GIS 地圖](./temple/temple_map.html) (HTML)
 * `2026-09-04` | [廟宇統計報告 (09-04)](./temple/嘉義市歷史廟宇統計報告_2026-09-04.pdf) (PDF)
-* `2026-09-03` | [嘉義市歷史廟宇 GIS 地圖](./temple/temple_map.html) (HTML)
 * `2026-09-03` | [廟宇統計報告 (09-03)](./temple/嘉義市歷史廟宇統計報告_2026-09-03.pdf) (PDF)
 
 ### 💃 6. 舞蹈美學與藝術研究 (`dance/`)
-* `2026-09-04` | [舞蹈美學與動作分析筆記](./dance/cd.html) (HTML)
+* `2026-09-26` | [舞蹈美學與動作分析筆記](./dance/cd.html) (HTML)
 
 ### 🎯 7. YOLO 物體偵測專題 (`yolo/`)
-* `2026-09-01` | [YOLO 手勢偵測說明文檔](./yolo/README.md) (MD)
+* `2026-09-26` | [YOLO 手勢偵測說明文檔](./yolo/README.md) (MD)
 * `2026-09-01` | [YOLO 主程式 main.py](./yolo/main.py) (Python)
 * `2026-09-01` | [手勢偵測模組 gesture_detector.py](./yolo/gesture_detector.py) (Python)
 * `2026-09-01` | [模型訓練指令腳本 train_gesture.py](./yolo/train_gesture.py) (Python)
 * `2026-09-01` | [環境套件需求表](./yolo/requirements.txt) (TXT)
 
 ### 🎨 8. 平面設計與 CorelDRAW (`design/`)
-* `2026-09-15` | [CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計實務教學](./design/coreldraw_keychain_design.html) (HTML)
-* `2026-09-15` | [CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計實務教學 (MD)](./design/coreldraw_keychain_design.md) (MD)
+* `2026-09-26` | [CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計實務教學](./design/coreldraw_keychain_design.html) (HTML)
+* `2026-09-26` | [CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計實務教學 (MD)](./design/coreldraw_keychain_design.md) (MD)
 
 ### 📋 9. 工作區指引與核心規範
+* `2026-09-26` | [根目錄 AI 課程總覽](./ai_0910.html) (HTML)
 * `2026-09-22` | [Multi-Agent 工作區規範](./AGENTS.md) (MD)
-* `2026-09-11` | [根目錄 AI 課程總覽](./ai_0910.html) (HTML)
 * `2026-09-10` | [筆記生成與更新標準指引](./NOTE_GENERATION_GUIDE.md) (MD)
 * `2026-09-10` | [Antigravity Note Rules](./GEMINI.md) (MD)
 
@@ -332,9 +332,13 @@
   ```
 - **變更摘要**: 提交車用收音機事件廣播 Marp 簡報（Tech Theme）、主題 CSS 與索引更新，並推播至 GitHub。
 
-
-
-
-
-
-
+### 🔹 [2026-09-26 23:10:00] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 全站內容正確性審查與勘誤
+- **模型/Agent**: Claude Opus 5.5 (claude-opus-5-5) / Claude Code
+- **Prompt 原文**:
+  ```text
+  檢視所有檔案內容中的敘述與說明，確認概念與敘述的正確性
+  修正後，將修改內容，附加在每個檔案的最下方區塊並標誌時間戳記與模型代號
+  確認概念與解釋說明都是正確的
+  go
+  ```
+- **變更摘要**: 全站概念與敘述正確性審查：修正 23 份筆記（36 個 md/html 檔）的技術錯誤（繼電器接線圖短路錯誤、P 控制器正負號、廟宇年代分級門檻、電鈴吸力公式、光耦隔離與反電動勢觀念、AI 模型架構敘述、舞蹈劇名等），各檔最下方追加變更紀錄；索引同步更新修改日期與排序後提交推送。

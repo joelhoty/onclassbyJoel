@@ -724,7 +724,7 @@
                     </div>
                     （亮度極亮，且低於 20mA 極為安全）
                 </li>
-                <li><strong>中等亮度時（旋鈕轉到中間約 $1\text{k}\Omega = 1000\,\Omega$）：</strong>
+                <li><strong>中等亮度時（旋鈕轉到約 1/10 行程，$1\text{k}\Omega = 1000\,\Omega$；線性 $10\text{k}\Omega$ 電位器轉到正中間時為 $5\text{k}\Omega$）：</strong>
                     <div class="formula-card">
                         $$ I = \frac{5\text{V} - 2\text{V}}{220\,\Omega + 1000\,\Omega} = \frac{3\text{V}}{1220\,\Omega} \approx 0.00246\text{A} = 2.46\text{mA} $$
                     </div>
@@ -901,5 +901,20 @@
         // 初始化執行一次
         updateSimulation();
     </script>
+
+<section style="max-width:1100px;margin:32px auto;padding:0 16px;">
+<h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+
+<div style="border-left:4px solid #2563eb;padding:12px 16px;margin:16px 0;background:rgba(37,99,235,0.06);border-radius:6px;" data-archive="claude-review-2026-09-26">
+<h3 style="margin-top:0;">🔹 [2026-09-26 23:01:05] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 變更紀錄</h3>
+<p><strong>模型/Agent</strong>: Claude Opus 5.5 (claude-opus-5-5) / Claude Code</p>
+<p><strong>Prompt 原文</strong>:</p>
+<pre><code>檢視所有檔案內容中的敘述與說明，確認概念與敘述的正確性
+修正後，將修改內容，附加在每個檔案的最下方區塊並標誌時間戳記與模型代號
+確認概念與解釋說明都是正確的</code></pre>
+<p><strong>變更摘要</strong>: 全面檢視概念與敘述正確性並修正：</p>
+<ul><li>線性 10kΩ 電位器轉到中間為 5kΩ，1kΩ 約為 1/10 行程</li></ul>
+</div>
+</section>
 </body>
 </html>

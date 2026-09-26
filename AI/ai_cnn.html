@@ -916,7 +916,7 @@
                     <div class="callout purple">
                         <div class="callout-title">💡 生成式 AI 中的 CNN 蹤影</div>
                         <p>
-                            例如在圖像生成模型 Stable Diffusion 中，負責將高維影像壓縮至潛在空間的 <strong>VAE (Variational Autoencoder)</strong> 以及在擴散過程中去噪的核心架構 <strong>U-Net</strong>，其本質都是基於深層 CNN 的卷積與轉置卷積（Transposed Convolution）運算！
+                            例如在圖像生成模型 Stable Diffusion 中，負責將高維影像壓縮至潛在空間的 <strong>VAE (Variational Autoencoder)</strong> 以及在擴散過程中去噪的核心架構 <strong>U-Net</strong>，都以卷積與轉置卷積（Transposed Convolution）／上採樣為骨幹（U-Net 中另穿插 Transformer 注意力層以注入文字條件；新一代的 SD3、FLUX 則改用 DiT／MMDiT 架構）！
                         </p>
                     </div>
                 </div>
@@ -1020,7 +1020,7 @@
                         </div>
                         <div class="info-card">
                             <h4>3. 空間降採樣 (Downsampling / Pooling)</h4>
-                            <p>透過池化層逐步縮小特徵圖尺寸，降低計算量並獲得更強的平移與轉動容忍度。</p>
+                            <p>透過池化層逐步縮小特徵圖尺寸，降低計算量並獲得一定程度的平移容忍度（對旋轉的容忍度有限，多需靠資料增強）。</p>
                         </div>
                     </div>
                 </div>
@@ -1733,5 +1733,20 @@
             renderGrids();
         };
     </script>
+
+<section style="max-width:1100px;margin:32px auto;padding:0 16px;">
+<h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+
+<div style="border-left:4px solid #2563eb;padding:12px 16px;margin:16px 0;background:rgba(37,99,235,0.06);border-radius:6px;" data-archive="claude-review-2026-09-26">
+<h3 style="margin-top:0;">🔹 [2026-09-26 23:01:05] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 變更紀錄</h3>
+<p><strong>模型/Agent</strong>: Claude Opus 5.5 (claude-opus-5-5) / Claude Code</p>
+<p><strong>Prompt 原文</strong>:</p>
+<pre><code>檢視所有檔案內容中的敘述與說明，確認概念與敘述的正確性
+修正後，將修改內容，附加在每個檔案的最下方區塊並標誌時間戳記與模型代號
+確認概念與解釋說明都是正確的</code></pre>
+<p><strong>變更摘要</strong>: 全面檢視概念與敘述正確性並修正：</p>
+<ul><li>Stable Diffusion U-Net 為卷積＋注意力混合架構，SD3／FLUX 已改用 DiT／MMDiT</li><li>池化提供有限的平移容忍度，對旋轉容忍度有限</li></ul>
+</div>
+</section>
 </body>
 </html>

@@ -566,12 +566,12 @@
     <span class="keyword">SET</span> Turn = Error * Kp
 
     <span class="comment">// 動態設定左右馬達功率 (Assuming B=Left, C=Right)</span>
-    <span class="function">SetMotorPower</span>(Motor_B, BasePower + Turn)
-    <span class="function">SetMotorPower</span>(Motor_C, BasePower - Turn)
+    <span class="function">SetMotorPower</span>(Motor_B, BasePower - Turn)
+    <span class="function">SetMotorPower</span>(Motor_C, BasePower + Turn)
 <span class="keyword">END LOOP</span></code></pre>
 
         <h3 style="margin-top: 35px; color: var(--primary-color); border-top: 1px dashed var(--border-color); padding-top: 20px;">🐍 LEGO SPIKE Prime MicroPython 實作程式碼 (含詳細註解)</h3>
-        <p>若您使用的是 <strong>LEGO Education SPIKE Prime</strong> 機器人，可以直接採用以下 MicroPython 程式碼進行實作：</p>
+        <p>若您使用的是 <strong>LEGO Education SPIKE Prime</strong> 機器人，可以直接採用以下 MicroPython 程式碼進行實作（使用 SPIKE 舊版 2.x 的 <code>spike</code> 模組；SPIKE App 3.x 的 API 不同）：</p>
 
         <h4 style="margin-top: 15px; color: #f1f5f9;">1. 兩態切換法 MicroPython (On-Off Control)</h4>
 <pre><code><span class="comment"># =========================================================</span>
@@ -645,8 +645,8 @@ BASE_SPEED = <span class="number">35</span>       <span class="comment"># 車輪
     <span class="comment"># 步驟 (4)：計算左右車輪個自應輸出的馬達功率</span>
     <span class="comment"># 壓白時 (turn > 0): 左輪減速、右輪加速 -> 車頭左轉切回黑線</span>
     <span class="comment"># 壓黑時 (turn < 0): Left Power 增大、Right Power 減小 -> 車頭右轉甩出黑線</span>
-    left_power = int(BASE_SPEED + turn)
-    right_power = int(BASE_SPEED - turn)
+    left_power = int(BASE_SPEED - turn)
+    right_power = int(BASE_SPEED + turn)
     
     <span class="comment"># 步驟 (5)：限制馬達功率在安全數值範圍 [-100, 100] 以內，避免馬達爆速溢位</span>
     left_power = max(-<span class="number">100</span>, min(<span class="number">100</span>, left_power))
@@ -811,7 +811,7 @@ BASE_SPEED = <span class="number">35</span>       <span class="comment"># 車輪
             <div class="block-item">
                 <span class="block-badge block-blue">智慧倉儲</span>
                 <h4>1. AGV 無人搬運車 (Automated Guided Vehicles)</h4>
-                <p>在亞馬遜 (Amazon) 倉儲或台積電晶圓廠中，AGV 機器人沿著地面鋪設的光學色帶或磁性軌跡行駛，實現 24 小時無人化貨物搬運與精密物料派送。</p>
+                <p>在工廠與倉儲中，許多 AGV 機器人沿著地面鋪設的光學色帶或磁條行駛（亞馬遜倉儲機器人則以地面二維碼標記導航，晶圓廠多使用天車 OHT 系統），實現 24 小時無人化貨物搬運與精密物料派送。</p>
             </div>
 
             <div class="block-item">
@@ -848,11 +848,11 @@ BASE_SPEED = <span class="number">35</span>       <span class="comment"># 車輪
 
         <div class="info-box warning">
             <strong>🏎️ 2. 動態車速自適應控制 (Dynamic Speed Ramp / Cornering Speed)</strong>
-            <p>固定速度會限制直線表現（直線太慢、彎道太快甩尾）。程式可加入<strong>「直線加速、急灣減速」</strong>的智慧邏輯：</p>
+            <p>固定速度會限制直線表現（直線太慢、彎道太快甩尾）。程式可加入<strong>「直線加速、急彎減速」</strong>的智慧邏輯：</p>
             <pre style="margin-top: 10px;"><code><span class="comment">// 根據偏差大小 Error 動態計算基準車速 (當偏差越小表示在直線，速度升至最大)</span>
 <span class="keyword">SET</span> DynamicSpeed = MaxSpeed - (abs(Error) * SpeedScale)
-<span class="function">SetMotorPower</span>(LeftMotor, DynamicSpeed + Turn)
-<span class="function">SetMotorPower</span>(RightMotor, DynamicSpeed - Turn)</code></pre>
+<span class="function">SetMotorPower</span>(LeftMotor, DynamicSpeed - Turn)
+<span class="function">SetMotorPower</span>(RightMotor, DynamicSpeed + Turn)</code></pre>
         </div>
 
         <ol class="step-list" style="margin-top: 20px;">
@@ -881,5 +881,20 @@ BASE_SPEED = <span class="number">35</span>       <span class="comment"># 車輪
 
 </div>
 
+
+<section style="max-width:1100px;margin:32px auto;padding:0 16px;">
+<h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+
+<div style="border-left:4px solid #2563eb;padding:12px 16px;margin:16px 0;background:rgba(37,99,235,0.06);border-radius:6px;" data-archive="claude-review-2026-09-26">
+<h3 style="margin-top:0;">🔹 [2026-09-26 23:01:05] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 變更紀錄</h3>
+<p><strong>模型/Agent</strong>: Claude Opus 5.5 (claude-opus-5-5) / Claude Code</p>
+<p><strong>Prompt 原文</strong>:</p>
+<pre><code>檢視所有檔案內容中的敘述與說明，確認概念與敘述的正確性
+修正後，將修改內容，附加在每個檔案的最下方區塊並標誌時間戳記與模型代號
+確認概念與解釋說明都是正確的</code></pre>
+<p><strong>變更摘要</strong>: 全面檢視概念與敘述正確性並修正：</p>
+<ul><li>修正 P 控制器左右馬達正負號：原程式與註解相反（壓白時應左輪減速右輪加速），虛擬碼、MicroPython 與動態車速範例同步修正</li><li>AGV 應用：亞馬遜倉儲以地面二維碼導航、晶圓廠多用天車 OHT；註明 SPIKE 程式為 2.x spike 模組 API；錯字修正</li></ul>
+</div>
+</section>
 </body>
 </html>

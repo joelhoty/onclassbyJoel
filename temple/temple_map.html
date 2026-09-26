@@ -121,9 +121,9 @@
                 <!-- 年代分級篩選 -->
                 <select id="filter-era" class="bg-white border border-amber-300 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-sm">
                     <option value="all">全部年代 (80年以上)</option>
-                    <option value="300">300年以上 (明鄭~康熙, 1716以前)</option>
-                    <option value="150">150 - 300年 (雍正~道光, 1717-1875)</option>
-                    <option value="80">80 - 150年 (光緒~日治二戰前, 1876-1946)</option>
+                    <option value="300">300年以上 (明鄭~雍正初, 1726以前)</option>
+                    <option value="150">150 - 300年 (雍正~光緒初, 1727-1876)</option>
+                    <option value="80">80 - 150年 (光緒~日治二戰前, 1877-1946)</option>
                 </select>
             </div>
 
@@ -160,6 +160,19 @@
             <div id="temple-list" class="flex-1 overflow-y-auto divide-y divide-amber-100 p-2 space-y-2">
                 <!-- 廟宇項目由 JavaScript 動態生成 -->
             </div>
+            <details class="border-t border-amber-200 bg-amber-50 text-xs p-2 max-h-72 overflow-y-auto">
+                <summary class="cursor-pointer font-bold text-amber-900">📝 提示詞歷史與變更記錄 (Prompt Archive)</summary>
+<div style="border-left:4px solid #2563eb;padding:12px 16px;margin:16px 0;background:rgba(37,99,235,0.06);border-radius:6px;" data-archive="claude-review-2026-09-26">
+<h3 style="margin-top:0;">🔹 [2026-09-26 23:01:05] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 變更紀錄</h3>
+<p><strong>模型/Agent</strong>: Claude Opus 5.5 (claude-opus-5-5) / Claude Code</p>
+<p><strong>Prompt 原文</strong>:</p>
+<pre><code>檢視所有檔案內容中的敘述與說明，確認概念與敘述的正確性
+修正後，將修改內容，附加在每個檔案的最下方區塊並標誌時間戳記與模型代號
+確認概念與解釋說明都是正確的</code></pre>
+<p><strong>變更摘要</strong>: 全面檢視概念與敘述正確性並修正：</p>
+<ul><li>年代分級門檻改以 2026 年計算：300 年以上 ≤1726、150–300 年 1727–1876、80–150 年 1877–1946；原門檻 1716／1875 使 1720 年創建（306 年）的廟宇被誤分到 150–300 年</li></ul>
+</div>
+            </details>
         </aside>
 
         <!-- 右側地圖容器 -->
@@ -557,8 +570,8 @@
 
         // 取得年份對應的顏色與樣式
         function getEraColor(year) {
-            if (year <= 1716) return { bg: '#991b1b', text: '300年以上', class: 'bg-red-800' }; // 清初/明鄭 >300年
-            if (year <= 1875) return { bg: '#c2410c', text: '150-300年', class: 'bg-orange-600' }; // 清中晚期
+            if (year <= 2026 - 300) return { bg: '#991b1b', text: '300年以上', class: 'bg-red-800' }; // 清初/明鄭 >300年
+            if (year <= 2026 - 150) return { bg: '#c2410c', text: '150-300年', class: 'bg-orange-600' }; // 清中晚期
             return { bg: '#d97706', text: '80-150年', class: 'bg-amber-600' }; // 日治至二戰前
         }
 
@@ -691,9 +704,9 @@
 
                 // 年代分級篩選
                 let matchesEra = true;
-                if (eraFilter === '300') matchesEra = t.year <= 1716; // >300年
-                else if (eraFilter === '150') matchesEra = t.year > 1716 && t.year <= 1875; // 150-300年
-                else if (eraFilter === '80') matchesEra = t.year > 1875 && t.year <= 1946; // 80-150年
+                if (eraFilter === '300') matchesEra = t.year <= 2026 - 300; // >300年
+                else if (eraFilter === '150') matchesEra = t.year > 2026 - 300 && t.year <= 2026 - 150; // 150-300年
+                else if (eraFilter === '80') matchesEra = t.year > 2026 - 150 && t.year <= 2026 - 80; // 80-150年
 
                 return matchesSearch && matchesDeity && matchesEra;
             });

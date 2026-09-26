@@ -539,7 +539,7 @@
         </div>
 
         <div class="metadata-box">
-            <div>📅 <strong>最後更新時間:</strong> 2026-09-24 14:13:32 (UTC+8)</div>
+            <div>📅 <strong>最後更新時間:</strong> 2026-09-26 23:01:05 (UTC+8)</div>
             <div>🤖 <strong>使用模型:</strong> Gemini 3.8 Flash</div>
             <div>💼 <strong>執行 Agent:</strong> Antigravity</div>
             <div>📁 <strong>學門分類:</strong> 電子電路與硬體實驗 (<code>ec/</code>)</div>
@@ -571,7 +571,7 @@
                 在模擬中，Arduino Uno 板載的 ATmega328P 晶片上方出現了警告標誌。這代表電路存在嚴重的潛在硬體危害：
                 <ol style="margin-top:0.5rem; margin-bottom:0;">
                     <li><strong>GPIO 輸出過電流 (Overcurrent)</strong>：ATmega328P 單一腳位建議安全電流為 $\le 20\text{mA}$（極限 $40\text{mA}$）。KS2E 繼電器線圈電阻僅約 $125\Omega \sim 167\Omega$，直接以 Pin 2 驅動會抽載 $30\text{mA} \sim 40\text{mA}$，造成引腳過載發熱與電壓驟降。</li>
-                    <li><strong>缺乏續流二極體（反電動勢擊穿風險）</strong>：線圈為電感元件，當 Pin 2 由 HIGH 轉為 LOW 瞬間，$v_L = L \frac{di}{dt}$ 會感應出數十至數百伏特之極高反向脈衝，在實體電路中會瞬間打穿單晶片 GPIO 內部防護，導致晶片永久損毀。</li>
+                    <li><strong>缺乏續流二極體（反電動勢擊穿風險）</strong>：線圈為電感元件，當 Pin 2 由 HIGH 轉為 LOW 瞬間，$v_L = L \frac{di}{dt}$ 會產生反向感應電流；由腳位直驅時，這股電流被迫流經 GPIO 內部的 ESD 防護二極體與輸出級（若改用電晶體驅動而沒有續流二極體，集極端才會出現數十至數百伏特高壓），反覆承受可能導致該腳位永久損毀。</li>
                 </ol>
             </div>
         </div>
@@ -600,7 +600,7 @@
             <ul>
                 <li><strong>電流緩衝與功率放大（Current Amplification）</strong>：微控制器單一 GPIO 建議安全電流僅約 $\le 5\text{mA}$，而繼電器線圈需要 $40\text{mA} \sim 100\text{mA}$。NPN 電晶體擔任「小電流閥門」，Arduino Pin 2 僅需輸出微弱的基極電流（$I_B \approx 4.3\text{mA}$），即可輕鬆打通高達 $40\text{mA}$ 的線圈回路。</li>
                 <li><strong>共地參考驅動便利性（Ground-Referenced Driving）</strong>：將開關元件配置於「負載與系統地（GND）之間」稱為<strong>低側開關（Low-Side Switch）</strong>。由於射極直接接 GND（$V_E = 0\text{V}$），無論線圈端電壓多高，微控制器的邏輯 HIGH 電位（$5\text{V}$ 或 $3.3\text{V}$）始終能直接相對於 GND 建立穩定的基-射極導通電壓（$V_{BE} \approx 0.7\text{V}$）。</li>
-                <li><strong>免除高側浮動驅動困境</strong>：若開關置於 $+5\text{V}$ 與線圈之間（高側開關），開關導通時射極電位會抬升至接近 $+5\text{V}$，控制端必須提供更高或浮動的控制信號才能關斷，面對 $3.3\text{V}$ 現代 MCU 時將無法正常關斷，電路複雜度大增。</li>
+                <li><strong>免除高側驅動困境</strong>：若開關置於 $+5\text{V}$ 與線圈之間（高側開關）：用 NPN 時射極只能跟隨到 $V_B - 0.7\text{V}$，線圈得不到全額電壓；用 PNP 時基極必須被拉到接近 $+5\text{V}$ 才能關斷，$3.3\text{V}$ MCU 無法直接做到，電路複雜度大增。</li>
             </ul>
 
             <p style="margin-top:1rem;"><strong>2. 微觀半導體載子傳輸與兩大極限狀態：</strong></p>
@@ -663,12 +663,12 @@
                         <td><strong>續流保護級</strong></td>
                         <td>二極體 (1N4007 / 1N4148 / 1N5819)</td>
                         <td>斷電瞬間提供電感電流循環迴路，將反向感應電壓鉗位在 $V_{\text{CC}} + 0.7\text{V}$，消除高壓電弧。</td>
-                        <td><strong>1N4148</strong>：反應時間極快 ($4\text{ns}$)，適合小訊號繼電器；<br><strong>1N4007</strong>：耐壓 $1000\text{V}/1\text{A}$，突波耐受力強，通用性廣；<br><strong>1N5819</strong>：肖特基超低壓降 ($0.3\text{V}$)，鉗位在 $+5.3\text{V}$。</td>
+                        <td><strong>1N4148</strong>：反向恢復時間 $t_{rr} \approx 4\text{ns}$（續流時二極體由截止轉導通，$t_{rr}$ 並非關鍵），額定電流約 $200\sim300\text{mA}$，適合小訊號繼電器；<br><strong>1N4007</strong>：耐壓 $1000\text{V}/1\text{A}$，突波耐受力強，通用性廣；<br><strong>1N5819</strong>：肖特基超低壓降 ($0.3\text{V}$)，鉗位在 $+5.3\text{V}$。</td>
                     </tr>
                     <tr>
                         <td><strong>光耦隔離級</strong></td>
                         <td>PC817 (光耦合器)</td>
-                        <td>利用紅外發光與光敏受光，實現控制端與功率驅動端完全的電氣接地隔離。</td>
+                        <td>利用紅外發光與光敏受光，在移除 JD-VCC 跳線、線圈側使用獨立電源時，可實現控制端與線圈驅動端的電氣隔離（與 Arduino 共用 GND 時則未隔離）。</td>
                         <td>隔離耐壓達 $5000\text{V}_{\text{rms}}$，徹底防止負載端突波反灌 MCU 造成重置或當機。</td>
                     </tr>
                 </tbody>
@@ -757,11 +757,11 @@
 
                 <!-- 4. 續流二極體 1N4007 (跨接於線圈兩端) -->
                 <!-- 陰極接 +5V 線條 -->
-                <path d="M 190 230 L 480 230 L 480 180 L 545 180" fill="none" stroke="#ef4444" stroke-width="3.5"/>
+                <path d="M 190 230 L 480 230 L 480 155 M 480 180 L 545 180" fill="none" stroke="#ef4444" stroke-width="3.5"/>
                 <!-- 二極體符號本體 -->
                 <g transform="translate(480, 135)">
                     <rect x="-12" y="-20" width="24" height="40" rx="3" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
-                    <!-- 銀色陰極色環 (朝向 +5V 端, 上方) -->
+                    <!-- 銀色陰極色環 (朝向 +5V 端, 下方) -->
                     <rect x="-12" y="12" width="24" height="6" fill="#e2e8f0"/>
                     <text x="-18" y="3" fill="#cbd5e1" font-size="10" text-anchor="end">1N4007</text>
                     <text x="16" y="17" fill="#e2e8f0" font-size="9">陰極(色環)</text>
@@ -1113,7 +1113,7 @@ if (motionVal == HIGH && lightVal < 400) {
                     <tr>
                         <td><strong>開關反應速度</strong></td>
                         <td>較慢（約 $5\text{ms} \sim 15\text{ms}$）</td>
-                        <td>極快（微秒級，支援低頻 PWM 調光調溫）</td>
+                        <td>較快（DC MOSFET 型為微秒級；AC 零交越型需等電壓過零，最長約半週期 8.3~10 ms），可做低頻週期式調溫</td>
                     </tr>
                     <tr>
                         <td><strong>接觸火花與壽命</strong></td>
@@ -1139,8 +1139,8 @@ if (motionVal == HIGH && lightVal < 400) {
                 <strong>實體交流強電實驗前務必詳閱以下安全三原則：</strong>
                 <ol style="margin-top:0.5rem; margin-bottom:0;">
                     <li><strong>嚴禁切斷中性線（Neutral, N）</strong>：繼電器接點必須**串聯於火線（Live, L）**。若誤切中線，雖然燈具熄滅，但燈具內部仍充斥對地 110V/220V 高電位，人體誤觸將發生致命觸電！</li>
-                    <li><strong>感性負載加裝 RC 阻容吸收器（Snubber）</strong>：切換風扇、馬達等感性負載時，接點分斷瞬間會產生數千伏特火花電弧，應跨接 $0.1\mu\text{F} + 100\Omega$ 吸收回路保護繼電器接點。</li>
-                    <li><strong>高低壓電路物理隔離淨距</strong>：PCB 佈線時，弱電微控制器走線與強電高壓端子之間應保持至少 $3\text{mm} \sim 5\text{mm}$ 以上的安全爬電距離（Creepage Distance），防止高壓電弧擊穿。</li>
+                    <li><strong>感性負載加裝 RC 阻容吸收器（Snubber）</strong>：切換風扇、馬達等感性負載時，接點分斷瞬間會產生高壓感應突波與火花電弧，應跨接 $0.1\mu\text{F} + 100\Omega$ 吸收回路保護繼電器接點。</li>
+                    <li><strong>高低壓電路物理隔離淨距</strong>：PCB 佈線時，弱電微控制器走線與強電高壓端子之間應依安規保持足夠的安全爬電距離（Creepage Distance；市電 250V 強化絕緣一般約 $5\text{mm} \sim 8\text{mm}$），防止高壓電弧擊穿。</li>
                 </ol>
             </div>
         </div>
@@ -1181,7 +1181,18 @@ if (motionVal == HIGH && lightVal < 400) {
             </div>
             <p><strong>變更摘要</strong>: 深度補強 NPN 電晶體低側開關三大功能（電流放大緩衝、共地參考驅動、零功耗開關）與微觀雙接面載子傳輸機制（截止態 vs 深度飽和態及強制增益公式），詳解電感線圈楞次定律極性驟變、法拉第電磁感應反衝機制、一階 RL 指數衰減放電方程與二極體選型指南（1N4148 vs 1N4007 vs 1N5819 肖特基）。</p>
         </div>
-    </div>
+    
+<div class="archive-card" style="border-left:4px solid #2563eb;padding:12px 16px;margin:16px 0;background:rgba(37,99,235,0.06);border-radius:6px;" data-archive="claude-review-2026-09-26">
+<h3 style="margin-top:0;">🔹 [2026-09-26 23:01:05] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 變更紀錄</h3>
+<p><strong>模型/Agent</strong>: Claude Opus 5.5 (claude-opus-5-5) / Claude Code</p>
+<p><strong>Prompt 原文</strong>:</p>
+<pre><code>檢視所有檔案內容中的敘述與說明，確認概念與敘述的正確性
+修正後，將修改內容，附加在每個檔案的最下方區塊並標誌時間戳記與模型代號
+確認概念與解釋說明都是正確的</code></pre>
+<p><strong>變更摘要</strong>: 全面檢視概念與敘述正確性並修正：</p>
+<ul><li>重繪 1.3 節 ASCII 接線圖：原圖把 +5V 電源軌畫成接到 GND、線圈端子 1 接到 GND（短路錯誤）</li><li>修正直驅反電動勢敘述：直驅時是反向電流流經 GPIO 內部 ESD 二極體；數十至數百伏高壓出現在電晶體驅動且無二極體時</li><li>高側開關說明改為 NPN 射極跟隨/PNP 關斷電壓問題；刪除 BJT 不適用的「柵極」用語；基極注入的是基極電流（電洞）而非電子</li><li>1N4148 的 t_rr 在續流應用並非關鍵；RL 指數衰減標註為近似並補充釋放變慢與齊納加速</li><li>光耦隔離條件（JD-VCC 跳線）；SSR 零交越型切換延遲最長約半週期；EMR 電氣/機械壽命區分</li><li>刪除「數千伏電弧」誇大敘述；看門狗無法解除接點熔焊；LINE Notify 已於 2025-03-31 停止服務；爬電距離改為 5~8 mm；「应用」簡體字修正</li><li>HTML 版 SVG 接線圖補上二極體與 +5V 導線之間的斷點</li></ul>
+</div>
+</div>
 
 </div>
 

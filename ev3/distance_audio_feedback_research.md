@@ -83,10 +83,10 @@ flowchart TD
    - 頻率：$$f(D) = 2600 - 23.5 \times (D - 5) \quad (\text{Hz})$$
    - 間隔：$$T_{\text{wait}}(D) = \max\left(0.04,\, 0.006 \times D\right) \quad (\text{秒})$$
 
-2. **雙曲急迫曲線 (Inverse Hyperbolic Curve)**：
+2. **反比雙曲急迫曲線 (Reciprocal Hyperbolic Curve)**：
    - 頻率：$$f(D) = 300 + \frac{18000}{D + 2} \quad (\text{Hz})$$
 
-3. **指數縮放嗶聲間隔 (Exponential Interval Curve)**：
+3. **二次方縮放嗶聲間隔 (Quadratic Interval Curve；備選公式，第 2 章後的實作改用 $t = \max(0.04, 0.006D)$)**：
    - 間隔：$$T_{\text{interval}}(D) = 0.03 + 0.8 \times \left(\frac{D}{100}\right)^2 \quad (\text{秒})$$
 
 4. **一階低通平滑濾波器 (Low-Pass Filter)**：
@@ -125,8 +125,8 @@ flowchart LR
 
         US ==>|黃色數據線: 距離 D| Math1
         US ==>|黃色數據線: 距離 D| Math2
-        Math1 ==>|紅色數據線: 頻率 f| Sound
-        Math2 ==>|藍色數據線: 時間 t| Wait
+        Math1 ==>|黃色數據線(數字): 頻率 f| Sound
+        Math2 ==>|黃色數據線(數字): 時間 t| Wait
         Sound --> Wait
     end
 
@@ -303,7 +303,7 @@ if __name__ == "__main__":
 | 軟體名稱 | 核心引擎 / 平台 | 狀態 | 相容作業系統 | 官方說明與線上下載連結 |
 | :--- | :--- | :--- | :--- | :--- |
 | **EV3 Lab (經典桌面版)** | NI LabVIEW G-code | Retired (已退役) | Windows 7/8/10, macOS (≤ 10.14) | [LEGO Education Retired EV3 Lab Downloads](https://education.lego.com/en-us/downloads/retiredproducts/mindstorms-ev3-lab/software) |
-| **EV3 Classroom (跨平台 App)** | Scratch 3.0 LPF2 | Active (現行版) | Win 10/11, macOS, iOS, Android, ChromeOS | [LEGO Education EV3 Classroom Software](https://education.lego.com/en-us/downloads/mindstorms-ev3/software) |
+| **EV3 Classroom (跨平台 App)** | Scratch 3.0 | Active (現行版) | Win 10/11, macOS, iOS, Android, ChromeOS | [LEGO Education EV3 Classroom Software](https://education.lego.com/en-us/downloads/mindstorms-ev3/software) |
 | **EV3 MicroPython** | Pybricks MicroPython | Active (進階版) | 跨平台 (VS Code + SD 卡) | [Pybricks EV3 Documentation](https://pybricks.com/) |
 | **EV3 官方產品資源與指南** | 官方手冊 / 課堂教案 | Active (維護中) | 全平台 Web 資源 | [LEGO Education Product Resources](https://education.lego.com/en-us/product-resources/mindstorms-ev3/) |
 | **EV3 官方韌體更新指南** | EV3 Brick Firmware | Active | 全平台 | [LEGO EV3 Firmware Update Page](https://education.lego.com/en-us/product-resources/mindstorms-ev3/downloads/firmware-update) |
@@ -315,3 +315,20 @@ if __name__ == "__main__":
 > 記錄日期：2026 年 09 月 07 日  
 > 🕒 戳記時間：`2026-09-07 16:13:36 (UTC+8)`  
 > 🤖 模型代號：`Gemini 3.8 Flash`
+
+---
+
+## 📝 提示詞歷史與變更記錄 (Prompt Archive)
+
+### 🔹 [2026-09-26 23:01:05] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 變更紀錄
+- **模型/Agent**: Claude Opus 5.5 (claude-opus-5-5) / Claude Code
+- **Prompt 原文**:
+  ```text
+  檢視所有檔案內容中的敘述與說明，確認概念與敘述的正確性
+  修正後，將修改內容，附加在每個檔案的最下方區塊並標誌時間戳記與模型代號
+  確認概念與解釋說明都是正確的
+  ```
+- **變更摘要**: 全面檢視概念與敘述正確性並修正：
+  - EV3-G 數字資料線為黃色（原標示紅色、藍色）
+  - 1/(D+2) 為反比雙曲線（非 inverse hyperbolic）；間隔公式為二次方（非指數），並註明實作採 max(0.04, 0.006D)
+  - EV3 Classroom 核心為 Scratch 3.0（刪除誤植的 LPF2）

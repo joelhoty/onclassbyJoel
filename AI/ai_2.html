@@ -937,13 +937,13 @@
                 
                 <div class="callout-analogy">
                     <div class="callout-title"><i class="fa-solid fa-eye"></i> 比喻一：原生多模態 vs 拼貼翻譯</div>
-                    <p style="margin-bottom:0.4rem;"><strong>傳統 AI 像「看簡體字幕的外國人」：</strong>看照片時，必須先用一個視角模型把照片轉成文字說明，再交給語言模型思考。中間轉換過程會漏掉大量視覺細節。</p>
+                    <p style="margin-bottom:0.4rem;"><strong>外掛式 AI 像「透過翻譯員溝通」：</strong>早期做法是先用視覺模型把照片轉成文字說明，再交給語言模型；多數現代視覺語言模型則外接視覺編碼器，把影像轉成向量再接到語言模型。兩者都是「後接」的，模態之間容易有資訊落差。</p>
                     <p style="margin-bottom:0;"><strong>Gemini 原生多模態像「眼睛耳朵大腦合一的大師」：</strong>大腦從一開始訓練時，就同時學會看影像、聽聲音、讀文字。能一眼看出「圖片裡這瓶醬油標籤的細微過期日期」。</p>
                 </div>
 
                 <div class="callout-analogy">
                     <div class="callout-title"><i class="fa-solid fa-hospital-user"></i> 比喻二：MoE (混合專家) 像大型醫院分診系統</div>
-                    <p style="margin-bottom:0;">模型內部就像一間擁有幾百位專科醫生的醫院。當你提出一個「程式語言」問題時，門控系統 (Router) 只會幫你掛號給「程式碼專家」與「邏輯專家」，其餘 98% 的醫生都在休息。這樣做能讓模型<strong>運算速度極快、成本極低，但智商依然超高</strong>！</p>
+                    <p style="margin-bottom:0;">模型內部就像一間擁有幾百位專科醫生的醫院。當你提出一個「程式語言」問題時，門控系統 (Router) 只會幫你掛號給「程式碼專家」與「邏輯專家」，其餘大部分醫生都在休息（比喻限制：實際 MoE 的「專家」是每一層、每個 token 由路由器挑選的子網路，並不會整齊對應「程式專家」「醫療專家」這類人類學科分工）。這樣做能讓模型<strong>運算速度極快、成本極低，但智商依然超高</strong>！</p>
                 </div>
 
                 <!-- 架構圖 4：Gemini MoE 原生多模態 -->
@@ -1110,5 +1110,20 @@
             });
         });
     </script>
+
+<section style="max-width:1100px;margin:32px auto;padding:0 16px;">
+<h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+
+<div style="border-left:4px solid #2563eb;padding:12px 16px;margin:16px 0;background:rgba(37,99,235,0.06);border-radius:6px;" data-archive="claude-review-2026-09-26">
+<h3 style="margin-top:0;">🔹 [2026-09-26 23:01:05] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 變更紀錄</h3>
+<p><strong>模型/Agent</strong>: Claude Opus 5.5 (claude-opus-5-5) / Claude Code</p>
+<p><strong>Prompt 原文</strong>:</p>
+<pre><code>檢視所有檔案內容中的敘述與說明，確認概念與敘述的正確性
+修正後，將修改內容，附加在每個檔案的最下方區塊並標誌時間戳記與模型代號
+確認概念與解釋說明都是正確的</code></pre>
+<p><strong>變更摘要</strong>: 全面檢視概念與敘述正確性並修正：</p>
+<ul><li>多數現代 VLM 以視覺編碼器輸出向量接語言模型，而非先轉成文字</li><li>補充 MoE 比喻限制：專家為每層、每 token 路由的子網路，不對應人類學科</li></ul>
+</div>
+</section>
 </body>
 </html>
