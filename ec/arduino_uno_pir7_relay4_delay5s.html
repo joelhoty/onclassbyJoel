@@ -456,7 +456,7 @@
         </div>
 
         <div class="metadata-box">
-            <div>🕒 <strong>最後更新時間:</strong> 2026-09-29 14:53:04 (UTC+8)</div>
+            <div>🕒 <strong>最後更新時間:</strong> 2026-09-29 14:57:46 (UTC+8)</div>
             <div>🤖 <strong>使用模型:</strong> Gemini 3.8 Flash</div>
             <div>⚡ <strong>執行 Agent:</strong> Antigravity</div>
             <div>📂 <strong>主題分類:</strong> 電子電路與微控制器 (`ec/`)</div>
@@ -467,6 +467,23 @@
     <section class="card">
         <h2>📖 系統導論與硬體規格 (System Introduction)</h2>
         <p>在自動化感應開關與智慧節能系統中，本設計實現經典的「**人來燈亮、人走延遲 5 秒自動熄滅**」控制模式。使用 <strong>Arduino Uno</strong> 作為核心控制器，透過 <strong>Pin 7</strong> 讀取 PIR 人體紅外線感應器信號，透過 <strong>Pin 4</strong> 輸出控制信號驅動電磁繼電器模組。</p>
+
+        <div class="alert alert-info">
+            <span class="alert-icon">💡</span>
+            <div>
+                <strong>雙 Prompt 設計演進歷程：</strong>
+                <ul>
+                    <li><strong>Prompt 1 (阻塞式基礎版)</strong>：採用簡單直觀的 <code>delay(5000)</code>，但程式會在倒數 5 秒內被完全卡死，若人於第 2 秒折返將無法捕捉。</li>
+                    <li><strong>Prompt 2 (非阻塞式工業版)</strong>：重構為非阻塞 <code>millis()</code> 狀態機，即使處於離去倒數計時中，人員折返即可立即撤銷倒數並重設計時，保持燈光穩定無閃爍！</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>📷 系統接線實驗截圖 (Tinkercad Circuits 0929-1.jpg)</h3>
+        <div style="text-align: center; margin: 1.5rem 0; background: #f8fafc; padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+            <img src="./0929-1.jpg" alt="Arduino Uno PIR Pin 7 與 繼電器 Pin 4 實驗接線圖" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: var(--shadow);">
+            <p style="margin-top: 0.5rem; font-size: 0.88rem; color: var(--text-muted);">圖 1：Tinkercad Circuits 模擬接線（Parallax PIR 感測器信號接 Pin 7，KS2E-M-DC5 繼電器驅動接 Pin 4，外部獨立電源供應器控制電燈回路）</p>
+        </div>
 
         <div class="alert alert-info">
             <span class="alert-icon">💡</span>
@@ -844,6 +861,18 @@ void loop() {
                 <pre><code class="language-text">今天複習了PIR感應訊號控制繼電器 我使用了兩個prompt 地一個是寫一個arduino uno程式, pin 7接PIR, pin4接繼電器控制 當PIR感應到移動繼電器就會切換到no(由nc->no) 延遲五秒關閉</code></pre>
             </div>
             <p><strong>變更摘要:</strong> 建立 Arduino Uno PIR (Pin 7) 控制繼電器 (Pin 4) 延遲 5 秒系統專題筆記。包含完整接線清單、PIR 熱釋電與菲涅耳透鏡原理解析、電磁繼電器 NC ➔ NO 切換原理、無交叉走線 Mermaid 流程圖、非阻塞式 <code>millis()</code> 狀態機完整註解程式與簡易版對照，並整合 Back-EMF 續流保護、RC 吸收回路與動態網頁即時互動模擬器。</p>
+        </div>
+
+        <div class="archive-box" style="margin-top: 1.5rem;">
+            <h3>🔹 [2026-09-29 14:57:46] [Gemini 3.8 Flash / Antigravity] 變更紀錄</h3>
+            <p><strong>模型/Agent:</strong> Gemini 3.8 Flash / Antigravity</p>
+            <p><strong>Prompt 原文:</strong></p>
+            <div class="code-container">
+                <button class="copy-btn" onclick="copyCode(this)">📋 複製 Prompt</button>
+                <pre><code class="language-text">由於第一個程式用了delay,所以我用 改用非阻塞式的寫法
+C:\Users\User\Desktop\0929-1.jpg 這是我的接線圖</code></pre>
+            </div>
+            <p><strong>變更摘要:</strong> 依據使用者提供的 Tinkercad 模擬截圖（`0929-1.jpg`），補齊真實硬體連線圖解與分析（PIR 左腳5V、中腳GND、右腳Pin 7，繼電器驅動接Pin 4、GND，獨立DC電源供應器串聯燈泡與繼電器COM-NO接點）。並深入解說由 Prompt 1 的 `delay(5000)` 重構為 Prompt 2 的 `millis()` 狀態機之非阻塞優勢。</p>
         </div>
     </section>
 </div>

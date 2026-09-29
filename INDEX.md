@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-29 14:53:04 (UTC+8)  
+> **最後更新時間**: 2026-09-29 14:57:46 (UTC+8)  
 > **使用模型**: Gemini 3.8 Flash  
 > **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -33,6 +33,7 @@
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
 * `2026-09-29` | [Arduino Uno PIR (Pin 7) 繼電器 (Pin 4) NC切換NO延遲5秒 (HTML)](./ec/arduino_uno_pir7_relay4_delay5s.html) (HTML)
 * `2026-09-29` | [Arduino Uno PIR (Pin 7) 繼電器 (Pin 4) NC切換NO延遲5秒 (MD)](./ec/arduino_uno_pir7_relay4_delay5s.md) (MD)
+* `2026-09-29` | [Arduino Uno PIR Pin 7 繼電器 Pin 4 實驗接線圖](./ec/0929-1.jpg) (JPG)
 * `2026-09-26` | [車用收音機事件廣播 14 頁 Marp 簡報 (Tech Theme) (HTML)](./ec/car_radio_traffic_broadcast_rds_ta_tunnel_slides.html) (HTML)
 * `2026-09-26` | [車用收音機事件廣播 14 頁 Marp 簡報 (Tech Theme) (MD)](./ec/car_radio_traffic_broadcast_rds_ta_tunnel.marp.md) (MD)
 * `2026-09-26` | [Arduino PIR (Pin 4) 繼電器 (Pin 2) 延遲 5 秒照明 (HTML)](./ec/arduino_pir_relay_delay.html) (HTML)
@@ -405,4 +406,13 @@
   今天複習了PIR感應訊號控制繼電器 我使用了兩個prompt 地一個是寫一個arduino uno程式, pin 7接PIR, pin4接繼電器控制 當PIR感應到移動繼電器就會切換到no(由nc->no) 延遲五秒關閉
   ```
 - **變更摘要**: 建立 Arduino Uno PIR (Pin 7) 控制繼電器 (Pin 4) 延遲 5 秒照明控制系統專題筆記（`ec/arduino_uno_pir7_relay4_delay5s.md` 與對應 HTML 模擬器），更新工作區主題索引目錄。
+
+### 🔹 [2026-09-29 14:57:46] [Gemini 3.8 Flash / Antigravity] 補充 Tinkercad 實體接線圖與非阻塞重構分析
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  由於第一個程式用了delay,所以我用 改用非阻塞式的寫法
+  C:\Users\User\Desktop\0929-1.jpg 這是我的接線圖
+  ```
+- **變更摘要**: 依據使用者提供的 Tinkercad 電路截圖（`0929-1.jpg`）補齊實體硬體對照與迴路分析，深入比較阻塞式 `delay()` 與非阻塞式 `millis()` 狀態機架構差異，更新全站索引。
 
