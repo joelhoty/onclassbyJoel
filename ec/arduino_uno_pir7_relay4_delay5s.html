@@ -471,10 +471,11 @@
         <div class="alert alert-info">
             <span class="alert-icon">💡</span>
             <div>
-                <strong>雙 Prompt 設計演進歷程：</strong>
+                <strong>三階段設計演進歷程：</strong>
                 <ul>
                     <li><strong>Prompt 1 (阻塞式基礎版)</strong>：採用簡單直觀的 <code>delay(5000)</code>，但程式會在倒數 5 秒內被完全卡死，若人於第 2 秒折返將無法捕捉。</li>
                     <li><strong>Prompt 2 (非阻塞式工業版)</strong>：重構為非阻塞 <code>millis()</code> 狀態機，即使處於離去倒數計時中，人員折返即可立即撤銷倒數並重設計時，保持燈光穩定無閃爍！</li>
+                    <li><strong>Prompt 3 (Stage 3 視覺化監控)</strong>：進一步整合 I2C LCD 1602（PCF8574 位址 <code>0x20</code>），實作待機 <code>"DECT..."</code> 與感應移動 <code>"Warning!"</code> 液晶顯示，詳見 <a href="./arduino_uno_pir7_relay4_lcd1602_i2c.html" style="color:var(--primary); font-weight:700;">Stage 3 專題筆記</a>。</li>
                 </ul>
             </div>
         </div>
