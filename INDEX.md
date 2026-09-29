@@ -1,8 +1,8 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-26 23:53:02 (UTC+8)  
-> **使用模型**: Claude Opus 5.5 (claude-opus-5-5)  
-> **執行 Agent**: Claude Code  
+> **最後更新時間**: 2026-09-29 14:53:04 (UTC+8)  
+> **使用模型**: Gemini 3.8 Flash  
+> **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 
 ---
@@ -31,6 +31,8 @@
 * `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
+* `2026-09-29` | [Arduino Uno PIR (Pin 7) 繼電器 (Pin 4) NC切換NO延遲5秒 (HTML)](./ec/arduino_uno_pir7_relay4_delay5s.html) (HTML)
+* `2026-09-29` | [Arduino Uno PIR (Pin 7) 繼電器 (Pin 4) NC切換NO延遲5秒 (MD)](./ec/arduino_uno_pir7_relay4_delay5s.md) (MD)
 * `2026-09-26` | [車用收音機事件廣播 14 頁 Marp 簡報 (Tech Theme) (HTML)](./ec/car_radio_traffic_broadcast_rds_ta_tunnel_slides.html) (HTML)
 * `2026-09-26` | [車用收音機事件廣播 14 頁 Marp 簡報 (Tech Theme) (MD)](./ec/car_radio_traffic_broadcast_rds_ta_tunnel.marp.md) (MD)
 * `2026-09-26` | [Arduino PIR (Pin 4) 繼電器 (Pin 2) 延遲 5 秒照明 (HTML)](./ec/arduino_pir_relay_delay.html) (HTML)
@@ -395,3 +397,12 @@
   在index.html下方加入修正檔案紀錄（檔案路徑/名稱/日期/修正之模型代號)
   ```
 - **變更摘要**: 於索引下方新增「修正檔案紀錄」表格，列出 2026-09-26 內容審查所修正的 36 個檔案之路徑、名稱、修正日期與修正之模型代號（index.html 與 INDEX.md 同步）。
+
+### 🔹 [2026-09-29 14:53:04] [Gemini 3.8 Flash / Antigravity] 建立 Arduino Uno PIR Pin 7 繼電器 Pin 4 延遲照明系統
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  今天複習了PIR感應訊號控制繼電器 我使用了兩個prompt 地一個是寫一個arduino uno程式, pin 7接PIR, pin4接繼電器控制 當PIR感應到移動繼電器就會切換到no(由nc->no) 延遲五秒關閉
+  ```
+- **變更摘要**: 建立 Arduino Uno PIR (Pin 7) 控制繼電器 (Pin 4) 延遲 5 秒照明控制系統專題筆記（`ec/arduino_uno_pir7_relay4_delay5s.md` 與對應 HTML 模擬器），更新工作區主題索引目錄。
+
