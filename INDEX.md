@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-29 14:57:46 (UTC+8)  
+> **最後更新時間**: 2026-09-29 15:21:13 (UTC+8)  
 > **使用模型**: Gemini 3.8 Flash  
 > **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -31,6 +31,8 @@
 * `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
+* `2026-09-29` | [Arduino Uno PIR (Pin 7) 繼電器 (Pin 4) I2C LCD1602 狀態監控 (HTML)](./ec/arduino_uno_pir7_relay4_lcd1602_i2c.html) (HTML)
+* `2026-09-29` | [Arduino Uno PIR (Pin 7) 繼電器 (Pin 4) I2C LCD1602 狀態監控 (MD)](./ec/arduino_uno_pir7_relay4_lcd1602_i2c.md) (MD)
 * `2026-09-29` | [Arduino Uno PIR (Pin 7) 繼電器 (Pin 4) NC切換NO延遲5秒 (HTML)](./ec/arduino_uno_pir7_relay4_delay5s.html) (HTML)
 * `2026-09-29` | [Arduino Uno PIR (Pin 7) 繼電器 (Pin 4) NC切換NO延遲5秒 (MD)](./ec/arduino_uno_pir7_relay4_delay5s.md) (MD)
 * `2026-09-29` | [Arduino Uno PIR Pin 7 繼電器 Pin 4 實驗接線圖](./ec/0929-1.jpg) (JPG)
@@ -415,4 +417,13 @@
   C:\Users\User\Desktop\0929-1.jpg 這是我的接線圖
   ```
 - **變更摘要**: 依據使用者提供的 Tinkercad 電路截圖（`0929-1.jpg`）補齊實體硬體對照與迴路分析，深入比較阻塞式 `delay()` 與非阻塞式 `millis()` 狀態機架構差異，更新全站索引。
+
+### 🔹 [2026-09-29 15:21:13] [Gemini 3.8 Flash / Antigravity] Stage 3 整合 I2C LCD 1602 (PCF8574 0x20)
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  第三個階段加入i2c lcd 1602 所以我的prompt是 加上一個 lcd1602 i2c介面 使用的pcf8574 0x20,pir偵測的時候顯示"DECT..." 感應到物體顯示"Warning!"
+  ```
+- **變更摘要**: 建立 Stage 3 專題筆記（`ec/arduino_uno_pir7_relay4_lcd1602_i2c.md` 與對應 HTML 模擬器），升級系統整合 I2C LCD 1602（PCF8574 位址 `0x20`，SDA 接 A4、SCL 接 A5），實作平時顯示 `"DECT..."`、感應移動顯示 `"Warning!"` 與離去 5 秒延遲倒數顯示，更新全站主題索引。
+
 

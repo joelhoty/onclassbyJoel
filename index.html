@@ -312,7 +312,7 @@
             <p class="subtitle">彙整 AI、電子電路、樂高機器人、數學統計、廟宇人文、平面設計與電腦視覺相關筆記 (檔案依日期由新至舊排列)</p>
             
             <div class="metadata-box">
-                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-29 14:57:46 (UTC+8)</div>
+                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-09-29 15:21:13 (UTC+8)</div>
                 <div class="metadata-item"><strong>使用模型:</strong> Gemini 3.8 Flash</div>
                 <div class="metadata-item"><strong>執行 Agent:</strong> Antigravity</div>
                 <div class="metadata-item"><strong>GitHub Repo:</strong> <a href="https://github.com/joelhoty/onclassbyJoel" style="color:#38bdf8;" target="_blank">joelhoty/onclassbyJoel</a></div>
@@ -590,9 +590,23 @@
             <div class="card" data-category="ec">
                 <div class="card-header">
                     <h2 class="card-title">⚡ 電子電路與硬體實驗</h2>
-                    <span class="badge-count">35 檔案</span>
+                    <span class="badge-count">37 檔案</span>
                 </div>
                 <ul class="file-list">
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/arduino_uno_pir7_relay4_lcd1602_i2c.html">Arduino Uno PIR (Pin 7) 繼電器 (Pin 4) I2C LCD1602 狀態監控 (HTML)</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-29</span>
+                            <span class="tag tag-html">HTML</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/arduino_uno_pir7_relay4_lcd1602_i2c.md">Arduino Uno PIR (Pin 7) 繼電器 (Pin 4) I2C LCD1602 狀態監控 (MD)</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-09-29</span>
+                            <span class="tag tag-md">MD</span>
+                        </div>
+                    </li>
                     <li class="file-item">
                         <a class="file-link" href="./ec/arduino_uno_pir7_relay4_delay5s.html">Arduino Uno PIR (Pin 7) 繼電器 (Pin 4) NC切換NO延遲5秒 (HTML)</a>
                         <div class="file-meta">
@@ -1452,6 +1466,13 @@ go</pre>
                 <pre>由於第一個程式用了delay,所以我用 改用非阻塞式的寫法
 C:\Users\User\Desktop\0929-1.jpg 這是我的接線圖</pre>
                 <p><strong>變更摘要:</strong> 依據使用者提供的 Tinkercad 電路截圖（`0929-1.jpg`）補齊實體硬體對照與迴路分析，深入比較阻塞式 `delay()` 與非阻塞式 `millis()` 狀態機架構差異，更新全站索引。</p>
+            </div>
+            <div class="prompt-archive" style="margin-top: 15px;">
+                <h4>🔹 [2026-09-29 15:21:13] [Gemini 3.8 Flash / Antigravity] Stage 3 整合 I2C LCD 1602 (PCF8574 0x20)</h4>
+                <p><strong>模型/Agent:</strong> Gemini 3.8 Flash / Antigravity</p>
+                <p><strong>Prompt 原文:</strong></p>
+                <pre>第三個階段加入i2c lcd 1602 所以我的prompt是 加上一個 lcd1602 i2c介面 使用的pcf8574 0x20,pir偵測的時候顯示"DECT..." 感應到物體顯示"Warning!"</pre>
+                <p><strong>變更摘要:</strong> 建立 Stage 3 專題筆記（`ec/arduino_uno_pir7_relay4_lcd1602_i2c.md` 與對應 HTML 模擬器），升級系統整合 I2C LCD 1602（PCF8574 位址 `0x20`，SDA 接 A4、SCL 接 A5），實作平時顯示 `"DECT..."`、感應移動顯示 `"Warning!"` 與離去 5 秒延遲倒數顯示，更新全站主題索引。</p>
             </div>
         </div>
     </footer>
