@@ -501,7 +501,7 @@
         </div>
 
         <div class="metadata-box">
-            <div>🕒 <strong>最後更新時間:</strong> 2026-09-29 15:21:13 (UTC+8)</div>
+            <div>🕒 <strong>最後更新時間:</strong> 2026-09-29 15:24:07 (UTC+8)</div>
             <div>🤖 <strong>使用模型:</strong> Gemini 3.8 Flash</div>
             <div>⚡ <strong>執行 Agent:</strong> Antigravity</div>
             <div>📂 <strong>主題分類:</strong> 電子電路與微控制器 (`ec/`)</div>
@@ -526,10 +526,10 @@
             </div>
         </div>
 
-        <h3>📷 系統接線實驗截圖 (Tinkercad Circuits 0929-1.jpg)</h3>
+        <h3>📷 系統接線實驗截圖 (Tinkercad Circuits 0929-2.jpg)</h3>
         <div style="text-align: center; margin: 1.5rem 0; background: #f8fafc; padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
-            <img src="./0929-1.jpg" alt="Arduino Uno PIR Pin 7 與 繼電器 Pin 4 實驗接線圖" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: var(--shadow);">
-            <p style="margin-top: 0.5rem; font-size: 0.88rem; color: var(--text-muted);">圖 1：Tinkercad Circuits 模擬接線（Parallax PIR 接 Pin 7，繼電器接 Pin 4，底部 A4/A5 橘藍導線連接 I2C LCD 1602 PCF8574 擴展板）</p>
+            <img src="./0929-2.jpg" alt="Arduino Uno PIR Pin 7 + 繼電器 Pin 4 + I2C LCD 1602 實驗接線圖" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: var(--shadow);">
+            <p style="margin-top: 0.5rem; font-size: 0.88rem; color: var(--text-muted);">圖 1：Tinkercad Circuits 模擬接線（右上角屬性確認：LCD 16x2 I2C、PCF8574 型、地址 32 對應 0x20；底端 A4 橘線接 SDA、A5 藍線接 SCL）</p>
         </div>
 
         <h3>🔌 硬體引腳接線對照清單 (Wiring Pinout)</h3>
@@ -933,6 +933,17 @@ void loop() {
                 <pre><code class="language-text">第三個階段加入i2c lcd 1602 所以我的prompt是 加上一個 lcd1602 i2c介面 使用的pcf8574 0x20,pir偵測的時候顯示"DECT..." 感應到物體顯示"Warning!"</code></pre>
             </div>
             <p><strong>變更摘要:</strong> 建立 Stage 3 專題筆記。將系統升級整合 I2C LCD 1602（PCF8574，位址 0x20，SDA 接 A4、SCL 接 A5），實作平時待機顯示 <code>"DECT..."</code>、感測移動顯示 <code>"Warning!"</code> 與離去 5 秒延遲倒數顯示。深入剖析 PCF8574 位址原理、防螢幕閃爍更新策略與動態液晶互動模擬器。</p>
+        </div>
+
+        <div class="archive-box" style="margin-top: 1.5rem;">
+            <h3>🔹 [2026-09-29 15:24:07] [Gemini 3.8 Flash / Antigravity] 變更紀錄</h3>
+            <p><strong>模型/Agent:</strong> Gemini 3.8 Flash / Antigravity</p>
+            <p><strong>Prompt 原文:</strong></p>
+            <div class="code-container">
+                <button class="copy-btn" onclick="copyCode(this)">📋 複製 Prompt</button>
+                <pre><code class="language-text">C:\Users\User\Desktop\0929-2.jpg</code></pre>
+            </div>
+            <p><strong>變更摘要:</strong> 依據使用者提供的 Tinkercad Stage 3 完整電路截圖（<code>0929-2.jpg</code>），確認 LCD 1602 元件屬性參數（名稱 3、PCF8574 型、地址 32 對應 0x20），補齊完整接線圖解與導線顏色對照清單（A4 橘線 SDA、A5 藍線 SCL、電源 5V/GND 綠線），更新 HTML 模擬器與全站索引。</p>
         </div>
     </section>
 </div>
