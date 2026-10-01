@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛠️ Arduino IDE 教學與 I2C LCD 1602 實體接線除錯指南</title>
+    
+    <!-- Prism 程式碼高亮 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --primary-light: #e0f2fe;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-red: #ef4444;
+            --secondary: #0f172a;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        /* 頁首 Header */
+        header {
+            background: linear-gradient(135deg, #0b132b 0%, #1c2541 60%, #1e3a8a 100%);
+            color: white;
+            padding: 2.8rem 2rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+            border-bottom: 4px solid var(--primary);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .pill-badge {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.2);
+            border: 1px solid rgba(56, 189, 248, 0.5);
+            color: #7dd3fc;
+            padding: 0.35rem 0.9rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.35;
+        }
+
+        .header-desc {
+            color: #cbd5e1;
+            font-size: 1.05rem;
+            margin-top: 0.5rem;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.3rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.22);
+            transform: translateY(-2px);
+        }
+
+        .metadata-box {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 0.85rem 1.25rem;
+            font-size: 0.88rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+            color: #cbd5e1;
+        }
+        .metadata-box strong {
+            color: #f1f5f9;
+        }
+
+        /* 卡片 */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 2.2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 1.2rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 1.6rem 0 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        /* 圖片容器 */
+        .img-container {
+            text-align: center;
+            margin: 1.5rem 0;
+            background: #0f172a;
+            padding: 1.2rem;
+            border-radius: var(--radius-md);
+            border: 1px solid #334155;
+        }
+
+        .img-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .caption {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-top: 0.75rem;
+        }
+
+        /* 表格 */
+        table.styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.25rem 0;
+            font-size: 0.95rem;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        table.styled-table th, table.styled-table td {
+            padding: 0.85rem 1.1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        table.styled-table th {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        table.styled-table tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        /* 提示框 */
+        .callout {
+            border-left: 4px solid var(--primary);
+            background: var(--primary-light);
+            padding: 1.1rem 1.35rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.25rem 0;
+            color: #0369a1;
+        }
+        .callout strong {
+            color: #0c4a6e;
+        }
+
+        .callout-warning {
+            border-left-color: var(--accent-amber);
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .callout-warning strong {
+            color: #78350f;
+        }
+
+        .callout-success {
+            border-left-color: var(--accent-green);
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .callout-success strong {
+            color: #064e3b;
+        }
+
+        /* 步驟圖卡 Grid */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.2rem;
+            margin: 1.5rem 0;
+        }
+
+        .step-card {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: var(--radius-md);
+            padding: 1.4rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary);
+        }
+
+        .step-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+        }
+
+        /* 程式碼區塊容器 */
+        .code-container {
+            position: relative;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+        .copy-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* 頁尾 */
+        footer {
+            background: #0f172a;
+            color: #94a3b8;
+            padding: 3rem 1.5rem;
+            text-align: center;
+            border-top: 1px solid #334155;
+            margin-top: 4rem;
+            border-radius: var(--radius-lg);
+        }
+        footer a {
+            color: #38bdf8;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <div class="header-top">
+            <div>
+                <span class="pill-badge">🔌 嵌入式硬體上機教學 • 實體接線與軟體調校</span>
+                <h1>🛠️ Arduino IDE 開發環境教學與 I2C LCD 1602 實體接線指南</h1>
+                <p class="header-desc">
+                    依據實拍照解構 Arduino Uno 與 LCD 1602 (PCF8574 背板) 實體 4-Pin 接線、IDE 2.x 開發環境操作、I2C 位址自動偵測與常見硬體天坑除錯指南
+                </p>
+            </div>
+            <div class="action-bar">
+                <button class="btn btn-secondary" onclick="window.print()">🖨️ 列印 / 另存 PDF</button>
+                <a href="arduino_uno_pir8_relay4_lcd1602_i2c.html" class="btn btn-primary">💡 返回 PIR + 繼電器專題</a>
+            </div>
+        </div>
+
+        <div class="metadata-box">
+            <div>📅 建立時間：<strong>2026-10-01</strong></div>
+            <div>📸 參考實拍照：<strong>Desktop/2026-10-01-145140.jpg</strong></div>
+            <div>🔧 開發工具：<strong>Arduino IDE 2.x / 1.8.x</strong></div>
+            <div>🎯 核心通訊：<strong>I2C 協定 (SDA A4 / SCL A5)</strong></div>
+        </div>
+    </header>
+
+    <!-- 區塊 1: 實拍照片與接線解構 -->
+    <section class="card">
+        <h2>📷 1. 實際硬體接線照片解構 (Hardware Wiring)</h2>
+        <p>下圖為您目前桌面上實際接線的硬體配置（Arduino Uno + I2C LCD 1602 模組）：</p>
+
+        <div class="img-container">
+            <img src="./2026-10-01-145140.jpg" alt="Arduino Uno 與 I2C LCD 1602 實體接線圖">
+            <div class="caption">▲ 圖 1：實體接線照片，LCD 1602 透過背後焊接的 PCF8574 轉接板，僅需 4 根杜邦線即可與 Arduino Uno 完成通訊</div>
+        </div>
+
+        <h3>🔌 實體 4-Pin 導線連接清單</h3>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>I2C 轉接板引腳</th>
+                    <th>訊號意義</th>
+                    <th>Arduino Uno 對應腳位</th>
+                    <th>配線重點與說明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>GND</strong></td>
+                    <td>系統接地 (0V)</td>
+                    <td><strong>GND</strong> (POWER 排針)</td>
+                    <td>黑色/棕色導線，連接電源排針任一 GND 孔</td>
+                </tr>
+                <tr>
+                    <td><strong>VCC</strong></td>
+                    <td>工作電源 (+5V)</td>
+                    <td><strong>5V</strong> (POWER 排針)</td>
+                    <td>紅色/紫色導線，務必接 5V（若誤接 3.3V 液晶對比度會嚴重不足）</td>
+                </tr>
+                <tr>
+                    <td><strong>SDA</strong></td>
+                    <td>串列資料線 (Serial Data)</td>
+                    <td><strong>類比 Pin A4</strong></td>
+                    <td>雙向資料通訊（亦可接數位排針 AREF 旁邊標示的專屬 SDA 孔）</td>
+                </tr>
+                <tr>
+                    <td><strong>SCL</strong></td>
+                    <td>串列時脈線 (Serial Clock)</td>
+                    <td><strong>類比 Pin A5</strong></td>
+                    <td>同步時脈傳輸（亦可接數位排針 AREF 旁邊標示的專屬 SCL 孔）</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="callout">
+            <strong>💡 硬體物理知識：為什麼 Uno 的 SDA 是 A4、SCL 是 A5？</strong><br>
+            Arduino Uno 核心晶片 ATmega328P 的內部硬體 TWI (I2C) 模組，物理線路就是硬體綁定在 <code>PC4 (A4)</code> 與 <code>PC5 (A5)</code>。數位排針右上角的專屬 SDA/SCL 腳位，在 PCB 底層走線上是直接與 A4、A5 貫通的，兩者接哪一個效果完全相同！
+        </div>
+    </section>
+
+    <!-- 區塊 2: Arduino IDE 2.x 開發環境教學 -->
+    <section class="card">
+        <h2>🖥️ 2. Arduino IDE 2.x 開發環境速成手冊</h2>
+        <p>Arduino IDE 是撰寫、編譯並將程式碼燒錄至單晶片的官方整合開發環境。以下為新手上機的 4 大關鍵步驟：</p>
+
+        <div class="steps-grid">
+            <div class="step-card">
+                <span class="step-num">1</span>
+                <h4 style="color: var(--primary);">選擇正確的開發板</h4>
+                <p style="font-size: 0.92rem; color: #64748b;">
+                    將 USB 線插入電腦後，在頂部下拉選單選擇 <strong>"Arduino Uno"</strong>。
+                </p>
+            </div>
+
+            <div class="step-card">
+                <span class="step-num">2</span>
+                <h4 style="color: var(--primary);">選擇正確的通訊埠 (COM Port)</h4>
+                <p style="font-size: 0.92rem; color: #64748b;">
+                    選取標有 <code>(Arduino Uno)</code> 的通訊埠（如 <strong>COM3、COM4</strong>）。切勿選擇主機板內建的 COM1。
+                </p>
+            </div>
+
+            <div class="step-card">
+                <span class="step-num">3</span>
+                <h4 style="color: var(--primary);">安裝 LiquidCrystal_I2C 庫</h4>
+                <p style="font-size: 0.92rem; color: #64748b;">
+                    按下 <code>Ctrl+Shift+I</code> 開啟 Library Manager，搜尋並安裝 <strong>LiquidCrystal I2C</strong> (by Frank de Brabander)。
+                </p>
+            </div>
+
+            <div class="step-card">
+                <span class="step-num">4</span>
+                <h4 style="color: var(--primary);">編譯 (✔) 與 上傳 (➔)</h4>
+                <p style="font-size: 0.92rem; color: #64748b;">
+                    按 <code>Ctrl+R</code> 驗證語法，按 <code>Ctrl+U</code> 燒錄進板子；按 <code>Ctrl+Shift+M</code> 打開序列埠監視器除錯。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 區塊 3: 實體上機三大天坑除錯指南 -->
+    <section class="card">
+        <h2>⚠️ 3. 實體硬體上機三大天坑除錯指南（95% 初學者必看！）</h2>
+        <p>很多時候程式碼完全正確且上傳成功，但實體 LCD 螢幕卻一片空白，請立刻依序檢查以下 3 個地方：</p>
+
+        <div class="callout callout-warning">
+            <strong>💥 坑 1：I2C 設備位址不符（Tinkercad 是 0x20，實體板 95% 是 0x27 或 0x3F！）</strong><br>
+            • 在 Tinkercad 模擬中，PCF8574 位址被手動設為 <code>0x20</code> (十進制 32)。<br>
+            • 但在市面上購買的實體模組中，轉接板背面的 A0/A1/A2 跳線預設都是未焊開路，<strong>晶片型號為 PCF8574T 時預設位址為 <code>0x27</code></strong>；若晶片型號帶 A (PCF8574AT) 則為 <code>0x3F</code>！<br>
+            👉 <strong>解法</strong>：先燒錄下方第 4 節的「I2C Scanner」，1 秒自動查出您的真實位址！
+        </div>
+
+        <div class="callout callout-warning">
+            <strong>🪛 坑 2：背部「藍色十字可變電阻」未調整（對比度過高/過低）</strong><br>
+            • 轉接板背後有一個藍色的小方塊，中間有一顆十字螺絲。<br>
+            • <strong>對比太淡</strong>：背光亮著但字跡全隱形，看起來像壞掉。<br>
+            • <strong>對比太濃</strong>：第一行顯示 16 個實心黑方塊。<br>
+            👉 <strong>解法</strong>：拿小十字螺絲起子<strong>慢慢旋轉該藍色旋鈕</strong>，直到黑方塊淡化、清晰文字浮現！
+        </div>
+
+        <div class="callout callout-warning">
+            <strong>🔌 坑 3：背光跳線帽（Jumper Cap）鬆脫或未插</strong><br>
+            • 轉接板側邊有兩根排針，上面插著一個黑色或黃色的小跳線帽。<br>
+            • 這是背光電源的硬體開關，若跳線帽遺失，背光 LED 就不會點亮，螢幕會顯得極為昏暗。
+        </div>
+    </section>
+
+    <!-- 區塊 4: 實體驗證兩部曲程式碼 -->
+    <section class="card">
+        <h2>🚀 4. 實體驗證兩部曲（程式碼清單）</h2>
+
+        <h3>步驟一：燒錄「I2C Scanner 位址自動偵測器」</h3>
+        <p>上傳以下程式碼，開啟序列埠監視器（9600 baud），它會自動列印出您這塊 LCD 轉接板的真實十六進制位址：</p>
+
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode(this)">📋 複製程式碼</button>
+            <pre><code class="language-cpp">#include &lt;Wire.h&gt;
+
+void setup() {
+  Wire.begin();
+  Serial.begin(9600);
+  while (!Serial); // 等待序列埠連線
+  Serial.println(F("\n================================="));
+  Serial.println(F("🔍 I2C 匯流排位址自動掃描開始..."));
+  Serial.println(F("================================="));
+  
+  byte count = 0;
+  for (byte address = 1; address < 127; address++) {
+    Wire.beginTransmission(address);
+    byte error = Wire.endTransmission();
+
+    if (error == 0) {
+      Serial.print(F("✅ 找到 I2C 裝置！位址為: 0x"));
+      if (address < 16) Serial.print("0");
+      Serial.println(address, HEX);
+      count++;
+    } else if (error == 4) {
+      Serial.print(F("⚠️ 位址 0x"));
+      if (address < 16) Serial.print("0");
+      Serial.println(address, HEX);
+      Serial.println(F(" 發生不明錯誤"));
+    }
+  }
+
+  if (count == 0) {
+    Serial.println(F("❌ 未找到任何 I2C 裝置！請檢查 5V/GND/SDA/SCL 接線。"));
+  } else {
+    Serial.print(F("🎉 掃描完成！共找到 "));
+    Serial.print(count);
+    Serial.println(F(" 個裝置。"));
+  }
+}
+
+void loop() {}
+</code></pre>
+        </div>
+
+        <h3>步驟二：燒錄「實體 LCD 1602 文字顯示測試」</h3>
+        <p>將上一步偵測到的位址（通常是 <code>0x27</code>）填入第 4 行，上傳後即可看見螢幕清晰顯示兩行字：</p>
+
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode(this)">📋 複製程式碼</button>
+            <pre><code class="language-cpp">#include &lt;Wire.h&gt;
+#include &lt;LiquidCrystal_I2C.h&gt;
+
+// ⚠️ 若剛才 Scanner 掃出來是 0x3F 或 0x20，請將 0x27 改為該位址
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+void setup() {
+  // 1. 初始化 LCD
+  lcd.init();
+  
+  // 2. 開啟 LCD 背光
+  lcd.backlight();
+
+  // 3. 游標移至第 0 列第 0 格 (第一行)
+  lcd.setCursor(0, 0);
+  lcd.print("Arduino Uno I2C");
+
+  // 4. 游標移至第 1 列第 0 格 (第二行)
+  lcd.setCursor(0, 1);
+  lcd.print("LCD 1602 Ready!");
+}
+
+void loop() {
+  // 靜態展示
+}
+</code></pre>
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    <div class="container">
+        <p style="margin-bottom: 0.5rem; color: #e2e8f0; font-size: 1.05rem;">
+            📘 CLASS_NOTE 電子電路與單晶片專題 • 實體上機實驗指導手冊
+        </p>
+        <p style="font-size: 0.9rem; color: #64748b;">
+            相關單元：<a href="arduino_uno_pir8_relay4_lcd1602_i2c.html">PIR Pin 8 + 繼電器 Pin 4 智慧電燈控制</a> | 
+            <a href="I2C_simulation_life_analogy.html">I2C 生活實例圖解入門版</a> | 
+            <a href="I2C_simulation.html">I2C 深度工程技術模擬器</a>
+        </p>
+    </div>
+</footer>
+
+<script>
+    function copyCode(btn) {
+        const code = btn.nextElementSibling.querySelector('code').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+            const originalText = btn.innerText;
+            btn.innerText = '✅ 已複製！';
+            setTimeout(() => { btn.innerText = originalText; }, 2000);
+        });
+    }
+</script>
+</body>
+</html>
