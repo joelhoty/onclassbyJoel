@@ -470,9 +470,115 @@
         </div>
     </section>
 
-    <!-- 區塊 3: 實體上機三大天坑除錯指南 -->
+    <!-- 區塊 3: Arduino 程式庫 (Library) 的使用與核心重要性 -->
     <section class="card">
-        <h2>⚠️ 3. 實體硬體上機三大天坑除錯指南（95% 初學者必看！）</h2>
+        <h2>📚 3. Arduino 程式庫 (Library) 的使用方法與核心重要性</h2>
+        <p>在嵌入式軟體開發中有一條黃金準則：<strong>「不要重新發明輪子 (Don't reinvent the wheel)」</strong>。Arduino 程式庫正是讓全球創客與工程師能在短時間內完成強大專案的靈魂核心！</p>
+
+        <div class="callout callout-success">
+            <strong>💡 什麼是 Arduino 程式庫 (Library)？</strong><br>
+            程式庫本質上是由晶片原廠或資深社群工程師預先撰寫好的 <strong>C/C++ 模組化封裝包</strong>。它把極端繁雜的微控制器暫存器配置（Register Manipulation）、硬體計時器與通訊協定電氣時序（如 I2C 的 START/STOP 脈衝切換）全數封裝隱藏，只對外暴露直覺易用的「高階 API 函式」，讓開發者用簡短的一行呼叫即可驅動複雜硬體！
+        </div>
+
+        <h3>🌟 為什麼 Arduino 程式庫如此重要？四大核心優勢</h3>
+        <div class="steps-grid">
+            <div class="step-card">
+                <h4 style="color: var(--primary);">① 幾行代碼搞定數百行底層</h4>
+                <p style="font-size: 0.9rem; color: #64748b;">
+                    若沒有 <code>LiquidCrystal_I2C</code> 庫，要讓螢幕顯示字元，你必須手寫 TWI/I2C 初始化、手動拆解 8-bit 字元為 4-bit 脈衝切換，寫 300~500 行底層代碼；有了程式庫，只需 <code>lcd.print("Hello")</code> 一行搞定！
+                </p>
+            </div>
+            <div class="step-card">
+                <h4 style="color: var(--primary);">② 極致模組化與可重複利用</h4>
+                <p style="font-size: 0.9rem; color: #64748b;">
+                    將專屬硬體的驅動與演算法封裝成獨立庫，任何新專案只需透過 <code>#include &lt;xxx.h&gt;</code> 就能立即復用，大幅提升軟體架構的整潔度與維護性。
+                </p>
+            </div>
+            <div class="step-card">
+                <h4 style="color: var(--primary);">③ 硬體抽象化與跨平台移植</h4>
+                <p style="font-size: 0.9rem; color: #64748b;">
+                    優質程式庫具備硬體抽象層（HAL）。相同的 LCD 程式碼，不論在 8 位元的 Arduino Uno、Mega，或 32 位元的 ESP32、RP2040 上，呼叫方式完全一致！
+                </p>
+            </div>
+            <div class="step-card">
+                <h4 style="color: var(--primary);">④ 全球開源社群生態系支持</h4>
+                <p style="font-size: 0.9rem; color: #64748b;">
+                    全球數十萬開發者無私貢獻與維護。從溫濕度感測器 (DHT22)、陀螺儀 (MPU6050) 到藍牙/WiFi 模組，市面上 99% 的電子零件都能在 1 分鐘內搜尋並安裝對應庫。
+                </p>
+            </div>
+        </div>
+
+        <h3>📦 程式庫內部組成的秘密（解密資料夾結構）</h3>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">檔案 / 資料夾</th>
+                    <th style="width: 35%;">功能職責</th>
+                    <th style="width: 40%;">白話比喻</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong><code>xxx.h</code> (標頭檔)</strong></td>
+                    <td>宣告有哪些類別 (Class)、函式原型與常數</td>
+                    <td>就像餐廳的<strong>「點菜菜單」</strong>，讓程式知道有什麼功能可點。</td>
+                </tr>
+                <tr>
+                    <td><strong><code>xxx.cpp</code> (實作檔)</strong></td>
+                    <td>編寫具體函式的 C++ 演算邏輯與底層暫存器操作</td>
+                    <td>就像廚房<strong>「大廚做菜的烹飪流程」</strong>，具體實現功能細節。</td>
+                </tr>
+                <tr>
+                    <td><strong><code>keywords.txt</code></strong></td>
+                    <td>設定專屬關鍵字著色規則</td>
+                    <td>讓函式名稱在 Arduino IDE 編輯器中自動呈現橘色或藍色高亮。</td>
+                </tr>
+                <tr>
+                    <td><strong><code>examples/</code> (範例目錄)</strong></td>
+                    <td>官方提供的標準測試與使用教學專案範例</td>
+                    <td><strong>學習必備！</strong>可在 IDE「檔案 ➔ 範例 ➔ [庫名稱]」直接打開運行。</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>🛠️ 程式庫的三大安裝使用途徑</h3>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>安裝途徑</th>
+                    <th>適用情境</th>
+                    <th>操作步驟說明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>途徑 A：IDE 程式庫管理員<br>(Library Manager，最推薦)</strong></td>
+                    <td>官方收錄與熱門開源庫<br>(如 LiquidCrystal_I2C)</td>
+                    <td>按下快捷鍵 <code>Ctrl + Shift + I</code> ➔ 搜尋名稱 ➔ 點擊 <strong>INSTALL</strong>，IDE 自動下載並設定路徑。</td>
+                </tr>
+                <tr>
+                    <td><strong>途徑 B：匯入 .ZIP 壓縮檔</strong></td>
+                    <td>GitHub 下載的第三方最新庫</td>
+                    <td>選單點選：<code>草稿碼 (Sketch) ➔ 匯入程式庫 (Include Library) ➔ 加入 .ZIP 程式庫...</code> ➔ 選取下載的 zip 檔。</td>
+                </tr>
+                <tr>
+                    <td><strong>途徑 C：手動放置資料夾</strong></td>
+                    <td>團隊自製或特殊客製庫</td>
+                    <td>解壓縮後複製整包資料夾貼至電腦的 <code>文件/Arduino/libraries/</code> 目錄，重啟 IDE 即可。</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="callout callout-warning">
+            <strong>⚠️ 程式庫常見編譯錯誤與排查：</strong><br>
+            • <strong><code>fatal error: xxx.h: No such file or directory</code></strong>：代表該程式庫尚未安裝，或 <code>#include &lt;xxx.h&gt;</code> 檔名大小寫拼錯（C++ 嚴格區分大小寫）。<br>
+            • <strong><code>'class xxx' has no member named 'yyy'</code></strong>：安裝到了不同作者編寫的同名庫（例如有些 LCD 庫初始化叫 <code>lcd.begin()</code>，有些叫 <code>lcd.init()</code>），建議參考該庫的 <code>examples</code> 官方範例確認函式命名。
+        </div>
+    </section>
+
+    <!-- 區塊 4: 實體上機三大天坑除錯指南 -->
+    <section class="card">
+        <h2>⚠️ 4. 實體硬體上機三大天坑除錯指南（95% 初學者必看！）</h2>
         <p>很多時候程式碼完全正確且上傳成功，但實體 LCD 螢幕卻一片空白，請立刻依序檢查以下 3 個地方：</p>
 
         <div class="callout callout-warning">
@@ -497,9 +603,9 @@
         </div>
     </section>
 
-    <!-- 區塊 4: 實體驗證兩部曲程式碼 -->
+    <!-- 區塊 5: 實體驗證兩部曲程式碼 -->
     <section class="card">
-        <h2>🚀 4. 實體驗證兩部曲（程式碼清單）</h2>
+        <h2>🚀 5. 實體驗證兩部曲（程式碼清單）</h2>
 
         <h3>步驟一：燒錄「I2C Scanner 位址自動偵測器」</h3>
         <p>上傳以下程式碼，開啟序列埠監視器（9600 baud），它會自動列印出您這塊 LCD 轉接板的真實十六進制位址：</p>
