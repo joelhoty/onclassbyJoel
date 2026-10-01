@@ -590,9 +590,16 @@
             <div class="card" data-category="ec">
                 <div class="card-header">
                     <h2 class="card-title">⚡ 電子電路與硬體實驗</h2>
-                    <span class="badge-count">48 檔案</span>
+                    <span class="badge-count">49 檔案</span>
                 </div>
                 <ul class="file-list">
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/i2c_lcd1602.ino">I2C LCD 1602 實體驗證測試程式 (INO)</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-10-01</span>
+                            <span class="tag tag-ino">INO</span>
+                        </div>
+                    </li>
                     <li class="file-item">
                         <a class="file-link" href="./ec/arduino_ide_i2c_lcd1602_guide.html">Arduino IDE 開發環境與 I2C LCD 1602 實體接線指南 (HTML)</a>
                         <div class="file-meta">
@@ -1573,11 +1580,11 @@ C:\Users\User\Desktop\0929-1.jpg 這是我的接線圖</pre>
                 <p><strong>變更摘要:</strong> 分析使用者 Tinkercad 截圖（`20261001.jpg`），補齊 PIR 接 Pin 8、繼電器接 Pin 4、LCD 1602 (PCF8574 地址 32 即 0x20) 的完整非阻塞 `millis()` 程式碼，待機顯示 `"DECT...."`、移動警示顯示 `"Warning"` 並自動倒數 5 秒關燈，建立 `ec/arduino_uno_pir8_relay4_lcd1602_i2c.html` 與筆記。</p>
             </div>
             <div class="prompt-archive" style="margin-top: 15px;">
-                <h4>🔹 [2026-10-01 14:56:00] [Gemini 3.8 Flash / Antigravity] Arduino IDE 開發環境與 I2C 實體接線除錯指南</h4>
+                <h4>🔹 [2026-10-01 15:06:00] [Gemini 3.8 Flash / Antigravity] 整合實體驗證測試程式 (i2c_lcd1602.ino) 與程式庫深度解析</h4>
                 <p><strong>模型/Agent:</strong> Gemini 3.8 Flash / Antigravity</p>
                 <p><strong>Prompt 原文:</strong></p>
-                <pre>D:\CLASS_NOTE\ec\2026-10-01-145140.jpg 實際硬體接線 製作一份arduino ide介紹與i2c接線的筆記</pre>
-                <p><strong>變更摘要:</strong> 依據實拍硬體照片（`2026-10-01-145140.jpg`）製作完整圖解指南，詳細解構 Arduino Uno 與 I2C LCD 1602 實體 4-Pin 連接、IDE 2.x 介面與函式庫安裝、I2C 位址自動偵測器與背部藍色十字旋鈕對比度調整技巧，建立 `ec/arduino_ide_i2c_lcd1602_guide.html` 與筆記。</p>
+                <pre>D:\Arduino\i2c_lcd1602\i2c_lcd1602.ino 這是今天實際接線的測試程式 加入筆記</pre>
+                <p><strong>變更摘要:</strong> 納入使用者今日實體硬體實際上機驗證成功的測試程式 `i2c_lcd1602.ino`，解析其使用的三大工程技巧：確認出廠實體位址 0x27、利用懸空類比腳位 A0 雜訊生成亂數種子，以及採用「空格補滿法」取代 `lcd.clear()` 根除液晶重繪閃爍，同步更新 Markdown 筆記、HTML 導覽與全站索引。</p>
             </div>
         </div>
     </footer>

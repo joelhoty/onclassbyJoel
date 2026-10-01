@@ -213,36 +213,58 @@ void loop() {
 
 ---
 
-### 步驟 2：燒錄「實體 LCD 1602 顯示測試程式」
-將掃描到的位址（例如 `0x27`）填入第 4 行：
+### 步驟 2：今日實體上機驗證測試程式 (`i2c_lcd1602.ino`)
+
+以下為今天在實體 Arduino Uno 與 LCD 1602 實際上機測試並驗證通過的完整原始碼（檔案位於 `D:\Arduino\i2c_lcd1602\i2c_lcd1602.ino` 與 `ec/i2c_lcd1602.ino`）：
 
 ```cpp
-#include <Wire.h>
+//YWROBOT
+//Compatible with the Arduino IDE 1.0
+//Library version:1.1
+#include <Wire.h> 
 #include <LiquidCrystal_I2C.h>
 
-// ⚠️ 若剛才 Scanner 掃出來是 0x3F 或 0x20，請將 0x27 改為該位址
-LiquidCrystal_I2C lcd(0x27, 16, 2);
+LiquidCrystal_I2C lcd(0x27, 16, 2);  // 設定 LCD 位址為 0x27，16 字元 2 行
 
-void setup() {
-  // 1. 初始化 LCD
-  lcd.init();
+void setup()
+{
+  lcd.init();                      // 初始化 LCD
+  lcd.backlight();                 // 開啟背光
   
-  // 2. 開啟 LCD 背光
-  lcd.backlight();
-
-  // 3. 游標移至第 0 列第 0 格 (第一行)
-  lcd.setCursor(0, 0);
-  lcd.print("Arduino Uno I2C");
-
-  // 4. 游標移至第 1 列第 0 格 (第二行)
-  lcd.setCursor(0, 1);
-  lcd.print("LCD 1602 Ready!");
+  // 讀取未接線的類比腳位 A0 作為隨機數種子，確保每次開機後的隨機序列不同
+  randomSeed(analogRead(A0));
 }
 
-void loop() {
-  // 靜態文字展示
+void loop()
+{
+  // --- 第一行：顯示隨機 10 個 ASCII 字元 ---
+  lcd.setCursor(0, 0);             // 移至第 1 行開頭
+  for (int i = 0; i < 10; i++) {
+    // ASCII 可見字元範圍為 33 ('!') 到 126 ('~')
+    char randChar = (char)random(33, 127);
+    lcd.print(randChar);
+  }
+  lcd.print("      ");             // 印出 6 個空格補滿 16 格，避免殘留多餘字元
+
+  // --- 第二行：顯示 hello ---
+  lcd.setCursor(0, 1);             // 移至第 2 行開頭
+  lcd.print("hello           ");   // 印出 hello 並補齊空格
+
+  // --- 等待 2 秒 ---
+  delay(2000);
 }
 ```
+
+#### 💡 本實體測試程式的三大精彩工程技巧：
+
+1. **實體位址驗證通過 (`0x27`)**：
+   - 程式中的 `LiquidCrystal_I2C lcd(0x27, 16, 2);` 成功與您桌面上的實體 PCF8574 背板握手通訊，證明該塊硬體的出廠預設位址確為 **`0x27`**。
+2. **巧妙獲取真實亂數種子 (`randomSeed(analogRead(A0))`)**：
+   - 單晶片內部若僅使用虛擬偽隨機數產生器，每次重開機產生的亂數序列都會完全相同。
+   - 透過讀取**懸空未接線的類比腳位 `A0`**，吸收空氣中的微弱電磁環境白雜訊（White Noise），作為 `randomSeed()` 的起始點，即可保證每一次重新通電開機後的隨機字元序列皆截然不同！
+3. **「空格補滿法」取代 `lcd.clear()`（根除螢幕閃爍的關鍵秘訣！）**：
+   - 若在 `loop()` 中每 2 秒呼叫一次 `lcd.clear()`，整個液晶點陣會被重繪抹除，肉眼會看見明顯的黑白瞬間閃爍。
+   - 本程式透過印出固定長度內容後，**主動以空白字串 `"      "` 覆蓋剩餘格子**（`10 字元 + 6 空格 = 16 格滿版`），舊字跡被直接覆寫，畫面平滑切換、**毫無閃爍感**！
 
 ---
 

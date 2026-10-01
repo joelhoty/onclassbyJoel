@@ -31,6 +31,7 @@
 * `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
+* `2026-10-01` | [I2C LCD 1602 實體驗證測試程式 (INO)](./ec/i2c_lcd1602.ino) (INO)
 * `2026-10-01` | [Arduino IDE 開發環境與 I2C LCD 1602 實體接線指南 (HTML)](./ec/arduino_ide_i2c_lcd1602_guide.html) (HTML)
 * `2026-10-01` | [Arduino IDE 開發環境與 I2C LCD 1602 實體接線指南 (MD)](./ec/arduino_ide_i2c_lcd1602_guide.md) (MD)
 * `2026-10-01` | [Arduino Uno PIR (Pin 8) 繼電器 (Pin 4) I2C LCD1602 (0x20) 狀態監控 (HTML)](./ec/arduino_uno_pir8_relay4_lcd1602_i2c.html) (HTML)

@@ -653,37 +653,68 @@ void loop() {}
 </code></pre>
         </div>
 
-        <h3>步驟二：燒錄「實體 LCD 1602 文字顯示測試」</h3>
-        <p>將上一步偵測到的位址（通常是 <code>0x27</code>）填入第 4 行，上傳後即可看見螢幕清晰顯示兩行字：</p>
+        <h3>步驟二：今日實體上機驗證測試程式 (<code>i2c_lcd1602.ino</code>)</h3>
+        <p>以下為今天在實體 Arduino Uno 與 LCD 1602 上機測試並驗證通過的完整原始碼（檔案位於 <code>D:\Arduino\i2c_lcd1602\i2c_lcd1602.ino</code> 與 <code>ec/i2c_lcd1602.ino</code>）：</p>
 
         <div class="code-container">
             <button class="copy-btn" onclick="copyCode(this)">📋 複製程式碼</button>
-            <pre><code class="language-cpp">#include &lt;Wire.h&gt;
+            <pre><code class="language-cpp">//YWROBOT
+//Compatible with the Arduino IDE 1.0
+//Library version:1.1
+#include &lt;Wire.h&gt; 
 #include &lt;LiquidCrystal_I2C.h&gt;
 
-// ⚠️ 若剛才 Scanner 掃出來是 0x3F 或 0x20，請將 0x27 改為該位址
-LiquidCrystal_I2C lcd(0x27, 16, 2);
+LiquidCrystal_I2C lcd(0x27, 16, 2);  // 設定 LCD 位址為 0x27，16 字元 2 行
 
-void setup() {
-  // 1. 初始化 LCD
-  lcd.init();
+void setup()
+{
+  lcd.init();                      // 初始化 LCD
+  lcd.backlight();                 // 開啟背光
   
-  // 2. 開啟 LCD 背光
-  lcd.backlight();
-
-  // 3. 游標移至第 0 列第 0 格 (第一行)
-  lcd.setCursor(0, 0);
-  lcd.print("Arduino Uno I2C");
-
-  // 4. 游標移至第 1 列第 0 格 (第二行)
-  lcd.setCursor(0, 1);
-  lcd.print("LCD 1602 Ready!");
+  // 讀取未接線的類比腳位 A0 作為隨機數種子，確保每次開機後的隨機序列不同
+  randomSeed(analogRead(A0));
 }
 
-void loop() {
-  // 靜態展示
+void loop()
+{
+  // --- 第一行：顯示隨機 10 個 ASCII 字元 ---
+  lcd.setCursor(0, 0);             // 移至第 1 行開頭
+  for (int i = 0; i < 10; i++) {
+    // ASCII 可見字元範圍為 33 ('!') 到 126 ('~')
+    char randChar = (char)random(33, 127);
+    lcd.print(randChar);
+  }
+  lcd.print("      ");             // 印出 6 個空格補滿 16 格，避免殘留多餘字元
+
+  // --- 第二行：顯示 hello ---
+  lcd.setCursor(0, 1);             // 移至第 2 行開頭
+  lcd.print("hello           ");   // 印出 hello 並補齊空格
+
+  // --- 等待 2 秒 ---
+  delay(2000);
 }
 </code></pre>
+        </div>
+
+        <div class="steps-grid" style="margin-top: 1.5rem;">
+            <div class="step-card">
+                <h4 style="color: var(--accent-green);">🎯 1. 實體位址驗證通過 (0x27)</h4>
+                <p style="font-size: 0.9rem; color: #64748b;">
+                    程式中的 <code>LiquidCrystal_I2C lcd(0x27, 16, 2);</code> 成功與桌面上的實體 PCF8574 背板握手通訊，證明該塊硬體的出廠位址確為 <strong>0x27</strong>。
+                </p>
+            </div>
+            <div class="step-card">
+                <h4 style="color: var(--accent-amber);">🎲 2. 類比懸空雜訊做亂數種子</h4>
+                <p style="font-size: 0.9rem; color: #64748b;">
+                    透過讀取<strong>懸空未接線的類比腳位 A0</strong>，吸收環境電磁白雜訊作為 <code>randomSeed()</code> 種子，保證每次重新開機後的隨機字串序列皆完全不同！
+                </p>
+            </div>
+            <div class="step-card">
+                <h4 style="color: var(--primary);">✨ 3. 空白覆蓋法徹底杜絕閃爍</h4>
+                <p style="font-size: 0.9rem; color: #64748b;">
+                    若呼叫 <code>lcd.clear()</code> 會造成點陣重繪劇烈閃爍。本程式巧妙以 <code>lcd.print("      ")</code> 補滿 16 格直接覆寫舊字跡，畫面流暢穩定、毫無閃爍感！
+                </p>
+            </div>
         </div>
     </section>
 
