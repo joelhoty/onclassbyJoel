@@ -369,10 +369,12 @@
         </div>
 
         <div class="metadata-box">
-            <div>📅 建立時間：<strong>2026-10-01</strong></div>
+            <div>最後更新時間：<strong>2026-10-01 15:23:26 (UTC+8)</strong></div>
+            <div>使用模型：<strong>Gemini 3.8 Flash</strong></div>
+            <div>執行 Agent：<strong>Antigravity</strong></div>
             <div>📸 參考實拍照：<strong>Desktop/2026-10-01-145140.jpg</strong></div>
-            <div>🔧 開發工具：<strong>Arduino IDE 2.x / 1.8.x</strong></div>
             <div>🎯 核心通訊：<strong>I2C 協定 (SDA A4 / SCL A5)</strong></div>
+            <div>💻 實測程式：<strong>i2c_lcd1602.ino (位址 0x27)</strong></div>
         </div>
     </header>
 
@@ -713,8 +715,36 @@ void loop()
                 <h4 style="color: var(--primary);">✨ 3. 空白覆蓋法徹底杜絕閃爍</h4>
                 <p style="font-size: 0.9rem; color: #64748b;">
                     若呼叫 <code>lcd.clear()</code> 會造成點陣重繪劇烈閃爍。本程式巧妙以 <code>lcd.print("      ")</code> 補滿 16 格直接覆寫舊字跡，畫面流暢穩定、毫無閃爍感！
-                </p>
             </div>
+        </div>
+    </section>
+
+    <!-- 區塊 6: 提示詞歷史與變更記錄 (Prompt Archive) -->
+    <section class="card" id="prompt-archive">
+        <h2>📝 6. 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+        <div class="callout" style="margin-bottom: 1.2rem;">
+            <strong>🔹 [2026-10-01 14:56:00] [Gemini 3.8 Flash / Antigravity] 建立實體硬體接線與 IDE 教學指南</strong><br>
+            <strong>Prompt 原文：</strong>
+            <pre style="background: #0f172a; color: #38bdf8; padding: 0.6rem; border-radius: 6px; margin: 0.4rem 0; font-family: monospace;">D:\CLASS_NOTE\ec\2026-10-01-145140.jpg 實際硬體接線 製作一份arduino ide介紹與i2c接線的筆記</pre>
+            <strong>變更摘要：</strong>依據實拍硬體照片（2026-10-01-145140.jpg）製作完整圖解手冊，解構 Uno 與 LCD 1602 實體 4-Pin 接線、IDE 2.x 介面與庫安裝、I2C 位址自動偵測器與背部藍色十字旋鈕對比度調整技巧。
+        </div>
+        <div class="callout" style="margin-bottom: 1.2rem;">
+            <strong>🔹 [2026-10-01 14:58:45] [Gemini 3.8 Flash / Antigravity] 補充程式庫使用與重要性說明</strong><br>
+            <strong>Prompt 原文：</strong>
+            <pre style="background: #0f172a; color: #38bdf8; padding: 0.6rem; border-radius: 6px; margin: 0.4rem 0; font-family: monospace;">加入arduino 程式庫的使用與重要性說明</pre>
+            <strong>變更摘要：</strong>增補「Arduino 程式庫（Library）的使用方法與核心重要性」專章，解析不重造輪子原則、極致模組化、跨平台移植（HAL）、程式庫內部結構（.h, .cpp, keywords.txt, examples/）與三大安裝途徑。
+        </div>
+        <div class="callout" style="margin-bottom: 1.2rem;">
+            <strong>🔹 [2026-10-01 15:06:38] [Gemini 3.8 Flash / Antigravity] 納入今日上機測試程式 i2c_lcd1602.ino</strong><br>
+            <strong>Prompt 原文：</strong>
+            <pre style="background: #0f172a; color: #38bdf8; padding: 0.6rem; border-radius: 6px; margin: 0.4rem 0; font-family: monospace;">D:\Arduino\i2c_lcd1602\i2c_lcd1602.ino 這是今天實際接線的測試程式 加入筆記</pre>
+            <strong>變更摘要：</strong>納入今日實際上機驗證成功的測試程式 `i2c_lcd1602.ino`，解析確認出廠位址 0x27、利用懸空類比腳位 A0 雜訊生成亂數種子，以及採用「空格補滿法」取代 lcd.clear() 根除液晶閃爍。
+        </div>
+        <div class="callout">
+            <strong>🔹 [2026-10-01 15:23:26] [Gemini 3.8 Flash / Antigravity] 補齊標頭與 Prompt 歷程規範</strong><br>
+            <strong>Prompt 原文：</strong>
+            <pre style="background: #0f172a; color: #38bdf8; padding: 0.6rem; border-radius: 6px; margin: 0.4rem 0; font-family: monospace;">依照規則應該在文件下方備註prompt 以及標頭資訊</pre>
+            <strong>變更摘要：</strong>依據專案規範全面補齊文件標頭（最後更新時間、模型、Agent、關聯資源）與下方累加式 Prompt 歷史記錄。
         </div>
     </section>
 

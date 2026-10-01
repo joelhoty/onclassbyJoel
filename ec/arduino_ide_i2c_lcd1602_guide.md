@@ -1,8 +1,11 @@
 # 🛠️ Arduino IDE 開發環境教學與 I2C LCD 1602 實體硬體接線指南
 
+> **最後更新時間**: 2026-10-01 15:23:26 (UTC+8)  
+> **使用模型**: Gemini 3.8 Flash  
+> **執行 Agent**: Antigravity  
 > **參考實拍照**: `D:\CLASS_NOTE\ec\2026-10-01-145140.jpg` / [2026-10-01-145140.jpg](./2026-10-01-145140.jpg)  
 > **對應 HTML 互動筆記**: [arduino_ide_i2c_lcd1602_guide.html](./arduino_ide_i2c_lcd1602_guide.html)  
-> **建立時間**: 2026-10-01  
+> **測試程式碼**: [i2c_lcd1602.ino](./i2c_lcd1602.ino)  
 > **適用硬體**: Arduino Uno R3、LCD 1602 液晶模組（帶 PCF8574 I2C 轉接背板）  
 
 ---
@@ -281,3 +284,39 @@ void loop()
    - 待機時顯示：`"DECT...."`
    - 感應移動時顯示：`"Warning"` 並驅動繼電器開燈
    - 人員離開 5 秒後熄燈並自動切換回待機！
+
+---
+
+## 📝 提示詞歷史與變更記錄 (Prompt Archive)
+
+### 🔹 [2026-10-01 14:56:00] [Gemini 3.8 Flash / Antigravity] 建立 Arduino IDE 與實體接線指南
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  D:\CLASS_NOTE\ec\2026-10-01-145140.jpg 實際硬體接線 製作一份arduino ide介紹與i2c接線的筆記
+  ```
+- **變更摘要**: 依據實拍硬體照片（`2026-10-01-145140.jpg`）製作完整圖解指南，詳細解構 Arduino Uno 與 I2C LCD 1602 實體 4-Pin 連接、IDE 2.x 介面與函式庫安裝、I2C 位址自動偵測器與背部藍色十字旋鈕對比度調整技巧，建立 `ec/arduino_ide_i2c_lcd1602_guide.html` 與筆記。
+
+### 🔹 [2026-10-01 14:58:45] [Gemini 3.8 Flash / Antigravity] 加入程式庫使用與重要性說明
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  加入arduino 程式庫的使用與重要性說明
+  ```
+- **變更摘要**: 擴充撰寫專章「Arduino 程式庫（Library）的使用方法與核心重要性」，深度解析不重造輪子原則、幾行代碼搞定數百行底層、模組化與跨平台移植（HAL）、程式庫內部結構（`.h`, `.cpp`, `keywords.txt`, `examples/`）及三大安裝途徑與常見編譯錯誤排查。
+
+### 🔹 [2026-10-01 15:06:38] [Gemini 3.8 Flash / Antigravity] 整合實體驗證測試程式
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  D:\Arduino\i2c_lcd1602\i2c_lcd1602.ino 這是今天實際接線的測試程式 加入筆記
+  ```
+- **變更摘要**: 納入使用者今日實體硬體實際上機驗證成功的測試程式 `i2c_lcd1602.ino`，解析其使用的三大工程技巧：確認出廠實體位址 0x27、利用懸空類比腳位 A0 雜訊生成亂數種子，以及採用「空格補滿法」取代 `lcd.clear()` 根除液晶重繪閃爍。
+
+### 🔹 [2026-10-01 15:23:26] [Gemini 3.8 Flash / Antigravity] 補齊標頭與 Prompt 歷程規範
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  依照規則應該在文件下方備註prompt 以及標頭資訊
+  ```
+- **變更摘要**: 依據專案規範全面補齊文件標頭（最後更新時間、模型、Agent、關聯資源）與下方累加式 Prompt 歷史記錄。

@@ -1,8 +1,10 @@
 # 💡 像班長點名一樣簡單：用生活實例秒懂 I2C 通訊協定！
 
+> **最後更新時間**: 2026-10-01 15:23:26 (UTC+8)  
+> **使用模型**: Gemini 3.8 Flash  
+> **執行 Agent**: Antigravity  
 > **對應互動網頁**: [I2C_simulation_life_analogy.html](./I2C_simulation_life_analogy.html)  
 > **技術工程規格版**: [I2C_simulation.html](./I2C_simulation.html) / [I2C_simulation.md](./I2C_simulation.md)  
-> **建立時間**: 2026-10-01  
 
 ---
 
@@ -101,3 +103,23 @@
 ## 🔗 相關資源
 * 互動網頁演示：[I2C_simulation_life_analogy.html](./I2C_simulation_life_analogy.html)
 * 完整技術規格版：[I2C_simulation.html](./I2C_simulation.html)
+
+---
+
+## 📝 提示詞歷史與變更記錄 (Prompt Archive)
+
+### 🔹 [2026-10-01 13:52:00] [Gemini 3.8 Flash / Antigravity] 建立生活實例解說版
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  D:\CLASS_NOTE\ec\I2C_simulation.html 另外撰寫一個容易了解 並以生活中實例解說的版本
+  ```
+- **變更摘要**: 建立 `I2C_simulation_life_analogy.html` 與配套筆記，以教室點名廣播、節奏鈴鐺、共用白板與公車下車拉鈴（開汲極與上拉電阻）為生活實例，深入淺出拆解 I2C 的核心硬體運作邏輯。
+
+### 🔹 [2026-10-01 15:23:26] [Gemini 3.8 Flash / Antigravity] 補齊標頭與 Prompt 歷程規範
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  依照規則應該在文件下方備註prompt 以及標頭資訊
+  ```
+- **變更摘要**: 依據專案規範全面補齊文件標頭（最後更新時間、模型、Agent、關聯資源）與下方累加式 Prompt 歷史記錄。

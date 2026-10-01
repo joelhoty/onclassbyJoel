@@ -311,7 +311,9 @@
         </div>
 
         <div class="metadata-box">
-            <div>📅 實作時間：<strong>2026-10-01</strong></div>
+            <div>最後更新時間：<strong>2026-10-01 15:23:26 (UTC+8)</strong></div>
+            <div>使用模型：<strong>Gemini 3.8 Flash</strong></div>
+            <div>執行 Agent：<strong>Antigravity</strong></div>
             <div>🎯 硬體引腳：<strong>PIR=Pin 8, Relay=Pin 4, LCD=0x20 (A4/A5)</strong></div>
             <div>⏱ 延遲控制：<strong>5 秒 (5000 ms) 非阻塞 millis() 架構</strong></div>
             <div>🖼 對照來源：<strong>Desktop/20261001.jpg</strong></div>
@@ -536,6 +538,29 @@ void loop() {
                     ⏮ 重置系統
                 </button>
             </div>
+        </div>
+    </section>
+
+    <!-- 區塊 4: 提示詞歷史與變更記錄 (Prompt Archive) -->
+    <section class="card" id="prompt-archive">
+        <h2>📝 4. 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+        <div class="callout" style="margin-bottom: 1.2rem;">
+            <strong>🔹 [2026-10-01 14:15:00] [Gemini 3.8 Flash / Antigravity] PIR Pin 8 + 繼電器 Pin 4 智慧控制電燈</strong><br>
+            <strong>Prompt 原文：</strong>
+            <pre style="background: #0f172a; color: #38bdf8; padding: 0.6rem; border-radius: 6px; margin: 0.4rem 0; font-family: monospace;">C:\Users\User\Desktop\20261001.jpg 設計arduino程式 pir 接 pin 8, pin4 接繼電器控制電燈，感應到移動的時候開燈，燈延遲五秒後關閉</pre>
+            <strong>變更摘要：</strong>依據使用者 Tinkercad 截圖（`20261001.jpg`），設計非阻塞式 `millis()` 狀態機架構，PIR 接 Pin 8，繼電器接 Pin 4，LCD 1602 (PCF8574 位址 0x20)，實作感應開燈、活動持續刷新與 5 秒熄燈功能，建立互動模擬器。
+        </div>
+        <div class="callout" style="margin-bottom: 1.2rem;">
+            <strong>🔹 [2026-10-01 14:50:49] [Gemini 3.8 Flash / Antigravity] 狀態顯示文字定義</strong><br>
+            <strong>Prompt 原文：</strong>
+            <pre style="background: #0f172a; color: #38bdf8; padding: 0.6rem; border-radius: 6px; margin: 0.4rem 0; font-family: monospace;">lcd 1602 I2C, pcf8574 0x20,在pir感測時顯示 "DECT...." .感應到移動顯示"Warning"</pre>
+            <strong>變更摘要：</strong>明確鎖定待機時顯示 `"DECT...."`，感應到移動顯示 `"Warning"`，僅在狀態切換瞬間呼叫顯示副程式以達到徹底防 LCD 閃爍（Flicker-Free）。
+        </div>
+        <div class="callout">
+            <strong>🔹 [2026-10-01 15:23:26] [Gemini 3.8 Flash / Antigravity] 補齊標頭與 Prompt 歷程規範</strong><br>
+            <strong>Prompt 原文：</strong>
+            <pre style="background: #0f172a; color: #38bdf8; padding: 0.6rem; border-radius: 6px; margin: 0.4rem 0; font-family: monospace;">依照規則應該在文件下方備註prompt 以及標頭資訊</pre>
+            <strong>變更摘要：</strong>依據專案規範全面補齊文件標頭（最後更新時間、模型、Agent、關聯資源）與下方累加式 Prompt 歷史記錄。
         </div>
     </section>
 
