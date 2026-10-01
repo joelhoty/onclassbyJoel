@@ -1,0 +1,2260 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔌 I2C 通訊協定原理解析與多裝置動態互動模擬器 (Master + Dual Slaves 0x27 & 0x68)</title>
+    
+    <!-- 引入 KaTeX 數學公式庫 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+        });"></script>
+
+    <!-- 引入 Mermaid 流程圖庫 -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+    </script>
+
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-light: #e0f2fe;
+            --primary-dark: #0369a1;
+            --scl-color: #f59e0b;
+            --scl-glow: rgba(245, 158, 11, 0.4);
+            --sda-color: #38bdf8;
+            --sda-glow: rgba(56, 189, 248, 0.4);
+            --ack-color: #10b981;
+            --nack-color: #ef4444;
+            --dev1-color: #8b5cf6;
+            --dev2-color: #ec4899;
+            --dark: #0f172a;
+            --gray-900: #0f172a;
+            --gray-800: #1e293b;
+            --gray-700: #334155;
+            --gray-600: #475569;
+            --gray-500: #64748b;
+            --gray-300: #cbd5e1;
+            --gray-200: #e2e8f0;
+            --gray-100: #f1f5f9;
+            --gray-50: #f8fafc;
+            --white: #ffffff;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Microsoft JhengHei", sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.7;
+        }
+
+        /* 頂部 Header */
+        header {
+            background: linear-gradient(135deg, #0b132b 0%, #1c2541 60%, #1e3a8a 100%);
+            color: var(--white);
+            padding: 2.8rem 1.5rem 2.2rem 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 4px solid var(--primary);
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.2);
+            border: 1px solid rgba(56, 189, 248, 0.5);
+            color: #7dd3fc;
+            padding: 0.35rem 0.9rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        h1 {
+            font-size: 2.3rem;
+            font-weight: 800;
+            margin-bottom: 0.6rem;
+            letter-spacing: -0.02em;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        .subtitle {
+            color: #cbd5e1;
+            font-size: 1.15rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .meta-box {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 0.55rem 1.35rem;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            color: #94a3b8;
+        }
+        .meta-box strong {
+            color: #f1f5f9;
+        }
+
+        .action-bar {
+            margin-top: 1.35rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.35rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 2px 4px rgba(2, 132, 199, 0.4);
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+        }
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: white;
+        }
+
+        .btn-success {
+            background-color: #10b981;
+            color: white;
+        }
+        .btn-success:hover {
+            background-color: #059669;
+        }
+
+        .btn-warning {
+            background-color: #f59e0b;
+            color: white;
+        }
+        .btn-warning:hover {
+            background-color: #d97706;
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.25rem;
+        }
+
+        /* 導覽目錄 */
+        .nav-toc {
+            background: var(--white);
+            padding: 1.25rem 1.75rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            border-left: 6px solid var(--primary);
+        }
+        .nav-toc h3 {
+            font-size: 1.15rem;
+            color: var(--gray-900);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .nav-toc ul {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 0.5rem 1rem;
+            list-style: none;
+        }
+        .nav-toc a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+        .nav-toc a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        /* 區塊卡片 */
+        section {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 2.25rem;
+            margin-bottom: 2.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-200);
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--gray-900);
+            border-bottom: 2px solid var(--gray-100);
+            padding-bottom: 0.65rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            color: var(--gray-800);
+            margin: 1.6rem 0 0.8rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--gray-700);
+        }
+
+        ul, ol {
+            margin-left: 1.6rem;
+            margin-bottom: 1.25rem;
+            color: var(--gray-700);
+        }
+        li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* ================= 模擬器專屬樣式 ================= */
+        .sim-container {
+            background: #0f172a;
+            border-radius: 14px;
+            padding: 1.75rem;
+            color: #f8fafc;
+            border: 2px solid #334155;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+        }
+
+        /* 控制台 */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.2rem;
+            background: #1e293b;
+            padding: 1.25rem;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            margin-bottom: 1.5rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+        }
+
+        .control-group label {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .control-group select, .control-group input[type="text"] {
+            background: #0f172a;
+            color: #f8fafc;
+            border: 1px solid #475569;
+            padding: 0.6rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+
+        .control-group select:focus, .control-group input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.3);
+        }
+
+        .sim-btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+            margin-top: 0.75rem;
+        }
+
+        /* 匯流排狀態條 */
+        .bus-status-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            justify-content: space-between;
+            background: #1e293b;
+            padding: 0.85rem 1.25rem;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .status-indicators {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .wire-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: monospace;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .indicator-light {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: inline-block;
+            transition: all 0.2s ease;
+        }
+        .light-high-scl {
+            background-color: var(--scl-color);
+            box-shadow: 0 0 10px var(--scl-color);
+        }
+        .light-low-scl {
+            background-color: #334155;
+            box-shadow: inset 0 0 4px #000;
+        }
+        .light-high-sda {
+            background-color: var(--sda-color);
+            box-shadow: 0 0 10px var(--sda-color);
+        }
+        .light-low-sda {
+            background-color: #334155;
+            box-shadow: inset 0 0 4px #000;
+        }
+
+        .stage-pill {
+            background: #0f172a;
+            border: 1px solid #475569;
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #38bdf8;
+        }
+
+        /* 拓撲圖 SVG 畫布容器 */
+        .topology-wrapper {
+            background: #111827;
+            border-radius: 10px;
+            border: 1px solid #374151;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        svg.topology-svg {
+            width: 100%;
+            height: auto;
+            min-width: 820px;
+            display: block;
+        }
+
+        /* 波形分析儀 Canvas */
+        .waveform-wrapper {
+            background: #090d16;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .waveform-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.45rem 1rem;
+            margin-bottom: 0.75rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .waveform-bit-legend {
+            margin-bottom: 0.75rem;
+            padding: 0.65rem 0.8rem;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            background: #111827;
+            color: #cbd5e1;
+            font: 0.82rem/1.65 Consolas, "Microsoft JhengHei", monospace;
+        }
+
+        canvas#waveformCanvas {
+            width: 100%;
+            height: 220px;
+            background: #060911;
+            border-radius: 6px;
+            display: block;
+        }
+
+        /* 即時通訊日誌與封包解析表 */
+        .log-panel-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 1.2rem;
+        }
+
+        @media (max-width: 900px) {
+            .log-panel-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .panel-box h4 {
+            color: #e2e8f0;
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .log-console {
+            height: 180px;
+            background: #090d16;
+            border: 1px solid #222e44;
+            border-radius: 6px;
+            padding: 0.75rem;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.85rem;
+            overflow-y: auto;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        .log-line {
+            margin-bottom: 0.35rem;
+        }
+        .log-line.start { color: #4ade80; }
+        .log-line.addr { color: #60a5fa; }
+        .log-line.ack { color: #34d399; font-weight: bold; }
+        .log-line.nack { color: #f87171; font-weight: bold; }
+        .log-line.data { color: #38bdf8; }
+        .log-line.stop { color: #fb923c; }
+
+        .packet-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+        .packet-table th, .packet-table td {
+            padding: 0.5rem 0.6rem;
+            border-bottom: 1px solid #334155;
+        }
+        .packet-table th {
+            color: #94a3b8;
+            background: #172033;
+        }
+        .packet-table tr.active-row {
+            background: rgba(56, 189, 248, 0.15);
+            font-weight: 700;
+        }
+
+        /* 標籤元件與卡片 */
+        .chip {
+            display: inline-block;
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .chip-scl { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+        .chip-sda { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
+        .chip-ack { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+        .chip-nack { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+
+        /* 一般表格 */
+        table.styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.25rem 0;
+            font-size: 0.95rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table.styled-table th, table.styled-table td {
+            padding: 0.85rem 1.1rem;
+            border-bottom: 1px solid var(--gray-200);
+            text-align: left;
+        }
+        table.styled-table th {
+            background: var(--gray-100);
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+        table.styled-table tr:hover {
+            background-color: var(--gray-50);
+        }
+
+        /* 提示框 */
+        .callout {
+            border-left: 4px solid var(--primary);
+            background: var(--primary-light);
+            padding: 1.1rem 1.35rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.25rem 0;
+            color: #0369a1;
+        }
+        .callout strong {
+            color: #0c4a6e;
+        }
+
+        .callout-warning {
+            border-left-color: #f59e0b;
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .callout-warning strong {
+            color: #78350f;
+        }
+
+        .callout-success {
+            border-left-color: #10b981;
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .callout-success strong {
+            color: #064e3b;
+        }
+
+        /* 程式碼區塊容器與複製按鈕 */
+        .code-container {
+            position: relative;
+            margin: 1.5rem 0;
+            background: #0f172a;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1e293b;
+            padding: 0.5rem 1rem;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            border-bottom: 1px solid #334155;
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.65rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        pre {
+            padding: 1.2rem;
+            overflow-x: auto;
+            color: #f8fafc;
+            font-family: 'Consolas', 'Fira Code', Monaco, monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* 計算機小工具卡片 */
+        .calc-card {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .calc-item label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--gray-700);
+            margin-bottom: 0.35rem;
+        }
+
+        .calc-item input, .calc-item select {
+            width: 100%;
+            padding: 0.55rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .calc-result-box {
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        .calc-result-item {
+            font-size: 0.95rem;
+            color: #0369a1;
+        }
+        .calc-result-item span {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #0284c7;
+        }
+
+        /* 頁尾與提示詞記錄區塊 */
+        footer {
+            background: #0f172a;
+            color: #94a3b8;
+            padding: 3rem 1.5rem;
+            margin-top: 4rem;
+            border-top: 1px solid #334155;
+        }
+
+        .footer-content {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .prompt-archive-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            color: #e2e8f0;
+        }
+
+        .prompt-archive-box h3 {
+            color: #38bdf8;
+            margin-top: 0;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 0.5rem;
+        }
+
+        /* 列印樣式 */
+        @media print {
+            header { background: #0f172a !important; color: #000 !important; }
+            .action-bar, .sim-btn-row, .copy-btn { display: none !important; }
+            body { background: #fff !important; color: #000 !important; }
+            section { box-shadow: none !important; border: 1px solid #ccc !important; page-break-inside: avoid; }
+            .sim-container { background: #fff !important; color: #000 !important; border: 1px solid #000 !important; }
+            canvas#waveformCanvas { filter: invert(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 頂部頁首 -->
+    <header>
+        <div class="header-content">
+            <span class="badge">🌐 嵌入式硬體通訊協議 • 數位電路深度教學</span>
+            <h1>🔌 I2C 匯流排雙裝置通訊原理與動態互動模擬器</h1>
+            <p class="subtitle">深度解析 Master 主控端與雙周邊 (LCD 0x27 / RTC 0x68) 之 SDA / SCL 時脈同步、位址辨識、ACK 握手與開汲極電氣架構</p>
+            
+            <div class="meta-box">
+                <div>最後更新時間: <strong>2026-10-01 13:15:21 (UTC+8)</strong></div>
+                <div>使用模型: <strong>GPT-5 Codex</strong></div>
+                <div>執行 Agent: <strong>/root</strong></div>
+                <div>通訊規格: <strong>I2C 7-bit 定址 (Standard 100kHz / Fast 400kHz)</strong></div>
+            </div>
+
+            <div class="action-bar">
+                <a href="I2C_simulation_life_analogy.html" class="btn" style="background-color: #fef08a; color: #854d0e; font-weight: 700; border: 1px solid #facc15;">
+                    💡 生活實例入門版 (點名與公車鈴比喻)
+                </a>
+                <button class="btn btn-primary" onclick="window.print()">
+                    📄 匯出成 PDF / 列印文件
+                </button>
+                <a href="#simulator" class="btn btn-outline">
+                    🎮 進入動態模擬實驗室
+                </a>
+                <a href="#core-concepts" class="btn btn-outline">
+                    📖 核心原理深度剖析
+                </a>
+                <a href="#code-implementation" class="btn btn-outline">
+                    💻 程式碼與硬體電路實作
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主內容區 -->
+    <div class="container">
+
+        <!-- 快速目錄導覽 -->
+        <nav class="nav-toc">
+            <h3>📑 快速導覽目錄 (Table of Contents)</h3>
+            <ul>
+                <li><a href="#simulator">1. 🎮 I2C 互動式數位通訊模擬實驗室 (動態波形與拓撲)</a></li>
+                <li><a href="#core-concepts">2. 🧠 核心概念剖析 (逐 bit 取樣、完整讀寫交易、仲裁)</a></li>
+                <li><a href="#hardware-calc">3. ⚡ 上拉電阻 (Pull-up Resistor) 與 RC 充放電計算器</a></li>
+                <li><a href="#flowchart-logic">4. 📊 I2C Master-Slave 握手通訊時序流程圖</a></li>
+                <li><a href="#code-implementation">5. 💻 實作範例：Arduino 雙裝置通訊與軟體模擬實作</a></li>
+                <li><a href="#advanced-topics">6. 🚀 延伸思考：SPI/UART 對比、匯流排鎖死與多工器</a></li>
+                <li><a href="#prompt-archive">7. 📝 提示詞歷史與變更記錄 (Prompt Archive)</a></li>
+            </ul>
+        </nav>
+
+        <!-- 區塊 1: 動態互動模擬實驗室 -->
+        <section id="simulator">
+            <h2>🎮 1. I2C 互動式數位通訊模擬實驗室</h2>
+            <p>本模擬器完整還原了 <strong>Master (主控單晶片)</strong> 與兩組 <strong>I2C 周邊裝置 (Device 1: 0x27 LCD、Device 2: 0x68 RTC)</strong> 的實體匯流排運作。您可以透過單步執行、速度控制或選擇不同通訊情境，親眼觀察 <strong>SDA</strong> 與 <strong>SCL</strong> 的電位變化、位址比對、ACK/NACK 握手反饋以及開汲極晶體開關狀態！</p>
+
+            <div class="callout callout-success">
+                <strong>🔎 建議觀察順序（第一次使用請照這 5 步）：</strong><br>
+                1. 選擇「寫入 Device 1 (0x27)」，按<strong>單步前進</strong>，先找出 SCL=High 時 SDA 由 High→Low 的 START。<br>
+                2. 接著數 8 個時脈；只在 <strong>SCL 為 High</strong> 時讀 SDA，即可得到位址與 R/W 位元。<br>
+                3. 第 9 個時脈觀察 SDA 控制權交給誰：Slave 拉低就是 ACK，沒人拉低就是 NACK。<br>
+                4. 每完成 8-bit 資料都會再出現 1-bit ACK；不要把 ACK 誤當成下一個資料位元。<br>
+                5. 最後找出 SCL=High 時 SDA 由 Low→High 的 STOP，確認匯流排回到 SDA=High、SCL=High。
+            </div>
+
+            <div class="sim-container">
+                <!-- 控制面板 -->
+                <div class="controls-grid">
+                    <div class="control-group">
+                        <label for="scenarioSelect">📌 預設通訊情境 (Presets)</label>
+                        <select id="scenarioSelect" onchange="loadScenario()">
+                            <option value="write_dev1">情境 1：寫入 Device 1 (0x27 LCD) - 發送顯示指令 0x08, 0x01</option>
+                            <option value="write_dev2">情境 2：寫入 Device 2 (0x68 RTC) - 寫入時間暫存器 0x00, 0x59</option>
+                            <option value="read_dev2">情境 3：讀取 Device 2 (0x68 RTC) - 讀取當前秒數資料 0x32</option>
+                            <option value="nack_demo">情境 4：呼叫未連線位址 (0x3C OLED) - 觀察 NACK 響應</option>
+                            <option value="custom">自訂傳輸封包 (Custom Packet)...</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group" id="customInputGroup" style="display: none;">
+                        <label for="customAddr">🎯 7-bit 設備位址 (Hex, 如 0x27):</label>
+                        <input type="text" id="customAddr" value="0x27" maxlength="4">
+                    </div>
+
+                    <div class="control-group" id="customOpGroup" style="display: none;">
+                        <label for="customRw">🔄 讀寫方向 (R/W):</label>
+                        <select id="customRw">
+                            <option value="0">寫入 (Write, 0)</option>
+                            <option value="1">讀取 (Read, 1)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group" id="customDataGroup" style="display: none;">
+                        <label for="customData">📦 資料字節 (Hex，以逗號分隔，如 0xAA,0x55):</label>
+                        <input type="text" id="customData" value="0xAA, 0x55">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="speedRange">⏱ 模擬速度: <span id="speedVal">350 ms/bit</span></label>
+                        <input type="range" id="speedRange" min="80" max="800" value="350" step="30" oninput="updateSpeed(this.value)">
+                    </div>
+                </div>
+
+                <!-- 動作按鈕 -->
+                <div class="sim-btn-row">
+                    <button class="btn btn-success" id="playBtn" onclick="togglePlay()">
+                        ▶ 開始播放 (Start)
+                    </button>
+                    <button class="btn btn-primary" id="stepBtn" onclick="stepSimulation()">
+                        ⏭ 單步前進 (Step Bit)
+                    </button>
+                    <button class="btn btn-danger" onclick="resetSimulation()">
+                        ⏮ 重置 (Reset)
+                    </button>
+                    <span style="font-size: 0.88rem; color: #94a3b8; margin-left: auto;">
+                        💡 提示：按「單步前進」可逐一觀察每個時脈 SCL 上升沿與下降沿的取樣細節！
+                    </span>
+                </div>
+
+                <!-- 匯流排電位與目前狀態條 -->
+                <div class="bus-status-bar" style="margin-top: 1.25rem;">
+                    <div class="status-indicators">
+                        <div class="wire-indicator">
+                            <span class="indicator-light light-high-scl" id="sclIndicator"></span>
+                            <span style="color: var(--scl-color);">SCL (時脈):</span>
+                            <span id="sclText">HIGH (1)</span>
+                        </div>
+                        <div class="wire-indicator">
+                            <span class="indicator-light light-high-sda" id="sdaIndicator"></span>
+                            <span style="color: var(--sda-color);">SDA (資料):</span>
+                            <span id="sdaText">HIGH (1)</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="stage-pill" id="currentStageBadge">狀態: 匯流排閒置 (BUS IDLE)</span>
+                    </div>
+                </div>
+
+                <!-- 拓撲結構圖 (SVG) -->
+                <div class="topology-wrapper">
+                    <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
+                        <span>📐 實體電路拓撲圖 (Hardware Bus Topology - 包含開汲極電晶體與上拉電阻)</span>
+                        <span>VCC: +5.0V | Rp: 4.7 kΩ</span>
+                    </div>
+                    
+                    <svg class="topology-svg" viewBox="0 0 960 380" id="topoCanvas">
+                        <defs>
+                            <!-- 漸層效果 -->
+                            <linearGradient id="masterGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#1e293b"/>
+                                <stop offset="100%" stop-color="#0f172a"/>
+                            </linearGradient>
+                            <linearGradient id="dev1Grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#311042"/>
+                                <stop offset="100%" stop-color="#190628"/>
+                            </linearGradient>
+                            <linearGradient id="dev2Grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#401026"/>
+                                <stop offset="100%" stop-color="#240715"/>
+                            </linearGradient>
+                            <filter id="glow-scl" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur stdDeviation="3" result="blur" />
+                                <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                            </filter>
+                            <filter id="glow-sda" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur stdDeviation="3" result="blur" />
+                                <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                            </filter>
+                        </defs>
+
+                        <!-- 上方電源與上拉電阻 -->
+                        <rect x="420" y="10" width="120" height="24" rx="4" fill="#334155" />
+                        <text x="480" y="27" fill="#f8fafc" font-size="12" font-weight="bold" text-anchor="middle">VCC (+5V / +3.3V)</text>
+
+                        <!-- Rp SCL -->
+                        <line x1="450" y1="34" x2="450" y2="55" stroke="#f59e0b" stroke-width="2" />
+                        <rect x="440" y="55" width="20" height="35" rx="3" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+                        <text x="450" y="77" fill="#fbbf24" font-size="10" font-weight="bold" text-anchor="middle">Rp</text>
+                        <line x1="450" y1="90" x2="450" y2="110" stroke="#f59e0b" stroke-width="2" />
+
+                        <!-- Rp SDA -->
+                        <line x1="510" y1="34" x2="510" y2="55" stroke="#38bdf8" stroke-width="2" />
+                        <rect x="500" y="55" width="20" height="35" rx="3" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+                        <text x="510" y="77" fill="#7dd3fc" font-size="10" font-weight="bold" text-anchor="middle">Rp</text>
+                        <line x1="510" y1="90" x2="510" y2="140" stroke="#38bdf8" stroke-width="2" />
+
+                        <!-- 主匯流排軌道線條 -->
+                        <!-- SCL Bus Line (y=110) -->
+                        <line x1="80" y1="110" x2="900" y2="110" stroke="#f59e0b" stroke-width="4" id="sclBusWire" />
+                        <text x="895" y="102" fill="#f59e0b" font-size="13" font-weight="bold" text-anchor="end">SCL (Serial Clock Bus)</text>
+
+                        <!-- SDA Bus Line (y=140) -->
+                        <line x1="80" y1="140" x2="900" y2="140" stroke="#38bdf8" stroke-width="4" id="sdaBusWire" />
+                        <text x="895" y="158" fill="#38bdf8" font-size="13" font-weight="bold" text-anchor="end">SDA (Serial Data Bus)</text>
+
+                        <!-- ========== 1. Master 主控端 ========== -->
+                        <g id="masterBoxGroup" transform="translate(60, 190)">
+                            <rect width="240" height="170" rx="10" fill="url(#masterGrad)" stroke="#38bdf8" stroke-width="2" />
+                            <rect x="0" y="0" width="240" height="32" rx="10" fill="#1e293b" />
+                            <text x="120" y="22" fill="#38bdf8" font-size="14" font-weight="bold" text-anchor="middle">👑 主控端 (Master / MCU)</text>
+                            
+                            <!-- Master 引腳接線 -->
+                            <text x="15" y="60" fill="#cbd5e1" font-size="11">晶片: ATmega328P / ESP32</text>
+                            <text x="15" y="80" fill="#94a3b8" font-size="11">角色: 驅動 SCL, 主導定址傳輸</text>
+                            
+                            <!-- 內部開汲極 MOSFET 示意圖 -->
+                            <rect x="15" y="95" width="210" height="60" rx="6" fill="#090d16" stroke="#334155" />
+                            <text x="25" y="115" fill="#94a3b8" font-size="10">內部 Open-Drain (開汲極狀態):</text>
+                            <text x="25" y="138" fill="#f8fafc" font-size="11" id="masterFetState">SCL FET: 關斷 (浮高) | SDA FET: 關斷 (浮高)</text>
+                        </g>
+
+                        <!-- Master 引腳垂直走線 -->
+                        <!-- SCL: x=140, y: 190 -> 110 -->
+                        <line x1="140" y1="190" x2="140" y2="110" stroke="#f59e0b" stroke-width="3" id="wireMasterScl" />
+                        <circle cx="140" cy="110" r="5" fill="#f59e0b" />
+                        <text x="145" y="180" fill="#f59e0b" font-size="11" font-weight="bold">SCL</text>
+
+                        <!-- SDA: x=200, y: 190 -> 140 -->
+                        <line x1="200" y1="190" x2="200" y2="140" stroke="#38bdf8" stroke-width="3" id="wireMasterSda" />
+                        <circle cx="200" cy="140" r="5" fill="#38bdf8" />
+                        <text x="205" y="180" fill="#38bdf8" font-size="11" font-weight="bold">SDA</text>
+
+                        <!-- ========== 2. Slave 1: Device A (0x27 LCD1602) ========== -->
+                        <g id="dev1BoxGroup" transform="translate(360, 190)">
+                            <rect width="240" height="170" rx="10" fill="url(#dev1Grad)" stroke="#8b5cf6" stroke-width="2" id="dev1Border" />
+                            <rect x="0" y="0" width="240" height="32" rx="10" fill="#2e1065" />
+                            <text x="120" y="22" fill="#c084fc" font-size="14" font-weight="bold" text-anchor="middle">📟 周邊 1: LCD1602 (PCF8574)</text>
+
+                            <text x="15" y="58" fill="#e9d5ff" font-size="11">預設位址: <tspan font-weight="bold" fill="#a855f7">0x27 (0100111)</tspan></text>
+                            <text x="15" y="78" fill="#94a3b8" font-size="11">內部暫存器: 指令/字元暫存器</text>
+
+                            <rect x="15" y="95" width="210" height="60" rx="6" fill="#090d16" stroke="#4c1d95" />
+                            <text x="25" y="115" fill="#94a3b8" font-size="10">監聽狀態 (Address Match Status):</text>
+                            <text x="25" y="138" fill="#c084fc" font-size="11" font-weight="bold" id="dev1State">閒置監聽中 (Idle Listening)</text>
+                        </g>
+
+                        <!-- Dev 1 引腳垂直走線 -->
+                        <!-- SCL: x=440, y: 190 -> 110 -->
+                        <line x1="440" y1="190" x2="440" y2="110" stroke="#f59e0b" stroke-width="3" id="wireDev1Scl" />
+                        <circle cx="440" cy="110" r="5" fill="#f59e0b" />
+                        <text x="445" y="180" fill="#f59e0b" font-size="11" font-weight="bold">SCL</text>
+
+                        <!-- SDA: x=500, y: 190 -> 140 -->
+                        <line x1="500" y1="190" x2="500" y2="140" stroke="#38bdf8" stroke-width="3" id="wireDev1Sda" />
+                        <circle cx="500" cy="140" r="5" fill="#38bdf8" />
+                        <text x="505" y="180" fill="#38bdf8" font-size="11" font-weight="bold">SDA</text>
+
+                        <!-- ========== 3. Slave 2: Device B (0x68 RTC DS3231) ========== -->
+                        <g id="dev2BoxGroup" transform="translate(660, 190)">
+                            <rect width="240" height="170" rx="10" fill="url(#dev2Grad)" stroke="#ec4899" stroke-width="2" id="dev2Border" />
+                            <rect x="0" y="0" width="240" height="32" rx="10" fill="#831843" />
+                            <text x="120" y="22" fill="#f472b6" font-size="14" font-weight="bold" text-anchor="middle">⏰ 周邊 2: RTC 時鐘 (DS3231)</text>
+
+                            <text x="15" y="58" fill="#fbcfe8" font-size="11">預設位址: <tspan font-weight="bold" fill="#ec4899">0x68 (1101000)</tspan></text>
+                            <text x="15" y="78" fill="#94a3b8" font-size="11">內部暫存器: 秒/分/時/日曆</text>
+
+                            <rect x="15" y="95" width="210" height="60" rx="6" fill="#090d16" stroke="#831843" />
+                            <text x="25" y="115" fill="#94a3b8" font-size="10">監聽狀態 (Address Match Status):</text>
+                            <text x="25" y="138" fill="#f472b6" font-size="11" font-weight="bold" id="dev2State">閒置監聽中 (Idle Listening)</text>
+                        </g>
+
+                        <!-- Dev 2 引腳垂直走線 -->
+                        <!-- SCL: x=740, y: 190 -> 110 -->
+                        <line x1="740" y1="190" x2="740" y2="110" stroke="#f59e0b" stroke-width="3" id="wireDev2Scl" />
+                        <circle cx="740" cy="110" r="5" fill="#f59e0b" />
+                        <text x="745" y="180" fill="#f59e0b" font-size="11" font-weight="bold">SCL</text>
+
+                        <!-- SDA: x=800, y: 190 -> 140 -->
+                        <line x1="800" y1="190" x2="800" y2="140" stroke="#38bdf8" stroke-width="3" id="wireDev2Sda" />
+                        <circle cx="800" cy="140" r="5" fill="#38bdf8" />
+                        <text x="805" y="180" fill="#38bdf8" font-size="11" font-weight="bold">SDA</text>
+                    </svg>
+                </div>
+
+                <!-- 示波器波形圖 (Canvas Logic Analyzer) -->
+                <div class="waveform-wrapper">
+                    <div class="waveform-header">
+                        <span>📊 數位示波器 / 邏輯分析儀即時波形 (Logic Analyzer Waveform)</span>
+                        <span style="font-size: 0.8rem;">黃線: SCL | 藍線: SDA | 綠標記: START/ACK | 紅標記: NACK | 橘標記: STOP</span>
+                    </div>
+                    <div class="waveform-bit-legend">
+                        <strong>位元標記：</strong>
+                        S = START ｜ A6→A0 = 7-bit 位址（A0 是最低位，不是硬體 A0 接腳）｜ W(0)/R(1) = 傳輸方向 ｜
+                        D7→D0 = 資料 Byte（D7 先送、D0 最後送）｜ ACK/NACK = 應答 ｜ P = STOP<br>
+                        <strong>正確順序：</strong>S → A6 A5 A4 A3 A2 A1 A0 → W/R → ACK → D7 D6 D5 D4 D3 D2 D1 D0 → ACK/NACK → P
+                    </div>
+                    <canvas id="waveformCanvas" width="1120" height="220"></canvas>
+                </div>
+
+                <!-- 即時通訊日誌與封包解析表 -->
+                <div class="log-panel-grid">
+                    <div class="panel-box">
+                        <h4>📜 封包解碼與傳輸狀態 (Packet Inspector)</h4>
+                        <table class="packet-table" id="packetTable">
+                            <thead>
+                                <tr>
+                                    <th>階段 (Phase)</th>
+                                    <th>位元內容 (Bits)</th>
+                                    <th>16進位 / 數值</th>
+                                    <th>回應 (ACK/NACK)</th>
+                                    <th>狀態意義</th>
+                                </tr>
+                            </thead>
+                            <tbody id="packetTbody">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; color: #64748b; padding: 1.5rem;">尚未開始傳輸，請點擊「開始播放」或「單步前進」</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="panel-box">
+                        <h4>📡 匯流排事件日誌 (Bus Event Console)</h4>
+                        <div class="log-console" id="logConsole">
+                            <div class="log-line">[系統啟動] I2C 匯流排已就緒。SDA=High, SCL=High (上拉保持)。</div>
+                            <div class="log-line">[等待主機] Master 處於 IDLE 狀態。</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 區塊 2: 核心原理深度剖析 -->
+        <section id="core-concepts">
+            <h2>🧠 2. I2C 核心概念與硬體架構剖析</h2>
+            
+            <p><strong>I2C (Inter-Integrated Circuit)</strong> 是由 Philips (現 NXP) 於 1982 年開發的雙線式、半雙工、同步序列通訊匯流排。廣泛應用於微控制器 (MCU) 與各類低速外圍周邊（如感測器、EEPROM、RTC 即時時鐘、LCD 螢幕）之間的板級通訊。</p>
+
+            <h3>2.1 實體層電路：開汲極 (Open-Drain) 與「線接與 (Wired-AND)」機制</h3>
+            <p>與常見的推挽式 (Push-Pull) GPIO 輸出不同，I2C 匯流排上的所有裝置（無論是 Master 還是 Slave）其 SDA 與 SCL 腳位均採用 <strong>開汲極 (Open-Drain / Open-Collector)</strong> 架構：</p>
+            <ul>
+                <li><strong>輸出 Low (0)</strong>：晶片內部的 N 通道 MOSFET 導通，直接將匯流排線路接地 (GND)，強制拉至低電位 ($0\text{V}$)。</li>
+                <li><strong>輸出 High (1)</strong>：晶片內部的 MOSFET 關斷 (高阻抗浮接狀態 High-Z)，此時匯流排電位完全依賴外部的<strong>上拉電阻 (Pull-up Resistor, $R_p$)</strong> 將電壓拉高至 $V_{DD}$。</li>
+            </ul>
+
+            <div class="callout callout-success">
+                <strong>💡 為什麼必須採用 Open-Drain 架構？</strong><br>
+                1. <strong>避免匯流排短路燒毀</strong>：若兩顆晶片同時輸出，一顆輸出 High ($5\text{V}$) 一顆輸出 Low ($0\text{V}$)，推挽結構會瞬間造成電源對地大電流短路；而 Open-Drain 下，只要有一方導通接地，匯流排就呈現 Low，絕不產生短路破壞。<br>
+                2. <strong>線接與 (Wired-AND) 邏輯</strong>：只有當「所有連線的裝置」都關斷 MOSFET 放開匯流排時，線路才會浮高 (High)。任一裝置拉低，全線路即為 Low。這是實現 <strong>ACK 應答、時脈伸展 (Clock Stretching) 與多主機仲裁 (Arbitration)</strong> 的底層物理基石！<br>
+                3. <strong>支援多電壓邏輯混用</strong>：3.3V 與 5V 裝置只要透過適當的上拉電壓或電平轉換，即可在同一個匯流排上共存。
+            </div>
+
+            <h3>2.2 訊號條件與有效性原則 (Signal Conditions & Data Validity)</h3>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">條件 / 狀態</th>
+                        <th style="width: 35%;">電位變化行為</th>
+                        <th>圖解意義與功能說明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>起始條件 (START, S)</strong></td>
+                        <td>當 <span class="chip chip-scl">SCL = High</span> 時，<br><span class="chip chip-sda">SDA 發生 High &rarr; Low 下降沿</span></td>
+                        <td>標誌著通訊的開始。所有掛在匯流排上的 Slave 裝置檢測到此特殊變化後立即甦醒並準備解碼位址。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>停止條件 (STOP, P)</strong></td>
+                        <td>當 <span class="chip chip-scl">SCL = High</span> 時，<br><span class="chip chip-sda">SDA 發生 Low &rarr; High 上升沿</span></td>
+                        <td>標誌著本輪通訊結束。匯流排被釋放回閒置狀態 (BUS IDLE)。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>資料有效性原則 (Data Validity)</strong></td>
+                        <td><span class="chip chip-scl">SCL = High 期間</span>：SDA 資料必須絕對穩定。<br><span class="chip chip-scl">SCL = Low 期間</span>：SDA 才能切換電位。</td>
+                        <td>時脈 High 期間，Receiver (接收端) 進行採樣；若在 SCL 為 High 時改變 SDA，會被誤判為 START 或 STOP！</td>
+                    </tr>
+                    <tr>
+                        <td><strong>重複起始條件 (Repeated START, Sr)</strong></td>
+                        <td>不發送 STOP，直接在 SCL=High 時再次觸發 SDA 下降沿</td>
+                        <td>用於「複合操作」（例如先寫入暫存器位址，隨後立即切換為讀取模式），避免在切換途中失去匯流排控制權。</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>2.3 完整的 9-Clock 訊框結構與 ACK / NACK 機制</h3>
+            <p>I2C 的資料傳輸以 <strong>8 個資料位元 (Byte) + 1 個應答位元 (ACK/NACK) = 9 個時脈脈衝</strong> 為一個基本單元：</p>
+            <ol>
+                <li><strong>Byte 1：7 位元設備位址 (A6~A0) + 1 位元讀寫方向 (R/W)</strong>
+                    <ul>
+                        <li>$R/\bar{W} = 0$：Master 準備<strong>寫入 (Write)</strong> 資料給 Slave。</li>
+                        <li>$R/\bar{W} = 1$：Master 準備從 Slave <strong>讀取 (Read)</strong> 資料。</li>
+                        <li>例如 LCD1602 (位址 <code>0x27</code> = <code>0100111b</code>)，寫入時傳送 <code>(0x27 &lt;&lt; 1) | 0 = 0x4E</code>；讀取時傳送 <code>(0x27 &lt;&lt; 1) | 1 = 0x4F</code>。</li>
+                    </ul>
+                </li>
+                <li><strong>第 9 個時脈：ACK (Acknowledge) / NACK (Not Acknowledge)</strong>
+                    <ul>
+                        <li>在第 8 個時脈結束後，發送端 (Transmitter) 主動釋放 SDA 線（內部 MOSFET 關斷，SDA 浮起）。</li>
+                        <li><strong>ACK (確認應答, 0)</strong>：若有 Slave 裝置比對到位址匹配或成功接收字節，該 Slave 會在第 9 個時脈期間<strong>主動拉低 SDA (Pull Low)</strong>。</li>
+                        <li><strong>NACK (非應答, 1)</strong>：若位址不存在、Slave 忙碌或接收端已不想再讀取下一字節，SDA 保持被上拉電阻拉高 (High)。此時 Master 即可發送 STOP 結束傳輸或進行重試。</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h3>2.4 一個 bit 到底怎麼送？從 SCL 與 SDA 的分工開始</h3>
+            <div class="callout callout-success">
+                <strong>🏫 用「老師上課」理解三者關係：</strong><br>
+                <strong>Master 主控端 = 老師 / 指揮者</strong>：決定要找哪個 Slave、何時開始、何時結束，並通常負責打拍子。<br>
+                <strong>SCL = 老師的拍手節拍（何時看）</strong>：SCL 低時準備答案；SCL 高時接收端正式讀答案。<br>
+                <strong>SDA = 大家共用的白板（答案是什麼）</strong>：位址、0/1 資料及 ACK 都寫在這條線上；它是雙向線，發話者會隨交易階段改變。<br><br>
+                <strong>一句話記憶：</strong>Master 用 SCL 告訴大家「何時看」，目前的發送者用 SDA 告訴大家「看到什麼」。
+            </div>
+            <table class="styled-table">
+                <thead><tr><th>通訊階段</th><th>SCL 通常由誰控制？</th><th>SDA 由誰控制？</th><th>Master 的角色</th></tr></thead>
+                <tbody>
+                    <tr><td>START、位址、Write 資料</td><td>Master</td><td>Master</td><td>打拍子並送出位址或資料</td></tr>
+                    <tr><td>位址或 Write 資料後的 ACK</td><td>Master</td><td><strong>Slave</strong></td><td>提供第 9 拍，但放開 SDA 等回答</td></tr>
+                    <tr><td>Read 資料</td><td>Master</td><td><strong>Slave</strong></td><td>提供時脈並讀取 SDA</td></tr>
+                    <tr><td>Read 資料後的 ACK/NACK</td><td>Master</td><td>Master</td><td>用 ACK 要下一 Byte，或用 NACK 表示讀完</td></tr>
+                </tbody>
+            </table>
+            <p><strong>常見誤解：</strong>「Master 控制通訊」不代表 Master 永遠控制 SDA。Master 主要掌握交易流程與 SCL；讀資料或等待 ACK 時，Master 會放開 SDA，讓 Slave 發話。</p>
+            <p>每一個資料位元都依序走過三個階段：<strong>準備 → 取樣 → 完成</strong>。Master 產生 SCL 節拍；目前的發送端負責 SDA。</p>
+            <table class="styled-table">
+                <thead><tr><th>階段</th><th>SCL</th><th>SDA 行為</th><th>接收端要做什麼</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>① 準備資料</strong></td><td>LOW</td><td>發送端要送 0 就拉低；要送 1 就放開，由上拉電阻拉高。</td><td>先不判讀，等待資料穩定。</td></tr>
+                    <tr><td><strong>② 取樣資料</strong></td><td>HIGH</td><td>SDA 必須保持穩定，不可任意切換。</td><td>讀取 SDA：LOW=0、HIGH=1。</td></tr>
+                    <tr><td><strong>③ 完成此 bit</strong></td><td>回到 LOW</td><td>發送端現在才可準備下一個 bit。</td><td>保存剛才讀到的值。</td></tr>
+                </tbody>
+            </table>
+            <div class="callout">
+                <strong>一句話讀波形：</strong>「SCL 低時看資料如何準備，SCL 高時看接收端讀到什麼。」資料由 MSB 先送；每 8 個資料 Clock 後，第 9 個 Clock 專門做 ACK/NACK。第 8 與第 9 Clock 之間，原發送端必須放開 SDA，讓接收端取得 SDA 控制權。
+            </div>
+
+            <h3>2.5 完整寫入交易：Master 寫資料到 LCD 0x27</h3>
+            <p><code>S → [0x27 + W] → ACK → [0x08] → ACK → [0x01] → ACK → P</code></p>
+            <ol>
+                <li><strong>START：</strong>Idle 時 SDA、SCL 均為 High；Master 在 SCL=High 時將 SDA 拉低。</li>
+                <li><strong>Address + W：</strong>Master 傳送 <code>0100111</code> 與 <code>W=0</code>，線上 8-bit 位址 Byte 是 <code>(0x27 &lt;&lt; 1) | 0 = 0x4E</code>。</li>
+                <li><strong>Address ACK：</strong>所有 Slave 都監聽，但只有位址 0x27 的裝置在第 9 個 Clock 拉低 SDA。</li>
+                <li><strong>Data + ACK：</strong>Master 先送 <code>0x08</code>，Slave 回 ACK；再送 <code>0x01</code>，Slave 再回 ACK。</li>
+                <li><strong>STOP：</strong>Master 在 SCL=High 時讓 SDA 由 Low 回到 High，交易結束。</li>
+            </ol>
+
+            <h3>2.6 完整讀取交易：讀 RTC 0x68 的暫存器 0x00</h3>
+            <p><code>S → [0x68+W] → ACK → [0x00] → ACK → Sr → [0x68+R] → ACK → [資料] → NACK → P</code></p>
+            <ol>
+                <li>第一段用 Write，是為了把 RTC 的內部暫存器指標指定到 <code>0x00</code>，不是要修改秒數。</li>
+                <li>Master 不送 STOP，而送 Repeated START (<code>Sr</code>)，使整個「指定暫存器後立刻讀取」保持為不可分割的交易。</li>
+                <li>第二次定址改用 <code>R=1</code>；線上位址 Byte 為 <code>(0x68 &lt;&lt; 1) | 1 = 0xD1</code>。</li>
+                <li>位址 ACK 後，資料方向反轉：Slave 控制 SDA 送資料，Master 仍控制 SCL 並負責取樣。</li>
+                <li>Master 讀完最後一個 Byte 後送 <strong>NACK</strong>。這裡的 NACK 不是錯誤，而是明確告訴 Slave「不要再送下一個 Byte」，隨後再送 STOP。</li>
+            </ol>
+
+            <h3>2.7 如何根據位址判斷資料由誰接收、誰傳送？</h3>
+            <div class="callout callout-success">
+                <strong>核心規則：</strong>7-bit 位址決定「哪個 Slave 被選中」；最後的 R/W 位元決定「接下來資料往哪個方向走」。R/W 永遠以 Master 的角度命名：<code>0</code> 是 Master Write，<code>1</code> 是 Master Read。
+            </div>
+            <p>START 後第一個 Byte 的結構為：<code>[A6 A5 A4 A3 A2 A1 A0 | R/W]</code>。所有 Slave 都會監聽它，先比較前 7 bit，再檢查最後 1 bit。</p>
+            <table class="styled-table">
+                <thead><tr><th>位址是否相符</th><th>R/W</th><th>ACK</th><th>後續資料方向</th></tr></thead>
+                <tbody>
+                    <tr><td>否</td><td>0 或 1</td><td>該 Slave 不拉低 SDA；若全都不匹配，Master 讀到 NACK</td><td>該 Slave 不參與，等待下一個 START</td></tr>
+                    <tr><td>是</td><td><code>0</code> (Write)</td><td>Slave 回 ACK</td><td><strong>Master 傳送 → Slave 接收</strong></td></tr>
+                    <tr><td>是</td><td><code>1</code> (Read)</td><td>Slave 回 ACK</td><td><strong>Slave 傳送 → Master 接收</strong></td></tr>
+                </tbody>
+            </table>
+            <ol>
+                <li><strong>看到 <code>0x4E</code>：</strong><code>0x4E &gt;&gt; 1 = 0x27</code>，所以選中 0x27；<code>0x4E &amp; 1 = 0</code>，所以接下來由 Master 傳資料給 0x27。</li>
+                <li><strong>看到 <code>0xD1</code>：</strong><code>0xD1 &gt;&gt; 1 = 0x68</code>，所以選中 0x68；<code>0xD1 &amp; 1 = 1</code>，所以接下來由 0x68 傳資料給 Master。</li>
+            </ol>
+            <p><strong>注意：</strong>Slave 回 ACK 表示它接受了「位址與方向」，不代表後續資料內容一定正確。</p>
+
+            <h3>2.8 7-bit 與 8-bit 位址不要混用</h3>
+            <table class="styled-table">
+                <thead><tr><th>7-bit 裝置位址</th><th>Write 線上位元組</th><th>Read 線上位元組</th><th>Arduino Wire 應填</th></tr></thead>
+                <tbody>
+                    <tr><td><code>0x27</code></td><td><code>0x4E</code></td><td><code>0x4F</code></td><td><code>0x27</code></td></tr>
+                    <tr><td><code>0x68</code></td><td><code>0xD0</code></td><td><code>0xD1</code></td><td><code>0x68</code></td></tr>
+                </tbody>
+            </table>
+            <p>資料手冊通常列 7-bit 位址；部分舊文件或邏輯分析儀會顯示已加入 R/W 位元的 8-bit 值。Arduino <code>Wire.beginTransmission()</code> 與 <code>Wire.requestFrom()</code> 要傳入 <strong>7-bit 位址</strong>，不可自行左移。</p>
+
+            <h3>2.9 Clock Stretching、Arbitration 與 Bus Busy</h3>
+            <ul>
+                <li><strong>Clock Stretching：</strong>Master 放開 SCL 後，尚未準備好的 Slave 可繼續拉低 SCL。Master 必須等到實際 SCL 真的變 High 才能繼續；實作時需確認控制器與函式庫是否支援。</li>
+                <li><strong>多主機仲裁：</strong>某 Master 想送 1（放開 SDA）卻讀到線上為 0，代表另一 Master 正在拉低 SDA；前者輸掉仲裁並立即停止，後者可繼續傳送。</li>
+                <li><strong>Bus Busy：</strong>從 START 到 STOP 之間匯流排皆視為忙碌；新交易應等到 SDA=High、SCL=High 的 Idle 狀態。</li>
+            </ul>
+        </section>
+
+        <!-- 區塊 3: 硬體計算機小工具 -->
+        <section id="hardware-calc">
+            <h2>⚡ 3. 上拉電阻 (Pull-up Resistor) 與 RC 充放電計算器</h2>
+            <p>在實際電路設計中，上拉電阻 $R_p$ 的阻值選擇是一門關鍵的工程權衡 (Trade-off)。若電阻過大，訊號上升時間過慢導致波形失真；若電阻過小，晶片拉低線路時消耗電流過大，可能無法達到合格的低電平電壓 $V_{OL}$。</p>
+
+            <div class="calc-card">
+                <div class="calc-grid">
+                    <div class="calc-item">
+                        <label for="calcVdd">供電電壓 $V_{DD}$ (V)</label>
+                        <select id="calcVdd" onchange="calculateRp()">
+                            <option value="5.0">5.0 V (標準 Arduino Uno)</option>
+                            <option value="3.3" selected>3.3 V (ESP32 / STM32 / Raspberry Pi)</option>
+                            <option value="1.8">1.8 V (低功耗穿戴/感測器)</option>
+                        </select>
+                    </div>
+
+                    <div class="calc-item">
+                        <label for="calcSpeed">匯流排工作速率 (Speed Mode)</label>
+                        <select id="calcSpeed" onchange="calculateRp()">
+                            <option value="100">標準模式 Standard Mode (100 kHz, max $t_r=1000\text{ns}$)</option>
+                            <option value="400" selected>快速模式 Fast Mode (400 kHz, max $t_r=300\text{ns}$)</option>
+                            <option value="1000">快速升級模式 Fast Mode Plus (1 MHz, max $t_r=120\text{ns}$)</option>
+                        </select>
+                    </div>
+
+                    <div class="calc-item">
+                        <label for="calcCb">匯流排總負載電容 $C_b$ (pF)</label>
+                        <input type="number" id="calcCb" value="120" min="10" max="800" step="10" oninput="calculateRp()">
+                        <small style="color: #64748b;">(包含走線電容、接腳電容，通常約 50~200pF，標準上限 400pF)</small>
+                    </div>
+                </div>
+
+                <div class="calc-result-box">
+                    <div class="calc-result-item">
+                        最小安全電阻 $R_{p,min}$：<span id="rpMin">966 Ω</span>
+                        <br><small style="color: #64748b;">(受限於晶片最大灌電流 $I_{OL}=3\text{mA}$)</small>
+                    </div>
+                    <div class="calc-result-item">
+                        最大允許電阻 $R_{p,max}$：<span id="rpMax">2.95 kΩ</span>
+                        <br><small style="color: #64748b;">(受限於最大允許訊號上升時間 $t_r$)</small>
+                    </div>
+                    <div class="calc-result-item">
+                        🌟 推薦標準工程選值：<span id="rpRec" style="color: #10b981;">2.2 kΩ ~ 4.7 kΩ</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="callout">
+                <strong>📐 物理計算公式推導：</strong><br>
+                $$R_{p,min} = \frac{V_{DD} - V_{OL,max}}{I_{OL}} \quad \text{其中 } V_{OL,max}=0.4\text{V}, I_{OL}=3\text{mA}$$
+                $$R_{p,max} = \frac{t_r}{0.8473 \times C_b} \quad \text{依據 RC 電路從 } 0.3V_{DD} \text{ 充電至 } 0.7V_{DD} \text{ 所需時間}$$
+            </div>
+        </section>
+
+        <!-- 區塊 4: Mermaid 流程圖 -->
+        <section id="flowchart-logic">
+            <h2>📊 4. I2C Master-Slave 握手通訊時序邏輯流程圖</h2>
+            <p>以下流程圖詳細展示了主控端 (Master) 發動通訊、Slave 接收端偵測位址、ACK 應答判定與例外處理的完整邏輯分支：</p>
+
+            <div style="background: #ffffff; padding: 1.5rem; border-radius: 8px; border: 1px solid #cbd5e1; margin: 1.5rem 0; overflow-x: auto;">
+                <pre class="mermaid">
+flowchart TD
+    Start([匯流排閒置: SDA=1, SCL=1]) --> TrgStart[Master 觸發 START 條件&lt;br/&gt;SCL=1 時拉低 SDA]
+    TrgStart --> SendAddr[Master 傳送 7-bit 位址 + 1-bit R/W]
+    SendAddr --> DevListen[所有 Slaves 接收位址比對]
+    
+    DevListen --> CheckMatch{是否有 Slave 位址吻合?}
+    CheckMatch -- 否 (例如 0x3C 未連接) --> NoDevAck[無裝置拉低 SDA&lt;br/&gt;第 9 時脈保持 HIGH: NACK]
+    NoDevAck --> MasterAbort[Master 偵測到 NACK: 判定設備遺失或離線]
+    MasterAbort --> TrgStop[Master 發送 STOP 條件&lt;br/&gt;釋放匯流排結束通訊]
+
+    CheckMatch -- 是 (匹配 0x27 或 0x68) --> DevAck[匹配的 Slave 於第 9 時脈&lt;br/&gt;主動拉低 SDA 輸出 ACK=0]
+    DevAck --> CheckRW{判斷 R/W 位元}
+
+    CheckRW -- 寫入模式 W=0 --> WriteLoop[Master 逐字節傳送資料 Data Byte]
+    WriteLoop --> SlaveByteAck[Slave 接收完畢並回傳 ACK]
+    SlaveByteAck --> MoreData{是否還有資料要傳送?}
+    MoreData -- 是 --> WriteLoop
+    MoreData -- 否 --> TrgStop
+
+    CheckRW -- 讀取模式 R=1 --> ReadLoop[Slave 逐位元送出暫存器資料]
+    ReadLoop --> MasterAck[Master 接收完畢&lt;br/&gt;若需繼續讀回傳 ACK=0]
+    MasterAck --> NeedMore{是否繼續讀取?}
+    NeedMore -- 是 --> ReadLoop
+    NeedMore -- 否 (最後一字節) --> MasterNack[Master 刻意回傳 NACK=1&lt;br/&gt;告知 Slave 停止送出]
+    MasterNack --> TrgStop
+    TrgStop --> End([通訊結束，匯流排恢復 Idle])
+                </pre>
+            </div>
+        </section>
+
+        <!-- 區塊 5: 程式碼實作 -->
+        <section id="code-implementation">
+            <h2>💻 5. 硬體與軟體程式碼實作 (Arduino C++ & Bit-Banging)</h2>
+            <p>在嵌入式系統中，我們通常使用硬體周邊單元 (如 Arduino Wire.h)；但在某些不具備硬體 I2C 模組的晶片或引腳上，亦可使用普通 GPIO 進行 <strong>軟體模擬 I2C (Bit-Banging)</strong>。</p>
+
+            <h3>範例 1：Arduino Uno 同時控制雙周邊 (LCD 0x27 與 RTC 0x68)</h3>
+            <p>在此範例中，Arduino Uno 透過 A4 (SDA) 與 A5 (SCL) 同步向 <code>0x27</code> (LCD1602) 寫入歡迎文字，並從 <code>0x68</code> (DS3231) 讀取當前時間：</p>
+
+            <div class="code-container">
+                <div class="code-header">
+                    <span>📄 Arduino_Dual_I2C_Devices.ino</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 複製程式碼</button>
+                </div>
+                <pre><code>#include &lt;Wire.h&gt;
+
+// 定義兩台 I2C 設備的 7-bit 位址
+#define LCD_ADDR  0x27  // 周邊 1: PCF8574 LCD 擴展晶片位址
+#define RTC_ADDR  0x68  // 周邊 2: DS3231 / MPU6050 位址
+
+// BCD 碼轉十進位函式 (DS3231 內部秒/分/時均以 BCD 格式儲存)
+byte bcdToDec(byte val) {
+    return ((val / 16 * 10) + (val % 16));
+}
+
+void setup() {
+    Serial.begin(115200);
+    while (!Serial); // 等待序列埠監視器開啟
+
+    // 初始化 I2C 主機模式 (Uno 預設: A4=SDA, A5=SCL)
+    Wire.begin();
+    Wire.setClock(100000); // 設定為標準模式 100 kHz
+
+    Serial.println(F("========================================"));
+    Serial.println(F("[I2C Master] 雙裝置 (0x27, 0x68) 通訊初始化完成"));
+    Serial.println(F("========================================"));
+
+    // 1. 寫入周邊 1 (LCD 0x27)：送出初始化控制背光指令
+    Wire.beginTransmission(LCD_ADDR);
+    Wire.write(0x08); // 寫入資料字節 1 (控制暫存器，開啟背光)
+    Wire.write(0x01); // 寫入資料字節 2 (清除顯示器指令)
+    byte errorLcd = Wire.endTransmission(); // 產生 STOP 條件並接收 ACK/NACK
+
+    if (errorLcd == 0) {
+        Serial.println(F("[SUCCESS] 成功與 0x27 (LCD) 握手並寫入控制字節 (ACK 回應)"));
+    } else {
+        Serial.print(F("[ERROR] 0x27 (LCD) 無法連線，錯誤代碼: "));
+        Serial.println(errorLcd); // 2: 位址收到 NACK, 3: 資料收到 NACK
+    }
+}
+
+void loop() {
+    // 2. 讀取周邊 2 (RTC 0x68)：讀取即時時鐘之「秒」暫存器
+    // 步驟 2.1: 先發送寫入模式，指定要讀取的暫存器位址為 0x00 (秒數暫存器)
+    Wire.beginTransmission(RTC_ADDR);
+    Wire.write(0x00); // 暫存器指標指向 0x00 (Seconds)
+    byte errorRtc = Wire.endTransmission(false); // 傳送 Repeated START (不放開匯流排)
+
+    if (errorRtc == 0) {
+        // 步驟 2.2: 切換為讀取模式，向 0x68 請求讀取 1 個 Byte
+        Wire.requestFrom(RTC_ADDR, 1);
+        if (Wire.available()) {
+            byte rawSeconds = Wire.read(); // 讀取資料並自動在最後一個 byte 回應 NACK + STOP
+            byte seconds = bcdToDec(rawSeconds & 0x7F);
+            Serial.print(F("[RTC 0x68 讀取成功] 當前秒數: "));
+            Serial.println(seconds);
+        }
+    } else {
+        Serial.println(F("[ERROR] 0x68 (RTC) 設備未回應 ACK"));
+    }
+
+    delay(1000); // 每秒讀取一次
+}</code></pre>
+            </div>
+
+            <h3>範例 2：純 GPIO 軟體模擬 I2C (Bit-Banging 核心演算法剖析)</h3>
+            <p>透過精準控制引腳的高低電位與輸入/輸出狀態，可手動實現 I2C 通訊時序：</p>
+
+            <div class="code-container">
+                <div class="code-header">
+                    <span>📄 I2C_BitBang_Core.cpp</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 複製程式碼</button>
+                </div>
+                <pre><code>// 模擬 Open-Drain 行為：
+// 輸出 0: pinMode 為 OUTPUT, digitalWrite 為 LOW (強制拉地)
+// 輸出 1: pinMode 為 INPUT (高阻態 High-Z, 藉由外部上拉電阻浮至 5V)
+void sda_low(int pinSda)  { pinMode(pinSda, OUTPUT); digitalWrite(pinSda, LOW); }
+void sda_high(int pinSda) { pinMode(pinSda, INPUT); }
+void scl_low(int pinScl)  { pinMode(pinScl, OUTPUT); digitalWrite(pinScl, LOW); }
+void scl_high(int pinScl) { pinMode(pinScl, INPUT); }
+
+// 產生 START 條件：當 SCL 為 High 時，SDA 由 High 降為 Low
+void i2c_start(int pinSda, int pinScl) {
+    sda_high(pinSda);
+    scl_high(pinScl);
+    delayMicroseconds(5);
+    sda_low(pinSda);   // SDA 下降沿
+    delayMicroseconds(5);
+    scl_low(pinScl);   // 鎖定時脈進入低電位，準備送出資料位元
+}
+
+// 產生 STOP 條件：當 SCL 為 High 時，SDA 由 Low 升為 High
+void i2c_stop(int pinSda, int pinScl) {
+    sda_low(pinSda);
+    delayMicroseconds(5);
+    scl_high(pinScl);
+    delayMicroseconds(5);
+    sda_high(pinSda);  // SDA 上升沿
+    delayMicroseconds(5);
+}
+
+// 送出 1 個位元組並接收 Slave 的 ACK 訊號 (回傳 true 代表收到 ACK)
+bool i2c_write_byte(int pinSda, int pinScl, uint8_t byteData) {
+    // 依序由最高位元 (MSB, Bit 7) 送至最低位元 (LSB, Bit 0)
+    for (int i = 7; i >= 0; i--) {
+        if (byteData & (1 &lt;&lt; i)) {
+            sda_high(pinSda);
+        } else {
+            sda_low(pinSda);
+        }
+        delayMicroseconds(5);
+        scl_high(pinScl); // 接收端在此上升沿與 High 期間進行採樣
+        delayMicroseconds(5);
+        scl_low(pinScl);
+    }
+
+    // 第 9 個時脈：釋放 SDA，讀取周邊裝置拉低的 ACK
+    sda_high(pinSda); // 釋放 SDA 線
+    delayMicroseconds(5);
+    scl_high(pinScl);
+    delayMicroseconds(5);
+    bool ack = (digitalRead(pinSda) == LOW); // 0 代表 Slave 回應 ACK
+    scl_low(pinScl);
+    return ack;
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- 區塊 6: 延伸思考與進階專題 -->
+        <section id="advanced-topics">
+            <h2>🚀 6. 延伸思考與進階主題 (Extensions & Advanced Topics)</h2>
+
+            <h3>6.1 常用板級串列通訊協定全方位對比 (I2C vs SPI vs UART)</h3>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>比較維度</th>
+                        <th>I2C (雙線匯流排)</th>
+                        <th>SPI (串列周邊介面)</th>
+                        <th>UART (非同步收發器)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>訊號線數</strong></td>
+                        <td><strong>2 線</strong> (SDA, SCL)</td>
+                        <td><strong>4 線+</strong> (MOSI, MISO, SCK, CS/SS)</td>
+                        <td><strong>2 線</strong> (TX, RX)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>傳輸模式</strong></td>
+                        <td>半雙工 (Half-Duplex)</td>
+                        <td><strong>全雙工 (Full-Duplex)</strong></td>
+                        <td><strong>全雙工 (Full-Duplex)</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>典型傳輸速率</strong></td>
+                        <td>100 kHz ~ 1 MHz (高速可達 3.4MHz)</td>
+                        <td><strong>10 MHz ~ 80 MHz+ (極高速)</strong></td>
+                        <td>9600 bps ~ 1 Mbps (一般)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>定址能力與擴充</strong></td>
+                        <td><strong>軟體定址 (7-bit 可掛高達 128 個)</strong></td>
+                        <td>硬體片選 (每個 Slave 需一條 CS 線)</td>
+                        <td>點對點 (Point-to-Point)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>硬體開銷與走線</strong></td>
+                        <td><strong>極低</strong> (僅需 2 個 Pin + 上拉電阻)</td>
+                        <td>高 (腳位隨裝置數量線性暴增)</td>
+                        <td>極低 (但僅限一對一通訊)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>通訊握手機制</strong></td>
+                        <td><strong>有 (每 8 位元均具備 ACK/NACK 握手)</strong></td>
+                        <td>無 (Master 盲發盲收)</td>
+                        <td>無 (需軟體通訊層協議實作)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>6.2 常見邊界問題與除錯實務 (Troubleshooting & Best Practices)</h3>
+            
+            <div class="callout callout-warning">
+                <strong>⚠️ 1. 匯流排鎖死 (Bus Hang / Bus Lockup)：SDA 被 Slave 永久拉低怎麼辦？</strong><br>
+                當 Master 在讀取 Slave 資料中途發生異常重置 (MCU Reset 或死當) 時，Slave 可能正停在「拉低 SDA 輸出 0 或 ACK」的中途狀態。由於 Master 重開機後 SCL 處於閒置高電位，Slave 會永遠等待 SCL 下一個脈衝而<strong>持續拉死 SDA</strong>，導致整個匯流排癱瘓！<br>
+                <strong>解決方案（9-Clock Reset 復原程序）：</strong><br>
+                Master 在開機初始化時，若檢測到 SDA 異常處於 Low，切換為 GPIO 手動送出 <strong>9 個連續的 SCL 時脈脈衝</strong>。這會強迫 Slave 完成當前 Byte 的傳輸並釋放 SDA，最後 Master 再發出一個 STOP 條件，即可完美重置匯流排！
+            </div>
+
+            <div class="callout">
+                <strong>🧩 2. 設備位址衝突怎麼解決？</strong><br>
+                若在同一系統上需要連接兩顆相同型號且不可改位址的感測器（例如兩台預設固定 0x27 的液晶面板）：<br>
+                1. <strong>硬體切換位址腳 (Address Pins)</strong>：許多晶片提供 A0, A1, A2 針腳，接 VCC 或 GND 可設定 8 組不同位址。<br>
+                2. <strong>使用 I2C 多工器晶片 (如 TCA9548A)</strong>：Master 僅需連接 TCA9548A，透過軟體切換 8 個獨立的 I2C 通道 (Channel 0~7)，即可無縫掛載相同位址的周邊裝置。
+            </div>
+        </section>
+
+        <!-- 區塊 7: 提示詞記錄與版本歷史 -->
+        <section id="prompt-archive">
+            <h2>📝 7. 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+            <div class="prompt-archive-box">
+                <h3>🔹 [2026-10-01 13:15:21] [GPT-5 Codex] 變更紀錄</h3>
+                <p><strong>模型/Agent</strong>: GPT-5 Codex / /root</p>
+                <p><strong>Prompt 原文</strong>:</p>
+                <pre><code>📊 數位示波器 / 邏輯分析儀即時波形 (Logic Analyzer Waveform)
+綠線: START | 黃線: SCL 時脈 | 藍線: SDA 資料 | 綠/紅標記: ACK/NACK | 橘線: STOP  A0 D6 D5 D4 D4 D2 D1是什麼意思?</code></pre>
+                <p><strong>變更摘要</strong>:</p>
+                <ul>
+                    <li>在波形上方加入 S、A6～A0、W/R、D7～D0、ACK/NACK 與 P 的完整圖例。</li>
+                    <li>波形改依完整封包長度自動縮放，避免後段位元超出畫布或標記難以辨識。</li>
+                    <li>修正單 Byte Read 結束時由 Master 回傳 NACK 的模擬與封包表格。</li>
+                </ul>
+            </div>
+            <div class="prompt-archive-box">
+                <h3>🔹 [2026-10-01 13:12:31] [GPT-5 Codex] 變更紀錄</h3>
+                <p><strong>模型/Agent</strong>: GPT-5 Codex / /root</p>
+                <p><strong>Prompt 原文</strong>:</p>
+                <pre><code>如何根據位址判斷資料的接收與傳送</code></pre>
+                <p><strong>變更摘要</strong>:</p>
+                <ul>
+                    <li>新增位址匹配與 R/W 位元的判斷流程及結果表。</li>
+                    <li>以 0x4E、0xD1 示範反推裝置位址和資料方向，並釐清 ACK 的意義。</li>
+                </ul>
+            </div>
+            <div class="prompt-archive-box">
+                <h3>🔹 [2026-10-01 13:10:22] [GPT-5 Codex] 變更紀錄</h3>
+                <p><strong>模型/Agent</strong>: GPT-5 Codex / /root</p>
+                <p><strong>Prompt 原文</strong>:</p>
+                <pre><code>用更容易理解的方式說明 sda與SCL以及主控端的關係</code></pre>
+                <p><strong>變更摘要</strong>:</p>
+                <ul>
+                    <li>以老師、拍手節拍與白板比喻 Master、SCL、SDA。</li>
+                    <li>新增 SCL/SDA 控制權對照表，釐清寫入、ACK、讀取及讀取結束時的發話者。</li>
+                </ul>
+            </div>
+            <div class="prompt-archive-box">
+                <h3>🔹 [2026-10-01 13:07:25] [GPT-5 Codex] 變更紀錄</h3>
+                <p><strong>模型/Agent</strong>: GPT-5 Codex / /root</p>
+                <p><strong>Prompt 原文</strong>:</p>
+                <pre><code>D:\CLASS_NOTE\ec\I2C_simulation.html 是否可以更詳細明確的說明I2C的運作方式?</code></pre>
+                <p><strong>變更摘要</strong>:</p>
+                <ul>
+                    <li>新增模擬器五步觀察指南，以及單一 bit 的準備、取樣、完成三階段說明。</li>
+                    <li>逐步拆解 0x27 寫入與 0x68 暫存器讀取，說明 SDA 控制權如何交接。</li>
+                    <li>補充 7-bit/8-bit 位址換算、讀取最後 Byte 使用 NACK 的原因、Clock Stretching、多主機仲裁與 Bus Busy。</li>
+                </ul>
+            </div>
+            <div class="prompt-archive-box">
+                <h3>🔹 [2026-10-01 13:00:00] [Gemini 3.8 Flash] 變更紀錄</h3>
+                <p><strong>模型/Agent</strong>: Gemini 3.8 Flash / Antigravity</p>
+                <p><strong>Prompt 原文</strong>:</p>
+                <pre><code>利用動態網頁設計I2C 通訊的原理，包含主控端 兩個I2C devise(位址模擬) ，配合SDA,SCL, 模擬資料傳遞與時脈控制 I2C_simulation.html</code></pre>
+                <p><strong>變更摘要</strong>:</p>
+                <ul>
+                    <li>新建 `I2C_simulation.html` 與 `I2C_simulation.md`，完整實作 I2C 通訊協議動態網頁模擬器。</li>
+                    <li>視覺化拓撲架構圖：繪製 Master、Slave 1 (0x27 PCF8574 LCD)、Slave 2 (0x68 DS3231 RTC)、SDA/SCL 匯流排、Rp (4.7kΩ) 上拉電阻與 Open-Drain MOSFET 開關動態反饋。</li>
+                    <li>數位示波器 / 邏輯分析儀即時波形 (Canvas)：即時繪製 SCL/SDA 波形、取樣點、START/STOP/ACK 標記。</li>
+                    <li>模擬通訊情境：寫入 0x27、寫入 0x68、讀取 0x68、未連線位址 0x3C 之 NACK 反饋以及自訂封包。</li>
+                    <li>完整核心原理擴充：包含開汲極、線接與邏輯、上拉電阻阻值 RC 計算器、時脈伸展、匯流排鎖死 9-Clock 復原演算法。</li>
+                    <li>提供 Arduino C++ Wire.h 範例程式碼與 Bit-Banging 軟體模擬程式碼，並支援一鍵複製與列印匯出 PDF 按鈕。</li>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- 頁尾 -->
+    <footer>
+        <div class="footer-content">
+            <p style="text-align: center; margin-bottom: 0.5rem;">📚 CLASS_NOTE 電子電路與嵌入式硬體通訊專題 • I2C Simulation Interactive Lab</p>
+            <p style="text-align: center; font-size: 0.85rem; color: #64748b;">Designed with HTML5 Canvas, SVG & Vanilla JavaScript • 遵守 AGENTS.md 跨 Agent 規範</p>
+        </div>
+    </footer>
+
+    <!-- ================= 模擬器核心 JavaScript ================= -->
+    <script>
+        // ---------------- 狀態變數 ----------------
+        let simState = {
+            running: false,
+            timer: null,
+            speed: 350,
+            stepIndex: 0,
+            currentBit: 0,
+            scl: 1,
+            sda: 1,
+            scenario: 'write_dev1',
+            packetData: [], // 產生的 bit 流物件陣列
+            waveHistory: [], // 波形歷史點陣列
+            maxWavePoints: 140
+        };
+
+        // 設備定義
+        const DEV1_ADDR = 0x27; // LCD1602
+        const DEV2_ADDR = 0x68; // DS3231 RTC
+
+        // Canvas 畫布物件
+        const waveCanvas = document.getElementById('waveformCanvas');
+        const waveCtx = waveCanvas.getContext('2d');
+
+        // ---------------- 初始化 ----------------
+        window.addEventListener('DOMContentLoaded', () => {
+            initWaveCanvas();
+            loadScenario();
+            calculateRp();
+        });
+
+        function initWaveCanvas() {
+            // 繪製初始背景
+            drawWaveform();
+        }
+
+        // ---------------- 情境載入與封包生成 ----------------
+        function loadScenario() {
+            resetSimulation();
+            const scenario = document.getElementById('scenarioSelect').value;
+            simState.scenario = scenario;
+
+            const customGroup = document.getElementById('customInputGroup');
+            const customOp = document.getElementById('customOpGroup');
+            const customData = document.getElementById('customDataGroup');
+
+            if (scenario === 'custom') {
+                customGroup.style.display = 'flex';
+                customOp.style.display = 'flex';
+                customData.style.display = 'flex';
+            } else {
+                customGroup.style.display = 'none';
+                customOp.style.display = 'none';
+                customData.style.display = 'none';
+            }
+
+            // 產生對應情境的 bit sequence
+            generatePacketSequence(scenario);
+            renderPacketTable();
+            addLog(`[情境切換] 載入: ${getScenarioDescription(scenario)}`, 'addr');
+        }
+
+        function getScenarioDescription(scenario) {
+            switch(scenario) {
+                case 'write_dev1': return '寫入 Device 1 (0x27 LCD) - 指令 0x08, 0x01';
+                case 'write_dev2': return '寫入 Device 2 (0x68 RTC) - 暫存器 0x00, 0x59';
+                case 'read_dev2': return '讀取 Device 2 (0x68 RTC) - 讀取秒數 0x32';
+                case 'nack_demo': return '呼叫未連線位址 0x3C (NACK 展示)';
+                case 'custom': return '自訂封包傳輸';
+            }
+        }
+
+        // 產生細部步驟 (每個 bit 包含 SCL low -> SCL high -> SCL low)
+        function generatePacketSequence(scenario) {
+            let addr = 0x27;
+            let rw = 0; // 0=Write, 1=Read
+            let bytes = [];
+            let expectedAck = true;
+
+            if (scenario === 'write_dev1') {
+                addr = 0x27;
+                rw = 0;
+                bytes = [0x08, 0x01];
+                expectedAck = true;
+            } else if (scenario === 'write_dev2') {
+                addr = 0x68;
+                rw = 0;
+                bytes = [0x00, 0x59];
+                expectedAck = true;
+            } else if (scenario === 'read_dev2') {
+                addr = 0x68;
+                rw = 1;
+                bytes = [0x32]; // Slave 回傳的資料
+                expectedAck = true;
+            } else if (scenario === 'nack_demo') {
+                addr = 0x3C; // 未掛載設備
+                rw = 0;
+                bytes = [0x80];
+                expectedAck = false; // 預期收到 NACK
+            } else if (scenario === 'custom') {
+                const addrStr = document.getElementById('customAddr').value.trim();
+                addr = parseInt(addrStr, 16) || 0x27;
+                rw = parseInt(document.getElementById('customRw').value) || 0;
+                const dataStr = document.getElementById('customData').value;
+                bytes = dataStr.split(',').map(s => parseInt(s.trim(), 16) || 0);
+                expectedAck = (addr === 0x27 || addr === 0x68);
+            }
+
+            // 結構化封包序列
+            const seq = [];
+
+            // 1. START 條件: SCL=1 時，SDA 1 -> 0
+            seq.push({
+                phase: 'START',
+                scl: 1,
+                sda: 0,
+                desc: 'START 條件：SCL 高電位時，SDA 由 High 降為 Low',
+                byteIndex: -1,
+                bitLabel: 'S'
+            });
+
+            // 2. 7-bit 位址傳輸 (A6~A0)
+            const addrBits = [];
+            for (let i = 6; i >= 0; i--) {
+                const bitVal = (addr >> i) & 1;
+                addrBits.push(bitVal);
+                seq.push({
+                    phase: 'ADDR',
+                    bitIndex: 6 - i,
+                    bitVal: bitVal,
+                    scl: 1,
+                    sda: bitVal,
+                    desc: `位址位元 A${i} = ${bitVal} (設備位址 0x${addr.toString(16).toUpperCase()})`,
+                    byteIndex: 0,
+                    bitLabel: `A${i}`
+                });
+            }
+
+            // 3. R/W 位元
+            seq.push({
+                phase: 'RW',
+                bitVal: rw,
+                scl: 1,
+                sda: rw,
+                desc: `讀寫方向位元 R/W = ${rw} (${rw === 0 ? 'Write 寫入' : 'Read 讀取'})`,
+                byteIndex: 0,
+                bitLabel: rw === 0 ? 'W(0)' : 'R(1)'
+            });
+
+            // 4. 位址 ACK / NACK (第 9 時脈)
+            seq.push({
+                phase: 'ADDR_ACK',
+                bitVal: expectedAck ? 0 : 1,
+                scl: 1,
+                sda: expectedAck ? 0 : 1,
+                desc: expectedAck ? 
+                    `ACK 回應：${addr === DEV1_ADDR ? 'Device 1 (0x27)' : 'Device 2 (0x68)'} 位址比對吻合，拉低 SDA (0)` : 
+                    `NACK 回應：匯流排無 0x${addr.toString(16).toUpperCase()} 設備，SDA 保持浮高 (1)`,
+                byteIndex: 0,
+                bitLabel: expectedAck ? 'ACK(0)' : 'NACK(1)',
+                isAck: expectedAck
+            });
+
+            // 若 NACK 且非預期，主控端提前 STOP
+            if (!expectedAck) {
+                // STOP 條件
+                seq.push({
+                    phase: 'STOP',
+                    scl: 1,
+                    sda: 1,
+                    desc: 'STOP 條件：未得回應，Master 於 SCL=High 時拉高 SDA (Low->High) 釋放匯流排',
+                    byteIndex: -1,
+                    bitLabel: 'P'
+                });
+                simState.packetData = seq;
+                return;
+            }
+
+            // 5. 資料傳輸位元組
+            bytes.forEach((byteVal, bIdx) => {
+                for (let i = 7; i >= 0; i--) {
+                    const bitVal = (byteVal >> i) & 1;
+                    seq.push({
+                        phase: rw === 0 ? 'DATA_WRITE' : 'DATA_READ',
+                        bitIndex: 7 - i,
+                        bitVal: bitVal,
+                        scl: 1,
+                        sda: bitVal,
+                        desc: `資料 Byte ${bIdx+1} (0x${byteVal.toString(16).padStart(2,'0').toUpperCase()}) 之 D${i} = ${bitVal}`,
+                        byteIndex: bIdx + 1,
+                        bitLabel: `D${i}`
+                    });
+                }
+
+                // 寫入後由 Slave 回 ACK；讀取最後一個 Byte 後由 Master 回 NACK 表示結束
+                const isFinalReadByte = rw === 1 && bIdx === bytes.length - 1;
+                seq.push({
+                    phase: 'DATA_ACK',
+                    bitVal: isFinalReadByte ? 1 : 0,
+                    scl: 1,
+                    sda: isFinalReadByte ? 1 : 0,
+                    desc: isFinalReadByte
+                        ? 'Master 已讀取最後一個 Byte，回傳 NACK (1) 告知 Slave 停止傳送'
+                        : `資料確認：${rw === 0 ? 'Slave 接收成功回應 ACK (0)' : 'Master 要求下一個 Byte，回應 ACK (0)'}`,
+                    byteIndex: bIdx + 1,
+                    bitLabel: isFinalReadByte ? 'NACK(1)' : 'ACK(0)',
+                    isAck: !isFinalReadByte
+                });
+            });
+
+            // 6. 正常 STOP 條件
+            seq.push({
+                phase: 'STOP',
+                scl: 1,
+                sda: 1,
+                desc: 'STOP 條件：通訊完成，SCL 高電位時 SDA 由 Low 升為 High 結束傳輸',
+                byteIndex: -1,
+                bitLabel: 'P'
+            });
+
+            simState.packetData = seq;
+        }
+
+        // ---------------- 渲染封包表格 ----------------
+        function renderPacketTable() {
+            const tbody = document.getElementById('packetTbody');
+            tbody.innerHTML = '';
+
+            const scenario = simState.scenario;
+            let addr = (scenario === 'write_dev1') ? 0x27 : (scenario === 'nack_demo' ? 0x3C : 0x68);
+            let rw = (scenario === 'read_dev2') ? 1 : 0;
+            let isAck = (addr === 0x27 || addr === 0x68);
+
+            // 位址列
+            const trAddr = document.createElement('tr');
+            trAddr.id = 'pktRow_0';
+            trAddr.innerHTML = `
+                <td><strong>1. 設備定址 (Address)</strong></td>
+                <td><code>${addr.toString(2).padStart(7, '0')}</code> + ${rw}</td>
+                <td>0x${addr.toString(16).toUpperCase()} (${rw===0?'W':'R'})</td>
+                <td><span class="chip ${isAck ? 'chip-ack' : 'chip-nack'}">${isAck ? 'ACK (0)' : 'NACK (1)'}</span></td>
+                <td>${isAck ? (addr===0x27?'LCD1602 吻合':'RTC DS3231 吻合') : '無設備匹配 (離線)'}</td>
+            `;
+            tbody.appendChild(trAddr);
+
+            if (!isAck) return;
+
+            // 資料列
+            let bytes = (scenario === 'write_dev1') ? [0x08, 0x01] : ((scenario === 'read_dev2') ? [0x32] : [0x00, 0x59]);
+            bytes.forEach((b, idx) => {
+                const trData = document.createElement('tr');
+                trData.id = `pktRow_${idx+1}`;
+                const isFinalReadByte = rw === 1 && idx === bytes.length - 1;
+                trData.innerHTML = `
+                    <td><strong>2. 資料字節 #${idx+1}</strong></td>
+                    <td><code>${b.toString(2).padStart(8, '0')}</code></td>
+                    <td>0x${b.toString(16).padStart(2,'0').toUpperCase()}</td>
+                    <td><span class="chip ${isFinalReadByte ? 'chip-nack' : 'chip-ack'}">${isFinalReadByte ? 'NACK (1)' : 'ACK (0)'}</span></td>
+                    <td>${rw===0 ? '主機寫入暫存器' : '周邊回傳資料；Master 以 NACK 結束讀取'}</td>
+                `;
+                tbody.appendChild(trData);
+            });
+        }
+
+        // ---------------- 模擬器步進執行 ----------------
+        function stepSimulation() {
+            if (simState.stepIndex >= simState.packetData.length) {
+                addLog('[通訊完畢] 封包已全數傳輸完畢。請重置或切換情境。', 'stop');
+                pauseSimulation();
+                return;
+            }
+
+            const step = simState.packetData[simState.stepIndex];
+            simState.scl = step.scl;
+            simState.sda = step.sda;
+
+            // 更新波形陣列 (記錄 SCL 與 SDA)
+            recordWaveformPoint(step);
+
+            // 更新 UI 狀態
+            updateUI(step);
+
+            simState.stepIndex++;
+
+            if (simState.stepIndex >= simState.packetData.length) {
+                pauseSimulation();
+                addLog('[匯流排釋放] 產生 STOP 條件，匯流排恢復 IDLE (SDA=1, SCL=1)', 'stop');
+                document.getElementById('currentStageBadge').innerText = '狀態: 通訊成功完成 (IDLE)';
+            }
+        }
+
+        function togglePlay() {
+            if (simState.running) {
+                pauseSimulation();
+            } else {
+                startSimulation();
+            }
+        }
+
+        function startSimulation() {
+            if (simState.stepIndex >= simState.packetData.length) {
+                resetSimulation();
+            }
+            simState.running = true;
+            document.getElementById('playBtn').innerText = '⏸ 暫停 (Pause)';
+            document.getElementById('playBtn').className = 'btn btn-warning';
+            simState.timer = setInterval(stepSimulation, simState.speed);
+        }
+
+        function pauseSimulation() {
+            simState.running = false;
+            document.getElementById('playBtn').innerText = '▶ 開始播放 (Start)';
+            document.getElementById('playBtn').className = 'btn btn-success';
+            if (simState.timer) clearInterval(simState.timer);
+        }
+
+        function resetSimulation() {
+            pauseSimulation();
+            simState.stepIndex = 0;
+            simState.scl = 1;
+            simState.sda = 1;
+            simState.waveHistory = [];
+            
+            // 重設 UI
+            document.getElementById('sclIndicator').className = 'indicator-light light-high-scl';
+            document.getElementById('sclText').innerText = 'HIGH (1)';
+            document.getElementById('sdaIndicator').className = 'indicator-light light-high-sda';
+            document.getElementById('sdaText').innerText = 'HIGH (1)';
+            document.getElementById('currentStageBadge').innerText = '狀態: 匯流排閒置 (BUS IDLE)';
+
+            // 重設拓撲狀態
+            resetTopologyStyles();
+            
+            // 重繪清空波形
+            drawWaveform();
+
+            // 重設表格標記
+            document.querySelectorAll('#packetTbody tr').forEach(r => r.classList.remove('active-row'));
+
+            addLog('[系統重置] 匯流排重置為閒置狀態。SDA=High, SCL=High', 'start');
+        }
+
+        function updateSpeed(val) {
+            simState.speed = parseInt(val);
+            document.getElementById('speedVal').innerText = `${val} ms/bit`;
+            if (simState.running) {
+                clearInterval(simState.timer);
+                simState.timer = setInterval(stepSimulation, simState.speed);
+            }
+        }
+
+        // ---------------- UI 與拓撲圖即時更新 ----------------
+        function updateUI(step) {
+            // 1. 指示燈
+            const sclInd = document.getElementById('sclIndicator');
+            const sdaInd = document.getElementById('sdaIndicator');
+            sclInd.className = step.scl ? 'indicator-light light-high-scl' : 'indicator-light light-low-scl';
+            sdaInd.className = step.sda ? 'indicator-light light-high-sda' : 'indicator-light light-low-sda';
+            document.getElementById('sclText').innerText = step.scl ? 'HIGH (1)' : 'LOW (0)';
+            document.getElementById('sdaText').innerText = step.sda ? 'HIGH (1)' : 'LOW (0)';
+
+            document.getElementById('currentStageBadge').innerText = `階段: ${step.phase} (${step.bitLabel})`;
+
+            // 2. 日誌紀錄
+            let logType = 'data';
+            if (step.phase === 'START') logType = 'start';
+            else if (step.phase === 'ADDR') logType = 'addr';
+            else if (step.phase.includes('ACK')) logType = step.isAck ? 'ack' : 'nack';
+            else if (step.phase === 'STOP') logType = 'stop';
+            addLog(`[時脈 #${simState.stepIndex+1}] ${step.desc}`, logType);
+
+            // 3. 高亮表格行
+            document.querySelectorAll('#packetTbody tr').forEach(r => r.classList.remove('active-row'));
+            if (step.byteIndex >= 0) {
+                const row = document.getElementById(`pktRow_${step.byteIndex}`);
+                if (row) row.classList.add('active-row');
+            }
+
+            // 4. 更新拓撲圖晶體與裝置狀態
+            updateTopologyVisuals(step);
+        }
+
+        function resetTopologyStyles() {
+            document.getElementById('dev1Border').setAttribute('stroke', '#8b5cf6');
+            document.getElementById('dev1Border').setAttribute('stroke-width', '2');
+            document.getElementById('dev1State').innerText = '閒置監聽中 (Idle Listening)';
+            document.getElementById('dev1State').setAttribute('fill', '#c084fc');
+
+            document.getElementById('dev2Border').setAttribute('stroke', '#ec4899');
+            document.getElementById('dev2Border').setAttribute('stroke-width', '2');
+            document.getElementById('dev2State').innerText = '閒置監聽中 (Idle Listening)';
+            document.getElementById('dev2State').setAttribute('fill', '#f472b6');
+
+            document.getElementById('masterFetState').innerText = 'SCL FET: 關斷 (浮高) | SDA FET: 關斷 (浮高)';
+        }
+
+        function updateTopologyVisuals(step) {
+            const masterFet = document.getElementById('masterFetState');
+            const dev1State = document.getElementById('dev1State');
+            const dev2State = document.getElementById('dev2State');
+            const dev1Border = document.getElementById('dev1Border');
+            const dev2Border = document.getElementById('dev2Border');
+
+            const scenario = simState.scenario;
+            const targetDev1 = (scenario === 'write_dev1');
+            const targetDev2 = (scenario === 'write_dev2' || scenario === 'read_dev2');
+
+            // 判定誰在拉低 SDA
+            if (step.phase === 'ADDR_ACK' && step.isAck) {
+                if (targetDev1) {
+                    masterFet.innerText = 'SCL: 輸出 Clock | SDA: 放開(High-Z)';
+                    dev1State.innerText = '🎯 命中位址！主動導通 FET 拉低 SDA (發出 ACK)';
+                    dev1State.setAttribute('fill', '#34d399');
+                    dev1Border.setAttribute('stroke', '#34d399');
+                    dev1Border.setAttribute('stroke-width', '4');
+                } else if (targetDev2) {
+                    masterFet.innerText = 'SCL: 輸出 Clock | SDA: 放開(High-Z)';
+                    dev2State.innerText = '🎯 命中位址！主動導通 FET 拉低 SDA (發出 ACK)';
+                    dev2State.setAttribute('fill', '#34d399');
+                    dev2Border.setAttribute('stroke', '#34d399');
+                    dev2Border.setAttribute('stroke-width', '4');
+                }
+            } else if (step.phase === 'ADDR_ACK' && !step.isAck) {
+                dev1State.innerText = '位址未匹配 (保持 High-Z)';
+                dev2State.innerText = '位址未匹配 (保持 High-Z)';
+                masterFet.innerText = 'SDA 仍為 High：判定無設備回應 (NACK)';
+            } else if (step.phase === 'ADDR' || step.phase === 'START') {
+                masterFet.innerText = `Master 傳送位址: SDA FET=${step.sda===0?'導通拉Low':'關斷浮High'}`;
+                dev1State.innerText = '正在接收並解碼 7-bit 位址...';
+                dev2State.innerText = '正在接收並解碼 7-bit 位址...';
+            } else if (step.phase.includes('DATA')) {
+                if (targetDev1) {
+                    dev1State.innerText = `正在接收資料 Byte (${step.bitLabel}=${step.sda})`;
+                } else if (targetDev2) {
+                    dev2State.innerText = `正在傳輸/接收資料 Byte (${step.bitLabel}=${step.sda})`;
+                }
+            } else if (step.phase === 'STOP') {
+                resetTopologyStyles();
+                masterFet.innerText = '發送 STOP 條件：釋放所有線路回 High';
+            }
+        }
+
+        // ---------------- 波形記錄與繪製 ----------------
+        function recordWaveformPoint(step) {
+            // 為求真實波形：每個 bit 在時脈週期中畫 4 個細部微步：
+            // 1. SCL=0 (SDA 轉變), 2. SCL=1 (取樣點), 3. SCL=1, 4. SCL=0
+            simState.waveHistory.push({
+                scl: 0,
+                sda: step.sda,
+                label: ''
+            });
+            simState.waveHistory.push({
+                scl: 1,
+                sda: step.sda,
+                label: step.bitLabel,
+                phase: step.phase,
+                isAck: step.isAck
+            });
+            simState.waveHistory.push({
+                scl: 1,
+                sda: step.sda,
+                label: ''
+            });
+            simState.waveHistory.push({
+                scl: 0,
+                sda: step.sda,
+                label: ''
+            });
+
+            drawWaveform();
+        }
+
+        function drawWaveform() {
+            const ctx = waveCtx;
+            const w = waveCanvas.width;
+            const h = waveCanvas.height;
+
+            // 背景清理
+            ctx.fillStyle = '#060911';
+            ctx.fillRect(0, 0, w, h);
+
+            // 繪製網格線
+            ctx.strokeStyle = '#172033';
+            ctx.lineWidth = 1;
+            for (let x = 0; x < w; x += 40) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, h);
+                ctx.stroke();
+            }
+
+            // SCL 軌道 baseline (y=40..85), SDA 軌道 baseline (y=120..165)
+            const sclHigh = 45;
+            const sclLow = 85;
+            const sdaHigh = 125;
+            const sdaLow = 165;
+
+            // 軌道標籤
+            ctx.font = 'bold 12px Consolas, monospace';
+            ctx.fillStyle = '#f59e0b';
+            ctx.fillText('SCL (Clock)', 15, sclHigh - 15);
+            ctx.fillStyle = '#38bdf8';
+            ctx.fillText('SDA (Data)', 15, sdaHigh - 15);
+
+            if (simState.waveHistory.length === 0) {
+                // 畫閒置平線
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.moveTo(90, sclHigh);
+                ctx.lineTo(w, sclHigh);
+                ctx.stroke();
+
+                ctx.strokeStyle = '#38bdf8';
+                ctx.beginPath();
+                ctx.moveTo(90, sdaHigh);
+                ctx.lineTo(w, sdaHigh);
+                ctx.stroke();
+                return;
+            }
+
+            // 繪製歷史點
+            const startX = 90;
+            // 依目前封包長度自動縮放，確保 D7~D0 與 ACK/NACK 不會超出畫布。
+            const availableWidth = w - startX - 20;
+            const plannedPointCount = Math.max(simState.packetData.length * 4, 2);
+            const stepWidth = plannedPointCount > 1
+                ? Math.min(16, availableWidth / (plannedPointCount - 1))
+                : 16;
+
+            // 1. 繪製 SCL
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            simState.waveHistory.forEach((pt, idx) => {
+                const x = startX + idx * stepWidth;
+                const y = pt.scl === 1 ? sclHigh : sclLow;
+                if (idx === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            // 2. 繪製 SDA
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            simState.waveHistory.forEach((pt, idx) => {
+                const x = startX + idx * stepWidth;
+                const y = pt.sda === 1 ? sdaHigh : sdaLow;
+                if (idx === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            // 3. 繪製位元標記與垂直採樣線
+            simState.waveHistory.forEach((pt, idx) => {
+                if (pt.label) {
+                    const x = startX + idx * stepWidth;
+                    
+                    // 採樣垂直虛線
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                    ctx.setLineDash([3, 3]);
+                    ctx.beginPath();
+                    ctx.moveTo(x, 20);
+                    ctx.lineTo(x, h - 25);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    // 標記氣泡
+                    let tagColor = '#94a3b8';
+                    if (pt.phase === 'START') tagColor = '#4ade80';
+                    else if (pt.phase === 'STOP') tagColor = '#fb923c';
+                    else if (pt.phase.includes('ACK')) tagColor = pt.isAck ? '#34d399' : '#f87171';
+                    else if (pt.phase === 'ADDR') tagColor = '#60a5fa';
+
+                    ctx.fillStyle = tagColor;
+                    ctx.font = 'bold 11px Consolas, monospace';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(pt.label, x, h - 10);
+
+                    // 在波形採樣點畫高亮圓點
+                    ctx.fillStyle = tagColor;
+                    ctx.beginPath();
+                    ctx.arc(x, pt.sda === 1 ? sdaHigh : sdaLow, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+        }
+
+        // ---------------- 日誌輸出 ----------------
+        function addLog(msg, type='data') {
+            const consoleBox = document.getElementById('logConsole');
+            const div = document.createElement('div');
+            div.className = `log-line ${type}`;
+            div.innerText = msg;
+            consoleBox.appendChild(div);
+            consoleBox.scrollTop = consoleBox.scrollHeight;
+        }
+
+        // ---------------- 上拉電阻計算器 ----------------
+        function calculateRp() {
+            const vdd = parseFloat(document.getElementById('calcVdd').value);
+            const speed = parseInt(document.getElementById('calcSpeed').value);
+            const cb = parseFloat(document.getElementById('calcCb').value); // in pF
+
+            // 1. Rp_min: (VDD - VOL_max) / IOL, 其中 VOL_max=0.4V, IOL=3mA
+            const volMax = 0.4;
+            const iol = 0.003; // 3mA
+            const rpMinVal = (vdd - volMax) / iol; // in ohms
+
+            // 2. Rp_max: tr / (0.8473 * Cb)
+            // 標準 tr: 100k -> 1000ns, 400k -> 300ns, 1000k -> 120ns
+            let tr = 1000e-9;
+            if (speed === 400) tr = 300e-9;
+            else if (speed === 1000) tr = 120e-9;
+
+            const cbFarads = cb * 1e-12;
+            const rpMaxVal = tr / (0.8473 * cbFarads); // in ohms
+
+            document.getElementById('rpMin').innerText = `${Math.round(rpMinVal)} Ω`;
+            document.getElementById('rpMax').innerText = `${(rpMaxVal / 1000).toFixed(2)} kΩ`;
+
+            let recText = "2.2 kΩ ~ 4.7 kΩ";
+            if (rpMaxVal < 2200) {
+                recText = "1.0 kΩ ~ 1.8 kΩ (高速且負載較大)";
+            } else if (rpMinVal > 1500) {
+                recText = "2.2 kΩ ~ 3.3 kΩ";
+            }
+            document.getElementById('rpRec').innerText = recText;
+        }
+
+        // ---------------- 程式碼複製 ----------------
+        function copyCode(btn) {
+            const codeBlock = btn.parentElement.nextElementSibling.querySelector('code');
+            navigator.clipboard.writeText(codeBlock.innerText).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = '✅ 已複製！';
+                btn.style.backgroundColor = '#10b981';
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.backgroundColor = '';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

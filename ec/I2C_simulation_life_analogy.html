@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💡 用生活實例秒懂 I2C 通訊協定！互動趣味模擬實驗室</title>
+    
+    <!-- 引入 Mermaid 流程圖庫 -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+    </script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #eff6ff;
+            --primary-dark: #1d4ed8;
+            --accent-teacher: #f59e0b;
+            --accent-lcd: #8b5cf6;
+            --accent-rtc: #ec4899;
+            --accent-ghost: #94a3b8;
+            --scl-color: #f59e0b;
+            --sda-color: #06b6d4;
+            --ack-green: #10b981;
+            --nack-red: #ef4444;
+            --dark-bg: #0f172a;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 8px 16px -2px rgba(0,0,0,0.08);
+            --shadow-lg: 0 16px 32px -4px rgba(0,0,0,0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Microsoft JhengHei", sans-serif;
+            background-color: #f8fafc;
+            color: var(--text-main);
+            line-height: 1.75;
+        }
+
+        /* 頂部 Header Banner */
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%);
+            color: white;
+            padding: 3rem 1.5rem 2.5rem 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 5px solid #60a5fa;
+        }
+
+        .header-content {
+            max-width: 1080px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .pill-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.22);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: #ffffff;
+            padding: 0.4rem 1.1rem;
+            border-radius: 9999px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: 0.04em;
+        }
+
+        h1 {
+            font-size: 2.4rem;
+            font-weight: 900;
+            margin-bottom: 0.8rem;
+            letter-spacing: -0.02em;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.25);
+        }
+
+        .header-desc {
+            font-size: 1.18rem;
+            color: #dbeafe;
+            max-width: 800px;
+            margin: 0 auto 1.5rem auto;
+            line-height: 1.6;
+        }
+
+        .header-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.4rem;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+        }
+
+        .btn-white {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: var(--shadow-md);
+        }
+        .btn-white:hover {
+            background: #f1f5f9;
+            transform: translateY(-2px);
+        }
+
+        .btn-trans {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .btn-trans:hover {
+            background: rgba(255, 255, 255, 0.28);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-success {
+            background: var(--ack-green);
+            color: white;
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: var(--nack-red);
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* 容器寬度 */
+        .container {
+            max-width: 1140px;
+            margin: 2rem auto;
+            padding: 0 1.25rem;
+        }
+
+        /* 導引目錄 */
+        .toc-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem 1.8rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2.2rem;
+            border-left: 6px solid var(--primary);
+        }
+        .toc-card h3 {
+            font-size: 1.15rem;
+            margin-bottom: 0.8rem;
+            color: #1e293b;
+        }
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 0.6rem 1.2rem;
+            list-style: none;
+        }
+        .toc-grid a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.15s;
+        }
+        .toc-grid a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        /* 卡片區塊 */
+        section {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2.2rem;
+            margin-bottom: 2.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        h2 {
+            font-size: 1.65rem;
+            color: #0f172a;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 0.6rem;
+            margin-bottom: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: #1e293b;
+            margin: 1.8rem 0 0.8rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #334155;
+            font-size: 1.02rem;
+        }
+
+        /* 對比小卡片 */
+        .analogy-banner {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 6px solid #f59e0b;
+            padding: 1.2rem 1.5rem;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            margin: 1.2rem 0 1.8rem 0;
+            color: #78350f;
+            font-size: 1.05rem;
+        }
+        .analogy-banner strong {
+            color: #b45309;
+            font-weight: 800;
+        }
+
+        .highlight-box {
+            background: #eff6ff;
+            border-left: 5px solid #3b82f6;
+            padding: 1.2rem 1.5rem;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            margin: 1.2rem 0;
+            color: #1e3a8a;
+        }
+
+        /* 比喻對照表格 */
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+        .styled-table th, .styled-table td {
+            padding: 0.9rem 1.1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .styled-table th {
+            background: #f1f5f9;
+            color: #0f172a;
+            font-weight: 700;
+        }
+        .styled-table tr:hover {
+            background: #f8fafc;
+        }
+
+        /* 標籤 Badge */
+        .badge-tag {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .tag-scl { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+        .tag-sda { background: #cffafe; color: #0e7490; border: 1px solid #a5f3fc; }
+        .tag-ack { background: #d1fae5; color: #047857; border: 1px solid #a7f3d0; }
+        .tag-nack { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+
+        /* ==================== 模擬器互動舞台專屬樣式 ==================== */
+        .sim-stage-card {
+            background: #090d16;
+            border-radius: var(--radius-lg);
+            padding: 1.6rem;
+            color: #f8fafc;
+            border: 2px solid #1e293b;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+        }
+
+        .sim-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .stage-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* 控制列 */
+        .sim-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+            background: #111827;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid #1f2937;
+            margin-bottom: 1.5rem;
+        }
+
+        .sim-controls select {
+            background: #1f2937;
+            color: white;
+            border: 1px solid #374151;
+            padding: 0.6rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.92rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .speed-box {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: #94a3b8;
+            font-size: 0.88rem;
+            margin-left: auto;
+        }
+
+        /* 教室人物卡通舞台 (SVG + DOM) */
+        .classroom-stage {
+            background: linear-gradient(180deg, #111827 0%, #0d131f 100%);
+            border-radius: var(--radius-md);
+            border: 1px solid #1f2937;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .characters-row {
+            display: grid;
+            grid-template-columns: 1.4fr repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 840px) {
+            .characters-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .actor-card {
+            background: #1e293b;
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            text-align: center;
+            border: 2px solid #334155;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .actor-card.active-speaker {
+            border-color: #38bdf8;
+            box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+            transform: translateY(-3px);
+            background: #1e3a5f;
+        }
+
+        .actor-card.active-listener {
+            border-color: #a855f7;
+            box-shadow: 0 0 14px rgba(168, 85, 247, 0.35);
+            background: #2b1f3d;
+        }
+
+        .actor-card.idle-actor {
+            opacity: 0.55;
+        }
+
+        .actor-icon {
+            font-size: 2.4rem;
+            margin-bottom: 0.4rem;
+            display: block;
+        }
+
+        .actor-name {
+            font-weight: 800;
+            font-size: 1rem;
+            color: #f1f5f9;
+        }
+
+        .actor-role {
+            font-size: 0.78rem;
+            color: #94a3b8;
+            margin-bottom: 0.4rem;
+        }
+
+        .actor-bubble {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.8rem;
+            color: #e2e8f0;
+            min-height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* 雙線互動展示 (繩索與開關) */
+        .wires-showcase {
+            background: #090d16;
+            border-radius: 10px;
+            border: 1px solid #1f2937;
+            padding: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .wire-row {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            margin-bottom: 0.8rem;
+        }
+        .wire-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .wire-label-badge {
+            width: 120px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .wire-line-track {
+            flex: 1;
+            height: 14px;
+            border-radius: 7px;
+            background: #1e293b;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.25s ease;
+        }
+
+        .wire-line-fill {
+            height: 100%;
+            width: 100%;
+            transition: all 0.25s ease;
+        }
+
+        .wire-status-text {
+            width: 160px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        /* 生活白話對白即時解說框 */
+        .live-story-box {
+            background: #111827;
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            border: 1px solid #1f2937;
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1.2rem;
+            align-items: flex-start;
+        }
+
+        .story-avatar {
+            font-size: 2.8rem;
+            line-height: 1;
+        }
+
+        .story-content h4 {
+            font-size: 1.08rem;
+            color: #38bdf8;
+            margin-bottom: 0.4rem;
+        }
+
+        .story-text {
+            font-size: 1.05rem;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .tech-note {
+            display: inline-block;
+            margin-top: 0.5rem;
+            background: #1e293b;
+            color: #94a3b8;
+            padding: 0.25rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: monospace;
+        }
+
+        /* 波形分析圖 Canvas */
+        .wave-container {
+            background: #050811;
+            border-radius: 10px;
+            border: 1px solid #1e293b;
+            padding: 1rem;
+        }
+
+        .wave-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        canvas#liveWaveCanvas {
+            width: 100%;
+            height: 160px;
+            background: #03060d;
+            border-radius: 6px;
+            display: block;
+        }
+
+        /* 測驗專區 */
+        .quiz-card {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: var(--radius-lg);
+            padding: 1.8rem;
+            margin: 1.8rem 0;
+        }
+
+        .quiz-question {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: #0f172a;
+            margin-bottom: 1rem;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+        }
+
+        .quiz-opt-btn {
+            background: white;
+            border: 1px solid #cbd5e1;
+            padding: 0.75rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.98rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .quiz-opt-btn:hover {
+            border-color: var(--primary);
+            background: #f0f7ff;
+        }
+        .quiz-opt-btn.correct {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+            font-weight: 700;
+        }
+        .quiz-opt-btn.wrong {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+
+        .quiz-feedback {
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        /* 頁尾 */
+        footer {
+            background: #0f172a;
+            color: #94a3b8;
+            padding: 3rem 1.5rem;
+            text-align: center;
+            border-top: 1px solid #334155;
+            margin-top: 4rem;
+        }
+        footer a {
+            color: #38bdf8;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* 浮動按鈕快速跳回頂部 */
+        .float-nav-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+            border-radius: 9999px;
+            padding: 0.75rem 1.25rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            z-index: 999;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s ease;
+        }
+        .float-nav-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 頂部大橫幅 -->
+    <header>
+        <div class="header-content">
+            <span class="pill-badge">🎈 零基礎直覺理解 • 生活情境生動圖解版</span>
+            <h1>💡 像班長點名一樣簡單：用生活實例秒懂 I2C 通訊！</h1>
+            <p class="header-desc">
+                別再被生硬的「開汲極、時脈同步、ACK/NACK」嚇退了！<br>
+                想像一間教室：<strong>老師（主控晶片）</strong>拿起鈴鐺打拍子，在<strong>公用白板</strong>上寫下同學座號，同學舉手喊「有！」。這就是 I2C 的全部秘密！
+            </p>
+            
+            <div class="header-buttons">
+                <a href="#interactive-lab" class="btn btn-white">
+                    🎮 進入生活動態小劇場
+                </a>
+                <a href="#six-analogies" class="btn btn-trans">
+                    📖 閱讀 6 大生活神比喻
+                </a>
+                <a href="I2C_simulation.html" class="btn btn-trans" style="border-color: #fde047; color: #fef08a;">
+                    ⚙️ 切換到工程技術規格版
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 浮動導覽按鈕 -->
+    <a href="I2C_simulation.html" class="float-nav-btn" title="查看原本的工程波形規格版">
+        ⚙️ 查看工程深度規格版
+    </a>
+
+    <!-- 主內容區 -->
+    <div class="container">
+
+        <!-- 導航卡片 -->
+        <nav class="toc-card">
+            <h3>📑 快速導覽目錄：今天我們要聊的生活故事</h3>
+            <ul class="toc-grid">
+                <li><a href="#interactive-lab">1. 🎮 生活對話互動模擬小劇場 (動態觀察)</a></li>
+                <li><a href="#six-analogies">2. 🏫 核心 6 大生活神比喻 (白話全拆解)</a></li>
+                <li><a href="#pullup-spring">3. 🪢 為什麼要上拉電阻？(公車拉鈴與彈簧門)</a></li>
+                <li><a href="#write-vs-read">4. 📦 寫入與讀取的差別：交代作業 vs 查成績</a></li>
+                <li><a href="#protocol-compare">5. 🥊 通訊三大天王比一比：I2C vs SPI vs UART</a></li>
+                <li><a href="#mini-quiz">6. 🎯 3 分鐘生活小測驗 (驗證你的直覺)</a></li>
+            </ul>
+        </nav>
+
+        <!-- 區塊 1: 互動式生活情境劇場 -->
+        <section id="interactive-lab">
+            <h2>🎮 1. 生活對話互動模擬小劇場</h2>
+            <p>
+                在下方的小劇場中，<strong>👨‍🏫 老師 (Master Arduino)</strong> 準備跟掛在同一條白板上的 <strong>📺 液晶螢幕同學 (0x27)</strong> 以及 <strong>⏰ 時鐘同學 (0x68)</strong> 講話。
+                按一下<strong>「▶ 開始小劇場」</strong>或<strong>「⏭ 單步前進」</strong>，看看白板上的字是怎麼傳送的！
+            </p>
+
+            <div class="analogy-banner">
+                <strong>💡 一眼看懂兩條線的分工：</strong><br>
+                • <strong>SCL (時脈線) = 老師手中的鈴鐺節奏</strong> 🔔（鈴鐺敲一下，大家就看一眼白板；鈴鐺節奏永遠由老師控制）<br>
+                • <strong>SDA (資料線) = 教室中央的共用小白板</strong> 📝（同時間只能由一個人寫字，其他人負責看）
+            </div>
+
+            <div class="sim-stage-card">
+                <!-- 劇場上方設定 -->
+                <div class="sim-top-bar">
+                    <div class="stage-title">
+                        <span>🎪 教室廣播實況舞台</span>
+                        <span id="stageStateBadge" style="font-size: 0.85rem; padding: 0.2rem 0.6rem; border-radius: 6px; background: #1e3a5f; color: #38bdf8;">狀態: 匯流排空閒中</span>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.85rem; color: #94a3b8;">當前拍子進度: </span>
+                        <strong id="clockCounterText" style="color: #f59e0b; font-family: monospace;">第 0 拍</strong>
+                    </div>
+                </div>
+
+                <!-- 控制按鈕 -->
+                <div class="sim-controls">
+                    <label for="storyScenarioSelect" style="color: #cbd5e1; font-weight: 600; font-size: 0.9rem;">劇本選擇：</label>
+                    <select id="storyScenarioSelect" onchange="changeScenario()">
+                        <option value="write_lcd">情境 A：老師交代螢幕同學寫聯絡簿 (寫入 0x27 LCD)</option>
+                        <option value="read_rtc">情境 B：老師向時鐘同學問現在幾秒 (讀取 0x68 RTC)</option>
+                        <option value="nack_ghost">情境 C：老師叫到請假沒來的同學 (呼叫 0x3C 幽靈同學 -> NACK)</option>
+                    </select>
+
+                    <button class="btn btn-success" id="playStoryBtn" onclick="togglePlayStory()">
+                        ▶ 開始小劇場
+                    </button>
+                    <button class="btn btn-primary" id="stepStoryBtn" onclick="stepStory()">
+                        ⏭ 單步看下一拍
+                    </button>
+                    <button class="btn btn-danger" onclick="resetStory()">
+                        ⏮ 重新開始
+                    </button>
+
+                    <div class="speed-box">
+                        <span>速度:</span>
+                        <input type="range" id="storySpeed" min="300" max="1200" value="650" step="50" oninput="updateSpeedVal(this.value)">
+                        <span id="speedValText">650ms</span>
+                    </div>
+                </div>
+
+                <!-- 教室四個角色卡片 -->
+                <div class="classroom-stage">
+                    <div class="characters-row">
+                        <!-- 老師 Master -->
+                        <div class="actor-card active-speaker" id="actorMaster">
+                            <span class="actor-icon">👨‍🏫</span>
+                            <div class="actor-name">主控端 (Master)</div>
+                            <div class="actor-role">負責人：班導師 (Arduino)</div>
+                            <div class="actor-bubble" id="bubbleMaster">「準備打鈴點名！」</div>
+                        </div>
+
+                        <!-- 學生 1: 0x27 LCD -->
+                        <div class="actor-card" id="actorDev1">
+                            <span class="actor-icon">📺</span>
+                            <div class="actor-name">LCD 螢幕同學</div>
+                            <div class="actor-role">座號：0x27 (39 號)</div>
+                            <div class="actor-bubble" id="bubbleDev1">正在台下等待叫號...</div>
+                        </div>
+
+                        <!-- 學生 2: 0x68 RTC -->
+                        <div class="actor-card" id="actorDev2">
+                            <span class="actor-icon">⏰</span>
+                            <div class="actor-name">時鐘 RTC 同學</div>
+                            <div class="actor-role">座號：0x68 (104 號)</div>
+                            <div class="actor-bubble" id="bubbleDev2">正在台下記錄秒數...</div>
+                        </div>
+
+                        <!-- 學生 3: 0x3C 未連接 -->
+                        <div class="actor-card idle-actor" id="actorGhost">
+                            <span class="actor-icon">👻</span>
+                            <div class="actor-name">未連線同學</div>
+                            <div class="actor-role">座號：0x3C (60 號)</div>
+                            <div class="actor-bubble" id="bubbleGhost">今天請假缺席不在！</div>
+                        </div>
+                    </div>
+
+                    <!-- 兩條實體線路的狀態繩索 -->
+                    <div class="wires-showcase">
+                        <!-- SCL 時脈線 -->
+                        <div class="wire-row">
+                            <span class="wire-label-badge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b;">
+                                🔔 SCL 節奏鈴
+                            </span>
+                            <div class="wire-line-track">
+                                <div class="wire-line-fill" id="sclTrackFill" style="background: #f59e0b; width: 100%;"></div>
+                            </div>
+                            <span class="wire-status-text" id="sclStateText" style="color: #fbbf24;">
+                                HIGH (鈴聲響起/看白板)
+                            </span>
+                        </div>
+
+                        <!-- SDA 資料線 -->
+                        <div class="wire-row">
+                            <span class="wire-label-badge" style="background: rgba(6, 182, 212, 0.2); color: #22d3ee; border: 1px solid #06b6d4;">
+                                📝 SDA 白板線
+                            </span>
+                            <div class="wire-line-track">
+                                <div class="wire-line-fill" id="sdaTrackFill" style="background: #06b6d4; width: 100%;"></div>
+                            </div>
+                            <span class="wire-status-text" id="sdaStateText" style="color: #22d3ee;">
+                                HIGH (彈簧拉起/白板擦淨)
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 即時生活大白話解說台詞框 -->
+                    <div class="live-story-box">
+                        <div class="story-avatar" id="liveAvatar">📢</div>
+                        <div class="story-content">
+                            <h4 id="liveStepTitle">劇情感應區：點擊「開始」或「單步看下一拍」</h4>
+                            <p class="story-text" id="liveStoryDesc">
+                                教室現在很安靜，白板和鈴鐺繩都飄在高處（SDA=1, SCL=1，代表匯流排空閒）。老師準備要開口交代事情了！
+                            </p>
+                            <span class="tech-note" id="liveTechNote">底層原理：Bus Idle (SCL=High, SDA=High)</span>
+                        </div>
+                    </div>
+
+                    <!-- 迷你同步波形儀 (讓讀者直覺感受生活比喻對應到實際電波) -->
+                    <div class="wave-container">
+                        <div class="wave-header">
+                            <span>📈 同步數位波形即時記錄儀 (同步呈現剛才發生的電位跳動)</span>
+                            <span style="color: #64748b;">黃色 = SCL 鈴鐺節奏 | 藍色 = SDA 白板筆跡</span>
+                        </div>
+                        <canvas id="liveWaveCanvas"></canvas>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 區塊 2: 核心 6 大生活神比喻 -->
+        <section id="six-analogies">
+            <h2>🏫 2. 核心 6 大生活神比喻（讓你一輩子忘不掉！）</h2>
+            <p>很多初學者學 I2C 時，腦袋塞滿了開汲極、時序圖、ACK、重複起始等專有名詞。我們用 6 個超級接地氣的生活情境，一次幫你打通任督二脈：</p>
+
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th style="width: 22%;">專有名詞</th>
+                        <th style="width: 28%;">生活實例比喻</th>
+                        <th style="width: 50%;">為什麼工程上要這樣設計？</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Master (主控端)<br>&amp; Slave (周邊從端)</strong></td>
+                        <td><strong>👨‍🏫 班導師 與 👦 班上學生</strong></td>
+                        <td>只有老師有權威決定何時開會、何時下課。如果每個學生都能隨便在白板上亂畫，教室立刻天下大亂（訊號衝突碰撞）。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SCL (時脈線)<br>Serial Clock</strong></td>
+                        <td><strong>🔔 老師打拍子的鈴鐺 / 節拍器</strong></td>
+                        <td>大家講話速度有快有慢。鈴鐺「敲響（高電位）」時代表<strong>正式定案</strong>，大家立刻抄寫；鈴鐺「放下（低電位）」時是準備換下一個字的緩衝時間。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SDA (資料線)<br>Serial Data</strong></td>
+                        <td><strong>📝 講台上的公用白板</strong></td>
+                        <td>雙向的！老師交代功課時老師寫；叫學生回答問題時，老師把筆交給學生，學生寫給老師看。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>START 條件<br>(開始信號)</strong></td>
+                        <td><strong>✋ 老師在鈴聲響著時，突然「用力拍桌」！</strong></td>
+                        <td>平常規定「鈴聲響著時白板不可以亂擦寫」。唯獨這一次，鈴聲響著時，白板突然被狠狠拉下！全班看到這個特殊舉動，立刻驚醒：「老師要講話了，快聽！」</td>
+                    </tr>
+                    <tr>
+                        <td><strong>7-bit 位址廣播<br>+ R/W 讀寫旗標</strong></td>
+                        <td><strong>📢 點座號 + 說明是交代工作還是問答案</strong></td>
+                        <td>例如「39 號（0x27 LCD）！抄聯絡簿（W=0）！」或「104 號（0x68 RTC）！報上你剛才看的時間（R=1）！」。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>第 9 拍 ACK / NACK<br>(應答機制)</strong></td>
+                        <td><strong>🙋 被叫到的同學舉手點頭喊「有！」</strong></td>
+                        <td>老師發完 8 個字，第 9 拍放開白板。被點到的同學必須把白板往下拉一下（ACK=0，點頭）；如果全班沒人舉手（NACK=1），老師就知道這同學今天沒來！</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 區塊 3: 為什麼要上拉電阻？(公車拉鈴與彈簧門) -->
+        <section id="pullup-spring">
+            <h2>🪢 3. 為什麼要上拉電阻？（公車拉鈴與彈簧門的神奇發明）</h2>
+            
+            <div class="analogy-banner">
+                <strong>🚌 公車下車鈴的生活情境：</strong><br>
+                你有沒有想過，為什麼公車上的下車鈴，只要車廂裡「任何一個人」拉一下繩子，車頭的鈴就會響？<br>
+                如果有兩個乘客同時拉繩子，繩子會斷掉燒起來嗎？<strong>絕對不會！</strong>因為大家都是在做<strong>「往下拉」</strong>的動作！
+            </div>
+
+            <p>在傳統電路中，如果裝置 A 輸出 5V (強行往上推)，而裝置 B 同時輸出 0V (強行接地往下扯)，兩者一碰就會產生<strong>短路大火花，直接把晶片燒毀！</strong></p>
+
+            <div class="highlight-box">
+                <h4 style="margin-bottom: 0.5rem; color: #1e3a8a;">💡 I2C 的智慧：開汲極 (Open-Drain) + 上拉電阻 (Pull-up Resistor)</h4>
+                <ol style="margin-left: 1.4rem;">
+                    <li><strong>平常沒人說話時</strong>：電路上掛了一根<strong>彈簧（上拉電阻 Pull-up Resistor）</strong>，靜悄悄地把線路拉在最高處（5V 或 3.3V，代表數字 1）。</li>
+                    <li><strong>有人想表達「0」時</strong>：晶片內部就像一隻手，用力<strong>把繩子往下拉到地上（接地 GND）</strong>。</li>
+                    <li><strong>有人想表達「1」時</strong>：晶片<strong>只要把手放開（浮接放手）</strong>，彈簧自然會把線路彈回高處！</li>
+                    <li><strong>好處是什麼？</strong>就算 Master 和三個 Slave 同時拉繩子，只不過是大家都把線拉到地面而已，<strong>永遠不會電源短路燒掉！</strong>這就是神奇的「線接與 (Wired-AND)」！</li>
+                </ol>
+            </div>
+
+            <h3>🧮 彈簧太緊或太鬆會怎樣？（工程師的上拉電阻選值）</h3>
+            <p>
+                • <strong>彈簧太弱（電阻太大，例如 100kΩ）</strong>：放手之後，繩子軟趴趴地慢慢升上去，如果速度太快（400kHz），下一個節拍已經到了繩子還沒彈到位，字跡就模糊看不清了！<br>
+                • <strong>彈簧太硬（電阻太小，例如 200Ω）</strong>：繩子拉得太死，同學每次要把繩子往下拉時都得用吃奶的力氣，晶片發燙流出大電流！<br>
+                • <strong>黃金折衷點</strong>：一般最常用的推薦電阻是 <strong>4.7 kΩ 或 2.2 kΩ</strong>，彈得又快又省力！
+            </p>
+        </section>
+
+        <!-- 區塊 4: 寫入 vs 讀取 -->
+        <section id="write-vs-read">
+            <h2>📦 4. 寫入與讀取的差別：交代作業 vs 兩段式查成績</h2>
+            <p>在生活中，我們要去圖書館借書或去銀行查存款，通常不能劈頭就說「給我錢」，而是分成兩步驟。I2C 的讀寫流程也是一模一樣的邏輯！</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0;">
+                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-md); padding: 1.4rem;">
+                    <h3 style="color: #166534; margin-top: 0;">✍️ 模式 A：單純寫入 (Master 交代功課)</h3>
+                    <p style="font-size: 0.95rem; color: #14532d;">例如：Master 要讓 LCD 顯示 "HI"</p>
+                    <ol style="margin-left: 1.2rem; font-size: 0.92rem; color: #166534;">
+                        <li><strong>敲鈴開場 (START)</strong></li>
+                        <li><strong>叫座號 + 寫入標籤</strong>：「0x27 號同學，我要交代你抄寫！(W=0)」</li>
+                        <li><strong>LCD 點頭 (ACK)</strong>：「有！我準備好了！」</li>
+                        <li><strong>發第一段指令</strong>：「請開啟背光 (0x08)」，LCD 點頭 (ACK)。</li>
+                        <li><strong>發第二段指令</strong>：「請清除螢幕 (0x01)」，LCD 點頭 (ACK)。</li>
+                        <li><strong>下課解散 (STOP)</strong>：老師放手，通訊結束！</li>
+                    </ol>
+                </div>
+
+                <div style="background: #fdf2f8; border: 1px solid #fbcfe8; border-radius: var(--radius-md); padding: 1.4rem;">
+                    <h3 style="color: #9d174d; margin-top: 0;">📖 模式 B：複合讀取 (先指抽屜，再問內容)</h3>
+                    <p style="font-size: 0.95rem; color: #831843;">例如：Master 想問 RTC 時鐘「現在幾秒？」</p>
+                    <ol style="margin-left: 1.2rem; font-size: 0.92rem; color: #9d174d;">
+                        <li><strong>第一階段 (寫入抽屜號碼)</strong>：<br>
+                            - 叫 0x68 RTC 同學，標記 W=0。<br>
+                            - 交代：「請把手指指向 0 號置物櫃 (秒數暫存器)」。<br>
+                            - RTC 點頭 ACK。
+                        </li>
+                        <li><strong>不放手繼續 (Repeated START)</strong>：<br>
+                            - 老師不解散，直接再次敲鈴！
+                        </li>
+                        <li><strong>第二階段 (正式讀取)</strong>：<br>
+                            - 叫 0x68 RTC 同學，這次標記 <strong>R=1 (換你念給我聽)</strong>！<br>
+                            - RTC 同學在白板上寫出秒數 <code>0x32</code>。<br>
+                            - 老師念完後回傳 <strong>NACK (搖頭：好，我聽完了，不要再念了)</strong>。<br>
+                            - 老師宣布 <strong>STOP (下課)</strong>！
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <strong>⭐ 驚喜發現：</strong>在讀取的最後一個字節，<strong>Master 故意回 NACK 並不是代表發生錯誤！</strong>而是像打電話時說「好的，我知道了，不用再說了，掰掰！」，這樣對方才不會繼續往白板寫下一個數字。
+            </div>
+        </section>
+
+        <!-- 區塊 5: 通訊三大天王比一比 -->
+        <section id="protocol-compare">
+            <h2>🥊 5. 通訊三大天王比一比：I2C vs SPI vs UART</h2>
+            <p>單晶片世界有三大常見的通訊方式，選哪一種？看生活比喻秒懂：</p>
+
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>通訊協定</th>
+                        <th>生活比喻</th>
+                        <th>需要幾條線？</th>
+                        <th>傳輸速度</th>
+                        <th>最大優點與缺點</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>I2C</strong><br>(本篇主題)</td>
+                        <td><strong>📢 教室公共白板會議</strong><br>大家共用一塊白板與鈴鐺，憑座號點名發言。</td>
+                        <td><strong>只要 2 條線！</strong><br>(SCL 節奏、SDA 白板)</td>
+                        <td>中等<br>(100kHz ~ 400kHz)</td>
+                        <td>✅ <strong>省腳位之王</strong>，接十幾台感測器只要兩條線！<br>❌ 速度較慢，需要上拉電阻。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SPI</strong></td>
+                        <td><strong>☎️ 老闆私人專線電話</strong><br>每個部門拉一條專屬專線，電話響了立刻拿起。</td>
+                        <td><strong>至少 4 條線！</strong><br>(SCLK, MOSI, MISO, CS)</td>
+                        <td>極快<br>(10MHz ~ 50MHz+)</td>
+                        <td>✅ <strong>傳輸速度飛快</strong>，全雙工同時收發！<br>❌ 裝置越多線越多（每個周邊都要一條 CS 線）。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>UART</strong></td>
+                        <td><strong>✉️ 兩位好友互相遞紙條</strong><br>你給我一張、我回你一張，各自看自己的手錶算時間。</td>
+                        <td><strong>2 條線</strong><br>(TX 傳送, RX 接收)</td>
+                        <td>自訂波特率<br>(如 9600, 115200)</td>
+                        <td>✅ <strong>點對點最純粹</strong>，不需要時脈線。<br>❌ 只能一對一單挑，無法多裝置一起接。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 區塊 6: 互動小測驗 -->
+        <section id="mini-quiz">
+            <h2>🎯 6. 3 分鐘生活小測驗（看看你吸收了多少！）</h2>
+            <p>點選下方選項，立刻驗證你的 I2C 實力：</p>
+
+            <!-- 測驗題 1 -->
+            <div class="quiz-card">
+                <div class="quiz-question">Q1：在教室點名比喻中，為什麼在正常的傳輸期間，「鈴鐺敲著響 (SCL=High)」時，白板筆跡 (SDA) 絕對不能隨便亂擦亂動？</div>
+                <div class="quiz-options">
+                    <button class="quiz-opt-btn" onclick="checkQuiz(1, 0, this)">A. 因為老師眼睛會花掉，不知道你在寫什麼</button>
+                    <button class="quiz-opt-btn" onclick="checkQuiz(1, 1, this)">B. 因為 SCL 處於高電位時變更 SDA，會被所有裝置誤認為是 START 或 STOP 特殊指令！</button>
+                    <button class="quiz-opt-btn" onclick="checkQuiz(1, 2, this)">C. 因為白板擦太快會把粉筆弄斷</button>
+                </div>
+                <div class="quiz-feedback" id="qf1"></div>
+            </div>
+
+            <!-- 測驗題 2 -->
+            <div class="quiz-card">
+                <div class="quiz-question">Q2：老師呼叫了「座號 60 號 (0x3C)」同學，但這位同學今天請假沒來。請問在第 9 拍時，白板 (SDA) 的電位會發生什麼事？</div>
+                <div class="quiz-options">
+                    <button class="quiz-opt-btn" onclick="checkQuiz(2, 0, this)">A. 因為沒人伸手去拉低繩子，彈簧把線路拉在高處 (High=1)，產生 NACK！</button>
+                    <button class="quiz-opt-btn" onclick="checkQuiz(2, 1, this)">B. 整個電路會燒掉短路冒煙</button>
+                    <button class="quiz-opt-btn" onclick="checkQuiz(2, 2, this)">C. 老師會自動代替他回傳 ACK=0</button>
+                </div>
+                <div class="quiz-feedback" id="qf2"></div>
+            </div>
+
+            <!-- 測驗題 3 -->
+            <div class="quiz-card">
+                <div class="quiz-question">Q3：為什麼 I2C 上面的晶片接腳平時只能「往下拉 (接地)」，不能「強行往上推 (輸出 High 電平)」？</div>
+                <div class="quiz-options">
+                    <button class="quiz-opt-btn" onclick="checkQuiz(3, 0, this)">A. 為了省電，晶片只做半套功能</button>
+                    <button class="quiz-opt-btn" onclick="checkQuiz(3, 1, this)">B. 為了避免兩台裝置同時輸出高低電平時發生「電源對地短路」，同時實現多方拉低協商機制！</button>
+                    <button class="quiz-opt-btn" onclick="checkQuiz(3, 2, this)">C. 因為晶片廠商忘記做上拉電晶體</button>
+                </div>
+                <div class="quiz-feedback" id="qf3"></div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- 頁尾 -->
+    <footer>
+        <div class="container" style="margin: 0 auto; text-align: center;">
+            <p style="margin-bottom: 0.8rem; font-size: 1.05rem; color: #e2e8f0;">
+                📘 CLASS_NOTE 互動式直覺學習筆記 • 用生動比喻講透硬體通訊原理
+            </p>
+            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1.2rem;">
+                本篇為入門導引版。如需查看完整的暫存器代碼、開汲極電路物理公式推導、Arduino C++ 實作與細部波形分析儀：
+            </p>
+            <a href="I2C_simulation.html" class="btn btn-primary" style="display: inline-block;">
+                🚀 前往原版：I2C 深度工程技術模擬器 (I2C_simulation.html)
+            </a>
+        </div>
+    </footer>
+
+    <!-- ==================== 劇場核心 JavaScript ==================== -->
+    <script>
+        // 劇場狀態
+        const storyState = {
+            scenario: 'write_lcd',
+            isPlaying: false,
+            timer: null,
+            speed: 650,
+            stepIndex: 0,
+            steps: [],
+            waveHistory: [],
+            maxWavePoints: 120
+        };
+
+        // DOM 快取
+        const liveWaveCanvas = document.getElementById('liveWaveCanvas');
+        const waveCtx = liveWaveCanvas.getContext('2d');
+        const sclTrackFill = document.getElementById('sclTrackFill');
+        const sdaTrackFill = document.getElementById('sdaTrackFill');
+        const sclStateText = document.getElementById('sclStateText');
+        const sdaStateText = document.getElementById('sdaStateText');
+        const clockCounterText = document.getElementById('clockCounterText');
+        const stageStateBadge = document.getElementById('stageStateBadge');
+
+        const actorMaster = document.getElementById('actorMaster');
+        const actorDev1 = document.getElementById('actorDev1');
+        const actorDev2 = document.getElementById('actorDev2');
+        const actorGhost = document.getElementById('actorGhost');
+
+        const bubbleMaster = document.getElementById('bubbleMaster');
+        const bubbleDev1 = document.getElementById('bubbleDev1');
+        const bubbleDev2 = document.getElementById('bubbleDev2');
+        const bubbleGhost = document.getElementById('bubbleGhost');
+
+        const liveAvatar = document.getElementById('liveAvatar');
+        const liveStepTitle = document.getElementById('liveStepTitle');
+        const liveStoryDesc = document.getElementById('liveStoryDesc');
+        const liveTechNote = document.getElementById('liveTechNote');
+
+        // 初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            initCanvas();
+            changeScenario();
+        });
+
+        function initCanvas() {
+            liveWaveCanvas.width = liveWaveCanvas.clientWidth * window.devicePixelRatio || 800;
+            liveWaveCanvas.height = 160 * window.devicePixelRatio || 160;
+            drawWaveform();
+        }
+
+        // 劇本切換
+        function changeScenario() {
+            resetStory();
+            const scenario = document.getElementById('storyScenarioSelect').value;
+            storyState.scenario = scenario;
+            buildScenarioSteps(scenario);
+            renderCurrentStep(0);
+        }
+
+        // 產生劇本步驟
+        function buildScenarioSteps(scenario) {
+            const steps = [];
+
+            // 0. 初始 Idle
+            steps.push({
+                scl: 1, sda: 1, clockIndex: 0,
+                speaker: 'none',
+                avatar: '🧘',
+                title: '匯流排閒置 (Bus Idle)',
+                story: '教室裡靜悄悄，老師沒打鈴，白板被彈簧拉在高處（SCL=1, SDA=1）。全體同學待命中。',
+                tech: 'Idle 狀態：上拉電阻將線路維持在 VCC (+5V/3.3V)',
+                masterTalk: '「準備打鈴點名！」',
+                dev1Talk: '在台下等待...',
+                dev2Talk: '在台下記錄...',
+                ghostTalk: '缺席中...'
+            });
+
+            // 1. START 條件
+            steps.push({
+                scl: 1, sda: 0, clockIndex: 0,
+                speaker: 'master',
+                avatar: '✋',
+                title: '起始訊號 (START Condition)：老師拍桌引起注意！',
+                story: '在鈴鐺還高高敲響時（SCL=1），老師突然把白板猛力往下拉（SDA 1→0）！全班同學立刻集中精神！',
+                tech: 'START: SCL=High 期間 SDA 產生下降沿 (1 -> 0)',
+                masterTalk: '「注意！全班安靜看過來！(START)」',
+                dev1Talk: '「哇！老師要講話了！」',
+                dev2Talk: '「豎起耳朵聽！」',
+                ghostTalk: '...'
+            });
+
+            if (scenario === 'write_lcd') {
+                // 叫 0x27 (0100111) + W (0)
+                const bits = [0, 1, 0, 0, 1, 1, 1, 0];
+                const bitLabels = ['A6=0', 'A5=1', 'A4=0', 'A3=0', 'A2=1', 'A1=1', 'A0=1', 'W=0(寫入)'];
+                
+                bits.forEach((b, idx) => {
+                    steps.push({
+                        scl: 1, sda: b, clockIndex: idx + 1,
+                        speaker: 'master',
+                        avatar: '📢',
+                        title: `點名廣播中：第 ${idx+1} 拍 [${bitLabels[idx]}]`,
+                        story: idx < 7 ? 
+                            `老師敲第 ${idx+1} 聲鈴，在白板寫下座號的第 ${idx+1} 位數字【${b}】。全班核對自己的座號。` : 
+                            `老師寫下最後一拍【0】，大聲宣佈：「這次是交代功課，我要寫入 (Write)！」`,
+                        tech: `定址階段: bit ${7 - idx} = ${b}`,
+                        masterTalk: `「廣播位址中... 看到【${b}】了嗎？」`,
+                        dev1Talk: idx >= 4 ? '「這座號好像是在叫我！(0x27)」' : '「比對座號中...」',
+                        dev2Talk: '「不是我的號碼 (0x68)，不管我事。」',
+                        ghostTalk: '...'
+                    });
+                });
+
+                // 第 9 拍：ACK
+                steps.push({
+                    scl: 1, sda: 0, clockIndex: 9,
+                    speaker: 'dev1',
+                    avatar: '🙋',
+                    title: '第 9 拍：LCD 同學舉手喊「有！」(ACK 應答)',
+                    story: '老師放開白板把筆遞出。0x27 LCD 同學座號完全吻合，立刻把白板往下拉（SDA=0）！老師看到白板被拉下，滿意地點點頭。',
+                    tech: 'ACK 握手：Slave 主動將 SDA 拉至低電平 (0)',
+                    masterTalk: '「有人在聽嗎？請舉手！」',
+                    dev1Talk: '「有！39 號 LCD 在！我準備好抄了！(ACK=0)」',
+                    dev2Talk: '「不干我的事，我繼續發呆。」',
+                    ghostTalk: '...'
+                });
+
+                // 資料第 1 Byte：0x08 (00001000) - 背光指令
+                const dataBits = [0, 0, 0, 0, 1, 0, 0, 0];
+                dataBits.forEach((b, idx) => {
+                    steps.push({
+                        scl: 1, sda: b, clockIndex: 10 + idx,
+                        speaker: 'master',
+                        avatar: '✍️',
+                        title: `交代作業 (0x08)：第 ${idx+1} 個字元【${b}】`,
+                        story: `老師敲鈴，寫下指令碼 0x08 的位元【${b}】。LCD 同學專心看著抄進腦袋。`,
+                        tech: `Data Byte: bit ${7 - idx} = ${b}`,
+                        masterTalk: `「記下來，背光指令位元: ${b}」`,
+                        dev1Talk: `「抄到了第 ${idx+1} 個字元...」`,
+                        dev2Talk: '「...」',
+                        ghostTalk: '...'
+                    });
+                });
+
+                // 第 18 拍：LCD 再次 ACK
+                steps.push({
+                    scl: 1, sda: 0, clockIndex: 18,
+                    speaker: 'dev1',
+                    avatar: '🙆',
+                    title: '資料確認：LCD 同學再次點頭 (ACK)',
+                    story: '這 8 個字元抄完了！LCD 同學再次拉低白板（ACK=0）：「老師，這段我記好了！」',
+                    tech: 'Data ACK: 0x08 接收完成確認',
+                    masterTalk: '「記好了嗎？」',
+                    dev1Talk: '「收到了！背光開啟指令已入庫！(ACK)」',
+                    dev2Talk: '「...」',
+                    ghostTalk: '...'
+                });
+
+                // STOP
+                steps.push({
+                    scl: 1, sda: 1, clockIndex: 0,
+                    speaker: 'master',
+                    avatar: '🎉',
+                    title: '停止訊號 (STOP)：老師宣布交代完畢，解散！',
+                    story: '老師在鈴聲響著時，把白板放手彈回高處（SDA 0→1）。這代表「下課！本次會議結束」，線路重新回到閒置空閒狀態。',
+                    tech: 'STOP 條件: SCL=High 時 SDA 產生上升沿 (0 -> 1)',
+                    masterTalk: '「交代完畢，下課解散！(STOP)」',
+                    dev1Talk: '「開始執行背光亮起！✨」',
+                    dev2Talk: '「繼續守本分記錄時間。」',
+                    ghostTalk: '...'
+                });
+
+            } else if (scenario === 'read_rtc') {
+                // 叫 0x68 (1101000) + R (1)
+                const bits = [1, 1, 0, 1, 0, 0, 0, 1];
+                const bitLabels = ['A6=1', 'A5=1', 'A4=0', 'A3=1', 'A2=0', 'A1=0', 'A0=0', 'R=1(換你報答案)'];
+                
+                bits.forEach((b, idx) => {
+                    steps.push({
+                        scl: 1, sda: b, clockIndex: idx + 1,
+                        speaker: 'master',
+                        avatar: '📢',
+                        title: `呼叫時鐘同學：第 ${idx+1} 拍 [${bitLabels[idx]}]`,
+                        story: idx < 7 ? 
+                            `老師打拍子廣播位元【${b}】，叫 104 號（0x68 RTC 時鐘同學）。` : 
+                            `老師寫下【1】，大喊：「換你發言 (Read)！把我剛才指定的秒數念出來！」`,
+                        tech: `定址讀取: 0x68 + Read(1)`,
+                        masterTalk: `「叫 0x68！準備換你說話 (Read)！」`,
+                        dev1Talk: '「不是找我，我喝口水。」',
+                        dev2Talk: idx >= 4 ? '「叫到我了！我正在翻開秒數筆記！」' : '「核對座號中...」',
+                        ghostTalk: '...'
+                    });
+                });
+
+                // 第 9 拍 ACK
+                steps.push({
+                    scl: 1, sda: 0, clockIndex: 9,
+                    speaker: 'dev2',
+                    avatar: '🙋',
+                    title: '時鐘同學點頭：ACK！',
+                    story: '0x68 RTC 同學拉低白板喊：「有！我在！我現在就把現在秒數寫到白板上！」',
+                    tech: 'Address ACK by RTC 0x68',
+                    masterTalk: '「很好，把白板交給你！」',
+                    dev1Talk: '「...」',
+                    dev2Talk: '「報告老師！我拿粉筆了！(ACK=0)」',
+                    ghostTalk: '...'
+                });
+
+                // RTC 傳出 0x32 (00110010 = 32秒)
+                const timeBits = [0, 0, 1, 1, 0, 0, 1, 0];
+                timeBits.forEach((b, idx) => {
+                    steps.push({
+                        scl: 1, sda: b, clockIndex: 10 + idx,
+                        speaker: 'dev2',
+                        avatar: '⏰',
+                        title: `時鐘同學報秒數 (0x32)：第 ${idx+1} 位元【${b}】`,
+                        story: `老師敲鈴提供節拍（SCL），時鐘同學在白板（SDA）上寫下【${b}】給老師看。`,
+                        tech: `Slave Transmit Data: D${7-idx} = ${b}`,
+                        masterTalk: `「老師看著抄：第 ${idx+1} 位是【${b}】...」`,
+                        dev1Talk: '「...」',
+                        dev2Talk: `「我送出第 ${idx+1} 個位元：${b}！」`,
+                        ghostTalk: '...'
+                    });
+                });
+
+                // 第 18 拍：Master 回 NACK
+                steps.push({
+                    scl: 1, sda: 1, clockIndex: 18,
+                    speaker: 'master',
+                    avatar: '🛑',
+                    title: '老師回傳 NACK (1)：「好，我抄完了，不要再念了！」',
+                    story: '老師得到了想要的一組秒數，故意放開白板不拉低（SDA=1, NACK）。這告訴時鐘同學：「停筆！不需要念下一個數字了！」',
+                    tech: 'Master NACK: 告知 Slave 終止連續讀取',
+                    masterTalk: '「停！我讀到 32 秒了，夠了！(NACK)」',
+                    dev1Talk: '「...」',
+                    dev2Talk: '「收到，那我放下粉筆不寫了。」',
+                    ghostTalk: '...'
+                });
+
+                // STOP
+                steps.push({
+                    scl: 1, sda: 1, clockIndex: 0,
+                    speaker: 'master',
+                    avatar: '🎉',
+                    title: '下課解散 (STOP)',
+                    story: '老師宣布下課，白板與鈴鐺線全部彈回高處，通訊圓滿完成！',
+                    tech: 'STOP: 通訊正常結束',
+                    masterTalk: '「時間讀取完畢，下課！(STOP)」',
+                    dev1Talk: '「...」',
+                    dev2Talk: '「任務完成，繼續走我的時鐘。」',
+                    ghostTalk: '...'
+                });
+
+            } else if (scenario === 'nack_ghost') {
+                // 叫 0x3C (0111100) + W (0) - 幽靈同學不在
+                const bits = [0, 1, 1, 1, 1, 0, 0, 0];
+                const bitLabels = ['A6=0', 'A5=1', 'A4=1', 'A3=1', 'A2=1', 'A1=0', 'A0=0', 'W=0'];
+                
+                bits.forEach((b, idx) => {
+                    steps.push({
+                        scl: 1, sda: b, clockIndex: idx + 1,
+                        speaker: 'master',
+                        avatar: '📢',
+                        title: `呼叫 0x3C 同學：第 ${idx+1} 拍 [${bitLabels[idx]}]`,
+                        story: `老師敲鈴廣播座號 0x3C（60 號同學）。台下的同學面面相覷。`,
+                        tech: `定址廣播: 0x3C (線路並無此裝置)`,
+                        masterTalk: `「叫 60 號 0x3C！有在嗎？」`,
+                        dev1Talk: '「不是叫我。」',
+                        dev2Talk: '「也不是找我。」',
+                        ghostTalk: '👻 (我今天沒來上課...)'
+                    });
+                });
+
+                // 第 9 拍：無人拉低 -> NACK
+                steps.push({
+                    scl: 1, sda: 1, clockIndex: 9,
+                    speaker: 'none',
+                    avatar: '🍂',
+                    title: '第 9 拍：寂靜無聲！沒人應答 (NACK)',
+                    story: '全班一片寂靜，沒有任何同學伸手去拉白板繩！彈簧依然把白板繩扯在高處（SDA=1）。老師立刻察覺：「咦？沒人舉手，這個同學沒來或線路鬆脫了！」',
+                    tech: 'NACK: 無裝置拉低 SDA，線路保持 High (1)',
+                    masterTalk: '「咦？全班沒人舉手應答？(NACK)」',
+                    dev1Talk: '「全班都沒動靜...」',
+                    dev2Talk: '「看來那傢伙不在。」',
+                    ghostTalk: '👻 (空無一人...)'
+                });
+
+                // 提前 STOP
+                steps.push({
+                    scl: 1, sda: 1, clockIndex: 0,
+                    speaker: 'master',
+                    avatar: '🚪',
+                    title: '老師提前宣布放棄通訊 (STOP)',
+                    story: '既然叫不到人，老師也不浪費時間，立刻發出 STOP 訊號釋放白板，並在系統日誌記錄「裝置離線或不存在」。',
+                    tech: 'Master 收到 NACK 後立即發送 STOP 條件終止交易',
+                    masterTalk: '「無人應答，放棄傳輸！解散！(STOP)」',
+                    dev1Talk: '「白板恢復空閒。」',
+                    dev2Talk: '「白板恢復空閒。」',
+                    ghostTalk: '...'
+                });
+            }
+
+            storyState.steps = steps;
+        }
+
+        // 渲染指定步驟
+        function renderCurrentStep(idx) {
+            if (idx < 0 || idx >= storyState.steps.length) return;
+            storyState.stepIndex = idx;
+            const s = storyState.steps[idx];
+
+            // 1. 繩索視覺
+            if (s.scl === 1) {
+                sclTrackFill.style.background = '#f59e0b';
+                sclTrackFill.style.boxShadow = '0 0 10px #f59e0b';
+                sclStateText.innerText = 'HIGH (鈴聲敲響/讀取中)';
+                sclStateText.style.color = '#fbbf24';
+            } else {
+                sclTrackFill.style.background = '#334155';
+                sclTrackFill.style.boxShadow = 'none';
+                sclStateText.innerText = 'LOW (準備切換下一拍)';
+                sclStateText.style.color = '#94a3b8';
+            }
+
+            if (s.sda === 1) {
+                sdaTrackFill.style.background = '#06b6d4';
+                sdaTrackFill.style.boxShadow = '0 0 10px #06b6d4';
+                sdaStateText.innerText = 'HIGH (彈簧拉起/未拉低)';
+                sdaStateText.style.color = '#22d3ee';
+            } else {
+                sdaTrackFill.style.background = '#334155';
+                sdaTrackFill.style.boxShadow = 'none';
+                sdaStateText.innerText = 'LOW (有手往下拉低/接地)';
+                sdaStateText.style.color = '#94a3b8';
+            }
+
+            // 2. 拍子記數器
+            clockCounterText.innerText = s.clockIndex > 0 ? `第 ${s.clockIndex} 拍` : `準備/結束`;
+            stageStateBadge.innerText = s.title.split('：')[0];
+
+            // 3. 人物講話卡片亮燈
+            [actorMaster, actorDev1, actorDev2, actorGhost].forEach(el => {
+                el.classList.remove('active-speaker', 'active-listener');
+            });
+
+            if (s.speaker === 'master') {
+                actorMaster.classList.add('active-speaker');
+                if (storyState.scenario === 'write_lcd') actorDev1.classList.add('active-listener');
+                if (storyState.scenario === 'read_rtc') actorDev2.classList.add('active-listener');
+            } else if (s.speaker === 'dev1') {
+                actorDev1.classList.add('active-speaker');
+                actorMaster.classList.add('active-listener');
+            } else if (s.speaker === 'dev2') {
+                actorDev2.classList.add('active-speaker');
+                actorMaster.classList.add('active-listener');
+            }
+
+            // 對白文字
+            bubbleMaster.innerText = s.masterTalk;
+            bubbleDev1.innerText = s.dev1Talk;
+            bubbleDev2.innerText = s.dev2Talk;
+            bubbleGhost.innerText = s.ghostTalk;
+
+            // 即時大解說
+            liveAvatar.innerText = s.avatar;
+            liveStepTitle.innerText = s.title;
+            liveStoryDesc.innerText = s.story;
+            liveTechNote.innerText = s.tech;
+
+            // 4. 加入波形歷史並重畫
+            storyState.waveHistory.push({ scl: s.scl, sda: s.sda });
+            if (storyState.waveHistory.length > storyState.maxWavePoints) {
+                storyState.waveHistory.shift();
+            }
+            drawWaveform();
+        }
+
+        // 步進控制
+        function stepStory() {
+            if (storyState.stepIndex < storyState.steps.length - 1) {
+                renderCurrentStep(storyState.stepIndex + 1);
+            } else {
+                stopStory();
+            }
+        }
+
+        function togglePlayStory() {
+            if (storyState.isPlaying) {
+                stopStory();
+            } else {
+                startStory();
+            }
+        }
+
+        function startStory() {
+            storyState.isPlaying = true;
+            document.getElementById('playStoryBtn').innerText = '⏸ 暫停小劇場';
+            document.getElementById('playStoryBtn').className = 'btn btn-danger';
+
+            if (storyState.stepIndex >= storyState.steps.length - 1) {
+                storyState.stepIndex = -1;
+            }
+
+            storyState.timer = setInterval(() => {
+                if (storyState.stepIndex < storyState.steps.length - 1) {
+                    renderCurrentStep(storyState.stepIndex + 1);
+                } else {
+                    stopStory();
+                }
+            }, storyState.speed);
+        }
+
+        function stopStory() {
+            storyState.isPlaying = false;
+            clearInterval(storyState.timer);
+            document.getElementById('playStoryBtn').innerText = '▶ 開始小劇場';
+            document.getElementById('playStoryBtn').className = 'btn btn-success';
+        }
+
+        function resetStory() {
+            stopStory();
+            storyState.stepIndex = 0;
+            storyState.waveHistory = [];
+            renderCurrentStep(0);
+        }
+
+        function updateSpeedVal(val) {
+            storyState.speed = parseInt(val);
+            document.getElementById('speedValText').innerText = val + 'ms';
+            if (storyState.isPlaying) {
+                clearInterval(storyState.timer);
+                storyState.timer = setInterval(() => {
+                    if (storyState.stepIndex < storyState.steps.length - 1) {
+                        renderCurrentStep(storyState.stepIndex + 1);
+                    } else {
+                        stopStory();
+                    }
+                }, storyState.speed);
+            }
+        }
+
+        // 繪製同步簡易波形
+        function drawWaveform() {
+            const w = liveWaveCanvas.width;
+            const h = liveWaveCanvas.height;
+            waveCtx.clearRect(0, 0, w, h);
+
+            // 背景隔線
+            waveCtx.strokeStyle = '#1e293b';
+            waveCtx.lineWidth = 1;
+            for (let y = 30; y < h; y += 40) {
+                waveCtx.beginPath();
+                waveCtx.moveTo(0, y);
+                waveCtx.lineTo(w, y);
+                waveCtx.stroke();
+            }
+
+            // 標示字樣
+            waveCtx.fillStyle = '#fbbf24';
+            waveCtx.font = 'bold 12px sans-serif';
+            waveCtx.fillText('SCL (鈴聲)', 10, 25);
+
+            waveCtx.fillStyle = '#22d3ee';
+            waveCtx.fillText('SDA (白板)', 10, 95);
+
+            if (storyState.waveHistory.length < 2) return;
+
+            const stepW = (w - 80) / storyState.maxWavePoints;
+            const startX = 80;
+
+            // 繪製 SCL (頂部，High=35, Low=70)
+            waveCtx.strokeStyle = '#f59e0b';
+            waveCtx.lineWidth = 2.5;
+            waveCtx.beginPath();
+            storyState.waveHistory.forEach((pt, i) => {
+                const x = startX + i * stepW;
+                const y = pt.scl === 1 ? 35 : 70;
+                if (i === 0) waveCtx.moveTo(x, y);
+                else waveCtx.lineTo(x, y);
+            });
+            waveCtx.stroke();
+
+            // 繪製 SDA (底部，High=105, Low=140)
+            waveCtx.strokeStyle = '#06b6d4';
+            waveCtx.lineWidth = 2.5;
+            waveCtx.beginPath();
+            storyState.waveHistory.forEach((pt, i) => {
+                const x = startX + i * stepW;
+                const y = pt.sda === 1 ? 105 : 140;
+                if (i === 0) waveCtx.moveTo(x, y);
+                else waveCtx.lineTo(x, y);
+            });
+            waveCtx.stroke();
+        }
+
+        // 小測驗檢查邏輯
+        function checkQuiz(qNum, optIdx, btn) {
+            const parent = btn.parentElement;
+            const buttons = parent.querySelectorAll('.quiz-opt-btn');
+            const feedback = document.getElementById('qf' + qNum);
+
+            buttons.forEach(b => b.classList.remove('correct', 'wrong'));
+
+            if (qNum === 1) {
+                if (optIdx === 1) {
+                    btn.classList.add('correct');
+                    feedback.style.display = 'block';
+                    feedback.style.background = '#d1fae5';
+                    feedback.style.color = '#065f46';
+                    feedback.innerHTML = '🎉 <strong>完全正確！</strong>I2C 規定 SCL 為高電位時 SDA 必須鎖定穩定。只有 START (高變低) 與 STOP (低變高) 這兩種特殊命令才允許在 SCL=High 時切換！';
+                } else {
+                    btn.classList.add('wrong');
+                    feedback.style.display = 'block';
+                    feedback.style.background = '#fee2e2';
+                    feedback.style.color = '#991b1b';
+                    feedback.innerHTML = '❌ <strong>再想想看！</strong>提示：START 和 STOP 是如何定義的？為什麼日常傳資料時 SCL 高電位不能隨便動？';
+                }
+            } else if (qNum === 2) {
+                if (optIdx === 0) {
+                    btn.classList.add('correct');
+                    feedback.style.display = 'block';
+                    feedback.style.background = '#d1fae5';
+                    feedback.style.color = '#065f46';
+                    feedback.innerHTML = '🎉 <strong>太厲害了！</strong>正是如此！因為上拉電阻（彈簧）平時會把電位拉高，若沒有任何裝置主動拉低（接地），Master 就會讀到 1，這就是「NACK (未應答)」。';
+                } else {
+                    btn.classList.add('wrong');
+                    feedback.style.display = 'block';
+                    feedback.style.background = '#fee2e2';
+                    feedback.style.color = '#991b1b';
+                    feedback.innerHTML = '❌ <strong>不對喔！</strong>因為大家都是開汲極架構，沒人拉就維持被上拉電阻拉高，所以不會短路也不會自動有人冒充！';
+                }
+            } else if (qNum === 3) {
+                if (optIdx === 1) {
+                    btn.classList.add('correct');
+                    feedback.style.display = 'block';
+                    feedback.style.background = '#d1fae5';
+                    feedback.style.color = '#065f46';
+                    feedback.innerHTML = '🎉 <strong>賓果！滿分！</strong>這就是「開汲極 (Open-Drain)」與「線接與 (Wired-AND)」的精髓！大家都只做下拉動作，既不會電源短路，還能實現 ACK 回應與多主機仲裁！';
+                } else {
+                    btn.classList.add('wrong');
+                    feedback.style.display = 'block';
+                    feedback.style.background = '#fee2e2';
+                    feedback.style.color = '#991b1b';
+                    feedback.innerHTML = '❌ <strong>差一點點！</strong>想想公車拉鈴的比喻：為什麼大家只能往下拉繩子？如果有人往下拉、有人硬往上推，會發生什麼慘劇？';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

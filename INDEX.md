@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-09-29 15:35:11 (UTC+8)  
+> **最後更新時間**: 2026-10-01 13:00:00 (UTC+8)  
 > **使用模型**: Gemini 3.8 Flash  
 > **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -31,6 +31,14 @@
 * `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
+* `2026-10-01` | [Arduino Uno PIR (Pin 8) 繼電器 (Pin 4) I2C LCD1602 (0x20) 狀態監控 (HTML)](./ec/arduino_uno_pir8_relay4_lcd1602_i2c.html) (HTML)
+* `2026-10-01` | [Arduino Uno PIR (Pin 8) 繼電器 (Pin 4) I2C LCD1602 (0x20) 狀態監控 (MD)](./ec/arduino_uno_pir8_relay4_lcd1602_i2c.md) (MD)
+* `2026-10-01` | [Arduino Uno PIR Pin 8 繼電器 Pin 4 實體接線照片](./ec/2026-10-01-145140.jpg) (JPG)
+* `2026-10-01` | [Arduino Uno PIR Pin 8 繼電器 Pin 4 Tinkercad 實驗接線圖](./ec/20261001.jpg) (JPG)
+* `2026-10-01` | [I2C 通訊協定生活實例入門解說版 (HTML)](./ec/I2C_simulation_life_analogy.html) (HTML)
+* `2026-10-01` | [I2C 通訊協定生活實例入門解說版 (MD)](./ec/I2C_simulation_life_analogy.md) (MD)
+* `2026-10-01` | [I2C 通訊協定雙裝置動態模擬器 (Master + 0x27 LCD / 0x68 RTC) (HTML)](./ec/I2C_simulation.html) (HTML)
+* `2026-10-01` | [I2C 通訊協定雙裝置原理解析 (Master + 0x27 LCD / 0x68 RTC) (MD)](./ec/I2C_simulation.md) (MD)
 * `2026-09-29` | [Arduino Uno PIR (Pin 7) 繼電器 (Pin 4) I2C LCD1602 狀態監控 (HTML)](./ec/arduino_uno_pir7_relay4_lcd1602_i2c.html) (HTML)
 * `2026-09-29` | [Arduino Uno PIR (Pin 7) 繼電器 (Pin 4) I2C LCD1602 狀態監控 (MD)](./ec/arduino_uno_pir7_relay4_lcd1602_i2c.md) (MD)
 * `2026-09-29` | [Arduino Uno PIR Pin 7 繼電器 Pin 4 LCD1602 實驗接線圖](./ec/0929-2.jpg) (JPG)

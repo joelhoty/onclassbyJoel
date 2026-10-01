@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💡 Arduino Uno PIR (Pin 8) + 繼電器 (Pin 4) + I2C LCD 1602 (0x20) 狀態監控系統</title>
+    
+    <!-- Prism 程式碼高亮 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #eff6ff;
+            --secondary: #0f172a;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-amber: #f59e0b;
+            --accent-indigo: #6366f1;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1060px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.85rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.35;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .metadata-box {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 0.9rem 1.25rem;
+            font-size: 0.9rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.75rem;
+            border-left: 4px solid var(--accent-amber);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 2.2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        h2 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 1.2rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin: 1.5rem 0 0.8rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .img-container {
+            text-align: center;
+            margin: 1.5rem 0;
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .img-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .caption {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        table.styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.2rem 0;
+            font-size: 0.95rem;
+        }
+
+        table.styled-table th, table.styled-table td {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        table.styled-table th {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        .code-block-wrapper {
+            position: relative;
+            margin: 1.2rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .callout {
+            border-left: 4px solid var(--primary);
+            background: var(--primary-light);
+            padding: 1rem 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.2rem 0;
+        }
+
+        /* 互動模擬卡片 */
+        .sim-box {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 1.5rem;
+            color: white;
+            margin: 1.5rem 0;
+        }
+
+        .sim-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid #334155;
+        }
+
+        .lcd-display {
+            background: #1e3a8a;
+            color: #67e8f9;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            border: 4px solid #0284c7;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+        }
+
+        .bulb-indicator {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: inline-block;
+            transition: all 0.3s ease;
+            vertical-align: middle;
+        }
+
+        .bulb-off {
+            background: #475569;
+            box-shadow: inset 0 0 8px #000;
+        }
+
+        .bulb-on {
+            background: #facc15;
+            box-shadow: 0 0 20px #fde047, 0 0 40px #facc15;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <div class="header-top">
+            <div>
+                <span style="background: rgba(37,99,235,0.4); border: 1px solid #3b82f6; color: #93c5fd; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.85rem; font-weight: 600;">
+                    🔌 實體電路與程式碼完整匹配
+                </span>
+                <h1 style="margin-top: 0.6rem;">💡 Arduino Uno 人體感應控制繼電器電燈與 I2C LCD 1602</h1>
+                <p style="color: #cbd5e1; font-size: 1rem; margin-top: 0.4rem;">
+                    PIR 感測器接 Pin 8 • 繼電器接 Pin 4 • I2C LCD (PCF8574 位址 0x20) • 移動觸發開燈並延遲 5 秒自動關閉
+                </p>
+            </div>
+            <div class="action-bar">
+                <button class="btn btn-secondary" onclick="window.print()">📄 列印 / 另存 PDF</button>
+            </div>
+        </div>
+
+        <div class="metadata-box">
+            <div>📅 實作時間：<strong>2026-10-01</strong></div>
+            <div>🎯 硬體引腳：<strong>PIR=Pin 8, Relay=Pin 4, LCD=0x20 (A4/A5)</strong></div>
+            <div>⏱ 延遲控制：<strong>5 秒 (5000 ms) 非阻塞 millis() 架構</strong></div>
+            <div>🖼 對照來源：<strong>Desktop/20261001.jpg</strong></div>
+        </div>
+    </header>
+
+    <!-- 區塊 1: 實體電路圖 -->
+    <section class="card">
+        <h2>📷 1. 實驗接線電路截圖 (Tinkercad Circuits 20261001.jpg)</h2>
+        <div class="img-container">
+            <img src="./20261001.jpg" alt="Arduino Uno PIR Pin 8 + 繼電器 Pin 4 實驗接線圖">
+            <div class="caption">▲ 圖 1：Tinkercad 完整電路圖，PIR 信號線（藍色）接 Pin 8，繼電器控制線（黃色）接 Pin 4，LCD 位址為 32 (0x20)</div>
+        </div>
+
+        <h3>🔌 硬體接線對照清單</h3>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>模組名稱</th>
+                    <th>模組引腳</th>
+                    <th>Arduino Uno 引腳</th>
+                    <th>導線顏色與說明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="3"><strong>Parallax PIR 感測器</strong></td>
+                    <td>VCC (+)</td>
+                    <td>5V</td>
+                    <td>紅色導線，接至 5V 匯流排</td>
+                </tr>
+                <tr>
+                    <td>GND (-)</td>
+                    <td>GND</td>
+                    <td>黑色導線，接至 GND 匯流排</td>
+                </tr>
+                <tr>
+                    <td>SIG (輸出)</td>
+                    <td><strong>數位 Pin 8</strong></td>
+                    <td><strong>藍色導線</strong>，偵測到人體移動時輸出 HIGH</td>
+                </tr>
+                <tr>
+                    <td rowspan="2"><strong>電磁繼電器 (KS2E-M-DC5)</strong></td>
+                    <td>Coil (+) 控制端</td>
+                    <td><strong>數位 Pin 4</strong></td>
+                    <td><strong>黃色導線</strong>，輸出 HIGH 時驅動線圈吸合</td>
+                </tr>
+                <tr>
+                    <td>Coil (-) 接地端</td>
+                    <td>GND</td>
+                    <td>黑色導線，接至 GND</td>
+                </tr>
+                <tr>
+                    <td rowspan="4"><strong>I2C LCD 1602 (PCF8574)</strong></td>
+                    <td>GND</td>
+                    <td>GND</td>
+                    <td>黑色接地線</td>
+                </tr>
+                <tr>
+                    <td>VCC</td>
+                    <td>5V</td>
+                    <td>紅色電源線</td>
+                </tr>
+                <tr>
+                    <td>SDA (資料線)</td>
+                    <td><strong>類比 A4</strong></td>
+                    <td>淺藍色線，I2C 雙向資料傳輸</td>
+                </tr>
+                <tr>
+                    <td>SCL (時脈線)</td>
+                    <td><strong>類比 A5</strong></td>
+                    <td>淺藍色線，I2C 同步時脈線</td>
+                </tr>
+                <tr>
+                    <td rowspan="2"><strong>受控電燈回路</strong></td>
+                    <td>COM (公共端)</td>
+                    <td>外接 20V 電源正極 (+)</td>
+                    <td>黃色導線接至電源供應器</td>
+                </tr>
+                <tr>
+                    <td>NO (常開端)</td>
+                    <td>限流電阻 ➔ 燈泡正極</td>
+                    <td>平時斷開，繼電器觸發時導通點亮燈泡</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="callout">
+            <strong>🔍 截圖關鍵參數確認：</strong><br>
+            截圖右上角選中 LCD 時明確顯示：<code>類型: PCF8574 型</code>，<code>地址: 32 (0x20)</code>。<br>
+            十進制 $32$ 等於十六進制 <code>0x20</code>，因此在宣告 LCD 物件時必須填寫 <code>LiquidCrystal_I2C lcd(0x20, 16, 2);</code>。
+        </div>
+    </section>
+
+    <!-- 區塊 2: 完整 Arduino 程式碼 -->
+    <section class="card">
+        <h2>💻 2. 完整的 Arduino 程式碼 (可直接複製運行)</h2>
+        <p>本程式直接承接截圖中已輸入的部分，並將 <code>loop()</code> 邏輯完整補齊，採用<strong>非阻塞式 <code>millis()</code> 架構</strong>，當人持續在場時會不斷刷新 5 秒倒數，人離開 5 秒後自動熄燈並將 LCD 切回待機：</p>
+
+        <div class="code-block-wrapper">
+            <button class="copy-btn" onclick="copyCode(this)">📋 複製程式碼</button>
+            <pre><code class="language-cpp">#include &lt;Wire.h&gt;
+#include &lt;LiquidCrystal_I2C.h&gt;
+
+// 初始化 LCD: 設定 I2C 位址為 0x20，規格為 16 字元、2 列
+LiquidCrystal_I2C lcd(0x20, 16, 2);
+
+// 定義腳位
+const int pirPin = 8;     // PIR 感測器接 Pin 8
+const int relayPin = 4;   // 繼電器模組接 Pin 4
+
+// 繼電器觸發設定 (若你的模組是低電位觸發，請將兩者對調)
+const int RELAY_ON = HIGH;   // 開燈
+const int RELAY_OFF = LOW;  // 關燈
+
+const unsigned long lightDuration = 5000; // 延遲關閉時間: 5 秒 (5000ms)
+unsigned long lastMotionTime = 0;         // 記錄最後一次偵測到移動的時間
+bool isLightOn = false;                   // 記錄目前是否處於亮燈警示狀態
+
+// 顯示副程式: 感測待機中
+void showDetecting() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("DECT....");
+}
+
+// 顯示副程式: 感應到移動警示
+void showWarning() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Warning");
+}
+
+void setup() {
+  Serial.begin(9600);
+
+  pinMode(pirPin, INPUT);
+  pinMode(relayPin, OUTPUT);
+
+  // 初始繼電器狀態: 關燈
+  digitalWrite(relayPin, RELAY_OFF);
+
+  // 初始化 LCD 螢幕與背光
+  lcd.init();
+  lcd.backlight();
+
+  // 開機預設顯示偵測狀態
+  showDetecting();
+  Serial.println(F("[系統就緒] PIR Pin 8 + Relay Pin 4 啟動，進入偵測待機..."));
+}
+
+void loop() {
+  // 1. 讀取 PIR 感測器數位輸出狀態
+  int pirState = digitalRead(pirPin);
+
+  // 2. 當偵測到人體移動 (PIR 輸出 HIGH)
+  if (pirState == HIGH) {
+    // 更新最後一次偵測到移動的時間戳記
+    lastMotionTime = millis();
+
+    // 如果目前燈尚未開啟，則觸發開燈與切換警示
+    if (!isLightOn) {
+      isLightOn = true;
+      digitalWrite(relayPin, RELAY_ON); // 繼電器動作，開燈
+      showWarning();                    // LCD 顯示 "Warning"
+      Serial.println(F("[偵測到移動] 繼電器導通開燈！LCD 顯示 Warning"));
+    }
+  }
+
+  // 3. 若燈目前是開啟的，檢查是否已超過 5 秒無人走動
+  if (isLightOn) {
+    if (millis() - lastMotionTime >= lightDuration) {
+      // 5 秒已到且中途無新移動觸發，關閉電燈
+      isLightOn = false;
+      digitalWrite(relayPin, RELAY_OFF); // 繼電器復歸，關燈
+      showDetecting();                   // LCD 恢復顯示 "DECT...."
+      Serial.println(F("[延遲時間 5 秒已到] 無人移動，自動關燈並恢復待機。"));
+    }
+  }
+
+  // 微幅延遲，保持 loop 運作穩定
+  delay(20);
+}
+</code></pre>
+        </div>
+    </section>
+
+    <!-- 區塊 3: 網頁互動式邏輯模擬體驗 -->
+    <section class="card">
+        <h2>🎮 3. 即時邏輯模擬器 (Live Simulator)</h2>
+        <p>點選下方按鈕模擬 PIR 偵測到人體走動，觀察繼電器、電燈、LCD 螢幕與 5 秒倒數計時器的動作反饋：</p>
+
+        <div class="sim-box">
+            <div class="sim-header">
+                <div>
+                    <strong>系統狀態模擬監控台</strong>
+                </div>
+                <div>
+                    電燈狀態：
+                    <span class="bulb-indicator bulb-off" id="simBulb"></span>
+                    <span id="bulbStatusText" style="margin-left: 0.5rem; font-weight: bold; color: #94a3b8;">關閉 (OFF)</span>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: center; margin-bottom: 1.5rem;">
+                <div>
+                    <label style="display: block; font-size: 0.85rem; color: #94a3b8; margin-bottom: 0.4rem;">I2C LCD 1602 螢幕 (0x20)：</label>
+                    <div class="lcd-display" id="simLcd">DECT....</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 0.4rem;">Pin 4 繼電器輸出：<strong id="simRelayPinText" style="color: #ef4444;">LOW (0V)</strong></div>
+                    <div style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 0.4rem;">Pin 8 PIR 感測器：<strong id="simPirPinText" style="color: #94a3b8;">LOW (無移動)</strong></div>
+                    <div style="font-size: 0.9rem; color: #94a3b8;">5 秒熄燈倒數計時：<strong id="simCountdownText" style="color: #f59e0b;">-</strong></div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <button class="btn btn-primary" onclick="triggerMotion()">
+                    🚶 模擬人體走動 (PIR 觸發 HIGH)
+                </button>
+                <button class="btn btn-secondary" onclick="resetSim()">
+                    ⏮ 重置系統
+                </button>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    function copyCode(btn) {
+        const code = btn.nextElementSibling.querySelector('code').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+            const originalText = btn.innerText;
+            btn.innerText = '✅ 已複製！';
+            setTimeout(() => { btn.innerText = originalText; }, 2000);
+        });
+    }
+
+    // 互動模擬器邏輯
+    let simIsLightOn = false;
+    let simLastMotionTime = 0;
+    let simTimer = null;
+    const DURATION = 5000;
+
+    const simLcd = document.getElementById('simLcd');
+    const simBulb = document.getElementById('simBulb');
+    const bulbStatusText = document.getElementById('bulbStatusText');
+    const simRelayPinText = document.getElementById('simRelayPinText');
+    const simPirPinText = document.getElementById('simPirPinText');
+    const simCountdownText = document.getElementById('simCountdownText');
+
+    function triggerMotion() {
+        simPirPinText.innerText = 'HIGH (偵測到移動)';
+        simPirPinText.style.color = '#10b981';
+        setTimeout(() => {
+            simPirPinText.innerText = 'LOW (無移動)';
+            simPirPinText.style.color = '#94a3b8';
+        }, 1000);
+
+        simLastMotionTime = Date.now();
+
+        if (!simIsLightOn) {
+            simIsLightOn = true;
+            simBulb.className = 'bulb-indicator bulb-on';
+            bulbStatusText.innerText = '開啟 (ON)';
+            bulbStatusText.style.color = '#facc15';
+            simRelayPinText.innerText = 'HIGH (5V 導通)';
+            simRelayPinText.style.color = '#10b981';
+            simLcd.innerText = 'Warning';
+
+            if (simTimer) clearInterval(simTimer);
+            simTimer = setInterval(checkTimeout, 100);
+        }
+    }
+
+    function checkTimeout() {
+        const elapsed = Date.now() - simLastMotionTime;
+        const remain = Math.max(0, Math.ceil((DURATION - elapsed) / 1000));
+        simCountdownText.innerText = remain > 0 ? remain + ' 秒' : '-';
+
+        if (elapsed >= DURATION) {
+            simIsLightOn = false;
+            clearInterval(simTimer);
+            simBulb.className = 'bulb-indicator bulb-off';
+            bulbStatusText.innerText = '關閉 (OFF)';
+            bulbStatusText.style.color = '#94a3b8';
+            simRelayPinText.innerText = 'LOW (0V 復歸)';
+            simRelayPinText.style.color = '#ef4444';
+            simLcd.innerText = 'DECT....';
+            simCountdownText.innerText = '已關閉';
+        }
+    }
+
+    function resetSim() {
+        simIsLightOn = false;
+        clearInterval(simTimer);
+        simBulb.className = 'bulb-indicator bulb-off';
+        bulbStatusText.innerText = '關閉 (OFF)';
+        bulbStatusText.style.color = '#94a3b8';
+        simRelayPinText.innerText = 'LOW (0V)';
+        simRelayPinText.style.color = '#ef4444';
+        simPirPinText.innerText = 'LOW (無移動)';
+        simPirPinText.style.color = '#94a3b8';
+        simLcd.innerText = 'DECT....';
+        simCountdownText.innerText = '-';
+    }
+</script>
+</body>
+</html>
