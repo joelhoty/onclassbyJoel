@@ -1,8 +1,8 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-10-01 15:23:26 (UTC+8)  
-> **使用模型**: Gemini 3.8 Flash  
-> **執行 Agent**: Antigravity  
+> **最後更新時間**: 2026-10-04 19:04:06 (UTC+8)\
+> **使用模型**: GPT-6\
+> **執行 Agent**: Codex /root\
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 
 ---
@@ -116,7 +116,10 @@
 * `2026-09-26` | [CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計實務教學](./design/coreldraw_keychain_design.html) (HTML)
 * `2026-09-26` | [CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計實務教學 (MD)](./design/coreldraw_keychain_design.md) (MD)
 
-### 📋 9. 工作區指引與核心規範
+### 🎤 9. Keynote／課程簡報 (`keynote/`)
+* `2026-10-04` | [Arduino 實作與設計流程：18 頁核心簡報 (HTML)](./keynote/Arduino_WorkFLow_core_slides_b01.html) (HTML)
+
+### 📋 10. 工作區指引與核心規範
 * `2026-09-26` | [根目錄 AI 課程總覽](./ai_0910.html) (HTML)
 * `2026-09-22` | [Multi-Agent 工作區規範](./AGENTS.md) (MD)
 * `2026-09-10` | [筆記生成與更新標準指引](./NOTE_GENERATION_GUIDE.md) (MD)
@@ -433,3 +436,10 @@
 
 
 
+### 🔹 [2026-10-04 19:04:06] [GPT-6 / Codex] Keynote 簡報索引更新
+- **模型/Agent**: GPT-6 / Codex /root
+- **Prompt 原文**:
+  ```text
+  keynote 加入index索引後提交並推送
+  ```
+- **變更摘要**: 新增 Keynote／課程簡報分類，收錄 Arduino 實作與設計流程 18 頁核心簡報；同步更新 INDEX.md 與 index.html，將現有簡報 HTML 納入 Git 版本管理。
