@@ -1,8 +1,8 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-10-04 19:04:06 (UTC+8)\
-> **使用模型**: GPT-6\
-> **執行 Agent**: Codex /root\
+> **最後更新時間**: 2026-10-15 14:53:06 (UTC+8)  
+> **使用模型**: Gemini 3.8 Flash  
+> **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 
 ---
@@ -10,6 +10,8 @@
 ## 🎯 工作區主題檔案分類與最後修改日期 (依日期由新至舊排列)
 
 ### 🤖 1. AI / 機器學習與深度學習 (`AI/`)
+* `2026-10-07` | [Colab 下載 Civitai 模型腳本除錯：wget 401/403 與 SafeTensor 驗證修正 (HTML)](./AI/fooocus_civitai_download_fix.html) (HTML)
+* `2026-10-07` | [Colab 下載 Civitai 模型腳本除錯：wget 401/403 與 SafeTensor 驗證修正 (MD)](./AI/fooocus_civitai_download_fix.md) (MD)
 * `2026-09-26` | [新莊土壤液化與地質心理學 10 頁 Marp 簡報 (Tech Style) (HTML)](./AI/soil_liquefaction_tech_slides.html) (HTML)
 * `2026-09-26` | [新莊土壤液化與地質心理學 10 頁 Marp 簡報 (Tech Style) (MD)](./AI/soil_liquefaction_tech_slides.marp.md) (MD)
 * `2026-09-26` | [AI 課程筆記 (09-10)](./AI/ai_0910.html) (HTML)
@@ -31,6 +33,12 @@
 * `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
+* `2026-10-15` | [Arduino Uno 整合 I2C LCD 1602 與 DHT11 溫濕度監測系統實作筆記 (HTML)](./ec/arduino_i2c_lcd1602_dht11.html) (HTML)
+* `2026-10-15` | [Arduino Uno 整合 I2C LCD 1602 與 DHT11 溫濕度監測系統實作筆記 (MD)](./ec/arduino_i2c_lcd1602_dht11.md) (MD)
+* `2026-10-15` | [Arduino Uno + DHT11 (Pin 8) + I2C LCD 1602 實體驗證整合程式 (INO)](./ec/1015-dht11.ino) (INO)
+* `2026-10-15` | [Arduino DHT11 與 LCD 1602 獨立單元測試來源碼 (TXT)](./ec/1015.txt) (TXT)
+* `2026-10-15` | [Arduino Uno + DHT11 + I2C LCD 1602 實體驗證完成成果圖](./ec/2026-10-15-143912.jpg) (JPG)
+* `2026-10-15` | [Arduino Uno 整合 I2C LCD 1602 與 DHT11 實體接線圖](./ec/2026-10-15-135909.jpg) (JPG)
 * `2026-10-01` | [I2C LCD 1602 實體驗證測試程式 (INO)](./ec/i2c_lcd1602.ino) (INO)
 * `2026-10-01` | [Arduino IDE 開發環境與 I2C LCD 1602 實體接線指南 (HTML)](./ec/arduino_ide_i2c_lcd1602_guide.html) (HTML)
 * `2026-10-01` | [Arduino IDE 開發環境與 I2C LCD 1602 實體接線指南 (MD)](./ec/arduino_ide_i2c_lcd1602_guide.md) (MD)
@@ -431,6 +439,60 @@
   git commit and push
   ```
 - **變更摘要**: 更新全站主題索引目錄（新增 2026-10-01 之 I2C 生活實例入門版、PIR Pin 8 繼電器 LCD 智慧控制、Arduino IDE 開發環境與實體接線指南，以及 i2c_lcd1602.ino 實體驗證測試程式連結），完成索引目錄同步驗證並推播至遠端 GitHub 儲存庫。
+
+### 🔹 [2026-10-15 14:00:57] [Gemini 3.8 Flash / Antigravity] 變更紀錄
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  C:\Users\User\Desktop\2026-10-15-135909.jpg  這是今天arduino接上lcd 1602 I2c與 dht11的線路圖，先記錄成筆記
+  ```
+- **變更摘要**: 於電子電路分類 (`ec/`) 新增 Arduino Uno 整合 I2C LCD 1602 與 DHT11 溫濕度監測系統實作筆記 (`arduino_i2c_lcd1602_dht11.md`, `arduino_i2c_lcd1602_dht11.html`) 與實體電路接線圖 (`2026-10-15-135909.jpg`)，更新全站索引目錄。
+
+### 🔹 [2026-10-15 14:22:06] [Gemini 3.8 Flash / Antigravity] 變更紀錄
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  我的實作步驟是 1.先根據硬體只是接線 2.尋找安裝程式庫 3.開啟範例進行基礎測試(硬體與通訊 基礎語法認識)4.分別依照上述方法測試螢幕與溫濕度 5.將測試成功的基礎範例讓AI協助我整合
+  ```
+- **變更摘要**: 導入使用者提出的標準五步驟工程實作法（1.硬體指示接線 ➔ 2.搜尋安裝程式庫 ➔ 3.基礎範例與通訊語法認識 ➔ 4.分別獨立單元測試螢幕與溫濕度 ➔ 5.由 AI 協助整合單元模組），新增 Arduino IDE 程式庫安裝指引、LCD 1602 獨立單元測試碼與基礎語法解析、DHT11 獨立單元測試碼與基礎語法解析、AI 協同整合提示詞設計範本與流程圖，同步更新全站索引目錄。
+
+### 🔹 [2026-10-15 14:41:22] [Gemini 3.8 Flash / Antigravity] 變更紀錄
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  C:\Users\User\Desktop\1015-dht11\1015-dht11.ino C:\Users\User\Desktop\1015.txt 這是我的測試程式與AI整合的程式碼
+  ```
+- **變更摘要**: 讀入使用者提供的實體單元測試來源程式碼（`1015.txt`：包含 YWROBOT LCD1602 測試程式與 Adafruit Unified Sensor DHT11 測試程式）及最終經 AI 整合驗證之完整 Arduino 程式碼（`1015-dht11.ino`）。修正引腳配置對照表（確認 DATA 引腳連接至 Pin 8），歸檔原始程式檔至 `ec/` 目錄，深入剖析程式碼中的核心工程技術（`Adafruit_Sensor.h` / `DHT_U.h` 抽象架構、`sensor.min_delay` 動態延遲判定保護、HD44780 內建度數符號 `(char)223` 與尾部防字元殘留技巧），同步更新全站目錄索引。
+
+### 🔹 [2026-10-15 14:45:34] [Gemini 3.8 Flash / Antigravity] 變更紀錄
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  C:\Users\User\Desktop\2026-10-15-143912.jpg 完成圖
+  ```
+- **變更摘要**: 納入使用者實體電路通電運作之完整成果圖（`2026-10-15-143912.jpg`），記錄 LCD 實測即時顯示數據（`Temp: 28.9°C` / `Humd: 41.0%`），驗證字元對齊與度數符號顯示效果，並將 HTML 互動模擬器預設數值同步更新為實測值，更新全站索引目錄。
+
+### 🔹 [2026-10-15 14:49:32] [Gemini 3.8 Flash / Antigravity] 變更紀錄
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  加入dht感應器的運作原理
+  ```
+- **變更摘要**: 於核心概念剖析中深入擴充 DHT 感測器之完整底層物理運作機制：包含高分子電阻式濕敏元件水分子吸附解離導電機制（Grotthuss 質子傳遞）、NTC 負溫度係數熱敏電阻半導體載子激發原理與 Steinhart-Hart / $\beta$ 參數數學模型、內部 8-Bit 微控制器訊號調理與 OTP 出廠校準係數溫度補償、單匯流排 40-Bit 脈衝寬度調變時序，以及內部焦耳熱自我發熱（Self-Heating）與熱平衡取樣延遲限制之熱力學深度剖析。
+
+### 🔹 [2026-10-15 14:53:06] [Gemini 3.8 Flash / Antigravity] 變更紀錄
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  git commit and push
+  ```
+- **變更摘要**: 配合工作區規範第 6 條執行 Git 提交與推播同步程序。將 Arduino Uno 整合 I2C LCD 1602 與 DHT11 溫濕度監測系統實作筆記、實測程式碼 (1015-dht11.ino / 1015.txt)、實體驗證成果照片、AI 分類新增檔案與全站目錄索引推播至遠端 GitHub 儲存庫。
+
+
+
+
+
+
 
 
 
