@@ -1,8 +1,8 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-10-15 14:53:06 (UTC+8)  
-> **使用模型**: Gemini 3.8 Flash  
-> **執行 Agent**: Antigravity  
+> **最後更新時間**: 2026-10-16 11:00:00 (UTC+8)  
+> **使用模型**: Claude Sonnet 5.5  
+> **執行 Agent**: Claude Code  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 
 ---
@@ -10,6 +10,8 @@
 ## 🎯 工作區主題檔案分類與最後修改日期 (依日期由新至舊排列)
 
 ### 🤖 1. AI / 機器學習與深度學習 (`AI/`)
+* `2026-10-16` | [Agent 分層模型：LLM、Context、Harness 與 Workflow ↔ Agent 光譜 (HTML)](./AI/ai_agent_harness_workflow.html) (HTML)
+* `2026-10-16` | [Agent 分層模型：LLM、Context、Harness 與 Workflow ↔ Agent 光譜 (MD)](./AI/ai_agent_harness_workflow.md) (MD)
 * `2026-10-07` | [Colab 下載 Civitai 模型腳本除錯：wget 401/403 與 SafeTensor 驗證修正 (HTML)](./AI/fooocus_civitai_download_fix.html) (HTML)
 * `2026-10-07` | [Colab 下載 Civitai 模型腳本除錯：wget 401/403 與 SafeTensor 驗證修正 (MD)](./AI/fooocus_civitai_download_fix.md) (MD)
 * `2026-09-26` | [新莊土壤液化與地質心理學 10 頁 Marp 簡報 (Tech Style) (HTML)](./AI/soil_liquefaction_tech_slides.html) (HTML)

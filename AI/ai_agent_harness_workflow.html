@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🤖 AI Agent 分層模型：LLM、Context、Harness 與 Workflow ↔ Agent 光譜</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'neutral' });</script>
+  <style>
+    :root {
+      --primary-color: #1e3a8a;
+      --secondary-color: #2563eb;
+      --accent-color: #0d9488;
+      --warning-color: #b45309;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --code-bg: #0f172a;
+      --highlight-bg: #eff6ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+      line-height: 1.8;
+      color: var(--text-main);
+      background-color: var(--bg-color);
+      padding: 2.5rem 1.5rem;
+    }
+
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 3rem;
+      border-radius: 14px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border-color);
+    }
+
+    .header-section {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .title-group h1 {
+      font-size: 2.1rem;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+      font-weight: 800;
+    }
+
+    .metadata-card {
+      background: var(--highlight-bg);
+      border-left: 4px solid var(--secondary-color);
+      padding: 0.85rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+    }
+
+    .metadata-card p {
+      margin: 0.25rem 0;
+    }
+
+    .metadata-card strong {
+      color: #1e40af;
+    }
+
+    .btn-export {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #ffffff;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-export:hover {
+      background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(239, 68, 68, 0.5);
+    }
+
+    h2 {
+      font-size: 1.55rem;
+      color: var(--primary-color);
+      margin: 3rem 0 1.2rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 2px solid #e0e7ff;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      color: #1e40af;
+      margin: 2rem 0 0.9rem;
+    }
+
+    h4 {
+      font-size: 1.1rem;
+      color: #0f766e;
+      margin: 1.3rem 0 0.5rem;
+    }
+
+    p {
+      margin-bottom: 1.1rem;
+    }
+
+    ul, ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    li {
+      margin-bottom: 0.4rem;
+    }
+
+    /* Cards */
+    .feature-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      border-left: 5px solid var(--secondary-color);
+    }
+
+    .eval-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.25rem;
+      margin: 1.5rem 0;
+    }
+
+    .eval-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.35rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+
+    .eval-card.good {
+      border-top: 4px solid #16a34a;
+      background: #f0fdf4;
+    }
+
+    .eval-card.warn {
+      border-top: 4px solid #ea580c;
+      background: #fff7ed;
+    }
+
+    .eval-card.upgrade {
+      border-top: 4px solid #2563eb;
+      background: #eff6ff;
+    }
+
+    .eval-card h4 {
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+      background: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      border: 1px solid var(--border-color);
+    }
+
+    th, td {
+      padding: 0.9rem 1.1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    tr:hover {
+      background: #f8fafc;
+    }
+
+    /* Code Container with Copy Button */
+    .code-container {
+      position: relative;
+      margin: 1.5rem 0;
+      background: var(--code-bg);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    }
+
+    .code-header {
+      background: #1e293b;
+      padding: 0.5rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      font-family: monospace;
+      border-bottom: 1px solid #334155;
+    }
+
+    .btn-copy {
+      background: #334155;
+      color: #f8fafc;
+      border: 1px solid #475569;
+      padding: 0.3rem 0.75rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-copy:hover {
+      background: #475569;
+      color: #ffffff;
+    }
+
+    .btn-copy.copied {
+      background: #16a34a;
+      border-color: #16a34a;
+      color: white;
+    }
+
+    pre {
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: "Consolas", "Courier New", monospace;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+      background: transparent;
+      margin: 0;
+    }
+
+    /* Prompt Box */
+    .prompt-box {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 1.25rem;
+      border-radius: 8px;
+      font-family: "Consolas", monospace;
+      font-size: 0.92rem;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      border-left: 4px solid var(--accent-color);
+      margin: 1rem 0;
+    }
+
+    .mermaid {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border-color);
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Archive */
+    .archive-item {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border-left: 5px solid #6366f1;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+    .badge-green { background: #dcfce7; color: #15803d; }
+    .badge-orange { background: #ffedd5; color: #c2410c; }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      .container {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      .btn-export, .btn-copy {
+        display: none !important;
+      }
+    }
+
+    blockquote { border-left: 4px solid var(--accent-color); background: var(--highlight-bg); padding: 0.75rem 1.25rem; margin: 1rem 0; border-radius: 0 8px 8px 0; }
+    h1 { font-size: 1.8rem; }
+    @media print { .no-print { display: none !important; } .code-container { break-inside: avoid; } pre { white-space: pre-wrap; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="no-print" style="text-align:right;margin-bottom:1rem">
+      <button class="btn-export" onclick="window.print()">🖨️ 匯出成 PDF / 列印</button>
+    </div>
+<h1>🤖 AI Agent 分層模型：LLM、Context、Harness 與 Workflow ↔ Agent 光譜</h1>
+<blockquote>
+<p><strong>最後更新時間</strong>: 2026-10-16 10:50:00 (UTC+8)
+<strong>使用模型</strong>: Claude Sonnet 5.5
+<strong>執行 Agent</strong>: Claude Code
+<strong>筆記分類</strong>: AI / Agent 架構 / Harness Engineering / Context Engineering</p>
+</blockquote>
+<hr />
+<h2>📖 一、核心概念剖析 (Core Concepts)</h2>
+<h3>1.1 原始想法與需修正之處</h3>
+<p>原始想法：以 LLM 為中心圓，外圍是 prompt、prompt engineering、chain of thought、tools、context，再擴展到 harness，讓 agent 知道可以做什麼、有哪些工作、有哪些 Skills 與 Tools，以及哪些是硬限制。</p>
+<table>
+<thead>
+<tr>
+<th>問題</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>層次混在同一圈</td>
+<td>Prompt、context、tools 是「放進去的東西」；prompt engineering 與 CoT 是「使用的技巧」，不應與元件並列</td>
+</tr>
+<tr>
+<td>Harness 被畫成外圍延伸</td>
+<td>Harness 負責<strong>執行 agent loop</strong>（組裝 context、呼叫模型、執行工具、檢查結果、決定停止），公式為 <strong>Agent = Model + Harness</strong></td>
+</tr>
+<tr>
+<td>Prompt 與 context 的關係</td>
+<td>Prompt 只是 context 的一部分；重點從 prompt engineering 轉向 <strong>context engineering</strong></td>
+</tr>
+<tr>
+<td>Tools 與 Skills 同類化</td>
+<td>Tools = 能做什麼；Skills = 該怎麼做</td>
+</tr>
+<tr>
+<td>缺少軟、硬限制區分</td>
+<td>這是原想法最有價值的部分，需明確分類</td>
+</tr>
+<tr>
+<td>缺少回饋與驗證</td>
+<td>少了「做完怎麼知道對不對」，圖就只有單向</td>
+</tr>
+</tbody>
+</table>
+<h3>1.2 修正後的六層同心模型（由內而外）</h3>
+<div class="code-container"><div class="code-header"><span>text</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div><pre><code>┌──────────────────────────────────────────────────────────────┐
+│ L5 環境與人：使用者、程式碼庫、外部 API、組織政策                  │
+│ ┌──────────────────────────────────────────────────────────┐ │
+│ │ L4 Harness（執行與治理層）                                  │ │
+│ │  Agent loop ｜ 權限 ｜ Hooks ｜ Sandbox ｜ 預算 ｜ 驗證 ｜ 記憶 │ │
+│ │ ┌──────────────────────────────────────────────────────┐ │ │
+│ │ │ L3 能力層：Tools / MCP / Skills / Subagents            │ │ │
+│ │ │ ┌──────────────────────────────────────────────────┐ │ │ │
+│ │ │ │ L2 推理策略：CoT / ReAct / Plan / Reflection       │ │ │ │
+│ │ │ │ ┌──────────────────────────────────────────────┐ │ │ │ │
+│ │ │ │ │ L1 Context：System prompt、使用者指令、歷史、 │ │ │ │ │
+│ │ │ │ │ 檢索資料、記憶、工具回傳結果                   │ │ │ │ │
+│ │ │ │ │ ┌──────────────────────────────────────────┐ │ │ │ │ │
+│ │ │ │ │ │ L0 LLM（權重、機率性的推理核心）           │ │ │ │ │ │
+│ │ │ │ │ └──────────────────────────────────────────┘ │ │ │ │ │
+│ │ │ │ └──────────────────────────────────────────────┘ │ │ │ │
+│ │ │ └──────────────────────────────────────────────────┘ │ │ │
+│ │ └──────────────────────────────────────────────────────┘ │ │
+│ └──────────────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────┘</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>層</th>
+<th>回答的問題</th>
+<th>內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>L0 LLM</td>
+<td>能<strong>思考</strong>什麼</td>
+<td>模型能力、上下文長度、機率性輸出</td>
+</tr>
+<tr>
+<td>L1 Context</td>
+<td>現在<strong>知道</strong>什麼</td>
+<td>Prompt 為其中一部分，另含歷史、檢索、記憶、工具結果；prompt engineering 屬此層技巧</td>
+</tr>
+<tr>
+<td>L2 推理策略</td>
+<td><strong>怎麼想</strong></td>
+<td>CoT、ReAct、規劃、自我反思，是使用模型的方式而非獨立元件</td>
+</tr>
+<tr>
+<td>L3 能力</td>
+<td>能<strong>做</strong>什麼、<strong>怎麼做</strong></td>
+<td>Tools（動作）、MCP（標準化接入）、Skills（流程知識，按需載入）、Subagents（分工與隔離 context）</td>
+</tr>
+<tr>
+<td>L4 Harness</td>
+<td><strong>允許</strong>做什麼、做得<strong>對不對</strong></td>
+<td>Agent loop、權限、Hooks、Sandbox、預算、驗證、記憶、可觀測性</td>
+</tr>
+<tr>
+<td>L5 環境</td>
+<td>在<strong>什麼世界</strong>裡做</td>
+<td>真實系統、使用者、組織規範</td>
+</tr>
+</tbody>
+</table>
+<h3>1.3 軟限制 vs 硬限制（Harness 的核心）</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>軟限制（Soft）</th>
+<th>硬限制（Hard）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>實作位置</td>
+<td>在 context 內：prompt、AGENTS.md、Skill 說明</td>
+<td>在 harness 內：由程式碼強制執行</td>
+</tr>
+<tr>
+<td>性質</td>
+<td>機率性，模型可能忽略或被誘導</td>
+<td>確定性，模型無法繞過</td>
+</tr>
+<tr>
+<td>範例</td>
+<td>「不要刪除檔案」「請先寫測試」</td>
+<td>權限白名單、sandbox、禁寫路徑、網路封鎖、Hooks 攔截、token／時間預算、輸出 schema 驗證、危險操作需人工確認</td>
+</tr>
+<tr>
+<td>適合</td>
+<td>風格、慣例、流程建議</td>
+<td>安全、不可逆操作、合規</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>設計原則</strong>：重要規則不能只寫在 prompt 裡，必須由 harness 強制執行。Prompt 負責引導，harness 負責保證。</p>
+</blockquote>
+<p>Harness 另有三項常被忽略的職責：</p>
+<ol>
+<li><strong>Context 管理</strong>：壓縮、截斷、決定何時載入哪個 Skill。</li>
+<li><strong>驗證迴圈</strong>：測試、lint、評審 agent、人工審核；模型不能只自己宣稱完成。</li>
+<li><strong>可觀測性</strong>：日誌、trace、成本統計，供除錯與稽核。</li>
+</ol>
+<h3>1.4 Workflow ↔ Agent 光譜</h3>
+<p>兩者的核心差異是<strong>控制流程由誰決定</strong>。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Workflow</th>
+<th>Agent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>控制流程由誰決定</td>
+<td><strong>開發者預先寫好</strong>（程式碼決定下一步）</td>
+<td><strong>LLM 在執行時決定</strong>（模型決定下一步）</td>
+</tr>
+<tr>
+<td>路徑</td>
+<td>固定或有限分支</td>
+<td>動態生成，事先不知道會走幾步</td>
+</tr>
+<tr>
+<td>工具使用</td>
+<td>在指定節點呼叫</td>
+<td>模型自己選擇何時、用哪個工具</td>
+</tr>
+<tr>
+<td>終止條件</td>
+<td>流程走完</td>
+<td>模型判斷達成目標，或碰到預算、步數上限</td>
+</tr>
+<tr>
+<td>可預測性</td>
+<td>高</td>
+<td>低</td>
+</tr>
+<tr>
+<td>成本與延遲</td>
+<td>低且穩定</td>
+<td>高且變動</td>
+</tr>
+</tbody>
+</table>
+<p>「生成性與主動性」可進一步拆解：</p>
+<ul>
+<li><strong>生成性</strong>：流程本身由 LLM 生成（動態規劃），不只是內容。</li>
+<li><strong>主動性</strong>：LLM 自行判斷下一步、調整策略，並自己發現錯誤與修正。</li>
+</ul>
+<div class="code-container"><div class="code-header"><span>text</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div><pre><code>固定 ◄──────────────────────────────────────────────► 自主
+
+單次 LLM   Prompt      Routing    Orchestrator   Autonomous   Multi-agent
+呼叫       Chaining    Parallel   -Workers       Agent Loop   協作
+           (串接)      (路由/平行)  (動態分派)     (自主迴圈)    (多代理)
+
+ 程式碼控制流程  ◄─────────────────────────►  LLM 控制流程</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th>說明</th>
+<th>誰控制流程</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Prompt Chaining</td>
+<td>A → B → C，每步輸出餵下一步</td>
+<td>程式碼</td>
+</tr>
+<tr>
+<td>Routing</td>
+<td>LLM 分類後走固定分支</td>
+<td>程式碼定義分支，LLM 選分支</td>
+</tr>
+<tr>
+<td>Parallelization</td>
+<td>同時處理子任務再合併</td>
+<td>程式碼</td>
+</tr>
+<tr>
+<td>Orchestrator-Workers</td>
+<td>LLM 動態拆解並分派任務</td>
+<td>LLM 拆解，程式碼執行</td>
+</tr>
+<tr>
+<td>Evaluator-Optimizer</td>
+<td>生成後由 LLM 評審並迴圈改進</td>
+<td>混合</td>
+</tr>
+<tr>
+<td>Autonomous Agent</td>
+<td>模型在迴圈中自行規劃、用工具、驗證</td>
+<td>LLM</td>
+</tr>
+</tbody>
+</table>
+<h3>1.5 與 Harness 的整合：控制權的轉移</h3>
+<div class="code-container"><div class="code-header"><span>text</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div><pre><code>Workflow：  Harness（固定流程）─► 呼叫 LLM（做單點任務）─► 呼叫 Tool ─► 下一節點
+            控制權在 Harness，LLM 是被呼叫的元件
+
+Agent：     LLM（決策者）─► 選 Tool ─► Harness 執行並設限 ─► 結果回 Context ─► LLM 再決策
+            控制權在 LLM，Harness 是護欄與執行環境</code></pre></div>
+<ul>
+<li>Workflow 中，harness 是<strong>導演</strong>，決定每一步。</li>
+<li>Agent 中，harness 是<strong>護欄加執行環境</strong>，負責權限、驗證、預算、記錄，不決定下一步。</li>
+<li>因此<strong>自主性越高，硬限制越重要</strong>，因為流程不再替你擋掉錯誤。</li>
+</ul>
+<h3>1.6 一句話整合</h3>
+<blockquote>
+<p><strong>Agent = Model + Context + Capabilities + Constraints + Loop</strong></p>
+<ul>
+<li><strong>Context</strong> 決定它<strong>知道</strong>什麼</li>
+<li><strong>Capabilities</strong>（Tools、Skills）決定它<strong>能做</strong>什麼、<strong>會怎麼做</strong></li>
+<li><strong>Constraints</strong>（權限、sandbox、Hooks）決定它<strong>可以做</strong>什麼</li>
+<li><strong>Loop</strong>（觀察 → 推理 → 行動 → 驗證）決定它<strong>如何持續逼近目標</strong></li>
+</ul>
+<p><strong>Workflow 是人類寫好的路徑，agent 是模型在邊界內自己找路。</strong> 決策權越交給模型，harness 的硬限制、驗證與可觀測性就越不能省。</p>
+</blockquote>
+<hr />
+<h2>🛠️ 二、實作與應用範例 (Practical Examples)</h2>
+<h3>2.1 Workflow 與 Agent 的程式碼對照</h3>
+<p><strong>邏輯流程圖：</strong></p>
+<div class="mermaid">
+flowchart LR
+    subgraph WF ["Workflow：程式碼控制流程"]
+        W1["收件"] --> W2["LLM 分類"]
+        W2 -->|客訴| W3["固定範本回覆"]
+        W2 -->|詢價| W4["查價 API"]
+    end
+    subgraph AG ["Agent：LLM 控制流程"]
+        A1["目標"] --> A2["LLM 決策"]
+        A2 -->|選工具| A3["Harness 檢查並執行"]
+        A3 --> A4["結果回 Context"]
+        A4 --> A2
+        A2 -->|判斷完成| A5["輸出"]
+    end
+</div>
+<div class="code-container"><div class="code-header"><span>python</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div><pre><code># ---------- Workflow：流程由程式碼決定，LLM 只負責單點判斷 ----------
+def workflow(email: str) -&gt; str:
+    category = llm(f&quot;分類為 complaint 或 pricing：{email}&quot;)  # LLM 只做分類
+    if category == &quot;complaint&quot;:                              # 分支由程式碼寫死
+        return TEMPLATE_REPLY
+    return price_api(email)                                  # 固定呼叫查價工具</code></pre></div>
+<h3>2.2 帶硬限制的 Agent Loop（Harness 範例）</h3>
+<p><strong>邏輯流程圖：</strong></p>
+<div class="mermaid">
+flowchart TD
+    Start["使用者目標"] --> Ctx["組裝 Context<br/>(prompt + 歷史 + Skills 摘要)"]
+    Ctx --> LLM["LLM 決策：下一個動作"]
+    LLM -->|最終答案| Verify{"驗證通過？"}
+    LLM -->|呼叫工具| Perm{"權限檢查<br/>(硬限制)"}
+    Perm -->|拒絕| Deny["回傳拒絕訊息到 Context"]
+    Perm -->|需確認| Human["人工確認"]
+    Perm -->|允許| Exec["在 Sandbox 執行工具"]
+    Human -->|同意| Exec
+    Human -->|拒絕| Deny
+    Exec --> Log["記錄 trace 與成本"]
+    Deny --> Log
+    Log --> Budget{"超出預算或步數？"}
+    Budget -->|是| Stop["強制終止"]
+    Budget -->|否| Ctx
+    Verify -->|是| Done["輸出結果"]
+    Verify -->|否| Ctx
+</div>
+<div class="code-container"><div class="code-header"><span>python</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div><pre><code># ---------- Agent Loop：LLM 決定下一步，Harness 強制執行硬限制 ----------
+ALLOWED_TOOLS = {&quot;read_file&quot;, &quot;search&quot;, &quot;write_file&quot;}   # 能力白名單（硬限制）
+NEEDS_CONFIRM = {&quot;write_file&quot;}                           # 不可逆操作需人工確認
+MAX_STEPS = 20                                           # 步數預算（硬限制）
+
+def agent(goal: str) -&gt; str:
+    context = [system_prompt(), goal]                    # L1：組裝初始 context
+    for step in range(MAX_STEPS):                        # 迴圈有上限，避免失控
+        action = llm(context)                            # L0：模型決定下一步
+        if action.type == &quot;final&quot;:                       # 模型宣稱完成
+            if verify(action.answer):                    # 驗證，不能只信模型
+                return action.answer
+            context.append(&quot;驗證未通過，請修正&quot;)           # 回饋進 context 後重試
+            continue
+        if action.tool not in ALLOWED_TOOLS:             # 硬限制：白名單
+            context.append(f&quot;工具 {action.tool} 不被允許&quot;)
+            continue
+        if action.tool in NEEDS_CONFIRM and not ask_human(action):
+            context.append(&quot;人工拒絕此操作&quot;)              # 硬限制：人工確認
+            continue
+        result = run_in_sandbox(action)                  # 在 sandbox 中執行
+        log_trace(step, action, result)                  # 可觀測性
+        context.append(result)                           # 工具結果回到 context
+    return &quot;已達步數上限，任務中止&quot;                         # 預算耗盡時強制終止</code></pre></div>
+<h3>2.3 應用場景：混合架構</h3>
+<p>外層用 workflow 保證流程與稽核，關鍵節點內嵌 agent 處理開放問題：</p>
+<div class="code-container"><div class="code-header"><span>text</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div><pre><code>收件 → 分類 → [ Agent：研究並處理 ] → 驗證 → 寄出
+固定    固定      有自主性（有硬限制）      固定    固定</code></pre></div>
+<h3>2.4 選擇準則</h3>
+<table>
+<thead>
+<tr>
+<th>條件</th>
+<th>建議</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>步驟已知、可枚舉</td>
+<td><strong>Workflow</strong></td>
+</tr>
+<tr>
+<td>需要穩定、可稽核、低成本</td>
+<td><strong>Workflow</strong></td>
+</tr>
+<tr>
+<td>步驟數無法預知、需依中間結果調整</td>
+<td><strong>Agent</strong></td>
+</tr>
+<tr>
+<td>問題開放、需探索（除錯、研究）</td>
+<td><strong>Agent</strong></td>
+</tr>
+<tr>
+<td>錯誤成本高</td>
+<td>Workflow，或 agent 加嚴格硬限制與人工確認</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>🔭 三、延伸思考與進階主題 (Extensions &amp; Advanced Topics)</h2>
+<ol>
+<li><strong>Context engineering 比 prompt engineering 重要</strong>：長任務失敗多半來自 context 污染或遺失，不是 prompt 寫得不好。</li>
+<li><strong>Skills 的漸進式揭露</strong>：先放名稱與描述，需要時才載入全文，節省 context。Skill 是中間地帶：把固定流程知識（類似 workflow）交給 agent 按需取用。</li>
+<li><strong>Subagent 的意義</strong>：除平行處理外，更重要的是以獨立 context 隔離雜訊，只回傳摘要。</li>
+<li><strong>自主性與安全的權衡</strong>：限制越硬越安全，但自主性與效率越低。依操作風險分級：唯讀自動放行、可逆寫入通知、不可逆操作需確認。</li>
+<li><strong>自主性可逐項授權</strong>：agent 能自主規劃，但寫入或對外發送仍須確認。</li>
+<li><strong>評估方式不同</strong>：Workflow 測每個節點的正確性；agent 測最終結果與軌跡（trajectory）。Harness 應能量化成功率、成本、人工介入次數。</li>
+<li><strong>原則</strong>：從最簡單的方案開始，只在簡單方案確實不夠時才增加自主性。Agent 用可預測性換取彈性，只有彈性真的帶來價值才值得。</li>
+</ol>
+<h3>參考資料</h3>
+<ul>
+<li>Anthropic, <em>Building effective agents</em>（workflow 與 agent 的區分、各種組合模式）</li>
+</ul>
+<hr />
+<h2>💬 四、討論紀錄 (Discussion Log)</h2>
+<h3>🔸 討論 1：如何修正並完善 Agent 的同心圓想法</h3>
+<ul>
+<li><strong>使用者提問</strong>：原本以 LLM 為中心，外圍依序是 prompt、prompt engineering、chain of thought、tools、context，再擴展到 harness，讓 agent 知道可做哪些工作、有哪些 Skills 與 Tools、哪些是硬限制。希望修正並更完整表達。</li>
+<li><strong>指出的問題</strong>：</li>
+<li>「元件」與「技巧」混在同一圈（prompt、context、tools 是元件；prompt engineering、CoT 是技巧）。</li>
+<li>Harness 不只是外圍延伸，而是執行 agent loop 的本體（Agent = Model + Harness）。</li>
+<li>Prompt 是 context 的一部分，重點應是 context engineering。</li>
+<li>Tools 是「能做什麼」，Skills 是「該怎麼做」，需區分。</li>
+<li>缺少軟限制與硬限制的明確分類，也缺少驗證與回饋。</li>
+<li><strong>結論</strong>：重構為 L0 LLM、L1 Context、L2 推理策略、L3 能力、L4 Harness、L5 環境六層；提出公式 <strong>Agent = Model + Context + Capabilities + Constraints + Loop</strong>；核心原則為「Prompt 負責引導，harness 負責保證」。</li>
+</ul>
+<h3>🔸 討論 2：Workflow 與 Agent 的差異</h3>
+<ul>
+<li><strong>使用者觀點</strong>：Workflow 是固定的工作流程，依固定流程處理資料流與工具使用；Agent 則帶有生成性與主動性。</li>
+<li><strong>回應與補充</strong>：</li>
+<li>觀點正確，核心差異是<strong>控制流程由誰決定</strong>：workflow 由開發者預先寫好，agent 由 LLM 在執行時決定。</li>
+<li>兩者是光譜而非二分：Prompt Chaining → Routing／Parallelization → Orchestrator-Workers → Evaluator-Optimizer → Autonomous Agent。</li>
+<li>「生成性」指流程本身由 LLM 生成，「主動性」指自行判斷下一步並修正錯誤。</li>
+<li>與 harness 的關係：workflow 中 harness 是導演；agent 中 harness 是護欄加執行環境，因此<strong>自主性越高，硬限制越重要</strong>。</li>
+<li>實務多為混合架構，並建議從最簡單的方案開始，只在必要時增加自主性。</li>
+<li><strong>結論</strong>：Workflow 是人類寫好的路徑，agent 是模型在邊界內自己找路。</li>
+</ul>
+<h3>🔸 討論 3：整理成筆記</h3>
+<ul>
+<li><strong>使用者指示</strong>：同意將兩段討論合併成筆記（回覆 <code>GO</code>）。</li>
+<li><strong>產出</strong>：依 <code>AGENTS.md</code> 規範建立本文件，同時輸出 md 與 html（含 PDF 匯出按鈕、程式碼複製按鈕、流程圖），並更新 index。</li>
+</ul>
+<h3>🔸 討論 4：加入討論紀錄</h3>
+<ul>
+<li><strong>使用者指示</strong>：將以上討論列在文件下方作為紀錄。</li>
+<li><strong>處理</strong>：新增本節，置於提示詞歷史區塊之前，使 Prompt Archive 維持在文件最底部。</li>
+</ul>
+<hr />
+<h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+<h3>🔹 [2026-10-16 10:50:00] Claude Sonnet 5.5 初始建立</h3>
+<ul>
+<li><strong>模型/Agent</strong>: Claude Sonnet 5.5 / Claude Code</li>
+<li><strong>Prompt 原文</strong>:</li>
+</ul>
+<div class="code-container"><div class="code-header"><span>text</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div><pre><code>  關於 ai agents的地的思考是以LLM為中心圓 外圍是prompt, prompt engineering, chain of thought, tools, context,然後擴展到harness,讓透過harness讓agent知道什麼可以做有哪些工作跟SKILLS TOOLS,那些適硬限制,如何修正跟完善這個想法，更完整的表達</code></pre></div>
+<div class="code-container"><div class="code-header"><span>text</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div><pre><code>  另外在WORKFLOW到AGENTS之間 我覺得前者是固定的工作流程，根據固定流程處理資料流與工具的使用，AGENTS則帶有生成性與主動性</code></pre></div>
+<div class="code-container"><div class="code-header"><span>text</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div><pre><code>  GO</code></pre></div>
+<div class="code-container"><div class="code-header"><span>text</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div><pre><code>  將以上的討論列在文件下方作為紀錄</code></pre></div>
+<ul>
+<li><strong>變更摘要</strong>: 建立 Agent 六層同心模型（L0 LLM 至 L5 環境）、軟／硬限制分類、Workflow ↔ Agent 光譜與控制權轉移分析；提供 workflow 與帶硬限制 agent loop 的程式碼對照（含流程圖與註解）、混合架構與選擇準則、延伸思考；並於文件下方新增討論紀錄（Discussion Log）。</li>
+</ul>
+  </div>
+  <script>
+    // 程式碼複製功能：讀取同一容器內 code 的文字並寫入剪貼簿
+    function copyCode(btn) {
+      const text = btn.closest('.code-container').querySelector('code').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const old = btn.innerHTML;
+        btn.innerHTML = '✅ 已複製！';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.innerHTML = old; btn.classList.remove('copied'); }, 2000);
+      }).catch(err => console.error('複製失敗:', err));
+    }
+  </script>
+</body>
+</html>
