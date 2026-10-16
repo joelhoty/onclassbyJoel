@@ -1,6 +1,6 @@
 # 🤖 AI Agent 分層模型：LLM、Context、Harness 與 Workflow ↔ Agent 光譜
 
-> **最後更新時間**: 2026-10-16 10:50:00 (UTC+8)
+> **最後更新時間**: 2026-10-16 11:20:00 (UTC+8)
 > **使用模型**: Claude Sonnet 5.5
 > **執行 Agent**: Claude Code
 > **筆記分類**: AI / Agent 架構 / Harness Engineering / Context Engineering
@@ -290,6 +290,11 @@ def agent(goal: str) -> str:
 - **使用者指示**：將以上討論列在文件下方作為紀錄。
 - **處理**：新增本節，置於提示詞歷史區塊之前，使 Prompt Archive 維持在文件最底部。
 
+### 🔸 討論 5：六層同心模型改用 SVG 呈現
+
+- **使用者指示**：1.2 修正後的六層同心模型使用 SVG 圖形，md 檔保留 ASCII。
+- **處理**：HTML 的 1.2 以 SVG 同心圓取代 ASCII（右側附各層「問題與內容」圖例）；md 檔維持原 ASCII 圖。
+
 ---
 
 ## 📝 提示詞歷史與變更記錄 (Prompt Archive)
@@ -310,3 +315,11 @@ def agent(goal: str) -> str:
   將以上的討論列在文件下方作為紀錄
   ```
 - **變更摘要**: 建立 Agent 六層同心模型（L0 LLM 至 L5 環境）、軟／硬限制分類、Workflow ↔ Agent 光譜與控制權轉移分析；提供 workflow 與帶硬限制 agent loop 的程式碼對照（含流程圖與註解）、混合架構與選擇準則、延伸思考；並於文件下方新增討論紀錄（Discussion Log）。
+
+### 🔹 [2026-10-16 11:20:00] Claude Sonnet 5.5 圖形調整
+- **模型/Agent**: Claude Sonnet 5.5 / Claude Code
+- **Prompt 原文**:
+  ```text
+  1.2 修正後的六層同心模型（由內而外）1.2 修正後的六層同心模型（由內而外） 使用svg圖形(md檔保留ascii)
+  ```
+- **變更摘要**: HTML 中 1.2 六層同心模型改以 SVG 同心圓與圖例呈現；md 檔保留 ASCII；並於討論紀錄新增討論 5。

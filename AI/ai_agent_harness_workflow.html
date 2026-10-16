@@ -350,7 +350,7 @@
     </div>
 <h1>🤖 AI Agent 分層模型：LLM、Context、Harness 與 Workflow ↔ Agent 光譜</h1>
 <blockquote>
-<p><strong>最後更新時間</strong>: 2026-10-16 10:50:00 (UTC+8)
+<p><strong>最後更新時間</strong>: 2026-10-16 11:20:00 (UTC+8)
 <strong>使用模型</strong>: Claude Sonnet 5.5
 <strong>執行 Agent</strong>: Claude Code
 <strong>筆記分類</strong>: AI / Agent 架構 / Harness Engineering / Context Engineering</p>
@@ -394,26 +394,46 @@
 </tbody>
 </table>
 <h3>1.2 修正後的六層同心模型（由內而外）</h3>
-<div class="code-container"><div class="code-header"><span>text</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div><pre><code>┌──────────────────────────────────────────────────────────────┐
-│ L5 環境與人：使用者、程式碼庫、外部 API、組織政策                  │
-│ ┌──────────────────────────────────────────────────────────┐ │
-│ │ L4 Harness（執行與治理層）                                  │ │
-│ │  Agent loop ｜ 權限 ｜ Hooks ｜ Sandbox ｜ 預算 ｜ 驗證 ｜ 記憶 │ │
-│ │ ┌──────────────────────────────────────────────────────┐ │ │
-│ │ │ L3 能力層：Tools / MCP / Skills / Subagents            │ │ │
-│ │ │ ┌──────────────────────────────────────────────────┐ │ │ │
-│ │ │ │ L2 推理策略：CoT / ReAct / Plan / Reflection       │ │ │ │
-│ │ │ │ ┌──────────────────────────────────────────────┐ │ │ │ │
-│ │ │ │ │ L1 Context：System prompt、使用者指令、歷史、 │ │ │ │ │
-│ │ │ │ │ 檢索資料、記憶、工具回傳結果                   │ │ │ │ │
-│ │ │ │ │ ┌──────────────────────────────────────────┐ │ │ │ │ │
-│ │ │ │ │ │ L0 LLM（權重、機率性的推理核心）           │ │ │ │ │ │
-│ │ │ │ │ └──────────────────────────────────────────┘ │ │ │ │ │
-│ │ │ │ └──────────────────────────────────────────────┘ │ │ │ │
-│ │ │ └──────────────────────────────────────────────────┘ │ │ │
-│ │ └──────────────────────────────────────────────────────┘ │ │
-│ └──────────────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────┘</code></pre></div>
+<figure style="margin:1.5rem 0"><svg viewBox="0 0 1220 720" width="100%" role="img" aria-label="Agent 六層同心圓模型：L0 LLM 至 L5 環境" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Segoe UI', 'Noto Sans TC', sans-serif">
+<title>Agent 六層同心圓模型</title>
+<circle cx="360" cy="360" r="350" fill="#f1f5f9" stroke="#ffffff" stroke-width="3"/>
+<circle cx="360" cy="360" r="295" fill="#dbeafe" stroke="#ffffff" stroke-width="3"/>
+<circle cx="360" cy="360" r="240" fill="#bfdbfe" stroke="#ffffff" stroke-width="3"/>
+<circle cx="360" cy="360" r="185" fill="#99f6e4" stroke="#ffffff" stroke-width="3"/>
+<circle cx="360" cy="360" r="130" fill="#5eead4" stroke="#ffffff" stroke-width="3"/>
+<circle cx="360" cy="360" r="70" fill="#0f766e" stroke="#ffffff" stroke-width="3"/>
+<text x="360" y="44" text-anchor="middle" font-size="19" font-weight="700" fill="#334155">L5 環境與人</text>
+<text x="360" y="99" text-anchor="middle" font-size="19" font-weight="700" fill="#1e3a8a">L4 Harness 執行與治理層</text>
+<text x="360" y="154" text-anchor="middle" font-size="19" font-weight="700" fill="#1e40af">L3 能力層</text>
+<text x="360" y="209" text-anchor="middle" font-size="19" font-weight="700" fill="#115e59">L2 推理策略</text>
+<text x="360" y="264" text-anchor="middle" font-size="19" font-weight="700" fill="#134e4a">L1 Context</text>
+<text x="360" y="367" text-anchor="middle" font-size="22" font-weight="700" fill="#ffffff">L0 LLM</text>
+<text x="740" y="40" font-size="16" fill="#64748b">由外而內：每層回答的問題與內容</text>
+<rect x="740" y="80" width="12" height="78" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1"/>
+<text x="768" y="100" font-size="19" font-weight="700" fill="#1e293b">L5 環境與人</text>
+<text x="768" y="126" font-size="16" fill="#0d9488" font-weight="600">問：在什麼世界裡做</text>
+<text x="768" y="150" font-size="14" fill="#475569">使用者、程式碼庫、外部 API、組織政策</text>
+<rect x="740" y="185" width="12" height="78" rx="6" fill="#dbeafe" stroke="#94a3b8" stroke-width="1"/>
+<text x="768" y="205" font-size="19" font-weight="700" fill="#1e293b">L4 Harness</text>
+<text x="768" y="231" font-size="16" fill="#0d9488" font-weight="600">問：允許做什麼、做得對不對</text>
+<text x="768" y="255" font-size="14" fill="#475569">Agent loop｜權限｜Hooks｜Sandbox｜預算｜驗證｜記憶</text>
+<rect x="740" y="290" width="12" height="78" rx="6" fill="#bfdbfe" stroke="#94a3b8" stroke-width="1"/>
+<text x="768" y="310" font-size="19" font-weight="700" fill="#1e293b">L3 能力層</text>
+<text x="768" y="336" font-size="16" fill="#0d9488" font-weight="600">問：能做什麼、怎麼做</text>
+<text x="768" y="360" font-size="14" fill="#475569">Tools｜MCP｜Skills｜Subagents</text>
+<rect x="740" y="395" width="12" height="78" rx="6" fill="#99f6e4" stroke="#94a3b8" stroke-width="1"/>
+<text x="768" y="415" font-size="19" font-weight="700" fill="#1e293b">L2 推理策略</text>
+<text x="768" y="441" font-size="16" fill="#0d9488" font-weight="600">問：怎麼想</text>
+<text x="768" y="465" font-size="14" fill="#475569">CoT｜ReAct｜Plan｜Reflection</text>
+<rect x="740" y="500" width="12" height="78" rx="6" fill="#5eead4" stroke="#94a3b8" stroke-width="1"/>
+<text x="768" y="520" font-size="19" font-weight="700" fill="#1e293b">L1 Context</text>
+<text x="768" y="546" font-size="16" fill="#0d9488" font-weight="600">問：現在知道什麼</text>
+<text x="768" y="570" font-size="14" fill="#475569">System prompt｜指令｜歷史｜檢索｜記憶｜工具結果</text>
+<rect x="740" y="605" width="12" height="78" rx="6" fill="#0f766e" stroke="#94a3b8" stroke-width="1"/>
+<text x="768" y="625" font-size="19" font-weight="700" fill="#1e293b">L0 LLM</text>
+<text x="768" y="651" font-size="16" fill="#0d9488" font-weight="600">問：能思考什麼</text>
+<text x="768" y="675" font-size="14" fill="#475569">權重、機率性的推理核心</text>
+</svg><figcaption style="text-align:center;color:var(--text-muted);font-size:0.9rem">圖：Agent 六層同心圓模型（由內而外 L0 → L5）</figcaption></figure>
 <table>
 <thead>
 <tr>
@@ -768,6 +788,11 @@ def agent(goal: str) -&gt; str:
 <li><strong>使用者指示</strong>：將以上討論列在文件下方作為紀錄。</li>
 <li><strong>處理</strong>：新增本節，置於提示詞歷史區塊之前，使 Prompt Archive 維持在文件最底部。</li>
 </ul>
+<h3>🔸 討論 5：六層同心模型改用 SVG 呈現</h3>
+<ul>
+<li><strong>使用者指示</strong>：1.2 修正後的六層同心模型使用 SVG 圖形，md 檔保留 ASCII。</li>
+<li><strong>處理</strong>：HTML 的 1.2 以 SVG 同心圓取代 ASCII（右側附各層「問題與內容」圖例）；md 檔維持原 ASCII 圖。</li>
+</ul>
 <hr />
 <h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
 <h3>🔹 [2026-10-16 10:50:00] Claude Sonnet 5.5 初始建立</h3>
@@ -781,6 +806,15 @@ def agent(goal: str) -&gt; str:
 <div class="code-container"><div class="code-header"><span>text</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div><pre><code>  將以上的討論列在文件下方作為紀錄</code></pre></div>
 <ul>
 <li><strong>變更摘要</strong>: 建立 Agent 六層同心模型（L0 LLM 至 L5 環境）、軟／硬限制分類、Workflow ↔ Agent 光譜與控制權轉移分析；提供 workflow 與帶硬限制 agent loop 的程式碼對照（含流程圖與註解）、混合架構與選擇準則、延伸思考；並於文件下方新增討論紀錄（Discussion Log）。</li>
+</ul>
+<h3>🔹 [2026-10-16 11:20:00] Claude Sonnet 5.5 圖形調整</h3>
+<ul>
+<li><strong>模型/Agent</strong>: Claude Sonnet 5.5 / Claude Code</li>
+<li><strong>Prompt 原文</strong>:</li>
+</ul>
+<div class="code-container"><div class="code-header"><span>text</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div><pre><code>  1.2 修正後的六層同心模型（由內而外）1.2 修正後的六層同心模型（由內而外） 使用svg圖形(md檔保留ascii)</code></pre></div>
+<ul>
+<li><strong>變更摘要</strong>: HTML 中 1.2 六層同心模型改以 SVG 同心圓與圖例呈現；md 檔保留 ASCII；並於討論紀錄新增討論 5。</li>
 </ul>
   </div>
   <script>
