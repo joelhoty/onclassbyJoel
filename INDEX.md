@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-10-16 11:00:00 (UTC+8)  
+> **最後更新時間**: 2026-10-19 18:00:00 (UTC+8)  
 > **使用模型**: Claude Sonnet 5.5  
 > **執行 Agent**: Claude Code  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -92,6 +92,14 @@
 * `2026-09-08` | [紅色 LED 限流手冊](./ec/紅色%20LED%20限流電阻工程手冊與計算工具.pdf) (PDF)
 
 ### 🤖 3. 樂高機器人 EV3 / SPIKE (`ev3/`)
+* `2026-10-19` | [EV3 跟車程式設計筆記：從四區間 Switch、變數分離到單一公式減速與 ACC (HTML)](./ev3/ev3_car_following_design_notes.html) (HTML)
+* `2026-10-19` | [EV3 跟車程式設計筆記：從四區間 Switch、變數分離到單一公式減速與 ACC (MD)](./ev3/ev3_car_following_design_notes.md) (MD)
+* `2026-10-19` | [EV3 跟車第二寫法截圖](./ev3/1019-2.jpg) (JPG)
+* `2026-10-19` | [EV3 跟車第三寫法截圖](./ev3/1019-3.jpg) (JPG)
+* `2026-10-19` | [EV3 跟車第四寫法截圖](./ev3/1019-4.jpg) (JPG)
+* `2026-10-19` | [跟車建議最終設計積木圖 (SVG)](./ev3/final_blocks.svg) (SVG)
+* `2026-10-19` | [跟車模擬程式 (Python)](./ev3/car_following_sim.py) (Python)
+* `2026-10-19` | [EV3 跟車程式截圖](./ev3/1019-1.jpg) (JPG)
 * `2026-09-26` | [雙感測器邏輯解析 (MD)](./ev3/nested_switch_distance_logic.md) (MD)
 * `2026-09-26` | [距離音訊回饋研究提案](./ev3/distance_audio_feedback_research.md) (MD)
 * `2026-09-26` | [樂高專題紀錄 (09-07)](./ev3/lego_0907.html) (HTML)
