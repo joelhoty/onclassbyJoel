@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-10-19 16:02:01 (UTC+8)  
+> **最後更新時間**: 2026-10-19 16:10:02 (UTC+8)  
 > **使用模型**: Claude Sonnet 5.5  
 > **執行 Agent**: Claude Code  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -100,6 +100,7 @@
 * `2026-10-19` | [跟車建議最終設計積木圖 (SVG)](./ev3/final_blocks.svg) (SVG)
 * `2026-10-19` | [clamp 限幅的 EV3 基本積木排列圖 (SVG)](./ev3/clamp_blocks.svg) (SVG)
 * `2026-10-19` | [建議最終公式的 EV3 基本積木排列圖 (SVG)](./ev3/final_formula_blocks.svg) (SVG)
+* `2026-10-19` | [各區間公式的 EV3 積木排列圖 (SVG)](./ev3/zone_blocks.svg) (SVG)
 * `2026-10-19` | [跟車模擬比較 (Python)](./ev3/car_following_sim_compare.py) (Python)
 * `2026-10-19` | [跟車模擬程式 (Python)](./ev3/car_following_sim.py) (Python)
 * `2026-10-19` | [EV3 跟車程式截圖](./ev3/1019-1.jpg) (JPG)

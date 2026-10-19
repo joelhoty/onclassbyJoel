@@ -78,7 +78,7 @@ hr { border:none; border-top:1px solid var(--border); margin:1.5rem 0; }
     </div>
   </div>
   <div class="metadata-bar">
-    <div><strong>最後更新時間:</strong> 2026-10-19 16:01:45 (UTC+8)</div>
+    <div><strong>最後更新時間:</strong> 2026-10-19 16:10:02 (UTC+8)</div>
     <div><strong>使用模型:</strong> Claude Sonnet 5.5（全部分析內文；Gemini 3.8 Flash 僅修改過標頭與一筆記錄，見下方「撰寫來源標註」）</div>
     <div><strong>執行 Agent:</strong> Claude Code</div>
   </div>
@@ -104,7 +104,7 @@ hr { border:none; border-top:1px solid var(--border); margin:1.5rem 0; }
 <td>數值皆由 Claude 以 Python 驗算</td>
 </tr>
 <tr>
-<td>積木圖 <code>final_blocks.svg</code>、<code>clamp_blocks.svg</code>、<code>final_formula_blocks.svg</code></td>
+<td>積木圖 <code>final_blocks.svg</code>、<code>clamp_blocks.svg</code>、<code>final_formula_blocks.svg</code>、<code>zone_blocks.svg</code></td>
 <td><strong>Claude Sonnet 5.5 / Claude Code</strong></td>
 <td>已用 Edge 渲染確認版面</td>
 </tr>
@@ -3198,6 +3198,191 @@ for d in (5, 14, 15, 20, 30, 40, 50, 80, 255):
 <li>[ ] 手持障礙板測試：從 80 cm 接近應在 50 cm 開始減速、15 cm 內停止，離開到 20 cm 以上再起步。</li>
 <li>[ ] 下一步：相對速度與緊急停車（第 9 章）、My Block 封裝。</li>
 </ul>
+<h3>12.8 各區間的公式建議與積木排列</h3>
+<p>12.3~12.5 用「一條直線 + clamp」處理所有距離。另一種做法是<strong>把距離切成區間，每個區間各寫自己的公式</strong>。兩種做法算出的功率完全相同（已用程式比對 0~255 cm 每個整數距離，結果一致），差別只在積木怎麼排。</p>
+<h4>12.8.1 各區間的公式建議</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>區間</th>
+<th>距離</th>
+<th>公式</th>
+<th>設計理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 停車區</td>
+<td>$dist &lt; 15$</td>
+<td>$speed = 0$</td>
+<td>停車線；留出煞停餘裕（12.4 的檢查式）</td>
+</tr>
+<tr>
+<td>② 減速區</td>
+<td>$15 \le dist &lt; 50$</td>
+<td>$speed = 15 + 1.3\,(dist - 15)$</td>
+<td>線性連續：15 cm 為最小功率 15%，50 cm 為巡航功率附近</td>
+</tr>
+<tr>
+<td>③ 巡航區</td>
+<td>$dist \ge 50$</td>
+<td>$speed = 60$</td>
+<td>距離夠遠，維持巡航功率；超音波無目標（約 255）也落在此區</td>
+</tr>
+<tr>
+<td>④ 起步遲滯帶（進階）</td>
+<td>已停止且 $15 \le dist &lt; 20$</td>
+<td>$speed = 0$</td>
+<td>避免在停車線邊界一停一動；距離超過 20 cm 才再起步</td>
+</tr>
+</tbody>
+</table></div>
+<p>各區間的邊界值是否連續：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>邊界</th>
+<th>左側功率</th>
+<th>右側功率</th>
+<th>連續？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>15 cm（① → ②）</td>
+<td>0</td>
+<td>15</td>
+<td>⚠️ 不連續（靜摩擦造成的物理限制，用起步遲滯緩和）</td>
+</tr>
+<tr>
+<td>50 cm（② → ③）</td>
+<td>59.2（49 cm）；公式延伸到 50 cm 為 60.5</td>
+<td>60</td>
+<td>✅ 幾乎連續（差約 0.5%）</td>
+</tr>
+</tbody>
+</table></div>
+<h4>12.8.2 積木排列（分區 Switch 版）</h4>
+<p><img alt="各區間公式的 EV3 積木排列" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjQwIDcwMCIgd2lkdGg9IjEwMCUiIGZvbnQtZmFtaWx5PSJNaWNyb3NvZnQgSmhlbmdIZWksU2Vnb2UgVUksQXJpYWwsc2Fucy1zZXJpZiI+DQo8cmVjdCB3aWR0aD0iMTI0MCIgaGVpZ2h0PSI3MDAiIGZpbGw9IiNmZmZmZmYiLz4NCjx0ZXh0IHg9IjYyMC4wIiB5PSIzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIyMCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzBmMTcyYSI+5ZCE5Y2A6ZaT5YWs5byP55qEIEVWMyDnqY3mnKjmjpLliJfvvIjliIbljYAgU3dpdGNoIOeJiO+8iTwvdGV4dD4NCjx0ZXh0IHg9IjMwIiB5PSI3MCIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzAzNjlhMSI+4pGgIOaEn+a4rO+8iOi/tOWciOWFp+acgOWFiOWft+ihjO+8iTwvdGV4dD4NCjxyZWN0IHg9IjMwIiB5PSI4NSIgd2lkdGg9IjEwNCIgaGVpZ2h0PSI5MiIgcng9IjgiIGZpbGw9IiNmOGZhZmMiIHN0cm9rZT0iIzk0YTNiOCIgc3Ryb2tlLXdpZHRoPSIyIi8+DQo8cmVjdCB4PSIzMCIgeT0iODUiIHdpZHRoPSIxMDQiIGhlaWdodD0iMjQiIHJ4PSI4IiBmaWxsPSIjZmFjYzE1Ii8+PHJlY3QgeD0iMzAiIHk9Ijk3IiB3aWR0aD0iMTA0IiBoZWlnaHQ9IjEyIiBmaWxsPSIjZmFjYzE1Ii8+DQo8dGV4dCB4PSI4Mi4wIiB5PSIxMDIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzFlMjkzYiI+6LaF6Z+z5rOiPC90ZXh0Pg0KPHRleHQgeD0iODIuMCIgeT0iMTMzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMGYxNzJhIj7muKzph4/Ct+WFrOWIhjwvdGV4dD4NCjx0ZXh0IHg9IjgyLjAiIHk9IjE1MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzBmMTcyYSI+UG9ydCA0PC90ZXh0Pg0KPHJlY3QgeD0iMTUwIiB5PSI4NSIgd2lkdGg9IjEwNCIgaGVpZ2h0PSI5MiIgcng9IjgiIGZpbGw9IiNmOGZhZmMiIHN0cm9rZT0iIzk0YTNiOCIgc3Ryb2tlLXdpZHRoPSIyIi8+DQo8cmVjdCB4PSIxNTAiIHk9Ijg1IiB3aWR0aD0iMTA0IiBoZWlnaHQ9IjI0IiByeD0iOCIgZmlsbD0iI2RjMjYyNiIvPjxyZWN0IHg9IjE1MCIgeT0iOTciIHdpZHRoPSIxMDQiIGhlaWdodD0iMTIiIGZpbGw9IiNkYzI2MjYiLz4NCjx0ZXh0IHg9IjIwMi4wIiB5PSIxMDIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZmZmZiI+6K6K5pW4wrflr6vlhaU8L3RleHQ+DQo8dGV4dCB4PSIyMDIuMCIgeT0iMTMzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMGYxNzJhIj5kaXN0PC90ZXh0Pg0KPHRleHQgeD0iMjAyLjAiIHk9IjE1MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzBmMTcyYSI+4oaQIOa4rOi3neWAvDwvdGV4dD4NCjxwb2x5bGluZSBwb2ludHM9IjgyLDE3NyA4MiwxOTEgMjAyLDE5MSAyMDIsMTc3IiBmaWxsPSJub25lIiBzdHJva2U9IiNlYWIzMDgiIHN0cm9rZS13aWR0aD0iMyIvPg0KPHRleHQgeD0iNTYwIiB5PSI3MCIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzAzNjlhMSI+4pGkIOmpheWLle+8iOWIh+aPm+e1kOadn+W+jOaJjeWft+ihjO+8iTwvdGV4dD4NCjxyZWN0IHg9IjU2MCIgeT0iODUiIHdpZHRoPSIxMDQiIGhlaWdodD0iOTIiIHJ4PSI4IiBmaWxsPSIjZjhmYWZjIiBzdHJva2U9IiM5NGEzYjgiIHN0cm9rZS13aWR0aD0iMiIvPg0KPHJlY3QgeD0iNTYwIiB5PSI4NSIgd2lkdGg9IjEwNCIgaGVpZ2h0PSIyNCIgcng9IjgiIGZpbGw9IiNkYzI2MjYiLz48cmVjdCB4PSI1NjAiIHk9Ijk3IiB3aWR0aD0iMTA0IiBoZWlnaHQ9IjEyIiBmaWxsPSIjZGMyNjI2Ii8+DQo8dGV4dCB4PSI2MTIuMCIgeT0iMTAyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmZmZmYiPuiuiuaVuMK36K6A5Y+WPC90ZXh0Pg0KPHRleHQgeD0iNjEyLjAiIHk9IjEzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzBmMTcyYSI+c3BlZWQ8L3RleHQ+DQo8cmVjdCB4PSI2ODAiIHk9Ijg1IiB3aWR0aD0iMTMwIiBoZWlnaHQ9IjEwMCIgcng9IjgiIGZpbGw9IiNmOGZhZmMiIHN0cm9rZT0iIzk0YTNiOCIgc3Ryb2tlLXdpZHRoPSIyIi8+DQo8cmVjdCB4PSI2ODAiIHk9Ijg1IiB3aWR0aD0iMTMwIiBoZWlnaHQ9IjI0IiByeD0iOCIgZmlsbD0iIzE2YTM0YSIvPjxyZWN0IHg9IjY4MCIgeT0iOTciIHdpZHRoPSIxMzAiIGhlaWdodD0iMTIiIGZpbGw9IiMxNmEzNGEiLz4NCjx0ZXh0IHg9Ijc0NS4wIiB5PSIxMDIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZmZmZiI+56e75YuV6L2J5ZCRPC90ZXh0Pg0KPHRleHQgeD0iNzQ1LjAiIHk9IjEzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzBmMTcyYSI+QitDPC90ZXh0Pg0KPHRleHQgeD0iNzQ1LjAiIHk9IjE1MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzBmMTcyYSI+6L2J5ZCRIDA8L3RleHQ+DQo8dGV4dCB4PSI3NDUuMCIgeT0iMTczIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMGYxNzJhIj7lip/njocg4oaQIHNwZWVkPC90ZXh0Pg0KPHBvbHlsaW5lIHBvaW50cz0iNjEyLDE4NSA2MTIsMTk5IDc0NSwxOTkgNzQ1LDE4NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZWFiMzA4IiBzdHJva2Utd2lkdGg9IjMiLz4NCjx0ZXh0IHg9Ijg2MCIgeT0iMTA1IiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjNDc1NTY5Ij7ov7TlnIjliY3vvJpzcGVlZCA9IDA8L3RleHQ+DQo8dGV4dCB4PSI4NjAiIHk9IjEyOCIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzQ3NTU2OSI+6L+05ZyI5bC+77ya562J5b6FIDAuMDUg56eSPC90ZXh0Pg0KPHRleHQgeD0iMzAiIHk9IjIyNSIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzAzNjlhMSI+4pGhIOWkluWxpO+8mmRpc3QgJmx0OyAxNSDvvJ88L3RleHQ+DQo8cmVjdCB4PSIzMCIgeT0iMjQ1IiB3aWR0aD0iMTA0IiBoZWlnaHQ9IjkyIiByeD0iOCIgZmlsbD0iI2Y4ZmFmYyIgc3Ryb2tlPSIjOTRhM2I4IiBzdHJva2Utd2lkdGg9IjIiLz4NCjxyZWN0IHg9IjMwIiB5PSIyNDUiIHdpZHRoPSIxMDQiIGhlaWdodD0iMjQiIHJ4PSI4IiBmaWxsPSIjZGMyNjI2Ii8+PHJlY3QgeD0iMzAiIHk9IjI1NyIgd2lkdGg9IjEwNCIgaGVpZ2h0PSIxMiIgZmlsbD0iI2RjMjYyNiIvPg0KPHRleHQgeD0iODIuMCIgeT0iMjYyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmZmZmYiPuiuiuaVuMK36K6A5Y+WPC90ZXh0Pg0KPHRleHQgeD0iODIuMCIgeT0iMjkzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMGYxNzJhIj5kaXN0PC90ZXh0Pg0KPHJlY3QgeD0iMTQyIiB5PSIyNDUiIHdpZHRoPSIxMDQiIGhlaWdodD0iOTIiIHJ4PSI4IiBmaWxsPSIjZjhmYWZjIiBzdHJva2U9IiM5NGEzYjgiIHN0cm9rZS13aWR0aD0iMiIvPg0KPHJlY3QgeD0iMTQyIiB5PSIyNDUiIHdpZHRoPSIxMDQiIGhlaWdodD0iMjQiIHJ4PSI4IiBmaWxsPSIjZGMyNjI2Ii8+PHJlY3QgeD0iMTQyIiB5PSIyNTciIHdpZHRoPSIxMDQiIGhlaWdodD0iMTIiIGZpbGw9IiNkYzI2MjYiLz4NCjx0ZXh0IHg9IjE5NC4wIiB5PSIyNjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZmZmZiI+5q+U6LyDPC90ZXh0Pg0KPHRleHQgeD0iMTk0LjAiIHk9IjI5MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzBmMTcyYSI+YSAmbHQ7IGI8L3RleHQ+DQo8dGV4dCB4PSIxOTQuMCIgeT0iMzEzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMGYxNzJhIj5iID0gMTU8L3RleHQ+DQo8cG9seWxpbmUgcG9pbnRzPSI4MiwzMzcgODIsMzUxIDE5NCwzNTEgMTk0LDMzNyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZWFiMzA4IiBzdHJva2Utd2lkdGg9IjMiLz4NCjxyZWN0IHg9IjI5MCIgeT0iMjE1IiB3aWR0aD0iOTMwIiBoZWlnaHQ9IjQ1MCIgcng9IjE0IiBmaWxsPSIjZmZmYmViIiBzdHJva2U9IiNmNTllMGIiIHN0cm9rZS13aWR0aD0iMyIvPg0KPHRleHQgeD0iMzAyIiB5PSIyMzUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiM5MjQwMGUiPuWIh+aPm++8iOmCj+i8r++8ieKGkCDmr5TovIPntZDmnpzvvIhkaXN0ICZsdDsgMTXvvIk8L3RleHQ+DQo8cG9seWxpbmUgcG9pbnRzPSIyNDYsMjkxIDI5MCwyOTEiIHN0cm9rZT0iI2Y1OWUwYiIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIi8+DQo8cmVjdCB4PSIzMDIiIHk9IjI0MCIgd2lkdGg9IjkwNiIgaGVpZ2h0PSI5MiIgcng9IjgiIGZpbGw9IiNmZWYyZjIiIHN0cm9rZT0iI2ZjZDM0ZCIvPg0KPHRleHQgeD0iMzEyIiB5PSIyNjAiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNiOTFjMWMiPuKckyDljYDplpMg4pGg77ya5YGc6LuK5Y2A77yIZGlzdCAmbHQ7IDE177yJPC90ZXh0Pg0KPHJlY3QgeD0iNTIwIiB5PSIyNTYiIHdpZHRoPSIxMTgiIGhlaWdodD0iNzQiIHJ4PSI4IiBmaWxsPSIjZjhmYWZjIiBzdHJva2U9IiM5NGEzYjgiIHN0cm9rZS13aWR0aD0iMiIvPg0KPHJlY3QgeD0iNTIwIiB5PSIyNTYiIHdpZHRoPSIxMTgiIGhlaWdodD0iMjQiIHJ4PSI4IiBmaWxsPSIjZGMyNjI2Ii8+PHJlY3QgeD0iNTIwIiB5PSIyNjgiIHdpZHRoPSIxMTgiIGhlaWdodD0iMTIiIGZpbGw9IiNkYzI2MjYiLz4NCjx0ZXh0IHg9IjU3OS4wIiB5PSIyNzMiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZmZmZiI+6K6K5pW4wrflr6vlhaU8L3RleHQ+DQo8dGV4dCB4PSI1NzkuMCIgeT0iMzA0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMGYxNzJhIj5zcGVlZDwvdGV4dD4NCjx0ZXh0IHg9IjU3OS4wIiB5PSIzMjQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiMwZjE3MmEiPuKGkCAwPC90ZXh0Pg0KPHRleHQgeD0iNjYwIiB5PSIyOTYiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNiOTFjMWMiPuWFrOW8j++8mnNwZWVkID0gMDwvdGV4dD4NCjxyZWN0IHg9IjMwMiIgeT0iMzQyIiB3aWR0aD0iOTA2IiBoZWlnaHQ9IjMxMCIgcng9IjgiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZT0iI2ZjZDM0ZCIvPg0KPHRleHQgeD0iMzEyIiB5PSIzNjIiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiM0NzU1NjkiPuKclyBkaXN0IOKJpSAxNSDihpIg5YWn5bGk5YaN5Yik5pa3PC90ZXh0Pg0KPHRleHQgeD0iMzE0IiB5PSIzODUiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwMzY5YTEiPuWFp+WxpO+8mmRpc3QgJmx0OyA1MCDvvJ88L3RleHQ+DQo8cmVjdCB4PSIzMTQiIHk9IjQwMCIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjkyIiByeD0iOCIgZmlsbD0iI2Y4ZmFmYyIgc3Ryb2tlPSIjOTRhM2I4IiBzdHJva2Utd2lkdGg9IjIiLz4NCjxyZWN0IHg9IjMxNCIgeT0iNDAwIiB3aWR0aD0iOTYiIGhlaWdodD0iMjQiIHJ4PSI4IiBmaWxsPSIjZGMyNjI2Ii8+PHJlY3QgeD0iMzE0IiB5PSI0MTIiIHdpZHRoPSI5NiIgaGVpZ2h0PSIxMiIgZmlsbD0iI2RjMjYyNiIvPg0KPHRleHQgeD0iMzYyLjAiIHk9IjQxNyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMi41IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmZmZmIj7orormlbjCt+iugOWPljwvdGV4dD4NCjx0ZXh0IHg9IjM2Mi4wIiB5PSI0NDgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiMwZjE3MmEiPmRpc3Q8L3RleHQ+DQo8cmVjdCB4PSI0MjAiIHk9IjQwMCIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjkyIiByeD0iOCIgZmlsbD0iI2Y4ZmFmYyIgc3Ryb2tlPSIjOTRhM2I4IiBzdHJva2Utd2lkdGg9IjIiLz4NCjxyZWN0IHg9IjQyMCIgeT0iNDAwIiB3aWR0aD0iOTYiIGhlaWdodD0iMjQiIHJ4PSI4IiBmaWxsPSIjZGMyNjI2Ii8+PHJlY3QgeD0iNDIwIiB5PSI0MTIiIHdpZHRoPSI5NiIgaGVpZ2h0PSIxMiIgZmlsbD0iI2RjMjYyNiIvPg0KPHRleHQgeD0iNDY4LjAiIHk9IjQxNyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMi41IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmZmZmIj7mr5TovIM8L3RleHQ+DQo8dGV4dCB4PSI0NjguMCIgeT0iNDQ4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMGYxNzJhIj5hICZsdDsgYjwvdGV4dD4NCjx0ZXh0IHg9IjQ2OC4wIiB5PSI0NjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiMwZjE3MmEiPmIgPSA1MDwvdGV4dD4NCjxwb2x5bGluZSBwb2ludHM9IjM2Miw0OTIgMzYyLDUwNiA0NjgsNTA2IDQ2OCw0OTIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2VhYjMwOCIgc3Ryb2tlLXdpZHRoPSIzIi8+DQo8cmVjdCB4PSI1NDAiIHk9IjM2MCIgd2lkdGg9IjY2MCIgaGVpZ2h0PSIyODQiIHJ4PSIxNCIgZmlsbD0iI2ZmZmJlYiIgc3Ryb2tlPSIjZjU5ZTBiIiBzdHJva2Utd2lkdGg9IjMiLz4NCjx0ZXh0IHg9IjU1MiIgeT0iMzgwIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjOTI0MDBlIj7liIfmj5vvvIjpgo/ovK/vvInihpAg5q+U6LyD57WQ5p6c77yIZGlzdCAmbHQ7IDUw77yJPC90ZXh0Pg0KPHBvbHlsaW5lIHBvaW50cz0iNTE2LDQ0NiA1NDAsNDQ2IiBzdHJva2U9IiNmNTllMGIiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0ibm9uZSIvPg0KPHJlY3QgeD0iNTUyIiB5PSIzODQiIHdpZHRoPSI2MzYiIGhlaWdodD0iMTMwIiByeD0iOCIgZmlsbD0iI2VmZjZmZiIgc3Ryb2tlPSIjZmNkMzRkIi8+DQo8dGV4dCB4PSI1NjIiIHk9IjQwNCIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzFkNGVkOCI+4pyTIOWNgOmWkyDikaHvvJrmuJvpgJ/ljYDvvIgxNSDiiaQgZGlzdCAmbHQ7IDUw77yJPC90ZXh0Pg0KPHJlY3QgeD0iNTYyIiB5PSI0MDgiIHdpZHRoPSIxMDAiIGhlaWdodD0iOTYiIHJ4PSI4IiBmaWxsPSIjZjhmYWZjIiBzdHJva2U9IiM5NGEzYjgiIHN0cm9rZS13aWR0aD0iMiIvPg0KPHJlY3QgeD0iNTYyIiB5PSI0MDgiIHdpZHRoPSIxMDAiIGhlaWdodD0iMjQiIHJ4PSI4IiBmaWxsPSIjZGMyNjI2Ii8+PHJlY3QgeD0iNTYyIiB5PSI0MjAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTIiIGZpbGw9IiNkYzI2MjYiLz4NCjx0ZXh0IHg9IjYxMi4wIiB5PSI0MjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZmZmZiI+6K6K5pW4wrforoDlj5Y8L3RleHQ+DQo8dGV4dCB4PSI2MTIuMCIgeT0iNDU2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMGYxNzJhIj5kaXN0PC90ZXh0Pg0KPHJlY3QgeD0iNjc0IiB5PSI0MDgiIHdpZHRoPSIxMDAiIGhlaWdodD0iOTYiIHJ4PSI4IiBmaWxsPSIjZjhmYWZjIiBzdHJva2U9IiM5NGEzYjgiIHN0cm9rZS13aWR0aD0iMiIvPg0KPHJlY3QgeD0iNjc0IiB5PSI0MDgiIHdpZHRoPSIxMDAiIGhlaWdodD0iMjQiIHJ4PSI4IiBmaWxsPSIjZGMyNjI2Ii8+PHJlY3QgeD0iNjc0IiB5PSI0MjAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTIiIGZpbGw9IiNkYzI2MjYiLz4NCjx0ZXh0IHg9IjcyNC4wIiB5PSI0MjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZmZmZiI+TWF0aO+8iOWfuuacrO+8iTwvdGV4dD4NCjx0ZXh0IHg9IjcyNC4wIiB5PSI0NTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiMwZjE3MmEiPmEg4oiSIGI8L3RleHQ+DQo8dGV4dCB4PSI3MjQuMCIgeT0iNDc2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMGYxNzJhIj5iID0gMTU8L3RleHQ+DQo8cmVjdCB4PSI3ODYiIHk9IjQwOCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSI5NiIgcng9IjgiIGZpbGw9IiNmOGZhZmMiIHN0cm9rZT0iIzk0YTNiOCIgc3Ryb2tlLXdpZHRoPSIyIi8+DQo8cmVjdCB4PSI3ODYiIHk9IjQwOCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIyNCIgcng9IjgiIGZpbGw9IiNkYzI2MjYiLz48cmVjdCB4PSI3ODYiIHk9IjQyMCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMiIgZmlsbD0iI2RjMjYyNiIvPg0KPHRleHQgeD0iODM2LjAiIHk9IjQyNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMi41IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmZmZmIj5NYXRo77yI5Z+65pys77yJPC90ZXh0Pg0KPHRleHQgeD0iODM2LjAiIHk9IjQ1NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzBmMTcyYSI+YSDDlyBiPC90ZXh0Pg0KPHRleHQgeD0iODM2LjAiIHk9IjQ3NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzBmMTcyYSI+YiA9IDEuMzwvdGV4dD4NCjxyZWN0IHg9Ijg5OCIgeT0iNDA4IiB3aWR0aD0iMTAwIiBoZWlnaHQ9Ijk2IiByeD0iOCIgZmlsbD0iI2Y4ZmFmYyIgc3Ryb2tlPSIjOTRhM2I4IiBzdHJva2Utd2lkdGg9IjIiLz4NCjxyZWN0IHg9Ijg5OCIgeT0iNDA4IiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjI0IiByeD0iOCIgZmlsbD0iI2RjMjYyNiIvPjxyZWN0IHg9Ijg5OCIgeT0iNDIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEyIiBmaWxsPSIjZGMyNjI2Ii8+DQo8dGV4dCB4PSI5NDguMCIgeT0iNDI1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmZmZmYiPk1hdGjvvIjln7rmnKzvvIk8L3RleHQ+DQo8dGV4dCB4PSI5NDguMCIgeT0iNDU2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMGYxNzJhIj5hICsgYjwvdGV4dD4NCjx0ZXh0IHg9Ijk0OC4wIiB5PSI0NzYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiMwZjE3MmEiPmIgPSAxNTwvdGV4dD4NCjxyZWN0IHg9IjEwMTAiIHk9IjQwOCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSI5NiIgcng9IjgiIGZpbGw9IiNmOGZhZmMiIHN0cm9rZT0iIzk0YTNiOCIgc3Ryb2tlLXdpZHRoPSIyIi8+DQo8cmVjdCB4PSIxMDEwIiB5PSI0MDgiIHdpZHRoPSIxMDAiIGhlaWdodD0iMjQiIHJ4PSI4IiBmaWxsPSIjZGMyNjI2Ii8+PHJlY3QgeD0iMTAxMCIgeT0iNDIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEyIiBmaWxsPSIjZGMyNjI2Ii8+DQo8dGV4dCB4PSIxMDYwLjAiIHk9IjQyNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMi41IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmZmZmIj7orormlbjCt+Wvq+WFpTwvdGV4dD4NCjx0ZXh0IHg9IjEwNjAuMCIgeT0iNDU2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMGYxNzJhIj5zcGVlZDwvdGV4dD4NCjx0ZXh0IHg9IjEwNjAuMCIgeT0iNDc2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMGYxNzJhIj7ihpAg57WQ5p6cPC90ZXh0Pg0KPHBvbHlsaW5lIHBvaW50cz0iNjEyLDUwNCA2MTIsNTE4IDcyNCw1MTggNzI0LDUwNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZWFiMzA4IiBzdHJva2Utd2lkdGg9IjMiLz4NCjxwb2x5bGluZSBwb2ludHM9IjcyNCw1MDQgNzI0LDUxOCA4MzYsNTE4IDgzNiw1MDQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2VhYjMwOCIgc3Ryb2tlLXdpZHRoPSIzIi8+DQo8cG9seWxpbmUgcG9pbnRzPSI4MzYsNTA0IDgzNiw1MTggOTQ4LDUxOCA5NDgsNTA0IiBmaWxsPSJub25lIiBzdHJva2U9IiNlYWIzMDgiIHN0cm9rZS13aWR0aD0iMyIvPg0KPHBvbHlsaW5lIHBvaW50cz0iOTQ4LDUwNCA5NDgsNTE4IDEwNjAsNTE4IDEwNjAsNTA0IiBmaWxsPSJub25lIiBzdHJva2U9IiNlYWIzMDgiIHN0cm9rZS13aWR0aD0iMyIvPg0KPHRleHQgeD0iODcwIiB5PSI0MDQiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMxZDRlZDgiPuWFrOW8j++8mnNwZWVkID0gMTUgKyAxLjMgw5cgKGRpc3Qg4oiSIDE1KTwvdGV4dD4NCjxyZWN0IHg9IjU1MiIgeT0iNTI0IiB3aWR0aD0iNjM2IiBoZWlnaHQ9IjEwOCIgcng9IjgiIGZpbGw9IiNmMGZkZjQiIHN0cm9rZT0iI2ZjZDM0ZCIvPg0KPHRleHQgeD0iNTYyIiB5PSI1NDQiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMxNTgwM2QiPuKclyDljYDplpMg4pGi77ya5beh6Iiq5Y2A77yIZGlzdCDiiaUgNTDvvIk8L3RleHQ+DQo8cmVjdCB4PSI1NzIiIHk9IjU1NiIgd2lkdGg9IjExOCIgaGVpZ2h0PSI3NCIgcng9IjgiIGZpbGw9IiNmOGZhZmMiIHN0cm9rZT0iIzk0YTNiOCIgc3Ryb2tlLXdpZHRoPSIyIi8+DQo8cmVjdCB4PSI1NzIiIHk9IjU1NiIgd2lkdGg9IjExOCIgaGVpZ2h0PSIyNCIgcng9IjgiIGZpbGw9IiNkYzI2MjYiLz48cmVjdCB4PSI1NzIiIHk9IjU2OCIgd2lkdGg9IjExOCIgaGVpZ2h0PSIxMiIgZmlsbD0iI2RjMjYyNiIvPg0KPHRleHQgeD0iNjMxLjAiIHk9IjU3MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMi41IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmZmZmIj7orormlbjCt+Wvq+WFpTwvdGV4dD4NCjx0ZXh0IHg9IjYzMS4wIiB5PSI2MDQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiMwZjE3MmEiPnNwZWVkPC90ZXh0Pg0KPHRleHQgeD0iNjMxLjAiIHk9IjYyNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzBmMTcyYSI+4oaQIDYwPC90ZXh0Pg0KPHRleHQgeD0iNzE2IiB5PSI2MDIiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMxNTgwM2QiPuWFrOW8j++8mnNwZWVkID0gNjDvvIhQX01BWO+8iTwvdGV4dD4NCjx0ZXh0IHg9IjYyMC4wIiB5PSI2ODYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIuNSIgZmlsbD0iIzY0NzQ4YiI+6buD57ea77yd6LOH5paZ57ea77yb5qmY6Imy5qGG77yd5YiH5o+bIChTd2l0Y2gp77yM5qKd5Lu254K644CM5q+U6LyD44CN56mN5pyo55qE6YKP6Lyv6Ly45Ye677yb5q+P5YCL5Y2A6ZaT5ZCE6Ieq5a+r5YWlIHNwZWVk77yM6amF5YuV5Y+q5Zyo5pyA5b6M5YGa5LiA5qyhPC90ZXh0Pg0KPC9zdmc+" class="shot"></p>
+<p><div class="mermaid">
+flowchart TD
+    A[&quot;① 超音波測距 → 寫入 dist&quot;] --&gt; B{&quot;dist &lt; 15 ?&quot;}
+    B -- &quot;是&quot; --&gt; Z1[&quot;區間①：speed = 0&quot;]
+    B -- &quot;否&quot; --&gt; C{&quot;dist &lt; 50 ?&quot;}
+    C -- &quot;是&quot; --&gt; Z2[&quot;區間②：speed = 15 + 1.3 × (dist − 15)&lt;br/&gt;（Math：− 15、× 1.3、+ 15）&quot;]
+    C -- &quot;否&quot; --&gt; Z3[&quot;區間③：speed = 60&quot;]
+    Z1 --&gt; D[&quot;⑤ 讀 speed → Move Steering B+C&quot;]
+    Z2 --&gt; D
+    Z3 --&gt; D
+</div></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>區間</th>
+<th>積木排列</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>迴圈前</td>
+<td>變數·寫入 <code>speed = 0</code></td>
+</tr>
+<tr>
+<td>① 感測</td>
+<td>超音波「測量·公分」（Port 4）→ 變數·寫入 <code>dist</code></td>
+</tr>
+<tr>
+<td>外層切換</td>
+<td>變數·讀取 <code>dist</code> → 比較 <code>a &lt; b</code>（<code>b = 15</code>）→ 切換（邏輯）</td>
+</tr>
+<tr>
+<td>　✓ 區間①停車區</td>
+<td>變數·寫入 <code>speed = 0</code></td>
+</tr>
+<tr>
+<td>　✗ 內層切換</td>
+<td>變數·讀取 <code>dist</code> → 比較 <code>a &lt; b</code>（<code>b = 50</code>）→ 切換（邏輯）</td>
+</tr>
+<tr>
+<td>　　✓ 區間②減速區</td>
+<td>變數·讀取 <code>dist</code> → Math <code>a − b</code>（<code>b = 15</code>）→ Math <code>a × b</code>（<code>b = 1.3</code>）→ Math <code>a + b</code>（<code>b = 15</code>）→ 變數·寫入 <code>speed</code></td>
+</tr>
+<tr>
+<td>　　✗ 區間③巡航區</td>
+<td>變數·寫入 <code>speed = 60</code></td>
+</tr>
+<tr>
+<td>⑤ 驅動</td>
+<td>變數·讀取 <code>speed</code> → 移動轉向 <code>B+C</code>，轉向 0，功率 ← <code>speed</code></td>
+</tr>
+<tr>
+<td>迴圈尾</td>
+<td>等待 0.05 秒</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>💡 比較積木請比較<strong>變數 <code>dist</code></strong>，不要再選「超音波比較距離」，否則每個切換會各自再讀一次感測器（參見 5.4 共通問題）。</p>
+</blockquote>
+<h4>12.8.3 兩種排法比較與選擇</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>分區 Switch 版（12.8）</th>
+<th>單一公式 + clamp 版（12.5）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>積木數量</td>
+<td>2 個切換、2 個比較、5 個變數、3 個 Math</td>
+<td>2 個切換、2 個比較、6 個變數、3 個 Math</td>
+</tr>
+<tr>
+<td>可讀性</td>
+<td>✅ 每區間一眼對應一個公式，與前四個寫法結構相近</td>
+<td>⚠️ 要理解 clamp 才知道兩端怎麼來</td>
+</tr>
+<tr>
+<td>修改單一區間</td>
+<td>✅ 只改該區間的積木</td>
+<td>⚠️ 改斜率或上限會連動兩端</td>
+</tr>
+<tr>
+<td>邊界一致性</td>
+<td>⚠️ 50 cm 處兩邊公式需自行對齊（差 0.5%）</td>
+<td>✅ 由同一條直線產生，天然連續</td>
+</tr>
+<tr>
+<td>適合</td>
+<td>教學、逐區調參、對照前四階段</td>
+<td>想要積木較整齊、重視連續性</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>建議</strong>：課堂說明或實機逐區調參用分區版；確認參數後若要精簡，改用 clamp 版。兩者的功率完全相同，可隨時互換。</p>
+<p>驗證用程式（兩種排法逐點比對）：</p>
+<p><div class="code-container"><div class="code-header"><span>python</span><button class="copy-btn" onclick="copyCode(this)">複製程式碼</button></div><pre><code class="language-python"># 兩種排法的功率必須完全一致：逐一比對 0~255 cm
+def clamp(x, lo, hi):
+    &quot;&quot;&quot;把 x 限制在 [lo, hi]（對應 clamp 版的比較 + 切換積木）&quot;&quot;&quot;
+    return max(lo, min(hi, x))
+
+def by_clamp(d):
+    &quot;&quot;&quot;單一公式 + clamp 版&quot;&quot;&quot;
+    return 0 if d &lt; 15 else clamp(15 + 1.3 * (d - 15), 15, 60)
+
+def by_zone(d):
+    &quot;&quot;&quot;分區 Switch 版：每個區間各寫一個公式&quot;&quot;&quot;
+    if d &lt; 15:
+        return 0                          # 區間①：停車區
+    if d &lt; 50:
+        return 15 + 1.3 * (d - 15)        # 區間②：三個 Math（減 15、乘 1.3、加 15）
+    return 60                             # 區間③：巡航區
+
+# 全部距離比對；只要有一個不同就會中止
+assert all(abs(by_clamp(d) - by_zone(d)) &lt; 1e-9 for d in range(0, 256))
+print(&quot;兩種排法在 0~255 cm 完全一致&quot;)</code></pre></div></p>
 <hr />
 </section><section class="card"><h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
 <h3>🔹 [2026-10-19 15:40:00（估計，非實際時鐘）] [Claude Sonnet 5.5 / Claude Code] 變更紀錄</h3>
@@ -3309,6 +3494,18 @@ for d in (5, 14, 15, 20, 30, 40, 50, 80, 255):
 <p><pre class="plain"><code>  讓筆記有不同的觀點討論並加上總結比較整合，最後歸納出適合的速度與距離公式建議(並使用ev3積木表示)</code></pre></p>
 <ul>
 <li><strong>變更摘要</strong>: 新增第 11 章「不同觀點討論」（教學、控制工程、安全、EV3 實機、軟體工程五個角色視角，標明皆為 Claude 所寫）與第 12 章「總結比較整合與建議公式」（五觀點比較矩陣、觀點採納表、建議公式 $speed=\operatorname{clamp}(15+1.3(dist-15),15,60)$ 含停車線與起步遲滯、穩態跟隨距離與停車線檢查式、EV3 基本積木排列圖 <code>final_formula_blocks.svg</code>、等效程式、四種寫法模擬比較 <code>car_following_sim_compare.py</code>、實機驗證清單）；撰寫來源標註表同步更新。</li>
+</ul>
+<h3>🔹 [2026-10-19 16:10:02] [Claude Sonnet 5.5 / Claude Code] 變更紀錄</h3>
+<ul>
+<li><strong>模型/Agent</strong>: Claude Sonnet 5.5 / Claude Code</li>
+<li><strong>Prompt 原文</strong>:</li>
+</ul>
+<p><pre class="plain"><code>  最終公式適合用在哪一段?</code></pre></p>
+<p><pre class="plain"><code>  15-50嗎?</code></pre></p>
+<p><pre class="plain"><code>  跟clamp的關係?</code></pre></p>
+<p><pre class="plain"><code>  增加一個各區間的公式建議(公式與積木排列)</code></pre></p>
+<ul>
+<li><strong>變更摘要</strong>: 於第 12 章新增 12.8「各區間的公式建議與積木排列」：停車區、減速區、巡航區（與進階的起步遲滯帶）各自的公式與邊界連續性表，分區 Switch 版積木排列圖 <code>zone_blocks.svg</code>、流程圖與逐塊積木表，並比較分區版與單一公式 + clamp 版（功率已用程式逐點比對 0~255 cm 完全一致）。</li>
 </ul></section>
 </div>
 <script>

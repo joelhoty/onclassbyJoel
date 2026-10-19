@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 700" width="100%" font-family="Microsoft JhengHei,Segoe UI,Arial,sans-serif">
+<rect width="1240" height="700" fill="#ffffff"/>
+<text x="620.0" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#0f172a">各區間公式的 EV3 積木排列（分區 Switch 版）</text>
+<text x="30" y="70" font-size="15" font-weight="700" fill="#0369a1">① 感測（迴圈內最先執行）</text>
+<rect x="30" y="85" width="104" height="92" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<rect x="30" y="85" width="104" height="24" rx="8" fill="#facc15"/><rect x="30" y="97" width="104" height="12" fill="#facc15"/>
+<text x="82.0" y="102" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1e293b">超音波</text>
+<text x="82.0" y="133" text-anchor="middle" font-size="13" fill="#0f172a">測量·公分</text>
+<text x="82.0" y="153" text-anchor="middle" font-size="13" fill="#0f172a">Port 4</text>
+<rect x="150" y="85" width="104" height="92" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<rect x="150" y="85" width="104" height="24" rx="8" fill="#dc2626"/><rect x="150" y="97" width="104" height="12" fill="#dc2626"/>
+<text x="202.0" y="102" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">變數·寫入</text>
+<text x="202.0" y="133" text-anchor="middle" font-size="13" fill="#0f172a">dist</text>
+<text x="202.0" y="153" text-anchor="middle" font-size="13" fill="#0f172a">← 測距值</text>
+<polyline points="82,177 82,191 202,191 202,177" fill="none" stroke="#eab308" stroke-width="3"/>
+<text x="560" y="70" font-size="15" font-weight="700" fill="#0369a1">⑤ 驅動（切換結束後才執行）</text>
+<rect x="560" y="85" width="104" height="92" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<rect x="560" y="85" width="104" height="24" rx="8" fill="#dc2626"/><rect x="560" y="97" width="104" height="12" fill="#dc2626"/>
+<text x="612.0" y="102" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">變數·讀取</text>
+<text x="612.0" y="133" text-anchor="middle" font-size="13" fill="#0f172a">speed</text>
+<rect x="680" y="85" width="130" height="100" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<rect x="680" y="85" width="130" height="24" rx="8" fill="#16a34a"/><rect x="680" y="97" width="130" height="12" fill="#16a34a"/>
+<text x="745.0" y="102" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">移動轉向</text>
+<text x="745.0" y="133" text-anchor="middle" font-size="13" fill="#0f172a">B+C</text>
+<text x="745.0" y="153" text-anchor="middle" font-size="13" fill="#0f172a">轉向 0</text>
+<text x="745.0" y="173" text-anchor="middle" font-size="13" fill="#0f172a">功率 ← speed</text>
+<polyline points="612,185 612,199 745,199 745,185" fill="none" stroke="#eab308" stroke-width="3"/>
+<text x="860" y="105" font-size="13" font-weight="700" fill="#475569">迴圈前：speed = 0</text>
+<text x="860" y="128" font-size="13" font-weight="700" fill="#475569">迴圈尾：等待 0.05 秒</text>
+<text x="30" y="225" font-size="15" font-weight="700" fill="#0369a1">② 外層：dist &lt; 15 ？</text>
+<rect x="30" y="245" width="104" height="92" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<rect x="30" y="245" width="104" height="24" rx="8" fill="#dc2626"/><rect x="30" y="257" width="104" height="12" fill="#dc2626"/>
+<text x="82.0" y="262" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">變數·讀取</text>
+<text x="82.0" y="293" text-anchor="middle" font-size="13" fill="#0f172a">dist</text>
+<rect x="142" y="245" width="104" height="92" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<rect x="142" y="245" width="104" height="24" rx="8" fill="#dc2626"/><rect x="142" y="257" width="104" height="12" fill="#dc2626"/>
+<text x="194.0" y="262" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">比較</text>
+<text x="194.0" y="293" text-anchor="middle" font-size="13" fill="#0f172a">a &lt; b</text>
+<text x="194.0" y="313" text-anchor="middle" font-size="13" fill="#0f172a">b = 15</text>
+<polyline points="82,337 82,351 194,351 194,337" fill="none" stroke="#eab308" stroke-width="3"/>
+<rect x="290" y="215" width="930" height="450" rx="14" fill="#fffbeb" stroke="#f59e0b" stroke-width="3"/>
+<text x="302" y="235" font-size="13" font-weight="700" fill="#92400e">切換（邏輯）← 比較結果（dist &lt; 15）</text>
+<polyline points="246,291 290,291" stroke="#f59e0b" stroke-width="3" fill="none"/>
+<rect x="302" y="240" width="906" height="92" rx="8" fill="#fef2f2" stroke="#fcd34d"/>
+<text x="312" y="260" font-size="14" font-weight="700" fill="#b91c1c">✓ 區間 ①：停車區（dist &lt; 15）</text>
+<rect x="520" y="256" width="118" height="74" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<rect x="520" y="256" width="118" height="24" rx="8" fill="#dc2626"/><rect x="520" y="268" width="118" height="12" fill="#dc2626"/>
+<text x="579.0" y="273" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">變數·寫入</text>
+<text x="579.0" y="304" text-anchor="middle" font-size="13" fill="#0f172a">speed</text>
+<text x="579.0" y="324" text-anchor="middle" font-size="13" fill="#0f172a">← 0</text>
+<text x="660" y="296" font-size="14" font-weight="700" fill="#b91c1c">公式：speed = 0</text>
+<rect x="302" y="342" width="906" height="310" rx="8" fill="#ffffff" stroke="#fcd34d"/>
+<text x="312" y="362" font-size="14" font-weight="700" fill="#475569">✗ dist ≥ 15 → 內層再判斷</text>
+<text x="314" y="385" font-size="14" font-weight="700" fill="#0369a1">內層：dist &lt; 50 ？</text>
+<rect x="314" y="400" width="96" height="92" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<rect x="314" y="400" width="96" height="24" rx="8" fill="#dc2626"/><rect x="314" y="412" width="96" height="12" fill="#dc2626"/>
+<text x="362.0" y="417" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">變數·讀取</text>
+<text x="362.0" y="448" text-anchor="middle" font-size="13" fill="#0f172a">dist</text>
+<rect x="420" y="400" width="96" height="92" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<rect x="420" y="400" width="96" height="24" rx="8" fill="#dc2626"/><rect x="420" y="412" width="96" height="12" fill="#dc2626"/>
+<text x="468.0" y="417" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">比較</text>
+<text x="468.0" y="448" text-anchor="middle" font-size="13" fill="#0f172a">a &lt; b</text>
+<text x="468.0" y="468" text-anchor="middle" font-size="13" fill="#0f172a">b = 50</text>
+<polyline points="362,492 362,506 468,506 468,492" fill="none" stroke="#eab308" stroke-width="3"/>
+<rect x="540" y="360" width="660" height="284" rx="14" fill="#fffbeb" stroke="#f59e0b" stroke-width="3"/>
+<text x="552" y="380" font-size="13" font-weight="700" fill="#92400e">切換（邏輯）← 比較結果（dist &lt; 50）</text>
+<polyline points="516,446 540,446" stroke="#f59e0b" stroke-width="3" fill="none"/>
+<rect x="552" y="384" width="636" height="130" rx="8" fill="#eff6ff" stroke="#fcd34d"/>
+<text x="562" y="404" font-size="14" font-weight="700" fill="#1d4ed8">✓ 區間 ②：減速區（15 ≤ dist &lt; 50）</text>
+<rect x="562" y="408" width="100" height="96" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<rect x="562" y="408" width="100" height="24" rx="8" fill="#dc2626"/><rect x="562" y="420" width="100" height="12" fill="#dc2626"/>
+<text x="612.0" y="425" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">變數·讀取</text>
+<text x="612.0" y="456" text-anchor="middle" font-size="13" fill="#0f172a">dist</text>
+<rect x="674" y="408" width="100" height="96" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<rect x="674" y="408" width="100" height="24" rx="8" fill="#dc2626"/><rect x="674" y="420" width="100" height="12" fill="#dc2626"/>
+<text x="724.0" y="425" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">Math（基本）</text>
+<text x="724.0" y="456" text-anchor="middle" font-size="13" fill="#0f172a">a − b</text>
+<text x="724.0" y="476" text-anchor="middle" font-size="13" fill="#0f172a">b = 15</text>
+<rect x="786" y="408" width="100" height="96" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<rect x="786" y="408" width="100" height="24" rx="8" fill="#dc2626"/><rect x="786" y="420" width="100" height="12" fill="#dc2626"/>
+<text x="836.0" y="425" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">Math（基本）</text>
+<text x="836.0" y="456" text-anchor="middle" font-size="13" fill="#0f172a">a × b</text>
+<text x="836.0" y="476" text-anchor="middle" font-size="13" fill="#0f172a">b = 1.3</text>
+<rect x="898" y="408" width="100" height="96" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<rect x="898" y="408" width="100" height="24" rx="8" fill="#dc2626"/><rect x="898" y="420" width="100" height="12" fill="#dc2626"/>
+<text x="948.0" y="425" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">Math（基本）</text>
+<text x="948.0" y="456" text-anchor="middle" font-size="13" fill="#0f172a">a + b</text>
+<text x="948.0" y="476" text-anchor="middle" font-size="13" fill="#0f172a">b = 15</text>
+<rect x="1010" y="408" width="100" height="96" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<rect x="1010" y="408" width="100" height="24" rx="8" fill="#dc2626"/><rect x="1010" y="420" width="100" height="12" fill="#dc2626"/>
+<text x="1060.0" y="425" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">變數·寫入</text>
+<text x="1060.0" y="456" text-anchor="middle" font-size="13" fill="#0f172a">speed</text>
+<text x="1060.0" y="476" text-anchor="middle" font-size="13" fill="#0f172a">← 結果</text>
+<polyline points="612,504 612,518 724,518 724,504" fill="none" stroke="#eab308" stroke-width="3"/>
+<polyline points="724,504 724,518 836,518 836,504" fill="none" stroke="#eab308" stroke-width="3"/>
+<polyline points="836,504 836,518 948,518 948,504" fill="none" stroke="#eab308" stroke-width="3"/>
+<polyline points="948,504 948,518 1060,518 1060,504" fill="none" stroke="#eab308" stroke-width="3"/>
+<text x="870" y="404" font-size="13" font-weight="700" fill="#1d4ed8">公式：speed = 15 + 1.3 × (dist − 15)</text>
+<rect x="552" y="524" width="636" height="108" rx="8" fill="#f0fdf4" stroke="#fcd34d"/>
+<text x="562" y="544" font-size="14" font-weight="700" fill="#15803d">✗ 區間 ③：巡航區（dist ≥ 50）</text>
+<rect x="572" y="556" width="118" height="74" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<rect x="572" y="556" width="118" height="24" rx="8" fill="#dc2626"/><rect x="572" y="568" width="118" height="12" fill="#dc2626"/>
+<text x="631.0" y="573" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">變數·寫入</text>
+<text x="631.0" y="604" text-anchor="middle" font-size="13" fill="#0f172a">speed</text>
+<text x="631.0" y="624" text-anchor="middle" font-size="13" fill="#0f172a">← 60</text>
+<text x="716" y="602" font-size="14" font-weight="700" fill="#15803d">公式：speed = 60（P_MAX）</text>
+<text x="620.0" y="686" text-anchor="middle" font-size="12.5" fill="#64748b">黃線＝資料線；橘色框＝切換 (Switch)，條件為「比較」積木的邏輯輸出；每個區間各自寫入 speed，驅動只在最後做一次</text>
+</svg>
