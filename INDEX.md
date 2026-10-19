@@ -1,8 +1,8 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-10-19 18:00:00 (UTC+8)  
-> **使用模型**: Claude Sonnet 5.5  
-> **執行 Agent**: Claude Code  
+> **最後更新時間**: 2026-10-19 18:25:00 (UTC+8)  
+> **使用模型**: Gemini 3.8 Flash  
+> **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 
 ---
@@ -98,6 +98,7 @@
 * `2026-10-19` | [EV3 跟車第三寫法截圖](./ev3/1019-3.jpg) (JPG)
 * `2026-10-19` | [EV3 跟車第四寫法截圖](./ev3/1019-4.jpg) (JPG)
 * `2026-10-19` | [跟車建議最終設計積木圖 (SVG)](./ev3/final_blocks.svg) (SVG)
+* `2026-10-19` | [clamp 限幅的 EV3 基本積木排列圖 (SVG)](./ev3/clamp_blocks.svg) (SVG)
 * `2026-10-19` | [跟車模擬程式 (Python)](./ev3/car_following_sim.py) (Python)
 * `2026-10-19` | [EV3 跟車程式截圖](./ev3/1019-1.jpg) (JPG)
 * `2026-09-26` | [雙感測器邏輯解析 (MD)](./ev3/nested_switch_distance_logic.md) (MD)
