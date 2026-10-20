@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📟 Arduino Uno 連接 I2C LCD 1602：HelloWorld 範例與 LiquidCrystal_I2C 物件方法全解析</title>
+    
+    <!-- Prism 程式碼高亮 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- Mermaid 流程圖支援 -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true, theme: 'neutral'});</script>
+
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --primary-light: #e0f2fe;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-purple: #8b5cf6;
+            --secondary: #0f172a;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* 頁首 Header */
+        header {
+            background: linear-gradient(135deg, #0b132b 0%, #1c2541 55%, #0369a1 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+            border-bottom: 4px solid var(--primary);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.95rem;
+            font-weight: 800;
+            line-height: 1.35;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.05rem;
+            margin-top: 0.5rem;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-pdf {
+            background: #dc2626;
+            color: white;
+        }
+        .btn-pdf:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.22);
+            transform: translateY(-2px);
+        }
+
+        .metadata-box {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 0.9rem 1.25rem;
+            font-size: 0.88rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+            color: #cbd5e1;
+        }
+        .metadata-box strong {
+            color: #f1f5f9;
+        }
+
+        /* 卡片 */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 2.2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .card h2 {
+            font-size: 1.45rem;
+            color: var(--secondary);
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 2px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .card h3 {
+            font-size: 1.18rem;
+            color: #334155;
+            margin: 1.4rem 0 0.75rem 0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #334155;
+        }
+
+        /* 圖片網格展示 */
+        .img-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .img-card {
+            background: #f1f5f9;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+        .img-card:hover {
+            transform: translateY(-3px);
+        }
+        .img-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .img-card .caption {
+            padding: 0.85rem 1rem;
+            font-size: 0.88rem;
+            color: #475569;
+            background: white;
+            font-weight: 500;
+        }
+
+        /* 表格樣式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.25rem 0;
+            font-size: 0.93rem;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        th, td {
+            padding: 0.85rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
+            border-bottom: 2px solid #cbd5e1;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* 標籤 Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .badge-blue { background: #e0f2fe; color: #0284c7; }
+        .badge-green { background: #dcfce7; color: #16a34a; }
+        .badge-amber { background: #fef3c7; color: #d97706; }
+        .badge-purple { background: #f3e8ff; color: #7e22ce; }
+        .badge-red { background: #fee2e2; color: #dc2626; }
+
+        /* 提示框 Callout */
+        .callout {
+            border-left: 4px solid var(--primary);
+            background: #f0f9ff;
+            padding: 1rem 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.25rem 0;
+            font-size: 0.95rem;
+        }
+        .callout-warning {
+            border-left-color: var(--accent-amber);
+            background: #fffbeb;
+        }
+        .callout-success {
+            border-left-color: var(--accent-green);
+            background: #f0fdf4;
+        }
+
+        /* 程式碼區塊與複製按鈕 */
+        .code-container {
+            position: relative;
+            margin: 1.4rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.18);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.35rem 0.75rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s ease;
+        }
+        .copy-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        pre[class*="language-"] {
+            margin: 0 !important;
+            padding: 1.4rem 1.2rem !important;
+            border-radius: 8px !important;
+            background: #0f172a !important;
+            font-size: 0.9rem !important;
+        }
+
+        code[class*="language-"] {
+            font-family: Consolas, Monaco, "Courier New", monospace !important;
+        }
+
+        /* LCD 1602 格子排版視覺化 */
+        .lcd-screen-preview {
+            background: #0284c7;
+            background: linear-gradient(180deg, #0369a1 0%, #075985 100%);
+            border: 8px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+            font-family: "Courier New", monospace;
+            color: #f8fafc;
+        }
+        .lcd-row {
+            display: grid;
+            grid-template-columns: repeat(16, 1fr);
+            gap: 2px;
+            margin-bottom: 4px;
+        }
+        .lcd-cell {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+        }
+
+        /* 頁尾 */
+        footer {
+            text-align: center;
+            padding: 2.5rem 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        /* 列印樣式 (Export to PDF) */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+                padding: 0 !important;
+            }
+            .action-btns, .copy-btn {
+                display: none !important;
+            }
+            .card {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                page-break-inside: avoid;
+            }
+            header {
+                background: none !important;
+                color: black !important;
+                border: 1px solid #aaa !important;
+            }
+            .subtitle, .metadata-box {
+                color: #333 !important;
+                background: #eee !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- 頁首 Header -->
+    <header>
+        <div class="header-top">
+            <div>
+                <h1>📟 Arduino Uno 連接 I2C LCD 1602：HelloWorld 範例與 LiquidCrystal_I2C 物件方法全解析</h1>
+                <p class="subtitle">從實體 4-Pin 接線檢核、函式庫安裝、HelloWorld 流程圖到物件屬性與方法的深度實務應用手冊</p>
+            </div>
+            <div class="action-btns">
+                <button class="btn btn-pdf" onclick="window.print()">🖨️ 匯出成 PDF</button>
+                <a class="btn btn-secondary" href="../INDEX.md">📂 課程總目錄</a>
+                <a class="btn btn-secondary" href="arduino_i2c_lcd1602_helloworld.ino" download>💾 下載測試程式 (.ino)</a>
+            </div>
+        </div>
+
+        <div class="metadata-box">
+            <div><strong>最後更新時間:</strong> 2026-10-20 15:10:00 (UTC+8)</div>
+            <div><strong>使用模型:</strong> Gemini 3.8 Flash</div>
+            <div><strong>執行 Agent:</strong> Antigravity</div>
+            <div><strong>適用硬體:</strong> Arduino Uno R3、LCD 1602 (PCF8574 I2C Backpack)</div>
+        </div>
+    </header>
+
+    <!-- 區塊 1: 實體接線對照與檢核清單 -->
+    <section class="card" id="hardware-wiring">
+        <h2>🔌 一、實體硬體接線對照與狀態確認</h2>
+        <p>
+            依據現場上機拍攝的實拍照片，Arduino Uno 透過 4 條彩色杜邦線直接連接 LCD 1602 背面的 PCF8574 I2C 轉接板。
+        </p>
+
+        <div class="img-grid">
+            <div class="img-card">
+                <img src="./2026-10-20-143026.jpg" alt="Arduino Uno 與 LCD 1602 實體接線正面">
+                <div class="caption">📷 <strong>圖 1-1</strong>：Arduino Uno 與 LCD 1602 實體接線正面（通電運作中）</div>
+            </div>
+            <div class="img-card">
+                <img src="./2026-10-20-142320.jpg" alt="LCD 1602 背部 PCF8574 轉接板元件視角">
+                <div class="caption">📷 <strong>圖 1-2</strong>：LCD 1602 背部 PCF8574 轉接板視角（電位器與跳線帽）</div>
+            </div>
+        </div>
+
+        <h3>1.1 實體 4-Pin 連接腳位對照表</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>I2C 轉接板腳位</th>
+                    <th>訊號定義</th>
+                    <th>Arduino Uno 對應腳位</th>
+                    <th>照片導線對應</th>
+                    <th>核心作用解析</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>GND</strong></td>
+                    <td><span class="badge badge-purple">地線</span></td>
+                    <td><strong>GND</strong> (電源排針)</td>
+                    <td>棕色 / 黑色線</td>
+                    <td>系統共地迴路，基準電位。</td>
+                </tr>
+                <tr>
+                    <td><strong>VCC</strong></td>
+                    <td><span class="badge badge-red">電源 5V</span></td>
+                    <td><strong>5V</strong> (電源排針)</td>
+                    <td>紅色 / 橙色線</td>
+                    <td>驅動 HD44780、PCF8574 及 LCD 背光 LED。請勿接 3.3V。</td>
+                </tr>
+                <tr>
+                    <td><strong>SDA</strong></td>
+                    <td><span class="badge badge-blue">數據線</span></td>
+                    <td><strong>A4</strong> 或專用 <strong>SDA</strong></td>
+                    <td>黃色線</td>
+                    <td>串列雙向資料線 (Serial Data)，負責傳輸控制指令與字元編碼。</td>
+                </tr>
+                <tr>
+                    <td><strong>SCL</strong></td>
+                    <td><span class="badge badge-green">時脈線</span></td>
+                    <td><strong>A5</strong> 或專用 <strong>SCL</strong></td>
+                    <td>黃色 / 紅色線</td>
+                    <td>串列同步時鐘線 (Serial Clock)，由 Arduino 主機產生驅動脈衝。</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="callout">
+            <strong>💡 硬體檢查三大必看重點：</strong>
+            <ul style="margin: 0.5rem 0 0 1.25rem;">
+                <li><strong>紅色電源 LED</strong>：PCF8574 板端的紅色指示燈是否亮起？（圖 1-1 中亮起，表示 5V 供電正常）。</li>
+                <li><strong>藍色電位器（十字旋鈕）</strong>：若螢幕只亮不見字體，請使用十字起子旋轉該旋鈕微調液晶偏壓對比度。</li>
+                <li><strong>背光跳線帽</strong>：背板最右側的黑色雙針跳線帽必須確實插上，否則背光 LED 不會發光。</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- 區塊 2: 核心原理剖析 -->
+    <section class="card" id="core-concepts">
+        <h2>🧠 二、I2C 雙線通訊與 PCF8574 晶片運作原理</h2>
+        <p>
+            標準 LCD 1602 具備 16 根排針，若直接由微控制器驅動，至少需要佔用 6 根（4-bit 模式）至 10 根（8-bit 模式）數位 I/O 腳位。
+            透過 <strong>PCF8574 晶片</strong>，實現了「串列轉並列 (Serial-to-Parallel)」控制：
+        </p>
+
+        <div class="callout callout-success">
+            <strong>I2C 匯流排的核心特點：</strong>
+            <ul style="margin: 0.4rem 0 0 1.2rem;">
+                <li><strong>僅需 2 條通訊線</strong>：SDA（數據）與 SCL（時脈），大幅釋放 Arduino 珍貴的數位 GPIO。</li>
+                <li><strong>7-bit 設備位址定址</strong>：PCF8574 預設位址為 <code>0x27</code>，PCF8574A 晶片則為 <code>0x3F</code>。</li>
+                <li><strong>多設備掛載能力</strong>：同一組 SDA/SCL 上可同時並聯 RTC 時鐘 (DS3231)、氣壓計 (BMP280) 等多個設備，互不衝突。</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- 區塊 3: Arduino IDE 函式庫搜尋與安裝 -->
+    <section class="card" id="ide-library">
+        <h2>💻 三、Arduino IDE 尋找與安裝 LiquidCrystal_I2C 程式庫</h2>
+        <p>
+            根據上課擷取的 IDE 畫面，我們使用的是成熟穩定的 <code>LiquidCrystal_I2C</code> 函式庫：
+        </p>
+
+        <div class="img-grid" style="grid-template-columns: 1fr;">
+            <div class="img-card">
+                <img src="./2026-10-20-150654_ide_helloworld.jpg" alt="Arduino IDE HelloWorld.ino 截圖" style="height: auto; max-height: 480px; object-fit: contain; background: #1e1e1e;">
+                <div class="caption">📷 <strong>圖 3-1</strong>：Arduino IDE 開啟 LiquidCrystal_I2C 範例 <code>HelloWorld.ino</code> 實機畫面</div>
+            </div>
+        </div>
+
+        <h3>3.1 程式庫搜尋與安裝三步驟</h3>
+        <ol style="margin-left: 1.5rem; margin-bottom: 1rem;">
+            <li>按下鍵盤快捷鍵 <kbd>Ctrl + Shift + I</kbd>，開啟 Arduino IDE 左側的 <strong>Library Manager（程式庫管理員）</strong>。</li>
+            <li>在搜尋欄輸入 <strong><code>LiquidCrystal I2C</code></strong>。</li>
+            <li>找到由 <strong>Frank de Brabander</strong> 或 <strong>Marco Schwartz</strong> 維護的相容版本，點擊 <strong>INSTALL</strong>。</li>
+            <li>安裝完成後，至上方選單點選：<strong>檔案 (File) ➔ 範例 (Examples) ➔ LiquidCrystal I2C ➔ HelloWorld</strong>。</li>
+        </ol>
+    </section>
+
+    <!-- 區塊 4: HelloWorld 範例與流程圖 -->
+    <section class="card" id="helloworld-flowchart">
+        <h2>🚀 四、HelloWorld 程式邏輯流程圖與原始碼解析</h2>
+        
+        <h3>4.1 程式執行邏輯流程圖 (Mermaid Flowchart)</h3>
+        <div class="mermaid">
+        flowchart TD
+            Start(["系統通電開機 / 重置"]) --> Include["引入標頭檔 Wire.h 與 LiquidCrystal_I2C.h"]
+            Include --> Construct["實例化物件 LiquidCrystal_I2C lcd(0x27, 16, 2)"]
+            Construct --> Setup["進入 setup() 初始化程序"]
+            
+            Setup --> Init1["執行 lcd.init() 初始化硬體暫存器"]
+            Init1 --> Init2["再次執行 lcd.init() 確保 I2C 匯流排完全重置"]
+            Init2 --> Backlight["呼叫 lcd.backlight() 點亮液晶背光 LED"]
+            
+            Backlight --> Pos1["呼叫 lcd.setCursor(3, 0) 定位至第 1 列第 4 格"]
+            Pos1 --> Print1["呼叫 lcd.print('Moooom world!') 輸出第一行字串"]
+            
+            Print1 --> Pos2["呼叫 lcd.setCursor(2, 1) 定位至第 2 列第 3 格"]
+            Pos2 --> Print2["呼叫 lcd.print('NO Arduino!') 輸出第二行字串"]
+            
+            Print2 --> Loop["進入 loop() 迴圈（保持畫面靜態顯示）"]
+            Loop --> Loop
+        </div>
+
+        <h3>4.2 課堂測試程式碼 (`HelloWorld.ino`)</h3>
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode(this)">📋 複製程式碼</button>
+            <pre><code class="language-cpp">// YWROBOT
+// Compatible with the Arduino IDE 1.0
+// Library version: 1.1
+#include &lt;Wire.h&gt;                 // 引入 Arduino 官方 I2C 通訊函式庫
+#include &lt;LiquidCrystal_I2C.h&gt;    // 引入 PCF8574 轉接板專用 I2C LCD 函式庫
+
+// 設定 LCD 位址為 0x27，具備 16 個字元寬度、2 行高度 (16x2)
+LiquidCrystal_I2C lcd(0x27, 16, 2); 
+
+void setup()
+{
+  lcd.init();                      // 初始化 LCD 液晶顯示器
+  lcd.init();                      // 二次呼叫確保電氣時脈與 I2C 匯流排完全就緒
+  
+  // 開啟液晶背光
+  lcd.backlight();
+  
+  // 移動游標至第 0 行第 3 格 (從 0 起算)
+  lcd.setCursor(3, 0);
+  lcd.print("Moooom world!");      // 印出測試訊息
+  
+  // 移動游標至第 1 行第 2 格 (從 0 起算)
+  lcd.setCursor(2, 1);
+  lcd.print("NO Arduino!");        // 印出測試訊息
+}
+
+void loop()
+{
+  // 靜態展示無須重複運算，loop 保持空白
+}</code></pre>
+        </div>
+
+        <h3>4.3 16×2 液晶螢幕字元座標映射視覺化</h3>
+        <div class="lcd-screen-preview">
+            <div class="lcd-row">
+                <div class="lcd-cell"></div><div class="lcd-cell"></div><div class="lcd-cell"></div>
+                <div class="lcd-cell">M</div><div class="lcd-cell">o</div><div class="lcd-cell">o</div>
+                <div class="lcd-cell">o</div><div class="lcd-cell">o</div><div class="lcd-cell">m</div>
+                <div class="lcd-cell"> </div><div class="lcd-cell">w</div><div class="lcd-cell">o</div>
+                <div class="lcd-cell">r</div><div class="lcd-cell">l</div><div class="lcd-cell">d</div>
+                <div class="lcd-cell">!</div>
+            </div>
+            <div class="lcd-row">
+                <div class="lcd-cell"></div><div class="lcd-cell"></div>
+                <div class="lcd-cell">N</div><div class="lcd-cell">O</div><div class="lcd-cell"> </div>
+                <div class="lcd-cell">A</div><div class="lcd-cell">r</div><div class="lcd-cell">d</div>
+                <div class="lcd-cell">u</div><div class="lcd-cell">i</div><div class="lcd-cell">n</div>
+                <div class="lcd-cell">o</div><div class="lcd-cell">!</div>
+                <div class="lcd-cell"></div><div class="lcd-cell"></div><div class="lcd-cell"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 區塊 5: 物件屬性與常用方法全面手冊 -->
+    <section class="card" id="api-reference">
+        <h2>📖 五、LiquidCrystal_I2C 物件屬性與常用方法全面手冊</h2>
+        <p>
+            <code>LiquidCrystal_I2C</code> 提供了豐富的 API 控制硬體。掌握以下常用方法即可靈活打造各種文字介面：
+        </p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>分類</th>
+                    <th>方法名稱與語法</th>
+                    <th>參數說明</th>
+                    <th>功能解析</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>建構子</strong></td>
+                    <td><code>LiquidCrystal_I2C(addr, cols, rows)</code></td>
+                    <td><code>addr</code>: 0x27 / 0x3F<br><code>cols</code>: 16, <code>rows</code>: 2</td>
+                    <td>宣告物件實例並指定硬體位址與行列規格。</td>
+                </tr>
+                <tr>
+                    <td><strong>初始化</strong></td>
+                    <td><code>lcd.init()</code> 或 <code>lcd.begin()</code></td>
+                    <td>無</td>
+                    <td>初始化 I2C 匯流排，設定 HD44780 為 4-bit 運作模式。</td>
+                </tr>
+                <tr>
+                    <td><strong>背光控制</strong></td>
+                    <td><code>lcd.backlight()</code><br><code>lcd.noBacklight()</code></td>
+                    <td>無</td>
+                    <td>開啟或關閉液晶背光 LED，可用於省電待機或警報閃爍效果。</td>
+                </tr>
+                <tr>
+                    <td><strong>游標定位</strong></td>
+                    <td><code>lcd.setCursor(col, row)</code></td>
+                    <td><code>col</code>: 0~15<br><code>row</code>: 0~1</td>
+                    <td>指定下一個輸出字元的起始座標（<strong>注意由 0 起算</strong>）。</td>
+                </tr>
+                <tr>
+                    <td><strong>畫面清除</strong></td>
+                    <td><code>lcd.clear()</code></td>
+                    <td>無</td>
+                    <td>清除全螢幕顯示，游標重置至 (0,0)。<strong>執行耗時約 2ms</strong>。</td>
+                </tr>
+                <tr>
+                    <td><strong>游標歸位</strong></td>
+                    <td><code>lcd.home()</code></td>
+                    <td>無</td>
+                    <td>游標移回 (0,0)，<strong>但保留</strong>畫面上原本的文字內容。</td>
+                </tr>
+                <tr>
+                    <td><strong>文字輸出</strong></td>
+                    <td><code>lcd.print(value)</code></td>
+                    <td>字串、整數、浮點數</td>
+                    <td>向當前游標處輸出資料（支援如 <code>lcd.print(val, 2)</code> 格式化）。</td>
+                </tr>
+                <tr>
+                    <td><strong>寫入 Byte</strong></td>
+                    <td><code>lcd.write(byte_val)</code></td>
+                    <td>自訂字元代號 (0~7)</td>
+                    <td>寫入二進制位元組，專門用於輸出 CGRAM 自定義圖示。</td>
+                </tr>
+                <tr>
+                    <td><strong>游標視覺</strong></td>
+                    <td><code>lcd.cursor()</code> / <code>lcd.noCursor()</code><br><code>lcd.blink()</code> / <code>lcd.noBlink()</code></td>
+                    <td>無</td>
+                    <td>控制是否顯示游標底線 <code>_</code>，或開啟方塊閃爍 █ 效果。</td>
+                </tr>
+                <tr>
+                    <td><strong>文字捲動</strong></td>
+                    <td><code>lcd.scrollDisplayLeft()</code><br><code>lcd.scrollDisplayRight()</code></td>
+                    <td>無</td>
+                    <td>將整個螢幕文字向左或向右平移 1 格（可用於跑馬燈）。</td>
+                </tr>
+                <tr>
+                    <td><strong>自訂圖示</strong></td>
+                    <td><code>lcd.createChar(num, data)</code></td>
+                    <td><code>num</code>: 0~7<br><code>data</code>: 8-byte 陣列</td>
+                    <td>在 CGRAM 建立 5×8 點陣的自訂特殊符號（最多 8 組）。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- 區塊 6: 進階實務應用範例 -->
+    <section class="card" id="advanced-example">
+        <h2>🛠️ 六、進階實作：無閃爍動態計時器與自定義圖示 (INO)</h2>
+        <p>
+            在實際專案中，若在 <code>loop()</code> 內部頻繁呼叫 <code>lcd.clear()</code> 會造成肉眼可見的強烈黑白閃爍。
+            推薦使用<strong>「固定格式定位覆寫法 (Fixed Width Overwrite)」</strong>來達到極致平滑的顯示體驗：
+        </p>
+
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode(this)">📋 複製完整進階程式碼</button>
+            <pre><code class="language-cpp">// 檔案路徑: D:\CLASS_NOTE\ec\arduino_i2c_lcd1602_helloworld.ino
+#include &lt;Wire.h&gt;
+#include &lt;LiquidCrystal_I2C.h&gt;
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+// 自定義字元 1: 愛心圖示 (5x8 點陣)
+byte heartIcon[8] = {
+  0b00000, 0b01010, 0b11111, 0b11111, 0b11111, 0b01110, 0b00100, 0b00000
+};
+
+// 自定義字元 2: 滿電電池圖示 (5x8 點陣)
+byte batteryIcon[8] = {
+  0b01110, 0b11111, 0b11111, 0b11111, 0b11111, 0b11111, 0b11111, 0b11111
+};
+
+unsigned long previousMillis = 0;
+const long interval = 1000;
+int counter = 0;
+
+void setup() {
+  lcd.init();
+  lcd.init();          // 雙重初始化
+  lcd.backlight();     // 開啟背光
+
+  // 註冊自定義字元到 CGRAM (編號 0 與 1)
+  lcd.createChar(0, heartIcon);
+  lcd.createChar(1, batteryIcon);
+
+  // 啟動畫面展示
+  lcd.setCursor(1, 0);
+  lcd.print("Hello, LCD1602");
+  lcd.write(0);        // 印出愛心
+  
+  lcd.setCursor(0, 1);
+  lcd.print("Status: Active ");
+  lcd.write(1);        // 印出電池
+
+  delay(2500);         // 停留 2.5 秒展示
+
+  // 進入計時監控畫面
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Timer Count: ");
+  lcd.setCursor(0, 1);
+  lcd.print("I2C Addr: 0x27");
+}
+
+void loop() {
+  unsigned long currentMillis = millis();
+
+  // 每秒更新計數，採用定點覆寫避免 clear() 造成的閃爍
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+    counter++;
+
+    lcd.setCursor(12, 0); // 固定在第 12 格更新三位數
+    if (counter &lt; 10) {
+      lcd.print("00");
+      lcd.print(counter);
+    } else if (counter &lt; 100) {
+      lcd.print("0");
+      lcd.print(counter);
+    } else {
+      lcd.print(counter);
+    }
+
+    // 每 10 秒提示一次游標閃爍效果
+    if (counter % 10 == 0) {
+      lcd.setCursor(15, 1);
+      lcd.cursor();
+      lcd.blink();
+      delay(400);
+      lcd.noBlink();
+      lcd.noCursor();
+    }
+  }
+}</code></pre>
+        </div>
+    </section>
+
+    <!-- 區塊 7: 疑難排解與 I2C Scanner -->
+    <section class="card" id="troubleshooting">
+        <h2>❓ 七、常見硬體與軟體疑難排解 (FAQ & I2C Scanner)</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>故障現象</th>
+                    <th>常見原因</th>
+                    <th>標準解法</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>背光亮，但只見一排黑方塊或全白</strong></td>
+                    <td>對比度偏壓電阻未調整</td>
+                    <td>用十字螺絲起子微調背板藍色電位器，直到字體清晰可見。</td>
+                </tr>
+                <tr>
+                    <td><strong>程式上傳成功，但螢幕無任何反應</strong></td>
+                    <td>I2C 位址不符（例如實際是 <code>0x3F</code>）</td>
+                    <td>燒錄下方的 I2C Scanner 程式，從序列埠監視器讀取真實設備位址。</td>
+                </tr>
+                <tr>
+                    <td><strong>文字更新時畫面瘋狂跳動閃爍</strong></td>
+                    <td>在 <code>loop()</code> 內部頻繁執行 <code>lcd.clear()</code></td>
+                    <td>改用 <code>lcd.setCursor()</code> 搭配空格覆寫舊資料，根除重繪閃爍。</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>實用工具：I2C 位址自動掃描程式 (I2C Scanner)</h3>
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode(this)">📋 複製 I2C Scanner 程式碼</button>
+            <pre><code class="language-cpp">#include &lt;Wire.h&gt;
+
+void setup() {
+  Wire.begin();
+  Serial.begin(9600);
+  while (!Serial);
+  Serial.println("\nI2C Scanner 掃描器啟動中...");
+}
+
+void loop() {
+  byte error, address;
+  int nDevices = 0;
+
+  Serial.println("開始掃描 I2C 匯流排...");
+
+  for (address = 1; address &lt; 127; address++) {
+    Wire.beginTransmission(address);
+    error = Wire.endTransmission();
+
+    if (error == 0) {
+      Serial.print("✔ 找到 I2C 設備！位址為: 0x");
+      if (address &lt; 16) Serial.print("0");
+      Serial.print(address, HEX);
+      Serial.println(" !");
+      nDevices++;
+    }
+  }
+
+  if (nDevices == 0) {
+    Serial.println("未找到任何 I2C 設備，請檢查接線與 5V 供電！\n");
+  } else {
+    Serial.println("掃描完成。\n");
+  }
+
+  delay(5000); // 每 5 秒掃描一次
+}</code></pre>
+        </div>
+    </section>
+
+    <!-- 區塊 8: 提示詞歷史與變更記錄 -->
+    <section class="card" id="prompt-archive">
+        <h2>📝 八、提示詞歷史與變更記錄 (Prompt Archive)</h2>
+        <div class="callout" style="margin-bottom: 1.2rem;">
+            <strong>🔹 [2026-10-20 15:10:00] [Gemini 3.8 Flash / Antigravity] 建立 LCD 1602 I2C HelloWorld 與程式庫物件方法解析指南</strong><br>
+            <strong>Prompt 原文：</strong>
+            <pre style="background: #0f172a; color: #38bdf8; padding: 0.6rem; border-radius: 6px; margin: 0.4rem 0; font-family: monospace;">C:\Users\User\Desktop\2026-10-20-143026.jpgC:\Users\User\Desktop\2026-10-20-143026.jpgC:\Users\User\Desktop\2026-10-20-142320.jpg 這是arduino接lcd 1602 i2c的接線圖，確認好接線後，利用arduino ide尋找liquidstal i2c的程式庫，選擇範例中的helloworld,進行基本的功能測試與程式庫的物件屬性與方法的應用 "C:\Users\User\Desktop\onclass\螢幕擷取畫面 2026-10-20 150654.jpg"</pre>
+            <strong>變更摘要：</strong>依據使用者上傳的實體接線照片與 IDE HelloWorld 截圖，建立完整的硬體接線檢核、I2C 與 PCF8574 原理、Library 安裝流程、HelloWorld 邏輯流程圖、LiquidCrystal_I2C 常用物件屬性與方法手冊、定點無閃爍更新實務程式與 I2C Scanner 疑難排解指南，產出對應 Markdown、HTML 與 INO 實作檔案。
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    <div class="container">
+        <p style="margin-bottom: 0.5rem; color: #e2e8f0; font-size: 1.05rem;">
+            📘 CLASS_NOTE 電子電路與單晶片專題 • 實體上機實驗指導手冊
+        </p>
+        <p style="font-size: 0.9rem; color: #64748b;">
+            相關單元：<a href="arduino_ide_i2c_lcd1602_guide.html">Arduino IDE 開發環境與接線指南</a> | 
+            <a href="arduino_i2c_lcd1602_dht11.html">LCD 1602 + DHT11 溫濕度監測</a> | 
+            <a href="I2C_simulation.html">I2C 深度工程技術模擬器</a>
+        </p>
+    </div>
+</footer>
+
+<script>
+    function copyCode(btn) {
+        const pre = btn.nextElementSibling;
+        const code = pre.querySelector('code').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+            const originalText = btn.innerText;
+            btn.innerText = '✅ 已複製！';
+            setTimeout(() => { btn.innerText = originalText; }, 2000);
+        });
+    }
+</script>
+</body>
+</html>
