@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛠️ 我的 Arduino 專案開發模式與實務標準流程 (Arduino Development Workflow & SOP)</title>
+    
+    <!-- Prism 程式碼高亮 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- Mermaid 流程圖支援 -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true, theme: 'neutral'});</script>
+
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --primary-light: #e0f2fe;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-purple: #8b5cf6;
+            --secondary: #0f172a;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* 頁首 Header */
+        header {
+            background: linear-gradient(135deg, #0b132b 0%, #1e1b4b 55%, #4338ca 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+            border-bottom: 4px solid var(--accent-purple);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.95rem;
+            font-weight: 800;
+            line-height: 1.35;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            color: #cbd5e1;
+            font-size: 1.05rem;
+            margin-top: 0.5rem;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-pdf {
+            background: #dc2626;
+            color: white;
+        }
+        .btn-pdf:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .metadata-box {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 0.9rem 1.25rem;
+            font-size: 0.88rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+            color: #cbd5e1;
+        }
+        .metadata-box strong {
+            color: #f1f5f9;
+        }
+
+        /* 卡片 */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 2.2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .card h2 {
+            font-size: 1.45rem;
+            color: var(--secondary);
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 2px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .card h3 {
+            font-size: 1.18rem;
+            color: #334155;
+            margin: 1.4rem 0 0.75rem 0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #334155;
+        }
+
+        /* 階段展示盒 */
+        .stage-box {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            background: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            border-left: 6px solid var(--primary);
+            transition: transform 0.2s;
+        }
+        .stage-box:hover {
+            transform: translateX(4px);
+        }
+        .stage-box.stage-1 { border-left-color: #3b82f6; }
+        .stage-box.stage-2 { border-left-color: #10b981; }
+        .stage-box.stage-3 { border-left-color: #f59e0b; }
+        .stage-box.stage-4 { border-left-color: #8b5cf6; }
+        .stage-box.stage-5 { border-left-color: #ec4899; }
+        .stage-box.stage-6 { border-left-color: #06b6d4; }
+
+        .stage-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        /* 表格樣式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.25rem 0;
+            font-size: 0.93rem;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        th, td {
+            padding: 0.85rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
+            border-bottom: 2px solid #cbd5e1;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* 標籤 Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .badge-blue { background: #e0f2fe; color: #0284c7; }
+        .badge-green { background: #dcfce7; color: #16a34a; }
+        .badge-amber { background: #fef3c7; color: #d97706; }
+        .badge-purple { background: #f3e8ff; color: #7e22ce; }
+
+        /* 提示框 Callout */
+        .callout {
+            border-left: 4px solid var(--accent-purple);
+            background: #faf5ff;
+            padding: 1rem 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.25rem 0;
+            font-size: 0.95rem;
+        }
+        .callout-success {
+            border-left-color: var(--accent-green);
+            background: #f0fdf4;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2.5rem 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        @media print {
+            body { background: white !important; color: black !important; padding: 0 !important; }
+            .action-btns { display: none !important; }
+            .card, .stage-box { box-shadow: none !important; border: 1px solid #ccc !important; page-break-inside: avoid; }
+            header { background: none !important; color: black !important; border: 1px solid #aaa !important; }
+            .subtitle, .metadata-box { color: #333 !important; background: #eee !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- 頁首 Header -->
+    <header>
+        <div class="header-top">
+            <div>
+                <h1>🛠️ 我的 Arduino 專案開發模式與實務標準流程 (Development Workflow & SOP)</h1>
+                <p class="subtitle">六階段漸進式開發法：硬體先行 ➔ 官方單元測試 ➔ 故障診斷 ➔ 增量整合 ➔ UI 拋光 ➔ 多模態版本歸檔</p>
+            </div>
+            <div class="action-btns">
+                <button class="btn btn-pdf" onclick="window.print()">🖨️ 匯出成 PDF</button>
+                <a class="btn btn-secondary" href="../INDEX.md">📂 課程總目錄</a>
+            </div>
+        </div>
+
+        <div class="metadata-box">
+            <div><strong>最後更新時間:</strong> 2026-10-20 15:52:00 (UTC+8)</div>
+            <div><strong>使用模型:</strong> Gemini 3.8 Flash</div>
+            <div><strong>執行 Agent:</strong> Antigravity</div>
+            <div><strong>工作流核心:</strong> 漸進單元驗證 ➔ 增量整合 ➔ 防禦性編程 ➔ Git 閉環</div>
+        </div>
+    </header>
+
+    <!-- 區塊 1: 開發流程圖解 -->
+    <section class="card" id="workflow-diagram">
+        <h2>🔄 一、開發流程圖解 (Mermaid Workflow)</h2>
+        <div class="mermaid">
+        flowchart TD
+            subgraph S1["階段一：硬體先行 (Hardware First)"]
+                W1["依照電路規劃插線 (杜邦線 + 麵包板)"] --> W2["通電檢查指示燈 (板載 5V / 模組 Power LED)"]
+                W2 --> W3["手機拍照存證 (記錄線色、孔位、晶片型號)"]
+            end
+
+            subgraph S2["階段二：單元測試 (Unit Testing)"]
+                U1["從 Library Manager 安裝官方認證函式庫"] --> U2["開啟官方經典範例 (如 HelloWorld / DHT_Unified)"]
+                U2 --> U3["單獨燒錄驗證單一模組功能"]
+            end
+
+            subgraph S3["階段三：除錯排查 (Diagnostic & Debugging)"]
+                D1{"功能是否如預期運作？"}
+                D1 -- 否 --> D2["硬體微調 (如藍色電位器旋鈕 / 跳線帽)"]
+                D2 --> D3["診斷工具 (如 I2C Scanner 掃描位址)"]
+                D3 --> U3
+                D1 -- 是 --> S4
+            end
+
+            subgraph S4["階段四：模組整併 (Incremental Integration)"]
+                I1["整併標頭檔 (#include &lt;Wire.h&gt; + &lt;DHT.h&gt;)"] --> I2["分配腳位與宣告實例 (Pin 7 + 0x27)"]
+                I2 --> I3["時序調度 (DHT 1.5s 採樣週期與 I2C 通訊協同)"]
+            end
+
+            subgraph S5["階段五：工程拋光 (UI Polish & Optimization)"]
+                P1["UI 精確排版 (第一行 TEMP: / 第二行 HUMD:)"] --> P2["字元編碼處理 (lcd.write(223) 印出 ° 度數)"]
+                P2 --> P3["防閃爍處理 (空格定長覆寫取代 lcd.clear)"]
+                P3 --> P4["容錯機制 (isnan 防呆檢查)"]
+            end
+
+            subgraph S6["階段六：版本歸檔 (Documentation & Git)"]
+                G1["AI 協同產出 Markdown + HTML (支援 PDF / 複製)"] --> G2["自動更新 INDEX.md 與 index.html 索引"]
+                G2 --> G3["Git Commit & Push 儲存庫雲端同步"]
+            end
+
+            S1 --> S2
+            S2 --> S3
+            S4 --> S5
+            S5 --> S6
+        </div>
+    </section>
+
+    <!-- 區塊 2: 六大階段深入剖析 -->
+    <section class="card" id="six-stages">
+        <h2>🚀 二、六大核心階段 SOP 深度解析</h2>
+
+        <div class="stage-box stage-1">
+            <div class="stage-title">🔌 階段一：硬體先行與實體拍照檢核 (Hardware First & Visual Audit)</div>
+            <p><strong>核心理念：</strong>軟體必須建立在堅若磐石的實體電氣連接上。絕不在接線未定時空想代碼。</p>
+            <ul>
+                <li><strong>電源軌規劃：</strong>利用麵包板頂端紅藍電源軌分配 5V 與 GND，避免單一 Arduino 針腳插拔鬆脫。</li>
+                <li><strong>訊號分類：</strong>I2C 設備固定走 A4/A5，數位感測器指定單一 GPIO（如 Pin 7）。</li>
+                <li><strong>多視角留存：</strong>拍照記錄線色與引腳孔位（如 <code>2026-10-20-143026.jpg</code> 與 <code>2026-10-20-153116.jpg</code>），方便未來比對。</li>
+            </ul>
+        </div>
+
+        <div class="stage-box stage-2">
+            <div class="stage-title">🧪 階段二：官方範例與單元隔離測試 (Unit Testing via Standard Examples)</div>
+            <p><strong>核心理念：</strong>「不要同時測試兩件未知的事物」。先分別驗證個別零件是否完好。</p>
+            <ul>
+                <li><strong>安裝官方認證庫：</strong>至 Library Manager 安裝 <code>LiquidCrystal_I2C</code> 與 <code>DHT sensor library</code>。</li>
+                <li><strong>隔離測試 LCD 1602：</strong>跑 <code>HelloWorld.ino</code>，確認背光、對比度與 <code>0x27</code> 位址正常。</li>
+                <li><strong>隔離測試 DHT11：</strong>跑 <code>DHT_Unified_Sensor.ino</code>，開 Serial Monitor 捏住感測器看數值是否攀升。</li>
+            </ul>
+        </div>
+
+        <div class="stage-box stage-3">
+            <div class="stage-title">🔍 階段三：訊號監測與故障診斷排除 (Signal Monitoring & Diagnostic Debugging)</div>
+            <p><strong>核心理念：</strong>以科學手段觀察現象、推理本質，不盲目亂猜。</p>
+            <ul>
+                <li><strong>條紋雜訊排除（如 <code>2026-10-20-153902.jpg</code>）：</strong>發現更換程式未帶 <code>Wire.h</code> 會留存隨機位元，以雙重 <code>lcd.init()</code> 軟硬體複位解決。</li>
+                <li><strong>位址探測：</strong>遇到螢幕無反應時，以 <code>I2C Scanner</code> 秒速測出是否為 <code>0x3F</code>。</li>
+                <li><strong>硬體微調：</strong>以螺絲起子微調藍色十字電位器達到最佳對比。</li>
+            </ul>
+        </div>
+
+        <div class="stage-box stage-4">
+            <div class="stage-title">🧩 階段四：漸進式模組整併與時序調度 (Incremental Integration & Scheduling)</div>
+            <p><strong>核心理念：</strong>以最小增量整併代碼，解決總線與週期的時序衝突。</p>
+            <ul>
+                <li><strong>統一標頭檔與物件實例：</strong>將 <code>Wire.h</code> 與 <code>DHT.h</code> 納入同一 sketch。</li>
+                <li><strong>時序協同：</strong>嚴格遵守 DHT11 最小 1.5 秒物理採樣週期，避免感測器過熱失真。</li>
+            </ul>
+        </div>
+
+        <div class="stage-box stage-5">
+            <div class="stage-title">✨ 階段五：使用者介面拋光與工程細節優化 (UI Polish & Best Practices)</div>
+            <p><strong>核心理念：</strong>追求專業工程標準：防閃爍、字元編碼對齊與防禦性容錯。</p>
+            <ul>
+                <li><strong>防閃爍技巧：</strong>以「固定長度空格覆寫」取代 <code>lcd.clear()</code>，保證畫面平順不狂閃。</li>
+                <li><strong>度數符號：</strong>使用 <code>lcd.write(223)</code> 輸出 HD44780 內建 ASCII 223 圓圈「<code>°</code>」，拒絕亂碼。</li>
+                <li><strong>容錯機制：</strong>加入 <code>isnan()</code> 判斷，避免感測器脫落時程式崩潰。</li>
+            </ul>
+        </div>
+
+        <div class="stage-box stage-6">
+            <div class="stage-title">📚 階段六：多模態文檔歸檔與版本控制 (Multimodal Archiving & Git Push)</div>
+            <p><strong>核心理念：</strong>「能被完整複現的實驗，才是成功的專案」。</p>
+            <ul>
+                <li><strong>多模態同步產出：</strong>同時產出 Markdown 與高質感 HTML（含 PDF 匯出、代碼複製按鈕）。</li>
+                <li><strong>索引自動維護：</strong>自動更新 <code>INDEX.md</code> 與 <code>index.html</code>。</li>
+                <li><strong>Git 雲端備份：</strong>Commit 並 Push 至 GitHub 儲存庫。</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- 區塊 3: 防禦性編程 Checklist -->
+    <section class="card" id="checklist">
+        <h2>🛡️ 三、Arduino 常見工程地雷與防禦性編程 Checklist</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>檢核項目</th>
+                    <th>常見錯誤現象</th>
+                    <th>正確防禦做法</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>I2C 匯流排</strong></td>
+                    <td>換程式後 LCD 螢幕留下垂直條紋雜訊</td>
+                    <td>必引用 <code>&lt;Wire.h&gt;</code> 並在 <code>setup()</code> 呼叫兩次 <code>lcd.init()</code> 雙重複位。</td>
+                </tr>
+                <tr>
+                    <td><strong>感測器採樣率</strong></td>
+                    <td>DHT11 數值過高或頻繁回傳 <code>NaN</code> 錯誤</td>
+                    <td>採樣間隔嚴格遵守物理規格（DHT11 至少 1.5 秒，DHT22 至少 2 秒）。</td>
+                </tr>
+                <tr>
+                    <td><strong>螢幕文字刷新</strong></td>
+                    <td>畫面每次數值更新時全螢幕黑白狂閃跳動</td>
+                    <td>嚴禁在 <code>loop()</code> 頻繁使用 <code>lcd.clear()</code>，改用空白字元定長覆寫。</td>
+                </tr>
+                <tr>
+                    <td><strong>特殊符號輸出</strong></td>
+                    <td>印出 <code>°</code> 變成片假名或亂碼</td>
+                    <td>勿直接在字串中鍵入 <code>°</code>，改用 <code>lcd.write(223)</code> 輸出內建字型碼。</td>
+                </tr>
+                <tr>
+                    <td><strong>序列埠通訊</strong></td>
+                    <td>序列埠視窗完全空白或充滿問號亂碼</td>
+                    <td>確認程式碼 <code>Serial.begin(9600)</code> 與 IDE 監視器右下角鮑率完全一致。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- 區塊 4: 提示詞歷史與變更記錄 -->
+    <section class="card" id="prompt-archive">
+        <h2>📝 四、提示詞歷史與變更記錄 (Prompt Archive)</h2>
+        <div class="callout" style="margin-bottom: 1.2rem;">
+            <strong>🔹 [2026-10-20 15:52:00] [Gemini 3.8 Flash / Antigravity] 整理 Arduino 專案開發模式與實務標準流程手冊</strong><br>
+            <strong>Prompt 原文：</strong>
+            <pre style="background: #0f172a; color: #38bdf8; padding: 0.6rem; border-radius: 6px; margin: 0.4rem 0; font-family: monospace;">整理出我的arduino開發模式與步驟</pre>
+            <strong>變更摘要：</strong>系統化回顧並歸納使用者在歷次實驗中所實踐的「六階段漸進式開發法」（硬體先行 ➔ 官方範例單元測試 ➔ 故障診斷排除 ➔ 增量整合 ➔ UI 拋光與防閃爍 ➔ 多模態文檔與 Git 歸檔），繪製 Mermaid 開發流程圖，並建立防禦性編程 Checklist，產出對應 Markdown 與 HTML 指導文件。
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    <div class="container">
+        <p style="margin-bottom: 0.5rem; color: #e2e8f0; font-size: 1.05rem;">
+            📘 CLASS_NOTE 電子電路與單晶片專題 • 實體上機實驗指導手冊
+        </p>
+        <p style="font-size: 0.9rem; color: #64748b;">
+            相關實作案例：<a href="arduino_i2c_lcd1602_helloworld_guide.html">I2C LCD 1602 HelloWorld 手冊</a> | 
+            <a href="arduino_dht11_wiring_test_guide.html">DHT11 單線通訊實測</a> | 
+            <a href="arduino_i2c_lcd1602_dht11_unified_display.html">雙模組整合監控系統</a>
+        </p>
+    </div>
+</footer>
+
+</body>
+</html>

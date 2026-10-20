@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-10-20 15:45:00 (UTC+8)  
+> **最後更新時間**: 2026-10-20 15:52:00 (UTC+8)  
 > **使用模型**: Gemini 3.8 Flash  
 > **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -35,6 +35,8 @@
 * `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
+* `2026-10-20` | [Arduino 專案開發模式與實務標準流程 (SOP) 手冊 (HTML)](./ec/arduino_development_workflow_methodology.html) (HTML)
+* `2026-10-20` | [Arduino 專案開發模式與實務標準流程 (SOP) 手冊 (MD)](./ec/arduino_development_workflow_methodology.md) (MD)
 * `2026-10-20` | [Arduino Uno 整合 I2C LCD 1602 與 DHT11 溫濕度即時顯示系統實作手冊 (HTML)](./ec/arduino_i2c_lcd1602_dht11_unified_display.html) (HTML)
 * `2026-10-20` | [Arduino Uno 整合 I2C LCD 1602 與 DHT11 溫濕度即時顯示系統實作手冊 (MD)](./ec/arduino_i2c_lcd1602_dht11_unified_display.md) (MD)
 * `2026-10-20` | [Arduino Uno I2C LCD 1602 + DHT11 溫濕度整合程式碼 (INO)](./ec/arduino_i2c_lcd1602_dht11_unified.ino) (INO)
