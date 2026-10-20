@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📟 Arduino Uno 整合 I2C LCD 1602 與 DHT11 溫濕度即時顯示系統指南</title>
+    
+    <!-- Prism 程式碼高亮 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- Mermaid 流程圖支援 -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true, theme: 'neutral'});</script>
+
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --primary-light: #e0f2fe;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-purple: #8b5cf6;
+            --secondary: #0f172a;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* 頁首 Header */
+        header {
+            background: linear-gradient(135deg, #0b132b 0%, #1e3a8a 55%, #0284c7 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+            border-bottom: 4px solid var(--primary);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.95rem;
+            font-weight: 800;
+            line-height: 1.35;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.05rem;
+            margin-top: 0.5rem;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-pdf {
+            background: #dc2626;
+            color: white;
+        }
+        .btn-pdf:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.22);
+            transform: translateY(-2px);
+        }
+
+        .metadata-box {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 0.9rem 1.25rem;
+            font-size: 0.88rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+            color: #cbd5e1;
+        }
+        .metadata-box strong {
+            color: #f1f5f9;
+        }
+
+        /* 卡片 */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 2.2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .card h2 {
+            font-size: 1.45rem;
+            color: var(--secondary);
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 2px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .card h3 {
+            font-size: 1.18rem;
+            color: #334155;
+            margin: 1.4rem 0 0.75rem 0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #334155;
+        }
+
+        /* 圖片網格展示 */
+        .img-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .img-card {
+            background: #f1f5f9;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+        .img-card:hover {
+            transform: translateY(-3px);
+        }
+        .img-card img {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: cover;
+            display: block;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .img-card .caption {
+            padding: 0.85rem 1rem;
+            font-size: 0.88rem;
+            color: #475569;
+            background: white;
+            font-weight: 500;
+        }
+
+        /* 表格樣式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.25rem 0;
+            font-size: 0.93rem;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        th, td {
+            padding: 0.85rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
+            border-bottom: 2px solid #cbd5e1;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* 標籤 Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .badge-blue { background: #e0f2fe; color: #0284c7; }
+        .badge-green { background: #dcfce7; color: #16a34a; }
+        .badge-amber { background: #fef3c7; color: #d97706; }
+        .badge-purple { background: #f3e8ff; color: #7e22ce; }
+        .badge-red { background: #fee2e2; color: #dc2626; }
+
+        /* 提示框 Callout */
+        .callout {
+            border-left: 4px solid var(--primary);
+            background: #f0f9ff;
+            padding: 1rem 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.25rem 0;
+            font-size: 0.95rem;
+        }
+        .callout-warning {
+            border-left-color: var(--accent-amber);
+            background: #fffbeb;
+        }
+        .callout-success {
+            border-left-color: var(--accent-green);
+            background: #f0fdf4;
+        }
+
+        /* 程式碼區塊與複製按鈕 */
+        .code-container {
+            position: relative;
+            margin: 1.4rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.18);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.35rem 0.75rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s ease;
+        }
+        .copy-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        pre[class*="language-"] {
+            margin: 0 !important;
+            padding: 1.4rem 1.2rem !important;
+            border-radius: 8px !important;
+            background: #0f172a !important;
+            font-size: 0.9rem !important;
+        }
+
+        code[class*="language-"] {
+            font-family: Consolas, Monaco, "Courier New", monospace !important;
+        }
+
+        /* LCD 1602 格子排版視覺化 */
+        .lcd-screen-preview {
+            background: #0284c7;
+            background: linear-gradient(180deg, #0369a1 0%, #075985 100%);
+            border: 8px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+            font-family: "Courier New", monospace;
+            color: #f8fafc;
+        }
+        .lcd-row {
+            display: grid;
+            grid-template-columns: repeat(16, 1fr);
+            gap: 2px;
+            margin-bottom: 4px;
+        }
+        .lcd-cell {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2.5rem 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        @media print {
+            body { background: white !important; color: black !important; padding: 0 !important; }
+            .action-btns, .copy-btn { display: none !important; }
+            .card { box-shadow: none !important; border: 1px solid #ccc !important; page-break-inside: avoid; }
+            header { background: none !important; color: black !important; border: 1px solid #aaa !important; }
+            .subtitle, .metadata-box { color: #333 !important; background: #eee !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- 頁首 Header -->
+    <header>
+        <div class="header-top">
+            <div>
+                <h1>📟 Arduino Uno 整合 I2C LCD 1602 與 DHT11 溫濕度即時顯示系統指南</h1>
+                <p class="subtitle">解鎖第一行 TEMP: 與第二行 HUMD: 格式化排版、HD44780 度數符號 (223) 與條紋雜訊排除</p>
+            </div>
+            <div class="action-btns">
+                <button class="btn btn-pdf" onclick="window.print()">🖨️ 匯出成 PDF</button>
+                <a class="btn btn-secondary" href="../INDEX.md">📂 課程總目錄</a>
+                <a class="btn btn-secondary" href="arduino_i2c_lcd1602_dht11_unified.ino" download>💾 下載整合程式 (.ino)</a>
+            </div>
+        </div>
+
+        <div class="metadata-box">
+            <div><strong>最後更新時間:</strong> 2026-10-20 15:45:00 (UTC+8)</div>
+            <div><strong>使用模型:</strong> Gemini 3.8 Flash</div>
+            <div><strong>執行 Agent:</strong> Antigravity</div>
+            <div><strong>引腳分配:</strong> LCD (A4/A5, 0x27) • DHT11 (Pin 7)</div>
+        </div>
+    </header>
+
+    <!-- 區塊 1: 實體硬體接線與條紋雜訊診斷 -->
+    <section class="card" id="diagnosis">
+        <h2>🔌 一、實體硬體接線與螢幕條紋雜訊診斷</h2>
+        <p>
+            在最新的現場上機照片中，Arduino Uno 同時連接了 LCD 1602 與麵包板上的 DHT11：
+        </p>
+
+        <div class="img-grid" style="grid-template-columns: 1fr;">
+            <div class="img-card">
+                <img src="./2026-10-20-153902.jpg" alt="Arduino Uno 整合 DHT11 與 LCD 1602 實機接線與螢幕條紋雜訊">
+                <div class="caption">📷 <strong>圖 1-1</strong>：Arduino Uno 同時連接 LCD 1602 與 DHT11 實體接線狀況（螢幕顯現上電未初始化條紋）</div>
+            </div>
+        </div>
+
+        <div class="callout callout-warning">
+            <strong>🔍 為什麼照片中的液晶螢幕會出現垂直條紋雜訊？</strong>
+            <ul style="margin: 0.5rem 0 0 1.2rem;">
+                <li><strong>根本原因：</strong>前一階段燒錄純序列埠版的 <code>DHT_Unified_Sensor.ino</code> 時，程式中<strong>完全沒有包含 <code>&lt;Wire.h&gt;</code> 與 <code>LiquidCrystal_I2C</code> 驅動指令</strong>。因此 LCD 模組通電後，內部的 HD44780 晶片未收到初始化複位訊號，DDRAM 殘留隨機浮動位元，進而呈現出豎條紋。</li>
+                <li><strong>解決方案：</strong>只要燒錄整合了 <code>Wire.h</code> 與 <code>LiquidCrystal_I2C.h</code> 的新程式，透過 <code>lcd.init(); lcd.init(); lcd.backlight(); lcd.clear();</code> 執行軟硬體雙重重置，即可徹底消除條紋，正常顯示文字！</li>
+            </ul>
+        </div>
+
+        <h3>1.1 完整共用接線對照清單</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>模組</th>
+                    <th>引腳名稱</th>
+                    <th>訊號定義</th>
+                    <th>Arduino Uno 對應腳位</th>
+                    <th>導線顏色</th>
+                    <th>說明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="4"><strong>I2C LCD 1602</strong></td>
+                    <td><strong>GND</strong></td>
+                    <td><span class="badge badge-purple">接地</span></td>
+                    <td><strong>GND</strong> (電源排針/麵包板)</td>
+                    <td>棕色 / 黑色</td>
+                    <td>系統共地</td>
+                </tr>
+                <tr>
+                    <td><strong>VCC</strong></td>
+                    <td><span class="badge badge-red">電源 5V</span></td>
+                    <td><strong>5V</strong> (電源排針/麵包板)</td>
+                    <td>紅色</td>
+                    <td>主供電</td>
+                </tr>
+                <tr>
+                    <td><strong>SDA</strong></td>
+                    <td><span class="badge badge-blue">I2C 數據</span></td>
+                    <td><strong>A4</strong> (或專用 SDA)</td>
+                    <td>黃色</td>
+                    <td>雙向指令與文字</td>
+                </tr>
+                <tr>
+                    <td><strong>SCL</strong></td>
+                    <td><span class="badge badge-green">I2C 時脈</span></td>
+                    <td><strong>A5</strong> (或專用 SCL)</td>
+                    <td>黃色 / 橘色</td>
+                    <td>同步時鐘訊號</td>
+                </tr>
+                <tr>
+                    <td rowspan="3"><strong>DHT11 模組</strong></td>
+                    <td><strong>VCC (+)</strong></td>
+                    <td><span class="badge badge-red">感測電源</span></td>
+                    <td><strong>5V</strong> (麵包板電源軌)</td>
+                    <td>橘色</td>
+                    <td>感測器 5V 供電</td>
+                </tr>
+                <tr>
+                    <td><strong>DATA (S)</strong></td>
+                    <td><span class="badge badge-blue">單線訊號</span></td>
+                    <td><strong>數位 Pin 7</strong></td>
+                    <td>白色 / 灰線</td>
+                    <td>溫濕度微秒脈衝</td>
+                </tr>
+                <tr>
+                    <td><strong>GND (-)</strong></td>
+                    <td><span class="badge badge-purple">感測接地</span></td>
+                    <td><strong>GND</strong> (麵包板接地軌)</td>
+                    <td>棕色</td>
+                    <td>共地信號基準</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- 區塊 2: 系統流程圖 -->
+    <section class="card" id="flowchart">
+        <h2>🚀 二、程式執行邏輯流程圖 (Mermaid Flowchart)</h2>
+        <div class="mermaid">
+        flowchart TD
+            Start(["通電開機 / 程式啟動"]) --> InitWire["引入 Wire.h 與 LiquidCrystal_I2C.h"]
+            InitWire --> Setup["進入 setup() 初始化程序"]
+            
+            Setup --> LCD_Init["執行雙重 lcd.init() 消除螢幕條紋雜訊"]
+            LCD_Init --> LCD_Backlight["lcd.backlight() 點亮背光"]
+            LCD_Backlight --> DHT_Init["dht.begin() 初始化 DHT11 感測器"]
+            DHT_Init --> SetDelay["設定安全採樣週期 (>= 1500ms)"]
+            
+            SetDelay --> Loop["進入 void loop() 主迴圈"]
+            Loop --> Wait["delay(delayMS) 維持感測器熱平衡"]
+            
+            Wait --> ReadTemp["dht.temperature().getEvent(&event)"]
+            ReadTemp --> CheckTemp{"isnan(event.temperature)?"}
+            CheckTemp -- 是 --> TempErr["LCD 第一行: TEMP: Error     "]
+            CheckTemp -- 否 --> TempOK["LCD 第一行: TEMP: xx.x°C   "]
+            
+            TempErr --> ReadHumd["dht.humidity().getEvent(&event)"]
+            TempOK --> ReadHumd
+            
+            ReadHumd --> CheckHumd{"isnan(event.relative_humidity)?"}
+            CheckHumd -- 是 --> HumdErr["LCD 第二行: HUMD: Error     "]
+            CheckHumd -- 否 --> HumdOK["LCD 第二行: HUMD: xx.x %   "]
+            
+            HumdErr --> Loop
+            HumdOK --> Loop
+        </div>
+    </section>
+
+    <!-- 區塊 3: 雙行排版視覺化 -->
+    <section class="card" id="layout-preview">
+        <h2>📐 三、LCD 1602 雙行文字排版視覺化</h2>
+        <p>
+            第一行顯示 <strong>TEMP:</strong>，第二行顯示 <strong>HUMD:</strong>。特別利用 <code>lcd.write(223)</code> 輸出 HD44780 內建的「<strong>°</strong>」度數符號：
+        </p>
+
+        <div class="lcd-screen-preview">
+            <div class="lcd-row">
+                <div class="lcd-cell">T</div><div class="lcd-cell">E</div><div class="lcd-cell">M</div>
+                <div class="lcd-cell">P</div><div class="lcd-cell">:</div><div class="lcd-cell"> </div>
+                <div class="lcd-cell">2</div><div class="lcd-cell">7</div><div class="lcd-cell">.</div>
+                <div class="lcd-cell">5</div><div class="lcd-cell">°</div><div class="lcd-cell">C</div>
+                <div class="lcd-cell"> </div><div class="lcd-cell"> </div><div class="lcd-cell"> </div>
+                <div class="lcd-cell"> </div>
+            </div>
+            <div class="lcd-row">
+                <div class="lcd-cell">H</div><div class="lcd-cell">U</div><div class="lcd-cell">M</div>
+                <div class="lcd-cell">D</div><div class="lcd-cell">:</div><div class="lcd-cell"> </div>
+                <div class="lcd-cell">4</div><div class="lcd-cell">1</div><div class="lcd-cell">.</div>
+                <div class="lcd-cell">0</div><div class="lcd-cell"> </div><div class="lcd-cell">%</div>
+                <div class="lcd-cell"> </div><div class="lcd-cell"> </div><div class="lcd-cell"> </div>
+                <div class="lcd-cell"> </div>
+            </div>
+        </div>
+
+        <div class="callout callout-success">
+            <strong>💡 防閃爍工程細節（以空格覆寫代替 <code>lcd.clear()</code>）：</strong>
+            在輸出 <code>TEMP: 27.5°C</code> 之後加上 <code>"C   "</code> 補滿空格，確保舊文字被無縫覆蓋，而不需要在 <code>loop()</code> 呼叫 <code>lcd.clear()</code>，徹底根除液晶閃爍！
+        </div>
+    </section>
+
+    <!-- 區塊 4: 完整整合程式碼 -->
+    <section class="card" id="integrated-code">
+        <h2>💻 四、完整整合程式碼 (`sketch_oct20b.ino` 優化版)</h2>
+        
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode(this)">📋 複製完整程式碼</button>
+            <pre><code class="language-cpp">#include &lt;Wire.h&gt; 
+#include &lt;LiquidCrystal_I2C.h&gt;
+#include &lt;Adafruit_Sensor.h&gt;
+#include &lt;DHT.h&gt;
+#include &lt;DHT_U.h&gt;
+
+// --- 1. 設定 DHT 感測器 ---
+#define DHTPIN 7       // DHT 接在數位腳位 7
+#define DHTTYPE DHT11  // 使用 DHT11 感測器
+DHT_Unified dht(DHTPIN, DHTTYPE);
+
+// --- 2. 設定 LCD 螢幕 ---
+// 預設 I2C 位址為 0x27，16 個字元寬度、2 行顯示
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+uint32_t delayMS;
+
+void setup() {
+  Serial.begin(9600);
+  
+  // 初始化 LCD 螢幕
+  lcd.init();
+  lcd.init();          // 雙重初始化，有效清除上電殘留的條紋雜訊
+  lcd.backlight();     // 點亮液晶背光
+  lcd.clear();         // 清空全螢幕
+
+  // 初始化 DHT 感測器
+  dht.begin();
+  
+  // 取得感測器規格並設定安全延遲時間
+  sensor_t sensor;
+  dht.temperature().getSensor(&sensor);
+  dht.humidity().getSensor(&sensor);
+  delayMS = sensor.min_delay / 1000;
+  
+  // DHT11 讀取間隔建議至少 1.5 秒 ~ 2 秒 (1500ms~2000ms)
+  if (delayMS &lt; 1500) {
+    delayMS = 1500;
+  }
+}
+
+void loop() {
+  // 感測器讀取間隔延遲
+  delay(delayMS);
+
+  sensors_event_t event;
+
+  // ==========================================
+  // --- 讀取並顯示溫度 (第一行 Row 0) ---
+  // ==========================================
+  dht.temperature().getEvent(&event);
+  lcd.setCursor(0, 0); // 游標移至第 0 欄、第 0 列 (第一行開頭)
+  
+  if (isnan(event.temperature)) {
+    Serial.println(F("Error reading temperature!"));
+    lcd.print(F("TEMP: Error     "));
+  } else {
+    // 輸出至序列埠監視器
+    Serial.print(F("Temperature: "));
+    Serial.print(event.temperature);
+    Serial.println(F(" *C"));
+
+    // 輸出至 LCD 液晶螢幕第一行
+    lcd.print(F("TEMP: "));
+    lcd.print(event.temperature, 1); // 顯示到小數點後 1 位 (例如 27.5)
+    lcd.write(223);                  // HD44780 內建 ASCII 223 圓圈「°」度數符號
+    lcd.print(F("C   "));             // 多留空白確保清除前一次殘留文字，免用 clear()
+  }
+
+  // ==========================================
+  // --- 讀取並顯示濕度 (第二行 Row 1) ---
+  // ==========================================
+  dht.humidity().getEvent(&event);
+  lcd.setCursor(0, 1); // 游標移至第 0 欄、第 1 列 (第二行開頭)
+  
+  if (isnan(event.relative_humidity)) {
+    Serial.println(F("Error reading humidity!"));
+    lcd.print(F("HUMD: Error     "));
+  } else {
+    // 輸出至序列埠監視器
+    Serial.print(F("Humidity: "));
+    Serial.print(event.relative_humidity);
+    Serial.println(F(" %"));
+
+    // 輸出至 LCD 液晶螢幕第二行
+    lcd.print(F("HUMD: "));
+    lcd.print(event.relative_humidity, 1); // 顯示到小數點後 1 位 (例如 41.0)
+    lcd.print(F(" %   "));                 // 多留空白確保定長覆寫
+  }
+}</code></pre>
+        </div>
+    </section>
+
+    <!-- 區塊 5: 提示詞歷史與變更記錄 -->
+    <section class="card" id="prompt-archive">
+        <h2>📝 五、提示詞歷史與變更記錄 (Prompt Archive)</h2>
+        <div class="callout" style="margin-bottom: 1.2rem;">
+            <strong>🔹 [2026-10-20 15:45:00] [Gemini 3.8 Flash / Antigravity] 建立 LCD1602 + DHT11 雙行溫濕度整合顯示指南</strong><br>
+            <strong>Prompt 原文：</strong>
+            <pre style="background: #0f172a; color: #38bdf8; padding: 0.6rem; border-radius: 6px; margin: 0.4rem 0; font-family: monospace;">C:\Users\User\Desktop\onclass\sketch_oct20b\sketch_oct20b.ino C:\Users\User\Desktop\2026-10-20-153902.jpg 利用以下提示詞讓AI協助整合 整合這個程式 讓溫溼度顯示在螢幕上 第一行顯示 TEMP: 第二行顯示HUMD:</pre>
+            <strong>變更摘要：</strong>依據使用者上傳的實拍硬體照片（2026-10-20-153902.jpg）診斷螢幕條紋雜訊成因（未初始化 I2C 匯流排），並將 sketch_oct20b.ino 優化整合為具備雙重初始化、HD44780 ASCII 223 度數符號輸出、定長防閃爍覆蓋與完備錯誤容錯機制的溫濕度即時顯示系統，第一行顯示 TEMP:、第二行顯示 HUMD:，產出對應 Markdown、HTML 與 INO 實作檔案。
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    <div class="container">
+        <p style="margin-bottom: 0.5rem; color: #e2e8f0; font-size: 1.05rem;">
+            📘 CLASS_NOTE 電子電路與單晶片專題 • 實體上機實驗指導手冊
+        </p>
+        <p style="font-size: 0.9rem; color: #64748b;">
+            相關單元：<a href="arduino_dht11_wiring_test_guide.html">DHT11 單線通訊與 Unified 測試</a> | 
+            <a href="arduino_i2c_lcd1602_helloworld_guide.html">I2C LCD 1602 HelloWorld 與方法手冊</a>
+        </p>
+    </div>
+</footer>
+
+<script>
+    function copyCode(btn) {
+        const pre = btn.nextElementSibling;
+        const code = pre.querySelector('code').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+            const originalText = btn.innerText;
+            btn.innerText = '✅ 已複製！';
+            setTimeout(() => { btn.innerText = originalText; }, 2000);
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-10-20 15:35:00 (UTC+8)  
+> **最後更新時間**: 2026-10-20 15:45:00 (UTC+8)  
 > **使用模型**: Gemini 3.8 Flash  
 > **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -35,6 +35,11 @@
 * `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
+* `2026-10-20` | [Arduino Uno 整合 I2C LCD 1602 與 DHT11 溫濕度即時顯示系統實作手冊 (HTML)](./ec/arduino_i2c_lcd1602_dht11_unified_display.html) (HTML)
+* `2026-10-20` | [Arduino Uno 整合 I2C LCD 1602 與 DHT11 溫濕度即時顯示系統實作手冊 (MD)](./ec/arduino_i2c_lcd1602_dht11_unified_display.md) (MD)
+* `2026-10-20` | [Arduino Uno I2C LCD 1602 + DHT11 溫濕度整合程式碼 (INO)](./ec/arduino_i2c_lcd1602_dht11_unified.ino) (INO)
+* `2026-10-20` | [Arduino Uno 課堂整合草稿程式碼 (sketch_oct20b.ino)](./ec/sketch_oct20b.ino) (INO)
+* `2026-10-20` | [Arduino Uno 整合 DHT11 與 LCD 1602 實體接線圖 (含條紋雜訊診斷)](./ec/2026-10-20-153902.jpg) (JPG)
 * `2026-10-20` | [Arduino Uno 連接 DHT11 溫濕度感測器：接線確認與 Adafruit Unified Sensor 範例實測 (HTML)](./ec/arduino_dht11_wiring_test_guide.html) (HTML)
 * `2026-10-20` | [Arduino Uno 連接 DHT11 溫濕度感測器：接線確認與 Adafruit Unified Sensor 範例實測 (MD)](./ec/arduino_dht11_wiring_test_guide.md) (MD)
 * `2026-10-20` | [Arduino Uno DHT11 Unified Sensor 單元測試程式 (INO)](./ec/arduino_dht11_unified_test.ino) (INO)
