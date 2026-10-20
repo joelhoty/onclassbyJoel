@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌡️ Arduino Uno 連接 DHT11 溫濕度感測器：接線確認與 Adafruit Unified Sensor 範例實測</title>
+    
+    <!-- Prism 程式碼高亮 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- Mermaid 流程圖支援 -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true, theme: 'neutral'});</script>
+
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --primary-light: #e0f2fe;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-red: #ef4444;
+            --secondary: #0f172a;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* 頁首 Header */
+        header {
+            background: linear-gradient(135deg, #0b132b 0%, #1c2541 55%, #059669 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+            border-bottom: 4px solid var(--accent-green);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.95rem;
+            font-weight: 800;
+            line-height: 1.35;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.05rem;
+            margin-top: 0.5rem;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-pdf {
+            background: #dc2626;
+            color: white;
+        }
+        .btn-pdf:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.22);
+            transform: translateY(-2px);
+        }
+
+        .metadata-box {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 0.9rem 1.25rem;
+            font-size: 0.88rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+            color: #cbd5e1;
+        }
+        .metadata-box strong {
+            color: #f1f5f9;
+        }
+
+        /* 卡片 */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 2.2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .card h2 {
+            font-size: 1.45rem;
+            color: var(--secondary);
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 2px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .card h3 {
+            font-size: 1.18rem;
+            color: #334155;
+            margin: 1.4rem 0 0.75rem 0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #334155;
+        }
+
+        /* 圖片網格展示 */
+        .img-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .img-card {
+            background: #f1f5f9;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+        .img-card:hover {
+            transform: translateY(-3px);
+        }
+        .img-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .img-card .caption {
+            padding: 0.85rem 1rem;
+            font-size: 0.88rem;
+            color: #475569;
+            background: white;
+            font-weight: 500;
+        }
+
+        /* 表格樣式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.25rem 0;
+            font-size: 0.93rem;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        th, td {
+            padding: 0.85rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
+            border-bottom: 2px solid #cbd5e1;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* 標籤 Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .badge-blue { background: #e0f2fe; color: #0284c7; }
+        .badge-green { background: #dcfce7; color: #16a34a; }
+        .badge-amber { background: #fef3c7; color: #d97706; }
+        .badge-purple { background: #f3e8ff; color: #7e22ce; }
+        .badge-red { background: #fee2e2; color: #dc2626; }
+
+        /* 提示框 Callout */
+        .callout {
+            border-left: 4px solid var(--accent-green);
+            background: #f0fdf4;
+            padding: 1rem 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.25rem 0;
+            font-size: 0.95rem;
+        }
+        .callout-warning {
+            border-left-color: var(--accent-amber);
+            background: #fffbeb;
+        }
+        .callout-info {
+            border-left-color: var(--primary);
+            background: #f0f9ff;
+        }
+
+        /* 程式碼區塊與複製按鈕 */
+        .code-container {
+            position: relative;
+            margin: 1.4rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.18);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.35rem 0.75rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s ease;
+        }
+        .copy-btn:hover {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+        }
+
+        pre[class*="language-"] {
+            margin: 0 !important;
+            padding: 1.4rem 1.2rem !important;
+            border-radius: 8px !important;
+            background: #0f172a !important;
+            font-size: 0.9rem !important;
+        }
+
+        code[class*="language-"] {
+            font-family: Consolas, Monaco, "Courier New", monospace !important;
+        }
+
+        /* 數據預覽盒 */
+        .data-display {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            color: #38bdf8;
+            font-family: "Courier New", monospace;
+            font-size: 1.05rem;
+            margin: 1.2rem 0;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* 頁尾 */
+        footer {
+            text-align: center;
+            padding: 2.5rem 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        @media print {
+            body { background: white !important; color: black !important; padding: 0 !important; }
+            .action-btns, .copy-btn { display: none !important; }
+            .card { box-shadow: none !important; border: 1px solid #ccc !important; page-break-inside: avoid; }
+            header { background: none !important; color: black !important; border: 1px solid #aaa !important; }
+            .subtitle, .metadata-box { color: #333 !important; background: #eee !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- 頁首 Header -->
+    <header>
+        <div class="header-top">
+            <div>
+                <h1>🌡️ Arduino Uno 連接 DHT11 溫濕度感測器：接線確認與 Adafruit Unified Sensor 範例實測</h1>
+                <p class="subtitle">從 3-Pin 模組接線驗證、單線通訊協定 40-Bit 訊號時序到序列埠即時溫濕度數據解析</p>
+            </div>
+            <div class="action-btns">
+                <button class="btn btn-pdf" onclick="window.print()">🖨️ 匯出成 PDF</button>
+                <a class="btn btn-secondary" href="../INDEX.md">📂 課程總目錄</a>
+                <a class="btn btn-secondary" href="arduino_dht11_unified_test.ino" download>💾 下載測試程式 (.ino)</a>
+            </div>
+        </div>
+
+        <div class="metadata-box">
+            <div><strong>最後更新時間:</strong> 2026-10-20 15:35:00 (UTC+8)</div>
+            <div><strong>使用模型:</strong> Gemini 3.8 Flash</div>
+            <div><strong>執行 Agent:</strong> Antigravity</div>
+            <div><strong>測試腳位:</strong> Arduino Pin 7 (DATA)、5V、GND</div>
+        </div>
+    </header>
+
+    <!-- 區塊 1: 實體硬體接線分析 -->
+    <section class="card" id="wiring-analysis">
+        <h2>🔌 一、實體硬體接線對照與狀態分析</h2>
+        <p>
+            依據現場實拍照片，實驗麵包板上已連接 **DHT11 溫濕度模組**，並與先前設定好的 **LCD 1602** 與 **Arduino Uno** 協同就位：
+        </p>
+
+        <div class="img-grid">
+            <div class="img-card">
+                <img src="./2026-10-20-153116.jpg" alt="Arduino Uno 整合 DHT11 與 LCD 1602 實機接線">
+                <div class="caption">📷 <strong>圖 1-1</strong>：Arduino Uno 整合 DHT11 與 LCD 1602 實機通電測試</div>
+            </div>
+            <div class="img-card">
+                <img src="./2026-10-20-153131_ide_dht11.jpg" alt="Arduino IDE 執行 DHT_Unified_Sensor.ino 與序列埠監控畫面">
+                <div class="caption">📷 <strong>圖 1-2</strong>：Arduino IDE 序列埠即時顯示 27.90°C 與 41.00% 濕度</div>
+            </div>
+        </div>
+
+        <h3>1.1 DHT11 模組 3-Pin 接線對照表</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>DHT11 引腳標示</th>
+                    <th>訊號定義</th>
+                    <th>Arduino Uno 對應腳位</th>
+                    <th>照片導線顏色</th>
+                    <th>功能說明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>VCC (+)</strong></td>
+                    <td><span class="badge badge-red">電源 5V</span></td>
+                    <td><strong>5V</strong> (電源排針)</td>
+                    <td>橘色 / 紅色線</td>
+                    <td>提供模組運作電源（3.3V ~ 5V）。</td>
+                </tr>
+                <tr>
+                    <td><strong>DATA (S / OUT)</strong></td>
+                    <td><span class="badge badge-blue">單線數據</span></td>
+                    <td><strong>數位 Pin 7</strong></td>
+                    <td>白色 / 灰綠色線</td>
+                    <td>單線雙向數位通訊傳輸線，對應 <code>#define DHTPIN 7</code>。</td>
+                </tr>
+                <tr>
+                    <td><strong>GND (-)</strong></td>
+                    <td><span class="badge badge-purple">接地</span></td>
+                    <td><strong>GND</strong> (電源排針)</td>
+                    <td>棕色 / 黑色線</td>
+                    <td>電源負極共地迴路。</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="callout callout-info">
+            <strong>💡 板載上拉電阻提醒：</strong>
+            您使用的 3-Pin 模組自帶小 PCB 底板，內部已整合抗干擾電容與 4.7kΩ ~ 10kΩ 上拉電阻，因此無需外接電阻即可直接穩插麵包板使用。
+        </div>
+    </section>
+
+    <!-- 區塊 2: 通訊協定與交握時序 -->
+    <section class="card" id="protocol-analysis">
+        <h2>🔬 二、DHT11 單線式 (Single-Bus) 通訊協定時序剖析</h2>
+        <p>
+            DHT11 採用專屬的單線雙向協定，微控制器與感測器之間完全仰賴精準的微秒（μs）脈衝電位交握：
+        </p>
+
+        <div class="mermaid">
+        sequenceDiagram
+            autonumber
+            participant Arduino as Arduino Uno (Pin 7)
+            participant DHT as DHT11 感測器
+            
+            Note over Arduino,DHT: 匯流排平時由上拉電阻拉至 HIGH
+            Arduino->>DHT: 主機拉低電位 (LOW) 至少 18ms (發送起始訊號)
+            Arduino->>DHT: 主機釋放匯流排拉高 (HIGH) 20~40μs 等待響應
+            DHT->>Arduino: 感測器響應：拉低 80μs (Response LOW)
+            DHT->>Arduino: 感測器準備：拉高 80μs (Response HIGH)
+            
+            Note over DHT,Arduino: 感測器連續輸出 40-Bit (5 Bytes) 數據
+            DHT-->>Arduino: 傳送 16-bit 濕度 (整數 + 小數)
+            DHT-->>Arduino: 傳送 16-bit 溫度 (整數 + 小數)
+            DHT-->>Arduino: 傳送 8-bit 校驗和 (Checksum)
+            
+            Note over Arduino,DHT: 傳輸完畢，感測器釋放匯流排恢復為 HIGH
+        </div>
+
+        <h3>2.1 40-Bit 封包結構與校驗公式</h3>
+        <ul>
+            <li><strong>Byte 0</strong>：相對濕度整數部分（如 <code>41</code>%）</li>
+            <li><strong>Byte 1</strong>：相對濕度小數部分（DHT11 為 0）</li>
+            <li><strong>Byte 2</strong>：攝氏溫度整數部分（如 <code>27</code>°C）</li>
+            <li><strong>Byte 3</strong>：攝氏溫度小數部分（如 <code>9</code>）</li>
+            <li><strong>Byte 4</strong>：校驗和（$\text{Checksum} = (\text{Byte 0} + \text{Byte 1} + \text{Byte 2} + \text{Byte 3}) \ \& \ \text{0xFF}$）</li>
+        </ul>
+    </section>
+
+    <!-- 區塊 3: 流程圖與測試原始碼 -->
+    <section class="card" id="code-and-flow">
+        <h2>🚀 三、DHT_Unified_Sensor 程式邏輯流程圖與原始碼</h2>
+        
+        <h3>3.1 程式執行邏輯流程圖</h3>
+        <div class="mermaid">
+        flowchart TD
+            Start(["通電開機 / 程式啟動"]) --> SerialInit["Serial.begin(9600) 初始化序列埠"]
+            SerialInit --> DHTInit["dht.begin() 初始化感測器驅動"]
+            DHTInit --> ReadSpecs["讀取感測器規格與建議採樣週期 min_delay"]
+            ReadSpecs --> CalcDelay["計算安全採樣間隔 delayMS (>= 1000ms)"]
+            
+            CalcDelay --> Loop["進入 loop() 迴圈"]
+            Loop --> DelayWait["delay(delayMS) 保持採樣間隔"]
+            
+            DelayWait --> ReadTemp["dht.temperature().getEvent(&event)"]
+            ReadTemp --> CheckTemp{"isnan(event.temperature)?"}
+            CheckTemp -- 是 --> ErrTemp["印出溫度讀取失敗"]
+            CheckTemp -- 否 --> PrintTemp["Serial.print Temperature (°C)"]
+            
+            ErrTemp --> ReadHumid["dht.humidity().getEvent(&event)"]
+            PrintTemp --> ReadHumid
+            
+            ReadHumid --> CheckHumid{"isnan(event.relative_humidity)?"}
+            CheckHumid -- 是 --> ErrHumid["印出濕度讀取失敗"]
+            CheckHumid -- 否 --> PrintHumid["Serial.print Humidity (%)"]
+            
+            ErrHumid --> Loop
+            PrintHumid --> Loop
+        </div>
+
+        <h3>3.2 課堂實測原始碼 (`DHT_Unified_Sensor.ino`)</h3>
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode(this)">📋 複製程式碼</button>
+            <pre><code class="language-cpp">// 檔案路徑: D:\CLASS_NOTE\ec\arduino_dht11_unified_test.ino
+#include &lt;Adafruit_Sensor.h&gt;
+#include &lt;DHT.h&gt;
+#include &lt;DHT_U.h&gt;
+
+// 定義 DHT11 訊號腳連接至 Arduino 數位腳 7
+#define DHTPIN 7     
+
+// 選擇感測器型號
+#define DHTTYPE DHT11
+
+DHT_Unified dht(DHTPIN, DHTTYPE);
+
+uint32_t delayMS;
+
+void setup() {
+  Serial.begin(9600);
+  while (!Serial);
+
+  Serial.println(F("DHT11 Unified Sensor 測試啟動"));
+
+  // 初始化 DHT 感測器
+  dht.begin();
+
+  // 取得感測器硬體規格與建議最小取樣間隔
+  sensor_t sensor;
+  dht.temperature().getSensor(&sensor);
+  dht.humidity().getSensor(&sensor);
+  
+  // 設定採樣間隔 (DHT11 至少間隔 1 秒)
+  delayMS = sensor.min_delay / 1000;
+  if (delayMS &lt; 1000) delayMS = 1000;
+}
+
+void loop() {
+  // 保持物理採樣週期
+  delay(delayMS);
+
+  // 讀取溫度事件
+  sensors_event_t event;
+  dht.temperature().getEvent(&event);
+  if (isnan(event.temperature)) {
+    Serial.println(F("✖ 溫度讀取失敗！"));
+  } else {
+    Serial.print(F("Temperature: "));
+    Serial.print(event.temperature, 2);
+    Serial.println(F("°C"));
+  }
+
+  // 讀取相對濕度事件
+  dht.humidity().getEvent(&event);
+  if (isnan(event.relative_humidity)) {
+    Serial.println(F("✖ 濕度讀取失敗！"));
+  } else {
+    Serial.print(F("Humidity: "));
+    Serial.print(event.relative_humidity, 2);
+    Serial.println(F("%"));
+  }
+}</code></pre>
+        </div>
+    </section>
+
+    <!-- 區塊 4: 實機序列埠監控分析 -->
+    <section class="card" id="serial-output">
+        <h2>📊 四、實機序列埠數據解析</h2>
+        <p>
+            對照截圖中的序列埠輸出，讀數非常精準且具備高靈敏度：
+        </p>
+
+        <div class="data-display">
+            Humidity: 41.00%<br>
+            Temperature: 27.50°C<br>
+            Humidity: 41.00%<br>
+            Temperature: 27.30°C<br>
+            Humidity: 41.00%<br>
+            Temperature: 27.90°C ➔ (手部靠近感測器時，體溫使數值迅速爬升！)<br>
+            Humidity: 41.00%<br>
+            Temperature: 27.80°C
+        </div>
+
+        <div class="callout callout-warning">
+            <strong>採樣週期物理限制提醒：</strong>
+            DHT11 的內部電阻式感濕元件與熱敏電阻需要時間恢復熱平衡，最小採樣頻率為 <strong>1 次 / 秒 (1 Hz)</strong>。不可在 loop 中使用過短的延遲（如 <code>delay(50)</code>），否則會因自體發熱導致測量值失準或直接回傳 <code>NaN</code> 錯誤。
+        </div>
+    </section>
+
+    <!-- 區塊 5: 感測器規格選型對比 -->
+    <section class="card" id="spec-comparison">
+        <h2>⚖️ 五、常見環境感測器規格選型對比</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>感測器型號</th>
+                    <th>通訊介面</th>
+                    <th>溫度範圍 / 精度</th>
+                    <th>濕度範圍 / 精度</th>
+                    <th>取樣頻率</th>
+                    <th>建議應用場合</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>DHT11 (本次)</strong></td>
+                    <td>單線式 (Single-Bus)</td>
+                    <td>0°C ~ 50°C (±2.0°C)</td>
+                    <td>20% ~ 90% (±5% RH)</td>
+                    <td>1 Hz (1 秒)</td>
+                    <td>教學實作、入門簡易溫控</td>
+                </tr>
+                <tr>
+                    <td><strong>DHT22 (AM2302)</strong></td>
+                    <td>單線式 (Single-Bus)</td>
+                    <td>-40°C ~ 80°C (±0.5°C)</td>
+                    <td>0% ~ 100% (±2% RH)</td>
+                    <td>0.5 Hz (2 秒)</td>
+                    <td>農業大棚、戶外氣象監測</td>
+                </tr>
+                <tr>
+                    <td><strong>BME280</strong></td>
+                    <td>I2C / SPI</td>
+                    <td>-40°C ~ 85°C (±0.5°C)</td>
+                    <td>0% ~ 100% (±3% RH)</td>
+                    <td>可達 100 Hz</td>
+                    <td>氣象站、無人機高度氣壓計</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- 區塊 6: 提示詞歷史與變更記錄 -->
+    <section class="card" id="prompt-archive">
+        <h2>📝 六、提示詞歷史與變更記錄 (Prompt Archive)</h2>
+        <div class="callout" style="margin-bottom: 1.2rem;">
+            <strong>🔹 [2026-10-20 15:35:00] [Gemini 3.8 Flash / Antigravity] 建立 DHT11 接線與 Unified Sensor 基本範例測試手冊</strong><br>
+            <strong>Prompt 原文：</strong>
+            <pre style="background: #0f172a; color: #38bdf8; padding: 0.6rem; border-radius: 6px; margin: 0.4rem 0; font-family: monospace;">"C:\Users\User\Desktop\onclass\螢幕擷取畫面 2026-10-20 153131.jpg"C:\Users\User\Desktop\2026-10-20-153116.jpg 開始測試dht11的接線與基本範例</pre>
+            <strong>變更摘要：</strong>根據上課實拍硬體照片（2026-10-20-153116.jpg）與 IDE 截圖（2026-10-20-153131_ide_dht11.jpg），建立 DHT11 實體接線對照（Pin 7）、單線雙向協定 40-bit 訊號交握時序流程圖、Adafruit Unified Sensor 程式碼解說與序列埠數據分析（27.9°C / 41%），並提供感測器規格選型對比與除錯指南，產出 Markdown、HTML 與 INO 實作檔案。
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    <div class="container">
+        <p style="margin-bottom: 0.5rem; color: #e2e8f0; font-size: 1.05rem;">
+            📘 CLASS_NOTE 電子電路與單晶片專題 • 實體上機實驗指導手冊
+        </p>
+        <p style="font-size: 0.9rem; color: #64748b;">
+            相關單元：<a href="arduino_i2c_lcd1602_helloworld_guide.html">I2C LCD 1602 HelloWorld 與方法手冊</a> | 
+            <a href="arduino_i2c_lcd1602_dht11.html">LCD 1602 + DHT11 整合監測</a>
+        </p>
+    </div>
+</footer>
+
+<script>
+    function copyCode(btn) {
+        const pre = btn.nextElementSibling;
+        const code = pre.querySelector('code').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+            const originalText = btn.innerText;
+            btn.innerText = '✅ 已複製！';
+            setTimeout(() => { btn.innerText = originalText; }, 2000);
+        });
+    }
+</script>
+</body>
+</html>
