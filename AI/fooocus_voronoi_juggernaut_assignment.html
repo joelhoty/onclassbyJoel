@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fooocus 影像生成課堂作業指引：Juggernaut XL 與 Voronoi LoRA 幾何細胞肖像實作</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --primary-color: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #eff6ff;
+      --secondary-color: #059669;
+      --accent-color: #7c3aed;
+      --bg-color: #f8fafc;
+      --text-color: #1e293b;
+      --card-bg: #ffffff;
+      --border-color: #e2e8f0;
+      --code-bg: #0f172a;
+      --code-color: #f1f5f9;
+      --quote-bg: #f0fdf4;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+      line-height: 1.75;
+      color: var(--text-color);
+      background-color: var(--bg-color);
+      margin: 0;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 1060px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 44px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+    }
+
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .badge-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      background: #e0e7ff;
+      color: #3730a3;
+    }
+
+    .pdf-btn {
+      background-color: var(--secondary-color);
+      color: white;
+      border: none;
+      padding: 10px 22px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .pdf-btn:hover {
+      background-color: #047857;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 10px -1px rgba(5, 150, 105, 0.4);
+    }
+
+    h1 {
+      color: #0f172a;
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.35;
+      margin-top: 0;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      color: #1e3a8a;
+      border-left: 5px solid var(--primary-color);
+      padding-left: 14px;
+      margin-top: 40px;
+      margin-bottom: 16px;
+      font-size: 22px;
+    }
+
+    h3 {
+      color: #334155;
+      margin-top: 26px;
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+
+    h4 {
+      color: #475569;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    .metadata {
+      background-color: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--primary-color);
+      padding: 16px 20px;
+      margin: 20px 0 30px 0;
+      border-radius: 8px;
+      font-size: 14px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 8px;
+    }
+
+    .metadata p { margin: 2px 0; }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 24px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      font-size: 14px;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 16px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      color: #334155;
+      font-weight: 700;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background-color: #fcfdfe; }
+
+    .mermaid-wrapper {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 24px 0;
+      overflow-x: auto;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .code-block-wrapper {
+      position: relative;
+      margin: 20px 0;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background-color: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(4px);
+      color: #f8fafc;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 2;
+    }
+
+    .copy-btn:hover {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      color: #fff;
+    }
+
+    pre {
+      background-color: var(--code-bg);
+      color: var(--code-color);
+      padding: 44px 20px 20px 20px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-size: 13.5px;
+      line-height: 1.6;
+      margin: 0;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    code {
+      font-family: "Fira Code", Consolas, "Courier New", monospace;
+    }
+
+    p code, li code, td code {
+      background: #f1f5f9;
+      color: #0284c7;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .image-showcase {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 24px 0;
+    }
+
+    .image-showcase img {
+      max-width: 440px;
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+    }
+
+    .image-caption {
+      margin-top: 14px;
+      font-size: 13.5px;
+      color: #64748b;
+      text-align: center;
+    }
+
+    .variation-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-top: 4px solid var(--accent-color);
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 20px 0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    }
+
+    .variation-card h4 {
+      margin-top: 0;
+      color: #4c1d95;
+      font-size: 17px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .alert-box {
+      background-color: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      padding: 14px 18px;
+      margin: 20px 0;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #92400e;
+    }
+
+    .archive-box {
+      border-left: 4px solid var(--secondary-color);
+      background: #f0fdf4;
+      padding: 16px 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+    }
+
+    ul, ol {
+      padding-left: 24px;
+    }
+
+    li { margin-bottom: 6px; }
+
+    @media print {
+      body { padding: 0; background: #fff; }
+      .container { max-width: 100%; padding: 0; box-shadow: none; }
+      .action-bar, .copy-btn { display: none !important; }
+      pre { white-space: pre-wrap; word-break: break-all; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="action-bar">
+      <div class="badge-bar">
+        <span class="badge">Fooocus SDXL</span>
+        <span class="badge">Juggernaut XL</span>
+        <span class="badge">Voronoi LoRA</span>
+        <span class="badge">課堂實務作業</span>
+      </div>
+      <button class="pdf-btn" onclick="window.print()">🖨️ 匯出成 PDF / 列印講義</button>
+    </div>
+
+    <h1>Fooocus 影像生成課堂作業指引：以 Juggernaut XL 與 Voronoi LoRA 實現幾何細胞風格肖像的模仿與創意變化</h1>
+
+    <div class="metadata">
+      <div><strong>最後更新時間</strong>: 2026-10-21 11:36:10 (UTC+8)</div>
+      <div><strong>使用模型</strong>: Gemini 3.8 Flash</div>
+      <div><strong>執行 Agent</strong>: Antigravity</div>
+      <div><strong>版本號</strong>: b01</div>
+      <div><strong>目標圖片</strong>: <a href="https://civitai.com/images/145848150" target="_blank">Civitai #145848150</a></div>
+      <div><strong>模型資源</strong>: Juggernaut XL (v1759168) / Voronoi LoRA (v3409217)</div>
+    </div>
+
+    <h2>🎯 課堂作業目標與學習成果</h2>
+    <p>本作業旨在引導學員掌握 <strong>SDXL 大模型生成特性</strong>、<strong>LoRA（Low-Rank Adaptation）微調權重調控</strong>，以及在 <strong>Fooocus</strong> 中精準復刻提示詞與進行多模態創意延伸的完整工作流：</p>
+    <ol>
+      <li><strong>精準模仿（Exact Reproduction）</strong>：深入理解 Civitai 範例元數據，掌握 Prompt 詞綴結構、負向提示詞抑制策略、解析度與採樣步數設定。</li>
+      <li><strong>創意變化（Creative Variations）</strong>：靈活抽換主體（賽博朋克、神話靈獸、大理石雕塑）、導入光影色彩、或結合 Fooocus 的 CPDS Image Prompt 進行真人照片風格遷移。</li>
+    </ol>
+
+    <h2>一、核心概念剖析（Core Concepts）</h2>
+
+    <h3>1.1 Voronoi 鑲嵌幾何原理與視覺美學（Voronoi Tessellation & Cellular Aesthetics）</h3>
+    <p><strong>Voronoi 圖（泰森多邊形）</strong>是計算幾何學中的基礎劃分算法：給定平面上一組離散種子點，將平面劃分成數個凸多邊形，使各多邊形內部任一點到該區種子點的距離均小於到其他種子點的距離。此幾何結構常見於大自然，如長頸鹿斑塊紋理、植物葉脈輸送通道、蜻蜓翅膀翼脈等。</p>
+    <p>在神經網路與擴散模型層面，<code>vrn.safetensors</code> 是基於 SDXL 架構訓練的專用 LoRA。它將提示詞中的觸發詞（<code>vrn</code>、<code>voronoi complex pattern</code>、<code>intricate cell networks</code>）映射至模型 Cross-Attention 交叉注意力層與卷積特徵層，強迫模型在物體輪廓與表面生成細密且立體的多邊形網格紋理。</p>
+
+    <h3>1.2 SDXL 底模 Juggernaut XL (Ragnarok) 架構特性</h3>
+    <p>本作業採用的 <code>juggernautXL_ragnarok.safetensors</code> 是 SDXL 1.0 的頂級 Checkpoint，具備以下優勢：</p>
+    <ul>
+      <li><strong>雙文字編碼器（Dual CLIP）支援</strong>：結合 OpenCLIP ViT-bigG/14 與 CLIP ViT-L/14，對長句提示詞、鏡頭視角（如 <code>camera angle front</code>）解析極為敏銳。</li>
+      <li><strong>高韌性解剖學結構</strong>：許多純藝術風格模型在加入高強度 LoRA 後容易產生五官融化或斷肢。Juggernaut XL 擁有扎實的寫實人物先驗權重，在 <code>weight: 0.8</code> 的重度幾何風格介入下，依然能生成輪廓鮮明、眼神銳利的戰士面容。</li>
+    </ul>
+
+    <h3>1.3 Fooocus 工具特色與 WebUI 映射邏輯</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>功能項目</th>
+          <th>標準 SD WebUI / ComfyUI</th>
+          <th>Fooocus 實作機制</th>
+          <th>課堂操作關鍵</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>LoRA 載入語法</strong></td>
+          <td>在 Prompt 填入 <code>&lt;lora:vrn:0.8&gt;</code></td>
+          <td>在 <strong>Models 標籤頁</strong> 的 LoRA 滑桿直接選擇與調整</td>
+          <td><strong>Prompt 中勿留 <code>&lt;lora:...&gt;</code></strong>，僅保留觸發詞 <code>vrn</code></td>
+        </tr>
+        <tr>
+          <td><strong>預設風格（Styles）</strong></td>
+          <td>手動載入 Negative Embeddings</td>
+          <td>預設自動勾選 Fooocus V2 與 Masterpiece</td>
+          <td>黑白極簡幾何建議<strong>取消勾選 Fooocus V2</strong>，避免畫面被過度平滑</td>
+        </tr>
+        <tr>
+          <td><strong>Guidance (CFG)</strong></td>
+          <td>通常預設為 7.0</td>
+          <td>SDXL 推薦 3.5 ~ 5.5</td>
+          <td>本作業原圖使用 <strong>CFG = 5.0</strong>，可維持幾何網格邊緣的高清晰度</td>
+        </tr>
+        <tr>
+          <td><strong>原生解析度</strong></td>
+          <td>手動設定 512x640 + Hires. Fix</td>
+          <td>Setting 內建 SDXL 最佳比例選單</td>
+          <td>直接選取 <strong>1024×1280 (4:5)</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>二、實作與應用範例（Practical Examples）</h2>
+
+    <h3>2.1 目標原圖與 Civitai 生成元數據</h3>
+    <div class="image-showcase">
+      <img src="./civitai_145848150.jpeg" alt="Civitai 145848150 Voronoi African Warrior">
+      <div class="image-caption">
+        <strong>作業參考基準圖</strong>：Civitai Image #145848150 | Juggernaut XL + Voronoi LoRA (weight: 0.8)
+      </div>
+    </div>
+
+    <div class="code-block-wrapper">
+      <button class="copy-btn" onclick="copyCode(this)">複製 JSON 元數據</button>
+      <pre><code>{
+  "seed": 232816640,
+  "Model": "juggernautXL_ragnarok",
+  "Model_hash": "dd08fa32f9",
+  "steps": 20,
+  "sampler": "DPM++ 2M SDE",
+  "Schedule type": "Karras",
+  "cfgScale": 5,
+  "width": 512,
+  "height": 640,
+  "Hires upscale": "2 (Latent, Denoise 0.7) -> 1024x1280",
+  "prompt": "breathtaking \"vrn, voronoi complex pattern, portrait of an African warrior with a headdress, skin and ornaments rendered in intricate cell networks, black and white, camera angle front.\" <lora:vrn:0.8>, . award-winning, professional, highly detailed",
+  "negativePrompt": "fat, obese, overweight, chubby, pudgy, bbw, plus size, Watermark, Text, censored, deformed, bad anatomy, disfigured, poorly drawn face, mutated, extra limb, ugly, poorly drawn hands, missing limb, floating limbs, disconnected limbs, disconnected head, malformed hands, long neck, mutated hands and fingers, bad hands, missing fingers, cropped, worst quality, low quality, mutation, poorly drawn, huge calf, bad hands, fused hand, missing hand, disappearing arms, disappearing thigh, disappearing calf, disappearing legs, missing fingers, fused fingers, abnormal eye proportion, Abnormal hands, abnormal legs, abnormal feet, abnormal fingers, sitting, seated, kneeling, crouching, lying down, muscular, bodybuilder, bulky muscles, masculine muscles, ugly, deformed, noisy, blurry, distorted, grainy",
+  "resources": [
+    { "name": "juggernautXL_ragnarok", "type": "model", "hash": "dd08fa32f9" },
+    { "name": "vrn", "type": "lora", "weight": 0.8, "hash": "87a25679e04f" }
+  ]
+}</code></pre>
+    </div>
+
+    <h3>2.2 Fooocus 作業執行流程圖</h3>
+    <div class="mermaid-wrapper">
+      <div class="mermaid">
+flowchart TD
+    A["1. 模型與 LoRA 放置"] --> B["checkpoints/ & loras/ 目錄"]
+    B --> C["2. 啟動 Fooocus 介面"]
+    C --> D["3. 勾選 [x] Advanced 進階選項"]
+    
+    subgraph CoreSetup["核心模型與權重配置"]
+        D --> E["Setting 頁籤: 選擇 1024×1280 (4:5)"]
+        E --> F["Models 頁籤: Base Model 選 juggernautXL_ragnarok"]
+        F --> G["LoRA 1 選取 vrn.safetensors, 權重設為 0.8"]
+    end
+
+    subgraph StyleSetup["風格與提示詞填寫"]
+        G --> H["Style 頁籤: 取消 Fooocus V2, 勾選 Semi Realistic"]
+        H --> I["填寫包含 vrn 觸發詞之正向 Prompt"]
+        I --> J["填寫排除多餘偽影之負向 Prompt"]
+    end
+
+    subgraph Exec["生成作業產出"]
+        J --> K{"模式選擇"}
+        K -- "作業一: 100% 模仿" --> L["固定 Seed 232816640 生成對照圖"]
+        K -- "作業二: 創意變化" --> M["替換主題 / 色彩 / CPDS 肖像轉換"]
+        L --> N["匯出成果並填寫檢核表"]
+        M --> N
+    end
+      </div>
+    </div>
+
+    <h3>2.3 模型下載與快速部署腳本</h3>
+    <div class="code-block-wrapper">
+      <button class="copy-btn" onclick="copyCode(this)">複製 Bash 腳本</button>
+      <pre><code>#!/bin/bash
+# ==============================================================================
+# Fooocus 課堂作業：Juggernaut XL 與 Voronoi LoRA 快速佈署腳本
+# ==============================================================================
+
+FOOOCUS_ROOT="./Fooocus"
+CHECKPOINT_DIR="${FOOOCUS_ROOT}/models/checkpoints"
+LORA_DIR="${FOOOCUS_ROOT}/models/loras"
+
+mkdir -p "${CHECKPOINT_DIR}"
+mkdir -p "${LORA_DIR}"
+
+echo "[INFO] 下載 Juggernaut XL (Ragnarok)..."
+wget -c --timeout=600 \
+  "https://civitai.com/api/download/models/1759168?fileId=1659952" \
+  -O "${CHECKPOINT_DIR}/juggernautXL_ragnarok.safetensors"
+
+echo "[INFO] 下載 Voronoi SDXL LoRA..."
+wget -c --timeout=300 \
+  "https://civitai.com/api/download/models/3409217?fileId=3301060" \
+  -O "${LORA_DIR}/vrn.safetensors"
+
+echo "[SUCCESS] 模型下載完畢，請重新啟動或重整 Fooocus WebUI！"</code></pre>
+    </div>
+
+    <h3>2.4 任務一：100% 精確模仿操作指引（Exact Reproduction）</h3>
+    <ol>
+      <li><strong>勾選 <code>[x] Advanced</code> 進階設定</strong>。</li>
+      <li><strong>Setting 頁籤</strong>：Performance 選 <code>Speed</code>，Aspect Ratio 選擇 <code>1024×1280 (4:5)</code>。</li>
+      <li><strong>Models 頁籤</strong>：Base Model 選擇 <code>juggernautXL_ragnarok.safetensors</code>，LoRA 1 選擇 <code>vrn.safetensors</code> 並將 Weight 設為 <code>0.8</code>。其餘 LoRA 設為 None。</li>
+      <li><strong>Style 頁籤</strong>：取消 <code>Fooocus V2</code>，可勾選 <code>Fooocus Semi Realistic</code> 或清空所有 Style。</li>
+      <li><strong>填寫 Prompt（正向提示詞）</strong>：</li>
+    </ol>
+    <div class="code-block-wrapper">
+      <button class="copy-btn" onclick="copyCode(this)">複製正向提示詞</button>
+      <pre><code>breathtaking "vrn, voronoi complex pattern, portrait of an African warrior with a headdress, skin and ornaments rendered in intricate cell networks, black and white, camera angle front.", award-winning, professional, highly detailed</code></pre>
+    </div>
+
+    <ol start="6">
+      <li><strong>填寫 Negative Prompt（負向提示詞）</strong>：</li>
+    </ol>
+    <div class="code-block-wrapper">
+      <button class="copy-btn" onclick="copyCode(this)">複製負向提示詞</button>
+      <pre><code>fat, obese, overweight, chubby, pudgy, bbw, plus size, Watermark, Text, censored, deformed, bad anatomy, disfigured, poorly drawn face, mutated, extra limb, ugly, poorly drawn hands, missing limb, floating limbs, disconnected limbs, disconnected head, malformed hands, long neck, mutated hands and fingers, bad hands, missing fingers, cropped, worst quality, low quality, mutation, poorly drawn, huge calf, bad hands, fused hand, missing hand, disappearing arms, disappearing thigh, disappearing calf, disappearing legs, missing fingers, fused fingers, abnormal eye proportion, Abnormal hands, abnormal legs, abnormal feet, abnormal fingers, sitting, seated, kneeling, crouching, lying down, muscular, bodybuilder, bulky muscles, masculine muscles, ugly, deformed, noisy, blurry, distorted, grainy</code></pre>
+    </div>
+
+    <ol start="7">
+      <li><strong>Developer Debug Mode（選填）</strong>：勾選固定 Seed 並輸入 <code>232816640</code>，Guidance Scale 設為 <code>5.0</code>。點擊「Generate」產出基準作業。</li>
+    </ol>
+
+    <h3>2.5 任務二：五大創意變化方向提案（Creative Variations）</h3>
+
+    <div class="variation-card">
+      <h4>🔮 方向 A：未來賽博格生化戰士（Cyberpunk Voronoi Android）</h4>
+      <p><strong>概念說明</strong>：將黑白肖像重構為未來賽博格，讓細胞多邊形轉化為微發光陶瓷面板與光纖電路，具備金屬與藍琥珀色高光對比。</p>
+      <div class="code-block-wrapper">
+        <button class="copy-btn" onclick="copyCode(this)">複製提示詞</button>
+        <pre><code>breathtaking "vrn, voronoi complex pattern, portrait of a female cyborg android, translucent skin and cybernetic ornaments rendered in intricate glowing cell networks, neon blue and amber fiber optics pulsing under ceramic plates, cinematic lighting, sharp focus, 8k masterpiece."</code></pre>
+      </div>
+      <p><small>建議參數：LoRA Weight 0.85，Style 勾選 <code>Fooocus Sharp</code>。</small></p>
+    </div>
+
+    <div class="variation-card">
+      <h4>🐺 方向 B：神話靈獸狂嘯（Mythological Beast - Howling Wolf）</h4>
+      <p><strong>概念說明</strong>：延伸主體至動物與大自然，將狼皮毛、獠牙與夜空背景以幾何星雲網格重現（對應 Civitai 示範作品二）。</p>
+      <div class="code-block-wrapper">
+        <button class="copy-btn" onclick="copyCode(this)">複製提示詞</button>
+        <pre><code>breathtaking "vrn, voronoi complex pattern, a magnificent spirit wolf howling at a glowing crescent moon, body and fur formed by layered cell networks, deep night sky background with glittering nebula, side profile view, mystic aura, epic scale."</code></pre>
+      </div>
+      <p><small>建議參數：LoRA Weight 0.75，Aspect Ratio <code>1280×1024 (橫幅)</code>。</small></p>
+    </div>
+
+    <div class="variation-card">
+      <h4>🎨 方向 C：哥德式琉璃彩繪玻璃（Stained Glass Sacred Art）</h4>
+      <p><strong>概念說明</strong>：打破單色黑白限制，將細胞多邊形賦予飽和的彩色琉璃質地，模擬早晨陽光穿透教堂花窗的立體光芒。</p>
+      <div class="code-block-wrapper">
+        <button class="copy-btn" onclick="copyCode(this)">複製提示詞</button>
+        <pre><code>masterpiece "vrn, voronoi complex pattern, majestic portrait of a guardian angel with grand wings, face and feather wings rendered in vibrant stained glass cell networks, brilliant morning sunlight beaming through translucent colorful crystal polygons, dramatic volumetric rays, high contrast, black lead lines."</code></pre>
+      </div>
+      <p><small>建議參數：LoRA Weight 0.9，負向詞加入 <code>monochrome, dull colors</code>。</small></p>
+    </div>
+
+    <div class="variation-card">
+      <h4>🏛️ 方向 D：現代金繼碎裂大理石胸像（Kintsugi Marble Bust）</h4>
+      <p><strong>概念說明</strong>：融合古典希臘羅馬大理石雕刻與日本傳統「金繼（Kintsugi）」美學，幾何細胞接縫流淌著液態純金。</p>
+      <div class="code-block-wrapper">
+        <button class="copy-btn" onclick="copyCode(this)">複製提示詞</button>
+        <pre><code>stunning studio photograph, "vrn, voronoi complex pattern, classical marble bust of a Greek philosopher, facial surface divided into geometric cell networks joined by molten liquid gold kintsugi seams, elegant black velvet museum background, dramatic rim lighting, tactile stone texture."</code></pre>
+      </div>
+      <p><small>建議參數：LoRA Weight 0.7，CFG 4.5。</small></p>
+    </div>
+
+    <div class="variation-card">
+      <h4>📷 方向 E：Fooocus CPDS 真人照片轉幾何細胞肖像</h4>
+      <p><strong>概念說明</strong>：利用 Fooocus 內建的對比度結構保持（CPDS）演算法，直接將學員的大頭照轉換成 Voronoi 藝術肖像！</p>
+      <ol>
+        <li>勾選底部 <code>[x] Input Image</code> 並切換至 <code>Image Prompt</code> 標籤。</li>
+        <li>點擊 <code>Advanced</code>，切換至 <strong>CPDS 模式</strong>（或 ImagePrompt）。</li>
+        <li>上傳自己的肖像照片，設置 <code>Stop At: 0.85</code>、<code>Weight: 0.6</code>。</li>
+        <li>輸入 Prompt：<code>"vrn, voronoi complex pattern, person rendered in intricate geometric cell networks, black and white portrait, dramatic contrast, studio lighting"</code></li>
+        <li>點擊生成，獲得個人專屬幾何頭像！</li>
+      </ol>
+    </div>
+
+    <h2>三、延伸思考與進階主題（Extensions & Advanced Topics）</h2>
+
+    <h3>3.1 LoRA 權重梯形效應（Weight Ramp Analysis）</h3>
+    <ul>
+      <li><strong>0.3 ~ 0.5</strong>：微量風格化。底模寫實膚質占 80%，僅在顴骨與陰影處出現輕微幾何線條。</li>
+      <li><strong>0.7 ~ 0.85（原圖設定）</strong>：<strong>黃金平衡點</strong>。細胞多邊形深入皮膚與頭飾，立體雕刻感強烈，且眼眶、唇鼻等核心結構未被破壞。</li>
+      <li><strong>1.0 以上</strong>：超幾何抽象化。多邊形線條變粗，人臉特徵開始碎裂解構，適合前衛超現實海報創作。</li>
+    </ul>
+
+    <h3>3.2 商業設計與跨領域落地應用</h3>
+    <div class="alert-box">
+      <strong>💡 設計延伸啟發</strong>：黑白 Voronoi 肖像具備極佳的法線與高度資訊。學員可將產出的黑白圖像匯入 <strong>Blender</strong> 作為置換貼圖（Displacement Map），一鍵轉為 3D 鏤空模型，或交由雷射雕刻機進行金屬蝕刻與木工穿孔雕飾。
+    </div>
+
+    <h2>四、作業繳交標準與驗收檢核表（Submission Checklist）</h2>
+    <ul>
+      <li><input type="checkbox"> <strong>任務一成果圖</strong>：100% 模仿之產出圖（包含 Seed: 232816640 之生成結果）。</li>
+      <li><input type="checkbox"> <strong>任務二成果圖</strong>：自選 1~2 張創意變化圖（Cyberpunk / 靈獸 / 彩繪玻璃 / 金繼 / 真人 CPDS）。</li>
+      <li><input type="checkbox"> <strong>參數紀錄表</strong>：註記所使用的 Prompt、LoRA 權重值、Style 設定。</li>
+      <li><input type="checkbox"> <strong>心得筆記（150 字）</strong>：說明 LoRA 權重對幾何網格細緻度的影響與除錯心得。</li>
+    </ul>
+
+    <h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+    <div class="archive-box">
+      <h3>🔹 [2026-10-21 11:36:10] Gemini 3.8 Flash 變更紀錄</h3>
+      <p><strong>模型/Agent</strong>: Gemini 3.8 Flash / Antigravity</p>
+      <p><strong>Prompt 原文</strong>:</p>
+      <div class="code-block-wrapper">
+        <button class="copy-btn" onclick="copyCode(this)">複製原始 Prompt</button>
+        <pre><code>今天影像生成的課程，用fooocus指定生成一張作業，使用的圖片是 https://civitai.com/images/145848150 根據這個圖片的生成資料，下載了模型與lora，可以在fooocus生成的時候模仿與變化， https://civitai.com/models/133005/juggernaut-xl?modelVersionId=1759168 https://civitai.com/models/3004897/voronoi?modelVersionId=3409217 這是模型與lora</code></pre>
+      </div>
+      <p><strong>變更摘要</strong>: 建立完整 Fooocus 課堂作業指引 HTML 講義，提供 PDF 匯出、Mermaid 流程圖、Civitai 145848150 原圖解析、下載部署腳本與五大創意延伸模板。</p>
+    </div>
+  </div>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+
+    function copyCode(button) {
+      const pre = button.nextElementSibling;
+      const code = pre.querySelector('code');
+      const text = code ? code.innerText : pre.innerText;
+
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = button.innerText;
+        button.innerText = '✓ 已複製！';
+        button.style.backgroundColor = '#10b981';
+        setTimeout(() => {
+          button.innerText = originalText;
+          button.style.backgroundColor = '';
+        }, 2000);
+      }).catch(err => {
+        console.error('複製失敗: ', err);
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-10-20 15:52:00 (UTC+8)  
+> **最後更新時間**: 2026-10-21 11:36:10 (UTC+8)  
 > **使用模型**: Gemini 3.8 Flash  
 > **執行 Agent**: Antigravity  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -10,6 +10,9 @@
 ## 🎯 工作區主題檔案分類與最後修改日期 (依日期由新至舊排列)
 
 ### 🤖 1. AI / 機器學習與深度學習 (`AI/`)
+* 2026-10-21 | [Fooocus 影像生成課堂作業指引：Juggernaut XL 與 Voronoi LoRA 幾何細胞肖像實作 (HTML)](./AI/fooocus_voronoi_juggernaut_assignment.html) (HTML)
+* 2026-10-21 | [Fooocus 影像生成課堂作業指引：Juggernaut XL 與 Voronoi LoRA 幾何細胞肖像實作 (MD)](./AI/fooocus_voronoi_juggernaut_assignment.md) (MD)
+* 2026-10-21 | [Civitai 145848150 Voronoi 戰士課堂範例參考圖 (JPEG)](./AI/civitai_145848150.jpeg) (JPEG)
 * `2026-10-16` | [Agent 分層模型：LLM、Context、Harness 與 Workflow ↔ Agent 光譜 (HTML)](./AI/ai_agent_harness_workflow.html) (HTML)
 * `2026-10-16` | [Agent 分層模型：LLM、Context、Harness 與 Workflow ↔ Agent 光譜 (MD)](./AI/ai_agent_harness_workflow.md) (MD)
 * `2026-10-07` | [Colab 下載 Civitai 模型腳本除錯：wget 401/403 與 SafeTensor 驗證修正 (HTML)](./AI/fooocus_civitai_download_fix.html) (HTML)
