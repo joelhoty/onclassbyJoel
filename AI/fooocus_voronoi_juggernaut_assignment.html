@@ -645,6 +645,21 @@ echo "[SUCCESS] 模型下載完畢，請重新啟動或重整 Fooocus WebUI！"<
       <p><small>建議負向詞：<code>solid opaque wings, plastic, muddy water, deformed butterfly, extra wings, blurry droplets, low quality, worst quality, watermark, text</code></small></p>
     </div>
 
+    <div class="variation-card" style="border-top-color: #eab308;">
+      <h4>🦇 方向 G：皮克斯 3D 動畫小小兵蝙蝠俠（Pixar Batman Minion Voronoi）</h4>
+      <p><strong>概念說明</strong>：跨界融合「流行 IP（小小兵蝙蝠俠）」、「3D 皮克斯動畫質感」與「幾何細胞 LoRA（<code>vrn</code>）」。讓黑色戰衣與黃色身軀由多邊形網絡包覆，背景襯托雨夜倫敦街燈與水窪倒影，兼具幽默喜感與電影級光影！</p>
+      <div class="code-block-wrapper">
+        <button class="copy-btn" onclick="copyCode(this)">複製優化版提示詞</button>
+        <pre><code>masterpiece, 3D Pixar animation style, digital art, A cute minion embodied with "vrn, voronoi complex pattern", in the image of Batman, dressed in a tactical black suit with a cape and bat cowl mask, black suit and yellow skin rendered in intricate cell networks and geometric bat drawings, big glowing goggles burning with fierce determination, rainy night in the City of London in background, wet asphalt reflecting vibrant city lights and neon bokeh, volumetric rain atmosphere, Octane render, 8k, Disney Pixar movie still</code></pre>
+      </div>
+      <p><strong>推薦參數配置</strong>：</p>
+      <ul>
+        <li><strong>LoRA 1 (<code>vrn</code>)</strong>：建議設為 <strong><code>0.7 ~ 0.75</code></strong>（卡通角色不宜超過 0.8，以保留小小兵經典的膠囊圓潤感）。</li>
+        <li><strong>Style 頁籤</strong>：勾選 <code>SAI 3D Model</code> 或 <code>Fooocus Semi Realistic</code>（<strong>務必關閉 <code>Fooocus V2</code></strong>）。</li>
+        <li><strong>Aspect Ratio</strong>：<code>1024×1024 (1:1)</code> 或 <code>896×1152 (3:4)</code>。</li>
+      </ul>
+    </div>
+
     <h3>2.6 常見排查：為什麼加了 vrn 觸發詞且調了權重，Fooocus 產圖卻完全沒有 Voronoi 效果？</h3>
     <p>如果您在 Fooocus 中同時寫了 <code>vrn, voronoi complex pattern</code>，也在 Models 頁籤將權重拉到 <code>0.8</code>，但產出來的人物卻依然是一張普通人像，請依序檢查以下 <strong>5 大最常見踩坑點</strong>：</p>
     
@@ -784,6 +799,17 @@ flowchart TD
         <pre><code>為什麼加了 vrn, voronoi complex pattern 並在fooocus勾選調整權重沒有作用?</code></pre>
       </div>
       <p><strong>變更摘要</strong>: 新增 2.6 節「加了觸發詞且調了權重卻沒效果的 5 大排查關鍵」，詳解 Fooocus V2 隱藏寫實詞抹平、Refiner 雜訊洗除、177MB 檔案完整性檢查與具體主體指向提示詞語法。</p>
+    </div>
+
+    <div class="archive-box">
+      <h3>🔹 [2026-10-21 11:54:34] Gemini 3.8 Flash 變更紀錄</h3>
+      <p><strong>模型/Agent</strong>: Gemini 3.8 Flash / Antigravity</p>
+      <p><strong>Prompt 原文</strong>:</p>
+      <div class="code-block-wrapper">
+        <button class="copy-btn" onclick="copyCode(this)">複製原始 Prompt</button>
+        <pre><code>A minion embodied  "vrn, voronoi complex pattern"  in the image of Batman in the Pixar style. The minion is dressed in a black suit with a cape complemented by a mask on his head. His yellow skin is decorated with drawings in the form of a bat. The minion's big eyes are burning with determination. The City of London is depicted in the background, it is raining, city lights are shining,</code></pre>
+      </div>
+      <p><strong>變更摘要</strong>: 擴充創意變化方向 G（皮克斯 3D 小小兵蝙蝠俠 Voronoi 風格化），優化提示詞結構、雨夜倫敦光影渲染與卡通角色防過度破碎之 LoRA 權重建議（0.7 ~ 0.75）。</p>
     </div>
   </div>
 

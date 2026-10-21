@@ -302,6 +302,21 @@ echo "[SUCCESS] 下載完成！請在 Fooocus 介面中重新整理模型清單�
   ```
 * **推薦設定**：Aspect Ratio `1280×768 (16:9)` 或 `1024×1024`，Style 勾選 `Fooocus Masterpiece` + `Fooocus Semi Realistic`。
 
+#### 變化方向 G：皮克斯 3D 動畫小小兵蝙蝠俠（Pixar Batman Minion Voronoi）
+* **設計理念**：跨界融合「流行 IP（小小兵蝙蝠俠）」、「3D 動畫美學（Pixar Style）」與「幾何鑲嵌（Voronoi LoRA）」。讓蝙蝠俠黑色戰衣、披風與黃色膠囊身形被細緻的多邊形細胞紋理包裹，背景設定在雨夜倫敦街頭，兼具可愛幽默與黑色電影（Film Noir）張力！
+* **LoRA 權重建議**：
+  - **LoRA 1 (`vrn.safetensors`)**：設為 **`0.7 ~ 0.75`**（不要超過 0.8，避免過度破碎破壞小小兵經典的圓潤卡通臉型）。
+  - **LoRA 2 (`WildcardX-XL-Detail-Enhancer`)（可選）**：設為 **`0.6`**（強化倫敦夜雨飛沫與街燈倒影質感）。
+* **Fooocus 推薦優化正向提示詞**：
+  ```text
+  masterpiece, 3D Pixar animation style, digital art, A cute minion embodied with "vrn, voronoi complex pattern", in the image of Batman, dressed in a tactical black suit with a cape and bat cowl mask, black suit and yellow skin rendered in intricate cell networks and geometric bat drawings, big glowing goggles burning with fierce determination, rainy night in the City of London in background, wet asphalt reflecting vibrant city lights and neon bokeh, volumetric rain atmosphere, Octane render, 8k, Disney Pixar movie still
+  ```
+* **推薦負向提示詞**：
+  ```text
+  deformed goggles, bad anatomy, missing fingers, extra eyes, mutated face, flat 2D cartoon, dull colors, oversaturated, blurry, grainy, watermark, text
+  ```
+* **推薦設定**：Aspect Ratio `1024×1024` 或 `896×1152 (3:4)`，Style 勾選 `SAI 3D Model` 或 `Fooocus Semi Realistic`（務必取消勾選 `Fooocus V2`）。
+
 ### 2.6 常見排查：為什麼加了 vrn 觸發詞且調了權重，Fooocus 產圖卻完全沒有 Voronoi 幾何效果？
 
 如果在 Fooocus 中同時填寫了 `vrn, voronoi complex pattern`，也在 Models 頁籤將權重拉到 `0.8`，但產出來的人物卻依然是一張普通人像，通常是遇到了以下 **5 大常見大坑**：
@@ -441,3 +456,11 @@ Voronoi 幾何圖元生成不僅限於二維圖片展示，在當前產業設計
   為什麼加了 vrn, voronoi complex pattern 並在fooocus勾選調整權重沒有作用?
   ```
 - **變更摘要**: 新增 2.6 節「加了觸發詞且調了權重卻沒效果的 5 大排查關鍵」，詳解 Fooocus V2 隱藏寫實詞抹平、Refiner 雜訊洗除、177MB 檔案完整性檢查與具體主體指向提示詞語法。
+
+### 🔹 [2026-10-21 11:54:34] Gemini 3.8 Flash 變更紀錄
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  A minion embodied  "vrn, voronoi complex pattern"  in the image of Batman in the Pixar style. The minion is dressed in a black suit with a cape complemented by a mask on his head. His yellow skin is decorated with drawings in the form of a bat. The minion's big eyes are burning with determination. The City of London is depicted in the background, it is raining, city lights are shining,
+  ```
+- **變更摘要**: 擴充創意變化方向 G（皮克斯 3D 小小兵蝙蝠俠 Voronoi 風格化），優化提示詞結構、雨夜倫敦光影渲染與卡通角色防過度破碎之 LoRA 權重建議（0.7 ~ 0.75）。
