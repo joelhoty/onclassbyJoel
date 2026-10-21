@@ -70,6 +70,22 @@ Juggernaut XL 是 SDXL 1.0 系列中極具代表性的微調檢查點（Checkpoi
 > 1. **查看 Civitai 右側面板**：檢視 `Trained Words`（訓練單詞），若有列出字詞（如本例的 `vrn`），代表訓練時有進行注意力綁定，必須寫入提示詞中。
 > 2. **查看模型說明頁（Description）**：作者若註明 *「No trigger word needed, just adjust weight」*，則代表該 LoRA 掛載後自動全域生效。
 
+### 1.5 實務操作：WildCardX 細節增強 LoRA 在 Fooocus 的「三步啟用」SOP
+
+學員經常疑惑：「既然沒有觸發詞，那到底要怎麼知道 WildcardX LoRA 啟用了沒？」只需三步驟：
+
+```mermaid
+flowchart LR
+    A["步驟 1: 檔案放置"] -->|放入 models/loras/| B["步驟 2: UI 掛載與設權重"]
+    B -->|Models 標籤選取並設 Weight 0.8| C["步驟 3: 直接 Generate 生成"]
+    C --> D["全圖細節自動增強生效 (無需觸發詞)"]
+```
+
+1. **放置檔案**：將下載的 `WildcardX-XL-Detail-Enhancer.safetensors`（或已命名的 `civitai_298448.safetensors`）放入 `Fooocus/models/loras/`。
+2. **UI 選取與啟用**：勾選 `[x] Advanced` ➜ 切換到 **Models** 頁籤 ➜ 在 **LoRA 1 或 LoRA 2** 下拉選單中選取該檔案 ➜ 將 **Weight（權重）拉至 0.8 ~ 1.0**。（*只要權重非 0 即代表已啟用！*）
+3. **正常生圖**：正向提示詞正常撰寫，**完全不需要輸入任何特殊代號**，點擊 Generate 即自動將細節注入整張畫布。
+4. **驗證技巧（A/B 對比法）**：固定相同的 Seed 數字，一張將該 LoRA 設為 `0.8`，另一張設為 `0`（關閉），比對兩圖即可肉眼觀察到水滴通透感與微小飛沫細節的顯著躍升。
+
 Fooocus 是專為 SDXL 設計的高效能開源生成軟體，其內建機制與標準 AUTOMATIC1111 WebUI 有顯著差異：
 
 | 功能項目 | SD WebUI / ComfyUI | Fooocus 實作機制 | 課堂設定要點 |
@@ -372,3 +388,11 @@ Voronoi 幾何圖元生成不僅限於二維圖片展示，在當前產業設計
   https://civitai.com/models/264681/wildcardx-xl-detailenhancer?modelVersionId=298448
   ```
 - **變更摘要**: 驗證 WildCardX-XL-Detail/Enhancer (modelVersionId: 298448) 官方 API 元數據，確認其 TrainedWords 為空（免觸發詞全域生效型 LoRA），補全作者推薦參數與檔名關聯說明。
+
+### 🔹 [2026-10-21 11:49:45] Gemini 3.8 Flash 變更紀錄
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  wwildcard的lora要如何啟用?
+  ```
+- **變更摘要**: 新增 1.5 節詳細圖解 WildCardX 細節增強 LoRA 在 Fooocus 的「三步啟用」SOP（檔案放置 ➜ UI 權重滑桿啟用 ➜ 直接生成）與 A/B 盲測驗證法。

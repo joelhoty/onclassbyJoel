@@ -395,6 +395,34 @@
     <div class="alert-box">
       <strong>🔍 判斷技巧</strong>：在 Civitai 下載任何 LoRA 時，先看右側邊欄的 <code>Trained Words</code>。若欄位列有單詞（如 <code>vrn</code>），代表必須寫入；若為空或作者於簡介註明 <em>"No trigger word needed"</em>，則代表只需掛載即可全域生效。
     </div>
+
+    <h3>1.5 實務操作：WildCardX 細節增強 LoRA 在 Fooocus 的「三步啟用」SOP</h3>
+    <p>學員常有疑惑：「既然沒有觸發詞，那到底要怎麼啟用它？」在 Fooocus 中只需要簡單的三個步驟：</p>
+    <div class="mermaid-wrapper">
+      <div class="mermaid">
+flowchart LR
+    A["步驟 1: 檔案放置<br>(models/loras/)"] --> B["步驟 2: UI 選擇並調權重<br>(Models 頁籤設 0.8)"]
+    B --> C["步驟 3: 點擊 Generate<br>(提示詞不需寫代號)"]
+    C --> D["全圖水滴細節與光澤<br>自動全域生效！"]
+      </div>
+    </div>
+    <ol>
+      <li><strong>步驟一：放置檔案</strong>：把 <code>WildcardX-XL-Detail-Enhancer.safetensors</code>（或 <code>civitai_298448.safetensors</code>）放進 <code>Fooocus/models/loras/</code> 資料夾。</li>
+      <li><strong>步驟二：在 UI 中掛載並啟用權重</strong>：
+        <ul>
+          <li>勾選主畫面下方的 <code>[x] Advanced</code> 進階選單。</li>
+          <li>切換至 <strong>Models</strong> 標籤頁。</li>
+          <li>在 <strong>LoRA 1 或 LoRA 2</strong> 的下拉選單中選取該檔案。</li>
+          <li>將右邊的 <strong>Weight（權重）拉至 0.8 ~ 1.0</strong>。<br>
+          <span style="color:#059669; font-weight:600;">👉 只要權重數值大於 0（非 None），就代表 LoRA 已經正式「啟用」！</span></li>
+        </ul>
+      </li>
+      <li><strong>步驟三：正常填寫提示詞並生成</strong>：
+        提示詞中<strong>完全不需要寫任何標籤或代號</strong>（不要寫 <code>&lt;lora:...&gt;</code>），只要點擊 <strong>Generate</strong>，LoRA 就會在後台自動介入神經網路，全域提升水花與蝴蝶的精細度！</li>
+    </ol>
+    <div class="alert-box" style="background-color:#f0fdf4; border-left-color:#059669; color:#065f46;">
+      <strong>🧪 A/B 對比驗證法</strong>：若想親眼驗證它是否生效，可以固定隨機數種子（Seed 例如 12345），先在 LoRA 設為 <code>0.8</code> 產生一張圖；接著把權重拉到 <code>0</code>（關閉）再產一張圖。兩張圖放在一起對比，能明顯看到權重 0.8 的那張水花更加透亮、細碎飛沫暴增！
+    </div>
     <table>
       <thead>
         <tr>
@@ -693,6 +721,17 @@ echo "[SUCCESS] 模型下載完畢，請重新啟動或重整 Fooocus WebUI！"<
         <pre><code>https://civitai.com/models/264681/wildcardx-xl-detailenhancer?modelVersionId=298448</code></pre>
       </div>
       <p><strong>變更摘要</strong>: 驗證 WildCardX-XL-Detail/Enhancer (modelVersionId: 298448) 官方 API 元數據，確認其 TrainedWords 為空（免觸發詞全域生效型 LoRA），補全作者推薦參數與檔名關聯說明。</p>
+    </div>
+
+    <div class="archive-box">
+      <h3>🔹 [2026-10-21 11:49:45] Gemini 3.8 Flash 變更紀錄</h3>
+      <p><strong>模型/Agent</strong>: Gemini 3.8 Flash / Antigravity</p>
+      <p><strong>Prompt 原文</strong>:</p>
+      <div class="code-block-wrapper">
+        <button class="copy-btn" onclick="copyCode(this)">複製原始 Prompt</button>
+        <pre><code>wwildcard的lora要如何啟用?</code></pre>
+      </div>
+      <p><strong>變更摘要</strong>: 新增 1.5 節詳細圖解 WildCardX 細節增強 LoRA 在 Fooocus 的「三步啟用」SOP（檔案放置 ➜ UI 權重滑桿啟用 ➜ 直接生成）與 A/B 盲測驗證法。</p>
     </div>
   </div>
 
