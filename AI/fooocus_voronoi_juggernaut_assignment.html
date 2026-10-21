@@ -354,6 +354,47 @@
         <li><strong>傳統 WebUI (A1111 / Forge) 寫法</strong>：若在傳統 WebUI 中，才需要在 Prompt 寫入檔用語法：<code>&lt;lora:civitai_298448:0.8&gt;, vrn, voronoi complex pattern...</code>。</li>
       </ol>
     </div>
+
+    <h3>1.4 LoRA 觸發詞機制深入：所有 LoRA 都必須有觸發詞才能啟用嗎？</h3>
+    <p>答案是：<strong>「不一定」！這取決於該 LoRA 訓練時的「打標（Captioning）策略」與設計目標</strong>：</p>
+    <table>
+      <thead>
+        <tr>
+          <th>LoRA 類型</th>
+          <th>典型代表範例</th>
+          <th>底層訓練策略</th>
+          <th>是否必須觸發詞？</th>
+          <th>未填寫觸發詞之實際表現</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>特定概念 / 主體綁定型</strong></td>
+          <td>本課之 <code>vrn</code> (Voronoi)、特定角色、名人臉孔、專屬產品</td>
+          <td>訓練資料集強制綁定特定罕見 Token（如 <code>vrn</code>）</td>
+          <td><strong>必須有觸發詞</strong></td>
+          <td>權重雖然載入，但神經網路注意力未被激活，畫面幾乎看不出效果</td>
+        </tr>
+        <tr>
+          <td><strong>全域畫質 / 光影風格型</strong></td>
+          <td>Detail Tweaker (細節增強)、Film Grain (底片顆粒)、Add More Detail</td>
+          <td>空標籤（No Captions）訓練，直接微調底模常態分佈</td>
+          <td><strong>免觸發詞</strong></td>
+          <td><strong>掛載即生效！</strong>只要在 UI 中設定權重，全圖自動套用效果</td>
+        </tr>
+        <tr>
+          <td><strong>混合泛用風格型</strong></td>
+          <td>水彩 (Watercolor)、油畫筆觸、賽博龐克色系</td>
+          <td>混合自然語言長句打標</td>
+          <td><strong>建議填寫相關詞</strong></td>
+          <td>未寫時有微弱色調偏移，但加入關鍵字後風格特徵才會完全顯現</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="alert-box">
+      <strong>🔍 判斷技巧</strong>：在 Civitai 下載任何 LoRA 時，先看右側邊欄的 <code>Trained Words</code>。若欄位列有單詞（如 <code>vrn</code>），代表必須寫入；若為空或作者於簡介註明 <em>"No trigger word needed"</em>，則代表只需掛載即可全域生效。
+    </div>
     <table>
       <thead>
         <tr>
@@ -603,6 +644,17 @@ echo "[SUCCESS] 模型下載完畢，請重新啟動或重整 Fooocus WebUI！"<
         <pre><code>如果我把下載的lora 命名為civitai_298448.safetensors 在提示詞中應該如何使用</code></pre>
       </div>
       <p><strong>變更摘要</strong>: 補充 LoRA 檔案重命名為 civitai_298448.safetensors 後，在 Fooocus UI 下拉選單配置 vs 觸發詞保持不變的觀念解析與 WebUI 語法對照。</p>
+    </div>
+
+    <div class="archive-box">
+      <h3>🔹 [2026-10-21 11:43:30] Gemini 3.8 Flash 變更紀錄</h3>
+      <p><strong>模型/Agent</strong>: Gemini 3.8 Flash / Antigravity</p>
+      <p><strong>Prompt 原文</strong>:</p>
+      <div class="code-block-wrapper">
+        <button class="copy-btn" onclick="copyCode(this)">複製原始 Prompt</button>
+        <pre><code>所以lora必須有觸發詞?才能啟用</code></pre>
+      </div>
+      <p><strong>變更摘要</strong>: 深入剖析 LoRA 觸發詞底層機制，比較「主體概念綁定型（需觸發詞）」與「全域畫質/光影風格型（免觸發詞，掛載即生效）」之差異與判斷原則。</p>
     </div>
   </div>
 

@@ -56,6 +56,20 @@ Juggernaut XL 是 SDXL 1.0 系列中極具代表性的微調檢查點（Checkpoi
 > 2. **Fooocus 操作方式**：**切勿**在提示詞輸入框填寫 `<lora:civitai_298448:0.8>`（Fooocus 不支援也不需要此語法）。正確做法是在 UI 的 **Models -> LoRA 1** 下拉選單中選取 `civitai_298448.safetensors` 並滑動權重到 `0.8`。提示詞只需照常填寫 `vrn, voronoi complex pattern...`。
 > 3. **傳統 WebUI (A1111 / Forge) 操作方式**：若在傳統 WebUI 中使用，則需寫入語法 `<lora:civitai_298448:0.8>` 並同時加上觸發詞 `vrn, voronoi complex pattern`。
 
+### 1.4 LoRA 觸發詞機制深入：所有 LoRA 都必須有觸發詞才能啟用嗎？
+
+答案是：**「不一定」，取決於 LoRA 的訓練方式與打標（Captioning）策略**。業界常見分為三大類：
+
+| LoRA 類別 | 代表範例 | 訓練打標策略 | 是否需觸發詞？ | 未寫觸發詞的效果 |
+| :--- | :--- | :--- | :--- | :--- |
+| **概念/特定主體綁定型** | 本課之 **Voronoi (`vrn`)**、特定動漫角色、名人肖像、專屬物件 | 訓練集皆標註特定 Token（如 `vrn`、`corgi_robot`） | **必須有觸發詞** | 權重載入但注意力未被激發，效果微弱或幾乎不可見 |
+| **通用風格/畫質提升型** | Detail Tweaker (細節狂魔)、Film Grain (膠卷顆粒)、Add More Detail | 訓練集全空標籤（No Captions）或無條件全局微調 | **不需觸發詞** | **掛載即生效**，直接全域疊加光影或銳化質感 |
+| **混合廣義風格型** | 水彩風 (Watercolor)、賽博龐克色調 (Cyberpunk Palette) | 混合多樣自然語言描述 | **建議搭配關鍵字** | 就算沒寫觸發詞也會有輕微偏色，但加上關鍵字風格才會完全展開 |
+
+> **如何判斷下載的 LoRA 需不需要觸發詞？**
+> 1. **查看 Civitai 右側面板**：檢視 `Trained Words`（訓練單詞），若有列出字詞（如本例的 `vrn`），代表訓練時有進行注意力綁定，必須寫入提示詞中。
+> 2. **查看模型說明頁（Description）**：作者若註明 *「No trigger word needed, just adjust weight」*，則代表該 LoRA 掛載後自動全域生效。
+
 Fooocus 是專為 SDXL 設計的高效能開源生成軟體，其內建機制與標準 AUTOMATIC1111 WebUI 有顯著差異：
 
 | 功能項目 | SD WebUI / ComfyUI | Fooocus 實作機制 | 課堂設定要點 |
@@ -316,3 +330,11 @@ Voronoi 幾何圖元生成不僅限於二維圖片展示，在當前產業設計
   如果我把下載的lora 命名為civitai_298448.safetensors 在提示詞中應該如何使用
   ```
 - **變更摘要**: 補充 LoRA 檔案重命名為 civitai_298448.safetensors 後，在 Fooocus UI 下拉選單配置 vs 觸發詞保持不變的觀念解析與 WebUI 語法對照。
+
+### 🔹 [2026-10-21 11:43:30] Gemini 3.8 Flash 變更紀錄
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  所以lora必須有觸發詞?才能啟用
+  ```
+- **變更摘要**: 深入剖析 LoRA 觸發詞底層機制，比較「主體概念綁定型（需觸發詞）」與「全域畫質/光影風格型（免觸發詞，掛載即生效）」之差異與判斷原則。
