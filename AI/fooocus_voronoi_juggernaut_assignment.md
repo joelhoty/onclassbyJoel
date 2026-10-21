@@ -50,6 +50,12 @@ Juggernaut XL 是 SDXL 1.0 系列中極具代表性的微調檢查點（Checkpoi
 
 ### 1.3 Fooocus 工具特色與 WebUI 映射邏輯
 
+> [!IMPORTANT]
+> **常見觀念釐清：LoRA 檔案重新命名（如 `civitai_298448.safetensors`）在提示詞中如何使用？**
+> 1. **檔案名稱 ≠ 觸發詞**：檔名只是硬碟中的檔案代號。將檔案命名為 `civitai_298448.safetensors` **完全不會改變** LoRA 訓練時綁定的觸發詞！其專屬觸發詞依然是 `vrn`、`voronoi complex pattern` 與 `intricate cell networks`。
+> 2. **Fooocus 操作方式**：**切勿**在提示詞輸入框填寫 `<lora:civitai_298448:0.8>`（Fooocus 不支援也不需要此語法）。正確做法是在 UI 的 **Models -> LoRA 1** 下拉選單中選取 `civitai_298448.safetensors` 並滑動權重到 `0.8`。提示詞只需照常填寫 `vrn, voronoi complex pattern...`。
+> 3. **傳統 WebUI (A1111 / Forge) 操作方式**：若在傳統 WebUI 中使用，則需寫入語法 `<lora:civitai_298448:0.8>` 並同時加上觸發詞 `vrn, voronoi complex pattern`。
+
 Fooocus 是專為 SDXL 設計的高效能開源生成軟體，其內建機制與標準 AUTOMATIC1111 WebUI 有顯著差異：
 
 | 功能項目 | SD WebUI / ComfyUI | Fooocus 實作機制 | 課堂設定要點 |
@@ -302,3 +308,11 @@ Voronoi 幾何圖元生成不僅限於二維圖片展示，在當前產業設計
   今天影像生成的課程，用fooocus指定生成一張作業，使用的圖片是 https://civitai.com/images/145848150 根據這個圖片的生成資料，下載了模型與lora，可以在fooocus生成的時候模仿與變化， https://civitai.com/models/133005/juggernaut-xl?modelVersionId=1759168 https://civitai.com/models/3004897/voronoi?modelVersionId=3409217 這是模型與lora
   ```
 - **變更摘要**: 建立完整 Fooocus 課堂作業指引，涵蓋 Juggernaut XL 與 Voronoi LoRA 之幾何原理、Civitai 145848150 官方元數據還原、Fooocus 操作 SOP、下載腳本、五大創意變化提案與權重調校分析。
+
+### 🔹 [2026-10-21 11:41:49] Gemini 3.8 Flash 變更紀錄
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  如果我把下載的lora 命名為civitai_298448.safetensors 在提示詞中應該如何使用
+  ```
+- **變更摘要**: 補充 LoRA 檔案重命名為 civitai_298448.safetensors 後，在 Fooocus UI 下拉選單配置 vs 觸發詞保持不變的觀念解析與 WebUI 語法對照。
