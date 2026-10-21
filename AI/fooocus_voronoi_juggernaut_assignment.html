@@ -396,6 +396,15 @@
       <strong>🔍 判斷技巧</strong>：在 Civitai 下載任何 LoRA 時，先看右側邊欄的 <code>Trained Words</code>。若欄位列有單詞（如 <code>vrn</code>），代表必須寫入；若為空或作者於簡介註明 <em>"No trigger word needed"</em>，則代表只需掛載即可全域生效。
     </div>
 
+    <div class="alert-box" style="background-color: #fef2f2; border-left-color: #ef4444; color: #991b1b;">
+      <strong>⚠️ 觀念防呆：關鍵字（觸發詞）必須跟 LoRA 的「檔案名稱」一致嗎？</strong><br>
+      <strong>完全不需要！兩者毫無關聯。</strong>
+      <ul style="margin: 6px 0 0 0; padding-left: 20px;">
+        <li><strong>檔案名稱</strong>（如 <code>civitai_298448.safetensors</code> 或 <code>my_model.safetensors</code>）：只是硬碟檔案代號，你在電腦中隨意改名完全不影響模型內容。</li>
+        <li><strong>關鍵字/觸發詞</strong>（如 <code>vrn</code>）：是模型作者在訓練時「深深刻印在神經網路內部」的特定文字 Token。<strong>更改檔案名稱絕不可能改變內部的觸發詞</strong>！提示詞裡要寫什麼，永遠只看作者訓練時設定的詞彙。</li>
+      </ul>
+    </div>
+
     <h3>1.5 實務操作：WildCardX 細節增強 LoRA 在 Fooocus 的「三步啟用」SOP</h3>
     <p>學員常有疑惑：「既然沒有觸發詞，那到底要怎麼啟用它？」在 Fooocus 中只需要簡單的三個步驟：</p>
     <div class="mermaid-wrapper">
@@ -810,6 +819,17 @@ flowchart TD
         <pre><code>A minion embodied  "vrn, voronoi complex pattern"  in the image of Batman in the Pixar style. The minion is dressed in a black suit with a cape complemented by a mask on his head. His yellow skin is decorated with drawings in the form of a bat. The minion's big eyes are burning with determination. The City of London is depicted in the background, it is raining, city lights are shining,</code></pre>
       </div>
       <p><strong>變更摘要</strong>: 擴充創意變化方向 G（皮克斯 3D 小小兵蝙蝠俠 Voronoi 風格化），優化提示詞結構、雨夜倫敦光影渲染與卡通角色防過度破碎之 LoRA 權重建議（0.7 ~ 0.75）。</p>
+    </div>
+
+    <div class="archive-box">
+      <h3>🔹 [2026-10-21 11:57:06] Gemini 3.8 Flash 變更紀錄</h3>
+      <p><strong>模型/Agent</strong>: Gemini 3.8 Flash / Antigravity</p>
+      <p><strong>Prompt 原文</strong>:</p>
+      <div class="code-block-wrapper">
+        <button class="copy-btn" onclick="copyCode(this)">複製原始 Prompt</button>
+        <pre><code>關鍵字必須跟lora的檔名一致嗎?</code></pre>
+      </div>
+      <p><strong>變更摘要</strong>: 在 1.4 節增補「關鍵字（觸發詞）與硬碟檔案名稱完全無關」之觀念防呆提示與對照解析。</p>
     </div>
   </div>
 

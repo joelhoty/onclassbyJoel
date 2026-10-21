@@ -70,6 +70,12 @@ Juggernaut XL 是 SDXL 1.0 系列中極具代表性的微調檢查點（Checkpoi
 > 1. **查看 Civitai 右側面板**：檢視 `Trained Words`（訓練單詞），若有列出字詞（如本例的 `vrn`），代表訓練時有進行注意力綁定，必須寫入提示詞中。
 > 2. **查看模型說明頁（Description）**：作者若註明 *「No trigger word needed, just adjust weight」*，則代表該 LoRA 掛載後自動全域生效。
 
+> [!CAUTION]
+> **觀念防呆：關鍵字（觸發詞）必須跟 LoRA 的「檔案名稱」一致嗎？**
+> **完全不需要！兩者毫無關聯。**
+> - **檔案名稱**（如 `civitai_298448.safetensors` 或 `my_model.safetensors`）：只是作業系統用來辨識檔案的標籤，你在硬碟裡改成什麼名字都可以。
+> - **關鍵字/觸發詞**（如 `vrn`）：是作者當初在訓練時「燒錄進神經網絡內部」的特定文字 Token。**改檔名絕不可能改變觸發詞**！無論你把檔名改成什麼，提示詞裡要寫的觸發詞永遠都是作者當初訓練好的那幾個字。
+
 ### 1.5 實務操作：WildCardX 細節增強 LoRA 在 Fooocus 的「三步啟用」SOP
 
 學員經常疑惑：「既然沒有觸發詞，那到底要怎麼知道 WildcardX LoRA 啟用了沒？」只需三步驟：
@@ -464,3 +470,11 @@ Voronoi 幾何圖元生成不僅限於二維圖片展示，在當前產業設計
   A minion embodied  "vrn, voronoi complex pattern"  in the image of Batman in the Pixar style. The minion is dressed in a black suit with a cape complemented by a mask on his head. His yellow skin is decorated with drawings in the form of a bat. The minion's big eyes are burning with determination. The City of London is depicted in the background, it is raining, city lights are shining,
   ```
 - **變更摘要**: 擴充創意變化方向 G（皮克斯 3D 小小兵蝙蝠俠 Voronoi 風格化），優化提示詞結構、雨夜倫敦光影渲染與卡通角色防過度破碎之 LoRA 權重建議（0.7 ~ 0.75）。
+
+### 🔹 [2026-10-21 11:57:06] Gemini 3.8 Flash 變更紀錄
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  關鍵字必須跟lora的檔名一致嗎?
+  ```
+- **變更摘要**: 在 1.4 節增補「關鍵字（觸發詞）與硬碟檔案名稱完全無關」之觀念防呆提示與對照解析。
