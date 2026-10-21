@@ -645,6 +645,47 @@ echo "[SUCCESS] 模型下載完畢，請重新啟動或重整 Fooocus WebUI！"<
       <p><small>建議負向詞：<code>solid opaque wings, plastic, muddy water, deformed butterfly, extra wings, blurry droplets, low quality, worst quality, watermark, text</code></small></p>
     </div>
 
+    <h3>2.6 常見排查：為什麼加了 vrn 觸發詞且調了權重，Fooocus 產圖卻完全沒有 Voronoi 效果？</h3>
+    <p>如果您在 Fooocus 中同時寫了 <code>vrn, voronoi complex pattern</code>，也在 Models 頁籤將權重拉到 <code>0.8</code>，但產出來的人物卻依然是一張普通人像，請依序檢查以下 <strong>5 大最常見踩坑點</strong>：</p>
+    
+    <div class="mermaid-wrapper">
+      <div class="mermaid">
+flowchart TD
+    Q["加了 vrn 卻完全沒幾何效果？"] --> C1{"1. Style 是否勾選 Fooocus V2?"}
+    C1 -- 是 --> S1["⚠️ 取消勾選 Fooocus V2 / Photograph<br>(隱藏寫實詞會抹除幾何細胞)"]
+    C1 -- 否 --> C2{"2. Refiner 是否有選模型?"}
+    C2 -- 有 --> S2["⚠️ 將 Refiner 設為 None<br>(Refiner 會把幾何網格當雜訊洗掉)"]
+    C2 -- 否 --> C3{"3. vrn 檔案大小是否正常?"}
+    C3 -- 只有幾KB --> S3["⚠️ 檔案壞了 (需約 177 MB)<br>Civitai 401 誤下載到 HTML 網頁"]
+    C3 -- 正常177MB --> C4{"4. 提示詞是否有明確主體指令?"}
+    C4 -- 缺少 --> S4["⚠️ 加上: skin and ornaments rendered in intricate cell networks"]
+    C4 -- 有 --> S5["5. 權重拉到 0.85 ~ 0.9, 關閉磨皮修臉 LoRA"]
+      </div>
+    </div>
+
+    <ol>
+      <li><strong style="color:#dc2626;">🔴 第一大坑（最常見）：Fooocus 預設的 <code>Fooocus V2</code> 風格在後台「抹平」了幾何網格！</strong><br>
+      Fooocus 預設自動勾選的 <code>Fooocus V2</code> 與 <code>Fooocus Photograph</code>，會在後台偷偷加入大量「超逼真、柔順皮膚（smooth realistic skin, 8k photo）」的隱藏詞。這些詞彙會強烈抵消 Voronoi 的多邊形切割，把細胞網絡抹平成光滑皮膚！<br>
+      👉 <strong>解法</strong>：到 <strong>Style</strong> 頁籤，<strong>取消勾選 <code>Fooocus V2</code> 與 <code>Fooocus Photograph</code></strong>，只保留 <code>Fooocus Semi Realistic</code> 或全部取消（None）。</li>
+      
+      <li><strong style="color:#dc2626;">🔴 第二大坑：Refiner（精煉底模）把幾何網絡當成「雜訊」洗掉了！</strong><br>
+      如果在 <strong>Models</strong> 頁籤開啟了 Refiner，Fooocus 會在後半段步驟切換到底模，而 Refiner 裡面沒有掛載 Voronoi LoRA，去噪過程會直接把剛長出來的多邊形細胞判定為「雜訊斑點」而磨平洗除。<br>
+      👉 <strong>解法</strong>：在 <strong>Models</strong> 標籤頁，確認 <strong>Refiner 必須設為 <code>None</code></strong>！</li>
+
+      <li><strong style="color:#dc2626;">🔴 第三大坑：下載到的 LoRA 其實是壞檔（只有幾 KB 的 HTML 錯誤頁）！</strong><br>
+      從 Civitai 下載模型若遇到轉址或未授權，常常只下載到 1~2 KB 的 401/403 HTML 錯誤頁。Fooocus 在後台載入失敗會默默跳過此 LoRA。<br>
+      👉 <strong>解法</strong>：檢查 <code>models/loras/vrn.safetensors</code> 的檔案大小，<strong>正常必須為 177 MB 左右</strong>！若只有幾十 KB 就是壞檔。</li>
+
+      <li><strong style="color:#dc2626;">🔴 第四大坑：提示詞只寫單詞，沒告訴模型「網絡要畫在哪裡」！</strong><br>
+      如果只在開頭寫 <code>vrn, voronoi complex pattern</code>，模型知道要有幾何風格，但不知道要套用在背景、衣服還是臉上。<br>
+      👉 <strong>解法</strong>：仿照原圖加上明確的具體指示句：<br>
+      <code>skin and ornaments rendered in intricate cell networks, black and white</code>（明確指定：皮膚與飾品皆由複雜細胞網絡呈現）。</li>
+
+      <li><strong style="color:#dc2626;">🔴 第五大坑：LoRA 權重不足或被其他修臉 LoRA 覆蓋！</strong><br>
+      Voronoi LoRA 屬於強風格，若 Weight 只有 0.4 以下會非常不明顯；若同時掛了 Face Restoration 或超高權重的寫實 LoRA 也會壓制它。<br>
+      👉 <strong>解法</strong>：將 <code>vrn</code> 的 Weight 直拉到 <strong>0.8 ~ 0.9</strong>，並暫時關閉其他 LoRA 單獨測試。</li>
+    </ol>
+
     <h2>三、延伸思考與進階主題（Extensions & Advanced Topics）</h2>
 
     <h3>3.1 LoRA 權重梯形效應（Weight Ramp Analysis）</h3>
@@ -732,6 +773,17 @@ echo "[SUCCESS] 模型下載完畢，請重新啟動或重整 Fooocus WebUI！"<
         <pre><code>wwildcard的lora要如何啟用?</code></pre>
       </div>
       <p><strong>變更摘要</strong>: 新增 1.5 節詳細圖解 WildCardX 細節增強 LoRA 在 Fooocus 的「三步啟用」SOP（檔案放置 ➜ UI 權重滑桿啟用 ➜ 直接生成）與 A/B 盲測驗證法。</p>
+    </div>
+
+    <div class="archive-box">
+      <h3>🔹 [2026-10-21 11:52:53] Gemini 3.8 Flash 變更紀錄</h3>
+      <p><strong>模型/Agent</strong>: Gemini 3.8 Flash / Antigravity</p>
+      <p><strong>Prompt 原文</strong>:</p>
+      <div class="code-block-wrapper">
+        <button class="copy-btn" onclick="copyCode(this)">複製原始 Prompt</button>
+        <pre><code>為什麼加了 vrn, voronoi complex pattern 並在fooocus勾選調整權重沒有作用?</code></pre>
+      </div>
+      <p><strong>變更摘要</strong>: 新增 2.6 節「加了觸發詞且調了權重卻沒效果的 5 大排查關鍵」，詳解 Fooocus V2 隱藏寫實詞抹平、Refiner 雜訊洗除、177MB 檔案完整性檢查與具體主體指向提示詞語法。</p>
     </div>
   </div>
 
