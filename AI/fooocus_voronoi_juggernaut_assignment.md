@@ -268,6 +268,21 @@ echo "[SUCCESS] 下載完成！請在 Fooocus 介面中重新整理模型清單�
      ```
   5. 點擊生成，模型將完美保持原圖的五官臉型，但全面覆蓋上 Voronoi 幾何細胞藝術！
 
+#### 變化方向 F：雙 LoRA 堆疊融合——水花飛濺的幾何細胞水蝶（Voronoi Fluid Water Butterfly）
+* **設計理念**：結合學員實戰提示詞（水花精靈蝴蝶）與全域細節增強 LoRA，同時掛載本課的 Voronoi LoRA，將水滴飛沫凝聚為晶瑩剔透的多邊形細胞水翼，實現流體力學與計算幾何的奇幻碰撞！
+* **Fooocus 雙 LoRA 權重配置**：
+  - **LoRA 1**：`vrn.safetensors`（權重設為 `0.65`，賦予水翼多邊形幾何細胞分區）
+  - **LoRA 2**：`WildcardX-XL-Detail-Enhancer.safetensors`（權重設為 `0.7`，負責激發細微飛沫與高解析水滴光澤）
+* **Fooocus 專用正向提示詞（已移除無效 `<lora:...>` 語法並注入觸發詞）**：
+  ```text
+  high quality, highly detailed, 8K Ultra HD, "vrn, voronoi complex pattern, a magical butterfly made of water spray, delicate wings formed by translucent geometric cell networks and crystalline aquatic droplets", In this enchanting artwork, the very essence of water transforms into ethereal butterflies, each droplet gracefully adorning the wings of a butterfly in flight, The translucence of the water captures the delicate beauty of the butterfly, as if nature has granted fleeting wings to the liquid essence, The intricate patterns formed by these aquatic butterflies evoke a sense of enchantment, their ephemeral forms suspended in time, The play of light on their wings adds a touch of magic, turning ordinary droplets into a symphony of aquatic butterflies, dancing in the realm where water meets whimsical flight, by yukisakura, awesome full color, sharp focus, volumetric lighting
+  ```
+* **負向提示詞（Negative Prompt）**：
+  ```text
+  solid opaque wings, plastic, muddy water, deformed butterfly, extra wings, broken anatomy, blurry droplets, low quality, worst quality, watermark, text
+  ```
+* **推薦設定**：Aspect Ratio `1280×768 (16:9)` 或 `1024×1024`，Style 勾選 `Fooocus Masterpiece` + `Fooocus Semi Realistic`。
+
 ---
 
 ## 三、延伸思考與進階主題（Extensions & Advanced Topics）
@@ -338,3 +353,11 @@ Voronoi 幾何圖元生成不僅限於二維圖片展示，在當前產業設計
   所以lora必須有觸發詞?才能啟用
   ```
 - **變更摘要**: 深入剖析 LoRA 觸發詞底層機制，比較「主體概念綁定型（需觸發詞）」與「全域畫質/光影風格型（免觸發詞，掛載即生效）」之差異與判斷原則。
+
+### 🔹 [2026-10-21 11:46:13] Gemini 3.8 Flash 變更紀錄
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  high quality, highly detailed, 8K Ultra HD, butterfly made of water spray, In this enchanting artwork, the very essence of water transforms into ethereal butterflies, each droplet gracefully adorning the wings of a butterfly in flight, The translucence of the water captures the delicate beauty of the butterfly, as if nature has granted fleeting wings to the liquid essence, The intricate patterns formed by these aquatic butterflies evoke a sense of enchantment, their ephemeral forms suspended in time, The play of light on their wings adds a touch of magic, turning ordinary droplets into a symphony of aquatic butterflies, dancing in the realm where water meets whimsical flight, by yukisakura, awesome full color, <lora:WildcardX-XL-Detail-Enhancer:1>
+  ```
+- **變更摘要**: 示範外部提示詞導入 Fooocus 之語法清洗（移除末尾 `<lora:...>` 轉入 UI 欄位），並結合 Voronoi LoRA 提出雙 LoRA「水花飛濺幾何細胞水蝶（變化方向 F）」之實戰融合方案。
