@@ -603,11 +603,12 @@ echo "[SUCCESS] 模型下載完畢，請重新啟動或重整 Fooocus WebUI！"<
 
     <div class="variation-card" style="border-top-color: #0284c7;">
       <h4>🦋 方向 F：雙 LoRA 堆疊融合——水花飛濺幾何水蝶（Voronoi Fluid Water Butterfly）</h4>
-      <p><strong>概念說明</strong>：將水滴飛沫凝聚為晶瑩剔透的多邊形細胞水翼，展示同時掛載風格 LoRA（<code>vrn</code>）與全域畫質增強 LoRA（<code>WildcardX-XL-Detail-Enhancer</code>）的高階堆疊技術。</p>
+      <p><strong>概念說明</strong>：將水滴飛沫凝聚為晶瑩剔透的多邊形細胞水翼，展示同時掛載風格 LoRA（<code>vrn</code>）與全域畫質增強 LoRA（<code>WildcardX-XL-Detail-Enhancer</code>，modelVersionId: 298448）的高階堆疊技術。</p>
+      <p><strong>Civitai 官方元數據驗證</strong>：經查 Civitai API，該模型 <code>TrainedWords = []</code>（空陣列），官方證實<strong>完全不需任何觸發詞</strong>，掛載即全域生效！若下載命名為 <code>civitai_298448.safetensors</code>，直接於下拉選單選取即可。</p>
       <p><strong>Fooocus 雙 LoRA 欄位配置</strong>：</p>
       <ul>
         <li><strong>LoRA 1</strong>：<code>vrn.safetensors</code>（權重 <code>0.65</code>，負責多邊形細胞幾何分區）</li>
-        <li><strong>LoRA 2</strong>：<code>WildcardX-XL-Detail-Enhancer.safetensors</code>（權重 <code>0.7</code>，負責極致細水滴飛沫與光澤）</li>
+        <li><strong>LoRA 2</strong>：<code>civitai_298448.safetensors</code>（或 <code>WildcardX-XL-Detail-Enhancer.safetensors</code>，權重 <code>0.8 ~ 1.0</code>，負責極致細水滴飛沫與光澤）</li>
       </ul>
       <div class="code-block-wrapper">
         <button class="copy-btn" onclick="copyCode(this)">複製清洗後專用提示詞</button>
@@ -681,6 +682,17 @@ echo "[SUCCESS] 模型下載完畢，請重新啟動或重整 Fooocus WebUI！"<
         <pre><code>high quality, highly detailed, 8K Ultra HD, butterfly made of water spray, In this enchanting artwork, the very essence of water transforms into ethereal butterflies, each droplet gracefully adorning the wings of a butterfly in flight, The translucence of the water captures the delicate beauty of the butterfly, as if nature has granted fleeting wings to the liquid essence, The intricate patterns formed by these aquatic butterflies evoke a sense of enchantment, their ephemeral forms suspended in time, The play of light on their wings adds a touch of magic, turning ordinary droplets into a symphony of aquatic butterflies, dancing in the realm where water meets whimsical flight, by yukisakura, awesome full color, <lora:WildcardX-XL-Detail-Enhancer:1></code></pre>
       </div>
       <p><strong>變更摘要</strong>: 示範外部提示詞導入 Fooocus 之語法清洗（移除末尾 &lt;lora:...&gt; 轉入 UI 欄位），並結合 Voronoi LoRA 提出雙 LoRA「水花飛濺幾何細胞水蝶（變化方向 F）」之實戰融合方案。</p>
+    </div>
+
+    <div class="archive-box">
+      <h3>🔹 [2026-10-21 11:47:40] Gemini 3.8 Flash 變更紀錄</h3>
+      <p><strong>模型/Agent</strong>: Gemini 3.8 Flash / Antigravity</p>
+      <p><strong>Prompt 原文</strong>:</p>
+      <div class="code-block-wrapper">
+        <button class="copy-btn" onclick="copyCode(this)">複製原始 Prompt</button>
+        <pre><code>https://civitai.com/models/264681/wildcardx-xl-detailenhancer?modelVersionId=298448</code></pre>
+      </div>
+      <p><strong>變更摘要</strong>: 驗證 WildCardX-XL-Detail/Enhancer (modelVersionId: 298448) 官方 API 元數據，確認其 TrainedWords 為空（免觸發詞全域生效型 LoRA），補全作者推薦參數與檔名關聯說明。</p>
     </div>
   </div>
 
