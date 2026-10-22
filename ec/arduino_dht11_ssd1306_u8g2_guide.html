@@ -382,7 +382,7 @@
       </div>
     </div>
     <div class="metadata-box">
-      <div><strong>最後更新時間:</strong> 2026-10-22 14:43:25 (UTC+8)</div>
+      <div><strong>最後更新時間:</strong> 2026-10-22 15:01:30 (UTC+8)</div>
       <div><strong>使用模型:</strong> Claude Sonnet 5.5</div>
       <div><strong>執行 Agent:</strong> Claude Code</div>
       <div><strong>硬體:</strong> SSD1306 128×64 (I2C, A4/A5) • DHT11 (D8)</div>
@@ -391,7 +391,7 @@
   <section class="card content">
 <h1 id="-arduino-uno--dht11--ssd1306-oledu8g2--i2c從-lcd-1602-換成-oled-的作法程式庫比較與-page-buffer-優缺點">🖥️ Arduino Uno + DHT11 + SSD1306 OLED（U8g2 / I2C）：從 LCD 1602 換成 OLED 的作法、程式庫比較與 Page Buffer 優缺點</h1>
 <blockquote>
-<p><strong>最後更新時間</strong>: 2026-10-22 14:43:25 (UTC+8)<br />
+<p><strong>最後更新時間</strong>: 2026-10-22 15:01:30 (UTC+8)<br />
 <strong>使用模型</strong>: Claude Sonnet 5.5<br />
 <strong>執行 Agent</strong>: Claude Code<br />
 <strong>對應程式碼</strong>: <a href="./1022-ssd1306.ino">1022-ssd1306.ino</a><br />
@@ -965,6 +965,77 @@ humd: 61.0 %</code></pre></div>
     C --> D{"還有下一頁？"}
     D -- "是（_1：共重畫 8 次）" --> B
     D -- 否 --> E["整張畫面完成"]</pre>
+<h3 id="711-詳解12864-共-8-頁每頁-8-列--128-欄--128-bytes是怎麼算出來的">7.1.1 詳解：「128×64 共 8 頁，每頁 8 列 × 128 欄 = 128 bytes」是怎麼算出來的？</h3>
+<p>這句話其實是在描述 <strong>SSD1306 內部顯示記憶體（GDDRAM）的排列方式</strong>，可以拆成 4 個層次理解。</p>
+<p><strong>① 先看總量：每個像素 1 bit</strong></p>
+<p>SSD1306 是單色 OLED，一個像素只有「亮／滅」，剛好是 <strong>1 bit</strong>。</p>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">總像素   = 128 欄 × 64 列 = 8192 個像素 = 8192 bits
+總位元組 = 8192 ÷ 8      = 1024 bytes（= Full Buffer 的大小）</code></pre></div>
+<p><strong>② 為什麼要分成「頁」？因為 1 個 byte 只有 8 bits</strong></p>
+<p>SSD1306 把 64 列<strong>每 8 列綁成一組</strong>，這一組就叫 <strong>1 頁（page）</strong>：</p>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">64 列 ÷ 8 列/頁 = 8 頁（PAGE0 ～ PAGE7）
+
+   欄→  0   1   2  ...  127
+ 列0  ┐
+ 列1  │
+ 列2  │  PAGE0  ← 8 列 × 128 欄 = 1024 bits = 128 bytes
+ ...  │
+ 列7  ┘
+ 列8  ┐
+ ...  │  PAGE1  ← 同樣 128 bytes
+ 列15 ┘
+ ...
+ 列56 ┐
+ ...  │  PAGE7
+ 列63 ┘</code></pre></div>
+<p><strong>③ 一頁裡的「1 個 byte」代表什麼？一欄、垂直 8 個像素</strong></p>
+<p>這是最容易搞錯的地方：SSD1306 的 byte <strong>不是橫著排，而是直著排</strong>。</p>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">PAGE0 的第 N 個 byte ＝ 第 N 欄、列 0～7 這 8 個像素
+  bit0（最低位）= 最上面的像素（列 0）
+  bit7（最高位）= 最下面的像素（列 7）
+
+例：第 0 欄寫入 0x01（0b00000001）→ 只點亮 (x=0, y=0)
+    第 0 欄寫入 0xFF（0b11111111）→ 點亮 x=0 的 y=0～7，一條 8 px 垂直線
+    第 0 欄寫入 0x80（0b10000000）→ 只點亮 (x=0, y=7)，頁的最下面一點</code></pre></div>
+<p>一頁有 128 欄，每欄 1 byte，所以 <strong>1 頁 = 128 bytes</strong>；8 頁 × 128 = <strong>1024 bytes</strong>，與 ① 算出的總量吻合。</p>
+<p><strong>④ 座標換算公式：像素 (x, y) 落在哪個 byte 的哪個 bit？</strong></p>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">頁碼     page  = y ÷ 8        （整數除法）
+欄位     col   = x
+位元     bit   = y mod 8      （0 = 該頁最上面一列）
+緩衝索引 index = page × 128 + x
+
+範例：像素 (10, 19)
+  page  = 19 ÷ 8   = 2
+  bit   = 19 mod 8 = 3
+  index = 2×128+10 = 266
+  → 要把緩衝第 266 個 byte 的 bit3 設為 1</code></pre></div>
+<pre class="mermaid">flowchart LR
+    A["像素 (x, y)"] --> B["page = y / 8"]
+    A --> C["bit = y % 8"]
+    A --> D["col = x"]
+    B --> E["index = page × 128 + col"]
+    D --> E
+    E --> F["buffer[index] |= (1 << bit)"]</pre>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-cpp"><code class="language-cpp">// 示範：不靠任何程式庫，手動把一個像素寫進 128×64 的緩衝（說明用，非實際驅動）
+uint8_t fb[1024];                         // 模擬 SSD1306 的 1024 bytes 顯示記憶體
+
+void setPixel(uint8_t x, uint8_t y) {
+  uint8_t  page  = y / 8;                 // 第幾頁（0～7）
+  uint8_t  bit   = y % 8;                 // 該頁內由上往下的第幾列（0～7）
+  uint16_t index = page * 128 + x;        // 該頁第 x 欄的位元組位置
+  fb[index] |= (1 &lt;&lt; bit);                // 把對應的 bit 設為 1（點亮）
+}</code></pre></div>
+<p><strong>⑤ 這和「U8g2 Page Buffer」有什麼關係？</strong></p>
+<ul>
+<li>U8g2 把「8 列 × 8 欄」稱為一個 <strong>tile（圖塊）</strong>；一頁就是一排 16 個 tile（128 ÷ 8），每個 tile 8 bytes，所以 16 × 8 = 128 bytes。</li>
+<li>後綴 <code>_1</code> ＝ 緩衝只放 <strong>1 排 tile（1 頁）</strong>＝128 bytes；<code>_2</code> ＝ 2 頁＝256 bytes；<code>_F</code> ＝ 8 頁＝1024 bytes。</li>
+<li>傳送時，<code>nextPage()</code> 會先送「設定頁碼」指令（<code>0xB0 + 頁碼</code>），再送這一頁的 128 bytes 資料。<strong>整張畫面最終送出的總資料量不變（1024 bytes）</strong>，Page Buffer 省的是 Arduino 端的 RAM，不是傳輸量。</li>
+<li>因為緩衝只涵蓋「y 在目前這 8 列」的範圍，所以同一份繪圖指令要重複執行 8 次，每次只留下落在該頁的像素。</li>
+</ul>
+<blockquote>
+<p>[!NOTE]
+若是 SH1106（1.3 吋常見），顯示記憶體每頁是 <strong>132 欄</strong>而非 128 欄，畫面只取中間 128 欄，這就是前面提到「偏移 2 px」的原因；頁數與每頁 8 列的結構相同。</p>
+</blockquote>
 <h3 id="72-緩衝模式的-ram-對照12864-ssd1306">7.2 緩衝模式的 RAM 對照（128×64 SSD1306）</h3>
 <table>
 <thead>
@@ -1278,6 +1349,16 @@ do {
 <div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">  D:\CLASS_NOTE\ec\1022-ssd1306.ino 這是將今天的1602 i2c 更換成 u8g2 i2c ssd1306的程式，除了解釋作法，增加討論ssd 1306 i2c可以使用的程式庫有哪些?使用u8g2的優缺點，以及使用pagebuffer的優缺點</code></pre></div>
 <ul>
 <li><strong>變更摘要</strong>: 依 <code>1022-ssd1306.ino</code> 解析 LCD 1602 換成 SSD1306 + U8g2 的差異、建構子命名拆解、接線與位址；新增 SSD1306 I2C 可用程式庫比較表（U8g2、U8x8、Adafruit SSD1306、SSD1306Ascii、ss_oled、lexus2k/ssd1306、ThingPulse）與選用決策表；整理 U8g2 優缺點與 Page Buffer 優缺點及使用守則；附 Full Buffer／U8x8／Adafruit／字串預處理四種範例（含流程圖與註解）及疑難排解。</li>
+</ul>
+<h3 id="-2026-10-22-150130-claude-sonnet-55--claude-code-補充-ssd1306頁記憶體結構詳解">🔹 [2026-10-22 15:01:30] [Claude Sonnet 5.5 / Claude Code] 補充 SSD1306「頁」記憶體結構詳解</h3>
+<ul>
+<li><strong>模型/Agent</strong>: Claude Sonnet 5.5 / Claude Code</li>
+<li><strong>Prompt 原文</strong>:</li>
+</ul>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">  SSD1306 的顯示記憶體以「頁（page）」為單位：128×64 共 8 頁，每頁 8 個像素列 × 128 欄 = 128 bytes。
+  這一行需要詳細說明</code></pre></div>
+<ul>
+<li><strong>變更摘要</strong>: 於第 7 章新增 7.1.1，拆解 1 bit/像素 → 1024 bytes → 8 頁 × 128 bytes 的算法、byte 為「垂直 8 像素」的排列與 bit 對應、(x,y) → page/bit/index 換算公式與範例、手動 setPixel 程式（含流程圖），並說明與 U8g2 tile、<code>_1</code>/<code>_2</code>/<code>_F</code> 及 SH1106 132 欄的關係。</li>
 </ul>
   </section>
 </div>
