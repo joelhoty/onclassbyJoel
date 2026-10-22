@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-10-22 14:10:00 (UTC+8)  
+> **最後更新時間**: 2026-10-22 14:45:00 (UTC+8)  
 > **使用模型**: Claude Sonnet 5.5  
 > **執行 Agent**: Claude Code  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -38,6 +38,9 @@
 * `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
+* `2026-10-22` | [Arduino Uno + DHT11 + SSD1306 OLED（U8g2 / I2C）作法、程式庫比較與 Page Buffer 優缺點 (HTML)](./ec/arduino_dht11_ssd1306_u8g2_guide.html) (HTML)
+* `2026-10-22` | [Arduino Uno + DHT11 + SSD1306 OLED（U8g2 / I2C）作法、程式庫比較與 Page Buffer 優缺點 (MD)](./ec/arduino_dht11_ssd1306_u8g2_guide.md) (MD)
+* `2026-10-22` | [Arduino Uno DHT11(D8) + SSD1306 OLED (U8g2) 範例程式碼 1022-ssd1306 (INO)](./ec/1022-ssd1306.ino) (INO)
 * `2026-10-22` | [Arduino Uno + DHT11（Pin 8）+ I2C LCD 1602 接線指引與程式庫下載手冊 (HTML)](./ec/arduino_dht11_pin8_lcd1602_i2c_wiring_library_guide.html) (HTML)
 * `2026-10-22` | [Arduino Uno + DHT11（Pin 8）+ I2C LCD 1602 接線指引與程式庫下載手冊 (MD)](./ec/arduino_dht11_pin8_lcd1602_i2c_wiring_library_guide.md) (MD)
 * `2026-10-22` | [Arduino Uno DHT11(D8) + I2C LCD 1602 範例程式碼 example_1029 (INO)](./ec/arduino_dht11_pin8_lcd1602_i2c_example_1029.ino) (INO)

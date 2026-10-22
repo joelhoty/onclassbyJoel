@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🖥️ Arduino + DHT11 + SSD1306 OLED（U8g2 / I2C）作法、程式庫比較與 Page Buffer 優缺點</title>
+    
+    <!-- Prism 程式碼高亮 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- Mermaid 流程圖支援 -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true, theme: 'neutral'});</script>
+
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --primary-light: #e0f2fe;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-purple: #8b5cf6;
+            --secondary: #0f172a;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* 頁首 Header */
+        header {
+            background: linear-gradient(135deg, #0b132b 0%, #1e3a8a 55%, #0284c7 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+            border-bottom: 4px solid var(--primary);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.95rem;
+            font-weight: 800;
+            line-height: 1.35;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.05rem;
+            margin-top: 0.5rem;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-pdf {
+            background: #dc2626;
+            color: white;
+        }
+        .btn-pdf:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.22);
+            transform: translateY(-2px);
+        }
+
+        .metadata-box {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 0.9rem 1.25rem;
+            font-size: 0.88rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+            color: #cbd5e1;
+        }
+        .metadata-box strong {
+            color: #f1f5f9;
+        }
+
+        /* 卡片 */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 2.2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .card h2 {
+            font-size: 1.45rem;
+            color: var(--secondary);
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 2px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .card h3 {
+            font-size: 1.18rem;
+            color: #334155;
+            margin: 1.4rem 0 0.75rem 0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #334155;
+        }
+
+        /* 圖片網格展示 */
+        .img-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .img-card {
+            background: #f1f5f9;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+        .img-card:hover {
+            transform: translateY(-3px);
+        }
+        .img-card img {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: cover;
+            display: block;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .img-card .caption {
+            padding: 0.85rem 1rem;
+            font-size: 0.88rem;
+            color: #475569;
+            background: white;
+            font-weight: 500;
+        }
+
+        /* 表格樣式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.25rem 0;
+            font-size: 0.93rem;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        th, td {
+            padding: 0.85rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
+            border-bottom: 2px solid #cbd5e1;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* 標籤 Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .badge-blue { background: #e0f2fe; color: #0284c7; }
+        .badge-green { background: #dcfce7; color: #16a34a; }
+        .badge-amber { background: #fef3c7; color: #d97706; }
+        .badge-purple { background: #f3e8ff; color: #7e22ce; }
+        .badge-red { background: #fee2e2; color: #dc2626; }
+
+        /* 提示框 Callout */
+        .callout {
+            border-left: 4px solid var(--primary);
+            background: #f0f9ff;
+            padding: 1rem 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.25rem 0;
+            font-size: 0.95rem;
+        }
+        .callout-warning {
+            border-left-color: var(--accent-amber);
+            background: #fffbeb;
+        }
+        .callout-success {
+            border-left-color: var(--accent-green);
+            background: #f0fdf4;
+        }
+
+        /* 程式碼區塊與複製按鈕 */
+        .code-container {
+            position: relative;
+            margin: 1.4rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.18);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.35rem 0.75rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s ease;
+        }
+        .copy-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        pre[class*="language-"] {
+            margin: 0 !important;
+            padding: 1.4rem 1.2rem !important;
+            border-radius: 8px !important;
+            background: #0f172a !important;
+            font-size: 0.9rem !important;
+        }
+
+        code[class*="language-"] {
+            font-family: Consolas, Monaco, "Courier New", monospace !important;
+        }
+
+        /* LCD 1602 格子排版視覺化 */
+        .lcd-screen-preview {
+            background: #0284c7;
+            background: linear-gradient(180deg, #0369a1 0%, #075985 100%);
+            border: 8px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+            font-family: "Courier New", monospace;
+            color: #f8fafc;
+        }
+        .lcd-row {
+            display: grid;
+            grid-template-columns: repeat(16, 1fr);
+            gap: 2px;
+            margin-bottom: 4px;
+        }
+        .lcd-cell {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2.5rem 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        @media print {
+            body { background: white !important; color: black !important; padding: 0 !important; }
+            .action-btns, .copy-btn { display: none !important; }
+            .card { box-shadow: none !important; border: 1px solid #ccc !important; page-break-inside: avoid; }
+            header { background: none !important; color: black !important; border: 1px solid #aaa !important; }
+            .subtitle, .metadata-box { color: #333 !important; background: #eee !important; }
+        }
+    
+        .content h2{font-size:1.45rem;margin:2.2rem 0 1rem;padding-bottom:.5rem;border-bottom:2px solid #f1f5f9;color:var(--secondary)}
+        .content h3{font-size:1.18rem;margin:1.4rem 0 .7rem;color:#334155}
+        .content img{max-width:100%;border-radius:10px;box-shadow:var(--shadow);margin:1rem 0}
+        .content blockquote{border-left:4px solid var(--accent-amber);background:#fffbeb;padding:.8rem 1.1rem;margin:1rem 0;border-radius:0 8px 8px 0}
+        .content ul,.content ol{margin:0 0 1rem 1.5rem}
+        .content code{background:#f1f5f9;padding:.1rem .35rem;border-radius:4px;font-size:.9em}
+        .content pre code{background:none;padding:0}
+        .content table{display:block;overflow-x:auto}
+        .mermaid{background:#fff;padding:1rem;border:1px solid var(--border-color);border-radius:8px;margin:1rem 0;overflow-x:auto}
+    </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="header-top">
+      <div>
+        <h1>🖥️ Arduino Uno + DHT11 + SSD1306 OLED（U8g2 / I2C）</h1>
+        <p class="subtitle">從 LCD 1602 換成 OLED 的作法、SSD1306 程式庫比較、U8g2 與 Page Buffer 優缺點</p>
+      </div>
+      <div class="action-btns">
+        <button class="btn btn-pdf" onclick="window.print()">🖨️ 匯出成 PDF</button>
+        <a class="btn btn-secondary" href="../index.html">📂 課程總目錄</a>
+        <a class="btn btn-secondary" href="1022-ssd1306.ino" download>💾 下載程式 (.ino)</a>
+      </div>
+    </div>
+    <div class="metadata-box">
+      <div><strong>最後更新時間:</strong> 2026-10-22 14:43:25 (UTC+8)</div>
+      <div><strong>使用模型:</strong> Claude Sonnet 5.5</div>
+      <div><strong>執行 Agent:</strong> Claude Code</div>
+      <div><strong>硬體:</strong> SSD1306 128×64 (I2C, A4/A5) • DHT11 (D8)</div>
+    </div>
+  </header>
+  <section class="card content">
+<h1 id="-arduino-uno--dht11--ssd1306-oledu8g2--i2c從-lcd-1602-換成-oled-的作法程式庫比較與-page-buffer-優缺點">🖥️ Arduino Uno + DHT11 + SSD1306 OLED（U8g2 / I2C）：從 LCD 1602 換成 OLED 的作法、程式庫比較與 Page Buffer 優缺點</h1>
+<blockquote>
+<p><strong>最後更新時間</strong>: 2026-10-22 14:43:25 (UTC+8)<br />
+<strong>使用模型</strong>: Claude Sonnet 5.5<br />
+<strong>執行 Agent</strong>: Claude Code<br />
+<strong>對應程式碼</strong>: <a href="./1022-ssd1306.ino">1022-ssd1306.ino</a><br />
+<strong>互動 HTML 筆記</strong>: <a href="./arduino_dht11_ssd1306_u8g2_guide.html">arduino_dht11_ssd1306_u8g2_guide.html</a></p>
+<p>✍️ <strong>撰寫：Claude Sonnet 5.5 / Claude Code</strong>（全文皆由 Claude 撰寫；與先前 Gemini 撰寫之 LCD 1602 系列筆記分開標註）</p>
+</blockquote>
+<hr />
+<h2 id="-目錄">📑 目錄</h2>
+<ol>
+<li><a href="#-一程式碼解析從-lcd-1602-換成-ssd1306-改了什麼">程式碼解析：從 LCD 1602 換成 SSD1306 改了什麼</a></li>
+<li><a href="#-二接線與位址">接線與位址</a></li>
+<li><a href="#-三程式邏輯流程圖與完整程式碼">程式邏輯流程圖與完整程式碼</a></li>
+<li><a href="#-四逐段說明作法">逐段說明作法</a></li>
+<li><a href="#-五ssd1306-i2c-可用的程式庫有哪些">SSD1306 I2C 可用的程式庫有哪些？</a></li>
+<li><a href="#-六使用-u8g2-的優缺點">使用 U8g2 的優缺點</a></li>
+<li><a href="#-七page-buffer-的優缺點">Page Buffer 的優缺點</a></li>
+<li><a href="#-八實作範例三種替代寫法">實作範例：Full Buffer、U8x8、Adafruit 三種寫法對照</a></li>
+<li><a href="#-九疑難排解-faq">疑難排解 FAQ</a></li>
+<li><a href="#-十延伸思考與進階主題">延伸思考與進階主題</a></li>
+<li><a href="#-提示詞歷史與變更記錄-prompt-archive">提示詞歷史與變更記錄</a></li>
+</ol>
+<hr />
+<h2 id="-一程式碼解析從-lcd-1602-換成-ssd1306-改了什麼">🔍 一、程式碼解析：從 LCD 1602 換成 SSD1306 改了什麼</h2>
+<blockquote>
+<p>先講結論：<strong>DHT11 的讀取邏輯完全沒變</strong>，只有「顯示層」被換掉。這也是把感測與顯示分開寫的好處。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">項目</th>
+<th style="text-align: left;">LCD 1602 版（先前筆記）</th>
+<th style="text-align: left;">SSD1306 + U8g2 版（本程式）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">顯示器類型</td>
+<td style="text-align: left;">字元型 LCD（16 字 × 2 行，HD44780 + PCF8574）</td>
+<td style="text-align: left;"><strong>點陣 OLED</strong>（128 × 64 像素，SSD1306 控制器，自發光）</td>
+</tr>
+<tr>
+<td style="text-align: left;">程式庫</td>
+<td style="text-align: left;"><code>LiquidCrystal_I2C</code></td>
+<td style="text-align: left;"><strong><code>U8g2</code></strong>（<code>U8g2lib.h</code>）</td>
+</tr>
+<tr>
+<td style="text-align: left;">物件宣告</td>
+<td style="text-align: left;"><code>LiquidCrystal_I2C lcd(0x27, 16, 2);</code></td>
+<td style="text-align: left;"><code>U8G2_SSD1306_128X64_NONAME_1_SW_I2C u8g2(U8G2_R0, SCL, SDA, U8X8_PIN_NONE);</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">I2C 位址</td>
+<td style="text-align: left;"><code>0x27</code>（或 <code>0x3F</code>）</td>
+<td style="text-align: left;">通常 <code>0x3C</code>（少數 <code>0x3D</code>）；U8g2 內部已預設，多數情況不用寫</td>
+</tr>
+<tr>
+<td style="text-align: left;">初始化</td>
+<td style="text-align: left;"><code>lcd.init(); lcd.backlight();</code></td>
+<td style="text-align: left;"><code>u8g2.begin();</code>（OLED 自發光，無背光）</td>
+</tr>
+<tr>
+<td style="text-align: left;">定位方式</td>
+<td style="text-align: left;"><code>lcd.setCursor(col, row)</code>：<strong>格子</strong>座標</td>
+<td style="text-align: left;"><code>u8g2.setCursor(x, y)</code>：<strong>像素</strong>座標，且 <code>y</code> 是文字<strong>基線（baseline）</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">清除畫面</td>
+<td style="text-align: left;"><code>lcd.clear()</code></td>
+<td style="text-align: left;">Page Buffer 模式下<strong>不需要</strong>：每次 <code>firstPage()</code> 都是新的一頁</td>
+</tr>
+<tr>
+<td style="text-align: left;">更新畫面</td>
+<td style="text-align: left;">直接 <code>print</code>，立即生效</td>
+<td style="text-align: left;">必須包在 <code>firstPage()</code> / <code>nextPage()</code> 迴圈內重複繪製</td>
+</tr>
+<tr>
+<td style="text-align: left;">字型</td>
+<td style="text-align: left;">內建固定字型</td>
+<td style="text-align: left;">需用 <code>setFont()</code> 選擇字型（數百種）</td>
+</tr>
+<tr>
+<td style="text-align: left;">度數符號</td>
+<td style="text-align: left;"><code>lcd.print((char)223)</code></td>
+<td style="text-align: left;">本程式用 <code>" C"</code>；要顯示 <code>°</code> 需改用 <code>_tf</code> 字型並印 <code>\xb0</code>（見第十章）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="11-關鍵宣告拆解u8g2ssd1306128x64noname1swi2c">1.1 關鍵宣告拆解：<code>U8G2_SSD1306_128X64_NONAME_1_SW_I2C</code></h3>
+<p>U8g2 的建構子名稱是由多個欄位組成，<strong>每一段都有意義</strong>：</p>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">U8G2_ SSD1306 _ 128X64 _ NONAME _ 1 _ SW_I2C
+  │      │         │        │      │     └─ 通訊方式：SW_I2C=軟體模擬 I2C；HW_I2C=硬體 I2C（走 Wire）
+  │      │         │        │      └─────── 緩衝模式：1=Page Buffer（128 bytes）；2=Page Buffer（256 bytes）；F=Full Buffer（1024 bytes）
+  │      │         │        └────────────── 模組變體：NONAME=通用（絕大多數便宜模組）；VCOMH0 / ADAFRUIT 等為特殊變體
+  │      │         └─────────────────────── 解析度：128 × 64 像素（另有 128X32、96X16 等）
+  │      └───────────────────────────────── 控制晶片：SSD1306（1.3 吋常見的是 SH1106，要換）
+  └──────────────────────────────────────── 程式庫前綴</code></pre></div>
+<p>建構子參數：<code>(旋轉, SCL 腳, SDA 腳, RESET 腳)</code></p>
+<ul>
+<li><code>U8G2_R0</code>：不旋轉；<code>R1/R2/R3</code> 分別旋轉 90°/180°/270°。</li>
+<li><code>SCL, SDA</code>：在 Uno 上這兩個巨集就是 <code>A5</code>、<code>A4</code>。</li>
+<li><code>U8X8_PIN_NONE</code>：I2C 模組多半沒引出 RESET 腳，填「不使用」。</li>
+</ul>
+<h3 id="12-本程式其他重點">1.2 本程式其他重點</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">項目</th>
+<th style="text-align: left;">說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>DHTPIN 8</code></td>
+<td style="text-align: left;">DHT11 資料線仍接 <strong>D8</strong>，與 LCD 版相同</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>delayMS</code></td>
+<td style="text-align: left;"><code>sensor.min_delay / 1000</code> 並至少 1500 ms，確保 DHT11 不會被讀太快</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>u8g2_font_ncenB10_tr</code></td>
+<td style="text-align: left;">New Century Schoolbook <strong>B</strong>old、高約 10 px；後綴 <code>_tr</code> = <strong>t</strong>ransparent 背景 + <strong>r</strong>estricted（僅 ASCII 32–127），字型最省空間</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>u8g2.print(value, 1)</code></td>
+<td style="text-align: left;">U8g2 繼承 Arduino <code>Print</code>，所以可以直接 <code>print(float, 小數位數)</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>y=24</code>、<code>y=52</code></td>
+<td style="text-align: left;">兩行文字的<strong>基線</strong>位置；64 px 高的螢幕恰好分成上下兩半</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>isnan()</code> 判斷</td>
+<td style="text-align: left;">感測器讀取失敗時畫面顯示 <code>Error</code>，避免顯示 <code>nan</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">讀感測器在 <code>firstPage()</code> <strong>之前</strong></td>
+<td style="text-align: left;">✅ 正確：繪圖迴圈內只放「純繪圖」，詳見第七章</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>[!NOTE]
+程式第 18–19 行保留了硬體 I2C 的替代宣告。<strong>想要更快的更新、或同一條 I2C 還要接其他裝置時，改用 <code>HW_I2C</code> 版本即可</strong>；硬體 I2C 腳位在 Uno 上固定為 A4/A5。</p>
+</blockquote>
+<hr />
+<h2 id="-二接線與位址">🔌 二、接線與位址</h2>
+<blockquote>
+<p>⚠️ 接線前先拔掉 USB。SSD1306 I2C 模組只有 <strong>4 支針腳</strong>，但<strong>不同廠商的排列順序不同</strong>，務必看板子絲印。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">OLED 模組針腳</th>
+<th style="text-align: center;">→</th>
+<th style="text-align: left;">Arduino Uno</th>
+<th style="text-align: left;">說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>GND</code></td>
+<td style="text-align: center;">→</td>
+<td style="text-align: left;">GND</td>
+<td style="text-align: left;">共地</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>VCC</code>（有的標 <code>VDD</code>）</td>
+<td style="text-align: center;">→</td>
+<td style="text-align: left;">5V（或 3.3V）</td>
+<td style="text-align: left;">常見 4 針模組板上有穩壓，5V 可用；若模組標示僅支援 3.3V 則接 3.3V</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>SCL</code>（有的標 <code>SCK</code>）</td>
+<td style="text-align: center;">→</td>
+<td style="text-align: left;"><strong>A5</strong></td>
+<td style="text-align: left;">I2C 時脈</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>SDA</code></td>
+<td style="text-align: center;">→</td>
+<td style="text-align: left;"><strong>A4</strong></td>
+<td style="text-align: left;">I2C 資料</td>
+</tr>
+</tbody>
+</table>
+<p>DHT11 接法與先前相同：<code>S/DATA → D8</code>、<code>VCC → 5V</code>、<code>GND → GND</code>。OLED 與 DHT11 共用 5V、GND 軌即可。</p>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">常見排列有兩種，請以實物絲印為準：
+   GND - VCC - SCL - SDA        ← 最常見
+   VCC - GND - SCL - SDA        ← 也有（接反 VCC/GND 會燒模組）</code></pre></div>
+<p><strong>I2C 位址</strong>：SSD1306 模組位址多為 <code>0x3C</code>，背面有電阻焊點可切換成 <code>0x3D</code>。U8g2 預設使用 <code>0x3C</code>（以 8 位元寫法表示為 <code>0x78</code>）；若畫面全黑，可先跑上一份筆記的 I2C Scanner 確認位址，必要時加上：</p>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-cpp"><code class="language-cpp">u8g2.setI2CAddress(0x3D * 2); // U8g2 使用「7 位元位址 × 2」的 8 位元格式，0x3D → 0x7A</code></pre></div>
+<hr />
+<h2 id="-三程式邏輯流程圖與完整程式碼">🚀 三、程式邏輯流程圖與完整程式碼</h2>
+<pre class="mermaid">flowchart TD
+    A(["通電 / 重置"]) --> B["setup(): Serial.begin(9600)"]
+    B --> C["u8g2.begin() 初始化 OLED"]
+    C --> D["dht.begin() 初始化 DHT11"]
+    D --> E["取得 min_delay → delayMS（至少 1500 ms）"]
+    E --> F["loop(): delay(delayMS)"]
+    F --> G["讀取溫度、濕度 getEvent"]
+    G --> H["Serial 輸出（含 isnan 錯誤判斷）"]
+    H --> I["u8g2.firstPage()"]
+    I --> J["setFont → 畫 temp 行 → 畫 humd 行"]
+    J --> K{"u8g2.nextPage() 還有下一頁？"}
+    K -- 是 --> J
+    K -- 否 --> F</pre>
+<blockquote>
+<p>完整程式亦存於 <a href="./1022-ssd1306.ino"><code>1022-ssd1306.ino</code></a>。</p>
+</blockquote>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-cpp"><code class="language-cpp">#include &lt;Arduino.h&gt;
+#include &lt;Wire.h&gt;              // I2C（硬體 I2C 版本需要）
+#include &lt;U8g2lib.h&gt;           // U8g2 圖形程式庫
+#include &lt;Adafruit_Sensor.h&gt;   // Adafruit 統一感測器介面
+#include &lt;DHT.h&gt;               // DHT 基礎庫
+#include &lt;DHT_U.h&gt;             // DHT Unified 版本
+
+// --- 感測器設定 ---
+#define DHTPIN 8          // DHT11 訊號腳位接在數位腳位 8
+#define DHTTYPE DHT11     // 感測器型號 DHT11
+
+DHT_Unified dht(DHTPIN, DHTTYPE);
+
+// --- OLED SSD1306 (128x64) 設定 ---
+// 軟體 I2C：SCL 接 Arduino SCL (A5)，SDA 接 Arduino SDA (A4)
+// &quot;_1&quot; 代表 Page Buffer（只佔 128 bytes RAM）
+U8G2_SSD1306_128X64_NONAME_1_SW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);
+
+// 若要改用硬體 I2C (速度更快)，可註解上一行並取消註解下一行：
+// U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+
+uint32_t delayMS;
+
+void setup() {
+  Serial.begin(9600);
+
+  // 初始化 U8g2 OLED 螢幕
+  u8g2.begin();
+
+  // 初始化 DHT 感測器
+  dht.begin();
+
+  // 取得感測器規格並設定延遲時間 (DHT11 建議間隔至少 1.5 秒)
+  sensor_t sensor;
+  dht.temperature().getSensor(&amp;sensor);
+  dht.humidity().getSensor(&amp;sensor);
+  delayMS = sensor.min_delay / 1000;
+  if (delayMS &lt; 1500) {
+    delayMS = 1500;
+  }
+}
+
+void loop() {
+  // 感測器讀取間隔延遲
+  delay(delayMS);
+
+  // 讀取溫度與濕度數值（必須在繪圖迴圈「之前」完成）
+  sensors_event_t temp_event, hum_event;
+  dht.temperature().getEvent(&amp;temp_event);
+  dht.humidity().getEvent(&amp;hum_event);
+
+  // 序列埠監控輸出 (偵錯用)
+  if (isnan(temp_event.temperature)) {
+    Serial.println(F(&quot;Error reading temperature!&quot;));
+  } else {
+    Serial.print(F(&quot;Temperature: &quot;));
+    Serial.print(temp_event.temperature);
+    Serial.println(F(&quot; *C&quot;));
+  }
+
+  if (isnan(hum_event.relative_humidity)) {
+    Serial.println(F(&quot;Error reading humidity!&quot;));
+  } else {
+    Serial.print(F(&quot;Humidity: &quot;));
+    Serial.print(hum_event.relative_humidity);
+    Serial.println(F(&quot; %&quot;));
+  }
+
+  // --- U8g2 繪圖畫面迴圈 (Page Buffer) ---
+  u8g2.firstPage();                       // 開始第一頁
+  do {
+    // 設定字型
+    u8g2.setFont(u8g2_font_ncenB10_tr);
+
+    // 第一行：顯示 temp: 溫度 (基線 y=24)
+    u8g2.setCursor(0, 24);
+    u8g2.print(&quot;temp: &quot;);
+    if (isnan(temp_event.temperature)) {
+      u8g2.print(&quot;Error&quot;);
+    } else {
+      u8g2.print(temp_event.temperature, 1); // 顯示小數點後 1 位
+      u8g2.print(&quot; C&quot;);
+    }
+
+    // 第二行：顯示 humd: 濕度 (基線 y=52)
+    u8g2.setCursor(0, 52);
+    u8g2.print(&quot;humd: &quot;);
+    if (isnan(hum_event.relative_humidity)) {
+      u8g2.print(&quot;Error&quot;);
+    } else {
+      u8g2.print(hum_event.relative_humidity, 1); // 顯示小數點後 1 位
+      u8g2.print(&quot; %&quot;);
+    }
+  } while (u8g2.nextPage());              // 還有下一頁就重畫，直到整個畫面送完
+}</code></pre></div>
+<hr />
+<h2 id="-四逐段說明作法">🧩 四、逐段說明作法</h2>
+<h3 id="步驟-1安裝程式庫">步驟 1：安裝程式庫</h3>
+<p>Arduino IDE → <strong>程式庫管理員</strong>（<code>Ctrl+Shift+I</code>）搜尋 <strong><code>U8g2</code></strong>（作者 <strong>oliver</strong>，即 olikraus）→ 安裝。DHT 相關兩個程式庫（<code>DHT sensor library</code>、<code>Adafruit Unified Sensor</code>）沿用先前安裝，<strong>不再需要 <code>LiquidCrystal_I2C</code></strong>。</p>
+<h3 id="步驟-2選對建構子">步驟 2：選對建構子</h3>
+<p>依「晶片 × 解析度 × 緩衝模式 × 通訊方式」挑一個。查表方式：U8g2 範例 <code>File → Examples → U8g2 → full_buffer / page_buffer</code> 內附有所有建構子清單（本程式的註解提到的「u8g2.txt」即是這份清單的摘錄）。</p>
+<h3 id="步驟-3u8g2begin">步驟 3：<code>u8g2.begin()</code></h3>
+<p>一次完成：I2C 初始化、傳送 SSD1306 初始化指令、開啟面板。<strong>不需要</strong>像 LCD 一樣另外開背光。</p>
+<h3 id="步驟-4把繪圖包進-firstpage--nextpage-迴圈">步驟 4：把「繪圖」包進 <code>firstPage()</code> / <code>nextPage()</code> 迴圈</h3>
+<p>Page Buffer 的運作原理見第七章。口訣：<strong>迴圈內只畫圖，不讀感測器、不改變數</strong>。</p>
+<h3 id="步驟-5座標用基線思考">步驟 5：座標用「基線」思考</h3>
+<p><code>setCursor(0, 24)</code> 的 <code>y=24</code> 是文字<strong>底線位置</strong>，文字會往上長出約 10 px（本字型）。因此：</p>
+<ul>
+<li>第一行文字占約 <code>y = 14 ~ 24</code>（含下伸字母會稍低）</li>
+<li>第二行文字占約 <code>y = 42 ~ 52</code></li>
+<li>螢幕 64 px 高，兩行之間留有空隙，版面均衡。</li>
+</ul>
+<h3 id="步驟-6驗證">步驟 6：驗證</h3>
+<p>上傳後 OLED 約每 1.5～2 秒更新一次：</p>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">temp: 27.5 C
+humd: 61.0 %</code></pre></div>
+<p>用手握住 DHT11，數字應逐漸上升；Serial Monitor（9600）同步輸出。</p>
+<hr />
+<h2 id="-五ssd1306-i2c-可用的程式庫有哪些">📚 五、SSD1306 I2C 可用的程式庫有哪些？</h2>
+<blockquote>
+<p>「SSD1306 能用什麼庫」其實是在問：<strong>要不要緩衝、緩衝放哪、要不要畫圖、要不要中文</strong>。以下依常用程度整理（128×64 為例）：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">程式庫</th>
+<th style="text-align: left;">作者 / 來源</th>
+<th style="text-align: left;">緩衝方式</th>
+<th style="text-align: left;">128×64 RAM 需求</th>
+<th style="text-align: left;">特色</th>
+<th style="text-align: left;">適合情境</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>U8g2</strong></td>
+<td style="text-align: left;">olikraus</td>
+<td style="text-align: left;">Page（128/256 B）或 Full（1024 B）可選</td>
+<td style="text-align: left;">128 B ～ 1 KB</td>
+<td style="text-align: left;">支援 100+ 種顯示器、數百種字型、<strong>UTF-8／中日韓字型</strong>、旋轉、繪圖基本圖形</td>
+<td style="text-align: left;"><strong>跨平台、跨顯示器通用首選</strong>；記憶體吃緊的 Uno/Nano</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>U8x8</strong>（U8g2 內建）</td>
+<td style="text-align: left;">olikraus</td>
+<td style="text-align: left;"><strong>無緩衝</strong>（直接寫入顯示器）</td>
+<td style="text-align: left;">≈ 0</td>
+<td style="text-align: left;">只能顯示 8×8 字元格文字；速度快、最省 RAM</td>
+<td style="text-align: left;">只需要純文字的小專案，像 LCD 一樣用</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Adafruit SSD1306 + Adafruit GFX</strong></td>
+<td style="text-align: left;">Adafruit</td>
+<td style="text-align: left;"><strong>Full Buffer 固定</strong></td>
+<td style="text-align: left;"><strong>1024 B（動態配置）</strong></td>
+<td style="text-align: left;">API 簡單直覺、<code>Adafruit_GFX</code> 繪圖函式豐富、教學資源最多</td>
+<td style="text-align: left;">ESP32／ESP8266／Mega 等 RAM 充裕的板子；Uno 上要小心</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SSD1306Ascii</strong></td>
+<td style="text-align: left;">Bill Greiman</td>
+<td style="text-align: left;"><strong>無緩衝</strong>（純文字）</td>
+<td style="text-align: left;">極小</td>
+<td style="text-align: left;">為 AVR 優化、可搭 <code>AvrI2c</code> 極速傳輸、Flash 佔用小</td>
+<td style="text-align: left;">Uno/Nano/ATtiny 純文字顯示、追求速度與省空間</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>ss_oled / OneBitDisplay</strong></td>
+<td style="text-align: left;">Larry Bank (bitbank2)</td>
+<td style="text-align: left;">可選（可不緩衝）</td>
+<td style="text-align: left;">極小 ～ 1 KB</td>
+<td style="text-align: left;">為小型 MCU 設計、檔案小、支援 SSD1306/SH1106 等</td>
+<td style="text-align: left;">資源很少的 MCU（ATtiny、Nano）</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>lexus2k/ssd1306</strong></td>
+<td style="text-align: left;">Alexey Dynda</td>
+<td style="text-align: left;">可選（Canvas 方式）</td>
+<td style="text-align: left;">可調</td>
+<td style="text-align: left;">支援多種顯示器與 AVR/ESP/STM32、可設定記憶體用法、內建簡易 UI</td>
+<td style="text-align: left;">想要輕量但功能多的 AVR 專案</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>ESP8266 and ESP32 OLED driver for SSD1306 displays</strong></td>
+<td style="text-align: left;">ThingPulse</td>
+<td style="text-align: left;">Full Buffer</td>
+<td style="text-align: left;">1 KB</td>
+<td style="text-align: left;">內建 <code>OLEDDisplayUi</code>（頁面切換動畫）、專為 ESP 設計</td>
+<td style="text-align: left;">ESP8266／ESP32 做儀表板、動畫</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>[!WARNING]
+<strong>1.3 吋的「SSD1306」模組很可能其實是 SH1106</strong>（兩者畫面寬 128，但 SH1106 的 RAM 寬 132、控制指令略異）。症狀：畫面左右偏移、右側有雜訊。處理：U8g2 改用 <code>U8G2_SH1106_128X64_NONAME_1_HW_I2C</code>；Adafruit 系列改用 <code>Adafruit SH110X</code> 程式庫。</p>
+</blockquote>
+<h3 id="51-選用決策表">5.1 選用決策表</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">你的狀況</th>
+<th style="text-align: left;">建議程式庫</th>
+<th style="text-align: left;">原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Uno / Nano（2 KB RAM）要畫圖形 + 文字</td>
+<td style="text-align: left;"><strong>U8g2 Page Buffer（<code>_1</code> / <code>_2</code>）</strong></td>
+<td style="text-align: left;">RAM 只用 128～256 B</td>
+</tr>
+<tr>
+<td style="text-align: left;">Uno / Nano，只要顯示數字文字，要最省</td>
+<td style="text-align: left;"><strong>U8x8</strong> 或 <strong>SSD1306Ascii</strong></td>
+<td style="text-align: left;">完全不需畫面緩衝</td>
+</tr>
+<tr>
+<td style="text-align: left;">ESP32 / ESP8266 / RP2040 / STM32，RAM 充裕</td>
+<td style="text-align: left;"><strong>U8g2 Full Buffer（<code>_F</code>）</strong> 或 <strong>Adafruit SSD1306</strong></td>
+<td style="text-align: left;">1 KB 緩衝不是問題，寫法最自由</td>
+</tr>
+<tr>
+<td style="text-align: left;">需要中文、日文等多語系顯示</td>
+<td style="text-align: left;"><strong>U8g2</strong>（<code>u8g2_font_wqy12_t_gb2312</code> 等）</td>
+<td style="text-align: left;">其他庫幾乎沒有 CJK 字型支援</td>
+</tr>
+<tr>
+<td style="text-align: left;">想看現成的教學範例最多</td>
+<td style="text-align: left;"><strong>Adafruit SSD1306</strong></td>
+<td style="text-align: left;">資源量最大，但要留意 RAM</td>
+</tr>
+<tr>
+<td style="text-align: left;">日後可能換成別種螢幕（ST7920、ILI9341、SH1106…）</td>
+<td style="text-align: left;"><strong>U8g2</strong></td>
+<td style="text-align: left;">只改建構子，其餘繪圖程式不用動</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="-六使用-u8g2-的優缺點">⚖️ 六、使用 U8g2 的優缺點</h2>
+<h3 id="-優點">✅ 優點</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">#</th>
+<th style="text-align: left;">優點</th>
+<th style="text-align: left;">說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;"><strong>支援顯示器極多</strong></td>
+<td style="text-align: left;">SSD1306、SH1106、SSD1327、ST7920、ST7565、UC1701…同一套 API；換螢幕只需改<strong>一行建構子</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><strong>三種緩衝模式可選</strong></td>
+<td style="text-align: left;">Page Buffer（省 RAM）／Full Buffer（好寫）／U8x8（無緩衝）；依板子資源調整</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><strong>字型非常豐富</strong></td>
+<td style="text-align: left;">數百款字型，且有<strong>中文（文泉驛 wqy）、日文、unifont</strong> 等 CJK 字型；字型存在 Flash（PROGMEM），不佔 RAM</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><strong>UTF-8 支援</strong></td>
+<td style="text-align: left;">啟用 <code>u8g2.enableUTF8Print()</code> 後可直接 <code>print("溫度 °C")</code></td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><strong>跨平台</strong></td>
+<td style="text-align: left;">AVR、ESP8266/ESP32、STM32、RP2040、SAMD 皆可用，程式幾乎免修改</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;"><strong>通訊方式彈性</strong></td>
+<td style="text-align: left;">HW_I2C、SW_I2C（任意腳位）、HW_SPI、SW_SPI、並列介面</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;"><strong>內建繪圖原語</strong></td>
+<td style="text-align: left;">線、框、圓、橢圓、三角形、位元圖（XBM）、<code>drawGlyph</code> 等</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;"><strong><code>Print</code> 相容</strong></td>
+<td style="text-align: left;"><code>print()</code>／<code>println()</code> 與 Serial 用法一致，從 LCD 搬過來上手快</td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td style="text-align: left;"><strong>文件完整、持續維護</strong></td>
+<td style="text-align: left;">官方 Wiki 有全部 API、字型預覽圖（Font Reference）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="-缺點">❌ 缺點</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">#</th>
+<th style="text-align: left;">缺點</th>
+<th style="text-align: left;">說明／對策</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;"><strong>Flash 佔用較大</strong></td>
+<td style="text-align: left;">含程式庫＋字型常占 Uno 32 KB Flash 的相當比例（請看編譯結果的「程式儲存空間」）；Uno 上同時裝 DHT 庫仍可行，但不宜再塞很多字型</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><strong>建構子名稱冗長、易選錯</strong></td>
+<td style="text-align: left;">需理解 <code>_1</code>／<code>_2</code>／<code>_F</code>、<code>SW</code>／<code>HW</code>、<code>NONAME</code>／<code>VCOMH0</code> 等；選錯常見症狀是畫面全黑或偏移</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><strong>Page Buffer 寫法不直覺</strong></td>
+<td style="text-align: left;">必須把繪圖包進 <code>do { } while (nextPage())</code>，且迴圈內不能有副作用（見第七章）</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><strong>SW_I2C 預設較慢</strong></td>
+<td style="text-align: left;">軟體模擬 I2C 會佔用 CPU；對策：改用 <code>HW_I2C</code>，必要時 <code>u8g2.setBusClock(400000)</code></td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><strong>字型命名規則需學習</strong></td>
+<td style="text-align: left;"><code>_tr</code>／<code>_tf</code>／<code>_tn</code>／<code>_te</code>、<code>_m</code>（等寬）等後綴決定可用字元範圍，選錯會出現缺字</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;"><strong>字型授權不一</strong></td>
+<td style="text-align: left;">程式庫本體為 BSD 授權，但<strong>部分字型各有授權</strong>（商業產品需自行確認）</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;"><strong>繪圖 API 不如 Adafruit_GFX 通用</strong></td>
+<td style="text-align: left;">若要沿用大量 Adafruit_GFX 教學程式（例如特定的圖形函式），需要改寫</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;"><strong>編譯時間與體積</strong></td>
+<td style="text-align: left;">含大量字型標頭，首次編譯較久</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="-七page-buffer-的優缺點">📄 七、Page Buffer 的優缺點</h2>
+<h3 id="71-什麼是-page-buffer">7.1 什麼是 Page Buffer？</h3>
+<p>SSD1306 的顯示記憶體以「頁（page）」為單位：<strong>128×64 共 8 頁，每頁 8 個像素列 × 128 欄 = 128 bytes</strong>。</p>
+<ul>
+<li><strong>Full Buffer（<code>_F</code>）</strong>：在 Arduino RAM 開 1024 bytes，整個畫面畫好再一次送出。</li>
+<li><strong>Page Buffer（<code>_1</code>）</strong>：只開 <strong>1 頁 = 128 bytes</strong>。程式把「同一份繪圖指令」<strong>重複執行 8 次</strong>，每次只有落在目前那一頁的像素會被寫進緩衝並送出。<code>_2</code> 則一次 2 頁（256 bytes），只需重畫 4 次。</li>
+</ul>
+<pre class="mermaid">flowchart TD
+    A["u8g2.firstPage()<br/>頁碼歸零並清空頁緩衝"] --> B["執行你的繪圖程式碼<br/>（只有落在「目前這一頁」的像素會被保留）"]
+    B --> C["u8g2.nextPage()<br/>把這 128 bytes 傳給 OLED、換下一頁"]
+    C --> D{"還有下一頁？"}
+    D -- "是（_1：共重畫 8 次）" --> B
+    D -- 否 --> E["整張畫面完成"]</pre>
+<h3 id="72-緩衝模式的-ram-對照12864-ssd1306">7.2 緩衝模式的 RAM 對照（128×64 SSD1306）</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">後綴</th>
+<th style="text-align: left;">模式</th>
+<th style="text-align: left;">緩衝大小</th>
+<th style="text-align: center;">重畫次數</th>
+<th style="text-align: center;">Uno（2048 B）佔用比例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>_1</code></td>
+<td style="text-align: left;">Page Buffer（1 頁）</td>
+<td style="text-align: left;">128 B</td>
+<td style="text-align: center;">8 次</td>
+<td style="text-align: center;">≈ 6 %</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>_2</code></td>
+<td style="text-align: left;">Page Buffer（2 頁）</td>
+<td style="text-align: left;">256 B</td>
+<td style="text-align: center;">4 次</td>
+<td style="text-align: center;">≈ 12.5 %</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>_F</code></td>
+<td style="text-align: left;">Full Buffer</td>
+<td style="text-align: left;">1024 B</td>
+<td style="text-align: center;">1 次</td>
+<td style="text-align: center;"><strong>≈ 50 %</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="-page-buffer-的優點">✅ Page Buffer 的優點</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">#</th>
+<th style="text-align: left;">優點</th>
+<th style="text-align: left;">說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;"><strong>RAM 極省</strong></td>
+<td style="text-align: left;">只要 128 B（vs. 1024 B）；Uno/Nano 上才有餘裕放感測器庫、字串、其他變數</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><strong>記憶體靜態配置</strong></td>
+<td style="text-align: left;">緩衝是物件的一部分，編譯時就算進去，<strong>不會在執行時 malloc 失敗</strong>（Adafruit 版常見 <code>SSD1306 allocation failed</code>）</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><strong>讓小板子也能用大螢幕</strong></td>
+<td style="text-align: left;">128×64 圖形顯示在 2 KB RAM 的 MCU 上才可行</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><strong>可調整 RAM／速度平衡</strong></td>
+<td style="text-align: left;">在 <code>_1</code>、<code>_2</code> 之間選擇，RAM 夠就用 <code>_2</code>（重畫次數減半）</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><strong>所有繪圖函式皆可用</strong></td>
+<td style="text-align: left;">與 Full Buffer 的繪圖 API 相同，只是外層多一個迴圈</td>
+</tr>
+</tbody>
+</table>
+<h3 id="-page-buffer-的缺點">❌ Page Buffer 的缺點</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">#</th>
+<th style="text-align: left;">缺點</th>
+<th style="text-align: left;">說明／對策</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;"><strong>繪圖程式碼會執行 8 次</strong></td>
+<td style="text-align: left;">運算量 ×8；迴圈內若有 <code>float</code> 轉字串、複雜計算，會被重複算。<strong>對策</strong>：先在迴圈外把字串算好（見 8.4）</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><strong>迴圈內不可有副作用</strong></td>
+<td style="text-align: left;">讀感測器、<code>counter++</code>、<code>millis()</code> 判斷、<code>Serial.print</code>、<code>delay</code> 都不該放進去，否則 8 次結果不一致，畫面可能閃爍或撕裂。<strong>本程式把讀取放在 <code>firstPage()</code> 之前，是正確做法</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><strong>無法「增量繪圖」</strong></td>
+<td style="text-align: left;">不能在上一幀畫面上只補畫一小塊；每一幀都必須<strong>完整重畫</strong>所有內容</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><strong>不能用 <code>clearBuffer()</code> / <code>sendBuffer()</code> 流程</strong></td>
+<td style="text-align: left;">那是 Full Buffer 的 API；Page Buffer 改用 <code>firstPage()</code> / <code>nextPage()</code></td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><strong>動畫可能有撕裂感</strong></td>
+<td style="text-align: left;">畫面由上而下逐頁更新，高速移動物件在慢速 I2C（尤其 SW_I2C）上可能看到撕裂</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;"><strong>無法讀回像素／局部更新較麻煩</strong></td>
+<td style="text-align: left;">無完整畫面副本，難以做「讀取現有像素再運算」的特效</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;"><strong>寫法對初學者較不直覺</strong></td>
+<td style="text-align: left;">容易誤把初始化、<code>delay</code> 寫進 <code>do…while</code> 中</td>
+</tr>
+</tbody>
+</table>
+<h3 id="73-page-buffer-使用守則背起來">7.3 Page Buffer 使用守則（背起來）</h3>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">✅ 迴圈「之前」：讀感測器、做計算、把數值轉成要顯示的字串
+✅ 迴圈「之內」：只做 setFont / setCursor / print / drawXXX（純函式式繪圖）
+❌ 迴圈之內：不要 delay()、Serial.print()、變數遞增、millis() 分支、讀感測器</code></pre></div>
+<hr />
+<h2 id="-八實作範例三種替代寫法">🛠️ 八、實作範例：三種替代寫法</h2>
+<h3 id="81-full-buffer-版ram-夠的板子如-esp32">8.1 Full Buffer 版（RAM 夠的板子，如 ESP32）</h3>
+<pre class="mermaid">flowchart LR
+    A["clearBuffer()<br/>清空緩衝"] --> B["setFont / print<br/>在緩衝內作畫"] --> C["sendBuffer()<br/>一次送出整個畫面"]</pre>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-cpp"><code class="language-cpp">// 只示範顯示部分；感測器讀取程式與前述完全相同
+// &quot;_F&quot; = Full Buffer（1024 bytes）；ESP32 / ESP8266 / RP2040 等 RAM 充裕時使用
+U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+
+void drawScreen(float t, float h) {
+  u8g2.clearBuffer();                    // 1) 清空記憶體中的畫面
+  u8g2.setFont(u8g2_font_ncenB10_tr);    // 2) 選字型
+  u8g2.setCursor(0, 24);
+  u8g2.print(&quot;temp: &quot;);
+  u8g2.print(t, 1);
+  u8g2.print(&quot; C&quot;);
+  u8g2.setCursor(0, 52);
+  u8g2.print(&quot;humd: &quot;);
+  u8g2.print(h, 1);
+  u8g2.print(&quot; %&quot;);
+  u8g2.sendBuffer();                     // 3) 一次把 1024 bytes 送到 OLED
+}</code></pre></div>
+<blockquote>
+<p>與 Page Buffer 的差別：<strong>繪圖只做一次，不需 <code>do…while</code></strong>；可以在 <code>drawScreen()</code> 內自由放置計算與判斷。代價是 RAM 吃掉 1 KB。</p>
+</blockquote>
+<h3 id="82-u8x8-版純文字零緩衝最像-lcd">8.2 U8x8 版（純文字、零緩衝，最像 LCD）</h3>
+<pre class="mermaid">flowchart LR
+    A["u8x8.begin()"] --> B["setFont 8x8 字型"] --> C["drawString(col, row, 文字)<br/>以字元格定位"]</pre>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-cpp"><code class="language-cpp">#include &lt;U8x8lib.h&gt;
+
+// U8x8：沒有 RAM 緩衝，直接把字元寫到 OLED 的「字元格」（16 欄 × 8 列）
+U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8(/* reset=*/ U8X8_PIN_NONE);
+
+void setup() {
+  u8x8.begin();                          // 初始化 OLED
+  u8x8.setFont(u8x8_font_chroma48medium8_r); // 8x8 字型
+}
+
+void showTemp(float t) {
+  char buf[10];
+  dtostrf(t, 4, 1, buf);                 // AVR 的 sprintf 不支援 %f，用 dtostrf 轉字串
+  u8x8.drawString(0, 1, &quot;temp:&quot;);        // (欄, 列, 字串)：像 LCD 的 setCursor(col,row)
+  u8x8.drawString(6, 1, buf);
+}</code></pre></div>
+<h3 id="83-adafruitssd1306-版教學資源最多">8.3 Adafruit_SSD1306 版（教學資源最多）</h3>
+<pre class="mermaid">flowchart LR
+    A["display.begin(0x3C)"] --> B["clearDisplay()"] --> C["setCursor / print"] --> D["display.display()<br/>送出緩衝"]</pre>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-cpp"><code class="language-cpp">#include &lt;Adafruit_GFX.h&gt;
+#include &lt;Adafruit_SSD1306.h&gt;
+
+// 寬、高、Wire、reset 腳（-1 = 不使用）；內部會 malloc 1024 bytes 緩衝
+Adafruit_SSD1306 display(128, 64, &amp;Wire, -1);
+
+void setup() {
+  // 注意：Adafruit 使用「7 位元」位址 0x3C，與 U8g2 的 8 位元 0x78 寫法不同
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    for (;;);                            // RAM 不足或位址錯誤 → 停在這裡（Uno 上常見）
+  }
+}
+
+void showTemp(float t) {
+  display.clearDisplay();                // 清空緩衝
+  display.setTextSize(2);                // 放大 2 倍字
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0, 0);               // 注意：Adafruit 的 y 是文字「左上角」，不是基線
+  display.print(&quot;temp: &quot;);
+  display.print(t, 1);
+  display.display();                     // 把緩衝送到 OLED
+}</code></pre></div>
+<h3 id="84-改良本程式在迴圈外先轉好字串降低-page-buffer-的-8-成本">8.4 改良本程式：在迴圈外先轉好字串（降低 Page Buffer 的 ×8 成本）</h3>
+<pre class="mermaid">flowchart TD
+    A["讀取 DHT11"] --> B["dtostrf 轉成字串<br/>（只做 1 次）"]
+    B --> C["firstPage()"]
+    C --> D["drawStr 畫字串<br/>（8 次，僅是複製文字）"]
+    D --> E{"nextPage()？"}
+    E -- 是 --> D
+    E -- 否 --> F["等待下一輪"]</pre>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-cpp"><code class="language-cpp">// 取代 loop() 中的繪圖部分
+char tBuf[8], hBuf[8];                   // 暫存數值字串
+char line1[20], line2[20];               // 最終要顯示的整行字串
+
+// ---- 迴圈「之前」：只做一次的字串準備 ----
+if (isnan(temp_event.temperature)) {
+  strcpy(line1, &quot;temp: Error&quot;);
+} else {
+  dtostrf(temp_event.temperature, 4, 1, tBuf);  // float → &quot;27.5&quot;
+  snprintf(line1, sizeof(line1), &quot;temp: %s C&quot;, tBuf);
+}
+if (isnan(hum_event.relative_humidity)) {
+  strcpy(line2, &quot;humd: Error&quot;);
+} else {
+  dtostrf(hum_event.relative_humidity, 4, 1, hBuf);
+  snprintf(line2, sizeof(line2), &quot;humd: %s %%&quot;, hBuf); // %% 才會印出一個 %
+}
+
+// ---- 繪圖迴圈：只剩單純的繪字，重畫 8 次也很便宜 ----
+u8g2.firstPage();
+do {
+  u8g2.setFont(u8g2_font_ncenB10_tr);
+  u8g2.drawStr(0, 24, line1);            // drawStr(x, y 基線, 字串)
+  u8g2.drawStr(0, 52, line2);
+} while (u8g2.nextPage());</code></pre></div>
+<blockquote>
+<p>好處：<code>float</code> 轉換與 <code>isnan</code> 判斷只做 1 次；Page Buffer 的 8 次重畫只剩下「畫字」。同時也讓 <code>loop()</code> 中「資料準備」與「畫面繪製」明確分離。</p>
+</blockquote>
+<hr />
+<h2 id="-九疑難排解-faq">❓ 九、疑難排解 FAQ</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">現象</th>
+<th style="text-align: left;">可能原因</th>
+<th style="text-align: left;">處理方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">螢幕全黑</td>
+<td style="text-align: left;">接線錯誤／VCC-GND 接反／位址不符</td>
+<td style="text-align: left;">重新核對針腳順序；跑 I2C Scanner；試 <code>u8g2.setI2CAddress(0x7A)</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">畫面偏移 2 px、右側有雜點</td>
+<td style="text-align: left;">1.3 吋模組其實是 <strong>SH1106</strong></td>
+<td style="text-align: left;">建構子改 <code>U8G2_SH1106_128X64_NONAME_1_HW_I2C</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">畫面上下顛倒</td>
+<td style="text-align: left;">模組安裝方向</td>
+<td style="text-align: left;"><code>U8G2_R0</code> 改 <code>U8G2_R2</code>（旋轉 180°）</td>
+</tr>
+<tr>
+<td style="text-align: left;">文字缺字或顯示方塊</td>
+<td style="text-align: left;">字型後綴 <code>_tr</code> 僅含 ASCII 32–127</td>
+<td style="text-align: left;">改用 <code>_tf</code>（含 Latin-1，可印 <code>°</code>）；中文用 <code>wqy</code> 字型＋<code>enableUTF8Print()</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">數字閃爍、更新很慢</td>
+<td style="text-align: left;">SW_I2C 速度慢，或繪圖迴圈內有重運算</td>
+<td style="text-align: left;">改 <code>HW_I2C</code>＋<code>u8g2.setBusClock(400000)</code>；採用 8.4 的字串預處理</td>
+</tr>
+<tr>
+<td style="text-align: left;">顯示 <code>temp: Error</code></td>
+<td style="text-align: left;">DHT11 讀取失敗（<code>isnan</code>）</td>
+<td style="text-align: left;">檢查 DHT11 DATA 是否接 <strong>D8</strong>、3 針/4 針版本與上拉電阻</td>
+</tr>
+<tr>
+<td style="text-align: left;">編譯 <code>U8g2lib.h: No such file</code></td>
+<td style="text-align: left;">未安裝 U8g2</td>
+<td style="text-align: left;">程式庫管理員搜尋 <code>U8g2</code>（作者 oliver）</td>
+</tr>
+<tr>
+<td style="text-align: left;">編譯成功但上傳後亂跳／重啟</td>
+<td style="text-align: left;">RAM 或 Flash 用盡</td>
+<td style="text-align: left;">看 IDE 輸出的「全域變數使用 xx%」；改 <code>_1</code> Page Buffer、減少字型、精簡 <code>Serial</code> 字串</td>
+</tr>
+<tr>
+<td style="text-align: left;">想用 <code>delay()</code> 做動畫，畫面撕裂</td>
+<td style="text-align: left;">Page Buffer 逐頁更新</td>
+<td style="text-align: left;">改用 <code>_2</code> 或 Full Buffer；動畫避免快速橫移</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="-十延伸思考與進階主題">🧭 十、延伸思考與進階主題</h2>
+<ol>
+<li><strong>為何 LCD 只有 <code>clear()</code>，OLED 卻要整頁重畫？</strong> LCD（HD44780）內建字元 RAM，改哪個字寫哪裡；SSD1306 是<strong>點陣</strong>顯示器，U8g2 為了「文字＋圖形」通用，採用「畫好整張再送」的模型。若只需要純文字，U8x8 的行為才會像 LCD。</li>
+<li><strong>顯示 <code>°</code> 符號</strong>：把字型換成 <code>_tf</code> 版本，再印 Latin-1 的 <code>\xb0</code>：</li>
+</ol>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-cpp"><code class="language-cpp">   u8g2.setFont(u8g2_font_ncenB10_tf);  // _tf = 含 Latin-1 的完整字元範圍
+   u8g2.print(temp_event.temperature, 1);
+   u8g2.print(&quot;\xb0&quot; &quot;C&quot;);              // \xb0 = °；與 &quot;C&quot; 分開寫避免被當成 \xb0C 十六進位</code></pre></div>
+<ol>
+<li><strong>I2C 速度</strong>：標準模式 100 kHz，快速模式 400 kHz。SSD1306 每幀需傳送 1024 bytes 資料；<code>HW_I2C</code> + 400 kHz 可大幅縮短更新時間，也釋放 CPU 給 DHT11 的時序讀取。</li>
+<li><strong>OLED 燒屏（burn-in）</strong>：OLED 長時間顯示固定內容會有像素老化。可用 <code>u8g2.setPowerSave(1)</code> 定時關閉，或每隔數分鐘稍微移動版面。</li>
+<li><strong>同一條 I2C 匯流排並接多個裝置</strong>：LCD（0x27）與 OLED（0x3C）位址不同，可<strong>同時接在 A4/A5</strong>；若兩個 OLED 位址相同，需改一顆為 <code>0x3D</code>。</li>
+<li><strong><code>delay()</code> 的代價</strong>：本程式用 <code>delay(delayMS)</code> 簡單明瞭，但等待期間無法做其他事。進階可改用 <code>millis()</code> 非阻塞排程，同時處理按鍵、警報。</li>
+<li><strong>RAM 預算思考</strong>（Uno）：Uno 2048 B ＝ 程式全域變數 ＋ 堆疊 ＋ 緩衝。Page Buffer 128 B 讓你有空間加 <code>Serial</code> 字串緩衝、<code>char</code> 陣列、更多感測器。這是它在小板子上無可取代的原因。</li>
+<li><strong>升級方向</strong>：換成彩色 TFT（ST7735／ILI9341）、改 ESP32 加 Wi-Fi 上傳雲端、DHT11 換 DHT22／SHT31／BME280（溫濕度＋氣壓）。</li>
+</ol>
+<hr />
+<h2 id="-提示詞歷史與變更記錄-prompt-archive">📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+<h3 id="-2026-10-22-144325-claude-sonnet-55--claude-code-建立-ssd1306--u8g2-作法程式庫比較與-page-buffer-優缺點筆記">🔹 [2026-10-22 14:43:25] [Claude Sonnet 5.5 / Claude Code] 建立 SSD1306 + U8g2 作法、程式庫比較與 Page Buffer 優缺點筆記</h3>
+<ul>
+<li><strong>模型/Agent</strong>: Claude Sonnet 5.5 / Claude Code</li>
+<li><strong>Prompt 原文</strong>:</li>
+</ul>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">  D:\CLASS_NOTE\ec\1022-ssd1306.ino 這是將今天的1602 i2c 更換成 u8g2 i2c ssd1306的程式，除了解釋作法，增加討論ssd 1306 i2c可以使用的程式庫有哪些?使用u8g2的優缺點，以及使用pagebuffer的優缺點</code></pre></div>
+<ul>
+<li><strong>變更摘要</strong>: 依 <code>1022-ssd1306.ino</code> 解析 LCD 1602 換成 SSD1306 + U8g2 的差異、建構子命名拆解、接線與位址；新增 SSD1306 I2C 可用程式庫比較表（U8g2、U8x8、Adafruit SSD1306、SSD1306Ascii、ss_oled、lexus2k/ssd1306、ThingPulse）與選用決策表；整理 U8g2 優缺點與 Page Buffer 優缺點及使用守則；附 Full Buffer／U8x8／Adafruit／字串預處理四種範例（含流程圖與註解）及疑難排解。</li>
+</ul>
+  </section>
+</div>
+<footer><div class="container"><p>📘 CLASS_NOTE 電子電路與單晶片專題 • 相關：<a href="arduino_dht11_pin8_lcd1602_i2c_wiring_library_guide.html">LCD 1602 版接線手冊</a></p></div></footer>
+<script>
+function copyCode(btn){
+  const code=btn.nextElementSibling.querySelector('code').innerText;
+  navigator.clipboard.writeText(code).then(()=>{const t=btn.innerText;btn.innerText='✅ 已複製！';setTimeout(()=>{btn.innerText=t},2000)});
+}
+</script>
+</body>
+</html>
