@@ -1,8 +1,8 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-10-21 11:36:10 (UTC+8)  
-> **使用模型**: Gemini 3.8 Flash  
-> **執行 Agent**: Antigravity  
+> **最後更新時間**: 2026-10-22 14:10:00 (UTC+8)  
+> **使用模型**: Claude Sonnet 5.5  
+> **執行 Agent**: Claude Code  
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 
 ---
@@ -38,6 +38,10 @@
 * `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
+* `2026-10-22` | [Arduino Uno + DHT11（Pin 8）+ I2C LCD 1602 接線指引與程式庫下載手冊 (HTML)](./ec/arduino_dht11_pin8_lcd1602_i2c_wiring_library_guide.html) (HTML)
+* `2026-10-22` | [Arduino Uno + DHT11（Pin 8）+ I2C LCD 1602 接線指引與程式庫下載手冊 (MD)](./ec/arduino_dht11_pin8_lcd1602_i2c_wiring_library_guide.md) (MD)
+* `2026-10-22` | [Arduino Uno DHT11(D8) + I2C LCD 1602 範例程式碼 example_1029 (INO)](./ec/arduino_dht11_pin8_lcd1602_i2c_example_1029.ino) (INO)
+* `2026-10-22` | [Arduino Uno + DHT11 + I2C LCD 1602 實際接線照片 (JPG)](./ec/2026-10-22-140028.jpg) (JPG)
 * `2026-10-20` | [Arduino 專案開發模式與實務標準流程 (SOP) 手冊 (HTML)](./ec/arduino_development_workflow_methodology.html) (HTML)
 * `2026-10-20` | [Arduino 專案開發模式與實務標準流程 (SOP) 手冊 (MD)](./ec/arduino_development_workflow_methodology.md) (MD)
 * `2026-10-20` | [Arduino Uno 整合 I2C LCD 1602 與 DHT11 溫濕度即時顯示系統實作手冊 (HTML)](./ec/arduino_i2c_lcd1602_dht11_unified_display.html) (HTML)

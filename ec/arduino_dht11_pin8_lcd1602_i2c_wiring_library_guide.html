@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔌 Arduino Uno + DHT11（Pin 8）+ I2C LCD 1602 接線指引與程式庫下載手冊</title>
+    
+    <!-- Prism 程式碼高亮 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- Mermaid 流程圖支援 -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true, theme: 'neutral'});</script>
+
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --primary-light: #e0f2fe;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-purple: #8b5cf6;
+            --secondary: #0f172a;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* 頁首 Header */
+        header {
+            background: linear-gradient(135deg, #0b132b 0%, #1e3a8a 55%, #0284c7 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+            border-bottom: 4px solid var(--primary);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.95rem;
+            font-weight: 800;
+            line-height: 1.35;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.05rem;
+            margin-top: 0.5rem;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-pdf {
+            background: #dc2626;
+            color: white;
+        }
+        .btn-pdf:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.22);
+            transform: translateY(-2px);
+        }
+
+        .metadata-box {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 0.9rem 1.25rem;
+            font-size: 0.88rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+            color: #cbd5e1;
+        }
+        .metadata-box strong {
+            color: #f1f5f9;
+        }
+
+        /* 卡片 */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 2.2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .card h2 {
+            font-size: 1.45rem;
+            color: var(--secondary);
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 2px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .card h3 {
+            font-size: 1.18rem;
+            color: #334155;
+            margin: 1.4rem 0 0.75rem 0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #334155;
+        }
+
+        /* 圖片網格展示 */
+        .img-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .img-card {
+            background: #f1f5f9;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+        .img-card:hover {
+            transform: translateY(-3px);
+        }
+        .img-card img {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: cover;
+            display: block;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .img-card .caption {
+            padding: 0.85rem 1rem;
+            font-size: 0.88rem;
+            color: #475569;
+            background: white;
+            font-weight: 500;
+        }
+
+        /* 表格樣式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.25rem 0;
+            font-size: 0.93rem;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        th, td {
+            padding: 0.85rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
+            border-bottom: 2px solid #cbd5e1;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* 標籤 Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .badge-blue { background: #e0f2fe; color: #0284c7; }
+        .badge-green { background: #dcfce7; color: #16a34a; }
+        .badge-amber { background: #fef3c7; color: #d97706; }
+        .badge-purple { background: #f3e8ff; color: #7e22ce; }
+        .badge-red { background: #fee2e2; color: #dc2626; }
+
+        /* 提示框 Callout */
+        .callout {
+            border-left: 4px solid var(--primary);
+            background: #f0f9ff;
+            padding: 1rem 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.25rem 0;
+            font-size: 0.95rem;
+        }
+        .callout-warning {
+            border-left-color: var(--accent-amber);
+            background: #fffbeb;
+        }
+        .callout-success {
+            border-left-color: var(--accent-green);
+            background: #f0fdf4;
+        }
+
+        /* 程式碼區塊與複製按鈕 */
+        .code-container {
+            position: relative;
+            margin: 1.4rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.18);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.35rem 0.75rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s ease;
+        }
+        .copy-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        pre[class*="language-"] {
+            margin: 0 !important;
+            padding: 1.4rem 1.2rem !important;
+            border-radius: 8px !important;
+            background: #0f172a !important;
+            font-size: 0.9rem !important;
+        }
+
+        code[class*="language-"] {
+            font-family: Consolas, Monaco, "Courier New", monospace !important;
+        }
+
+        /* LCD 1602 格子排版視覺化 */
+        .lcd-screen-preview {
+            background: #0284c7;
+            background: linear-gradient(180deg, #0369a1 0%, #075985 100%);
+            border: 8px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+            font-family: "Courier New", monospace;
+            color: #f8fafc;
+        }
+        .lcd-row {
+            display: grid;
+            grid-template-columns: repeat(16, 1fr);
+            gap: 2px;
+            margin-bottom: 4px;
+        }
+        .lcd-cell {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2.5rem 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        @media print {
+            body { background: white !important; color: black !important; padding: 0 !important; }
+            .action-btns, .copy-btn { display: none !important; }
+            .card { box-shadow: none !important; border: 1px solid #ccc !important; page-break-inside: avoid; }
+            header { background: none !important; color: black !important; border: 1px solid #aaa !important; }
+            .subtitle, .metadata-box { color: #333 !important; background: #eee !important; }
+        }
+    
+        .content h2{font-size:1.45rem;margin:2.2rem 0 1rem;padding-bottom:.5rem;border-bottom:2px solid #f1f5f9;color:var(--secondary)}
+        .content h3{font-size:1.18rem;margin:1.4rem 0 .7rem;color:#334155}
+        .content img{max-width:100%;border-radius:10px;box-shadow:var(--shadow);margin:1rem 0}
+        .content blockquote{border-left:4px solid var(--accent-amber);background:#fffbeb;padding:.8rem 1.1rem;margin:1rem 0;border-radius:0 8px 8px 0}
+        .content ul,.content ol{margin:0 0 1rem 1.5rem}
+        .content code{background:#f1f5f9;padding:.1rem .35rem;border-radius:4px;font-size:.9em}
+        .content pre code{background:none;padding:0}
+        .content table{display:block;overflow-x:auto}
+        .mermaid{background:#fff;padding:1rem;border:1px solid var(--border-color);border-radius:8px;margin:1rem 0;overflow-x:auto}
+    </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="header-top">
+      <div>
+        <h1>🔌 Arduino Uno + DHT11（Pin 8）+ I2C LCD 1602 接線指引與程式庫下載手冊</h1>
+        <p class="subtitle">example_1029：詳細接線、3 針/4 針 DHT11 差異、三個程式庫安裝與疑難排解</p>
+      </div>
+      <div class="action-btns">
+        <button class="btn btn-pdf" onclick="window.print()">🖨️ 匯出成 PDF</button>
+        <a class="btn btn-secondary" href="../index.html">📂 課程總目錄</a>
+        <a class="btn btn-secondary" href="arduino_dht11_pin8_lcd1602_i2c_example_1029.ino" download>💾 下載程式 (.ino)</a>
+      </div>
+    </div>
+    <div class="metadata-box">
+      <div><strong>最後更新時間:</strong> 2026-10-22 14:01:08 (UTC+8)</div>
+      <div><strong>使用模型:</strong> Claude Sonnet 5.5</div>
+      <div><strong>執行 Agent:</strong> Claude Code</div>
+      <div><strong>引腳分配:</strong> LCD (A4/A5, 0x27) • DHT11 (D8)</div>
+    </div>
+  </header>
+  <section class="card content">
+
+<blockquote>
+<p><strong>最後更新時間</strong>: 2026-10-22 14:01:08 (UTC+8)<br />
+<strong>使用模型</strong>: Claude Sonnet 5.5<br />
+<strong>執行 Agent</strong>: Claude Code<br />
+<strong>對應程式碼</strong>: <a href="./arduino_dht11_pin8_lcd1602_i2c_example_1029.ino">arduino_dht11_pin8_lcd1602_i2c_example_1029.ino</a><br />
+<strong>互動 HTML 筆記</strong>: <a href="./arduino_dht11_pin8_lcd1602_i2c_wiring_library_guide.html">arduino_dht11_pin8_lcd1602_i2c_wiring_library_guide.html</a></p>
+<p>✍️ <strong>撰寫：Claude Sonnet 5.5 / Claude Code</strong>（全文皆由 Claude 撰寫；與先前 Gemini 撰寫之 Pin 7 版本筆記分開標註）</p>
+</blockquote>
+<hr />
+<h2 id="_1">📑 目錄</h2>
+<ol>
+<li><a href="#-一程式碼重點解析">程式碼重點解析（與 Pin 7 版本的差異）</a></li>
+<li><a href="#-二材料清單">材料清單</a></li>
+<li><a href="#-三接線指引">接線指引（含接線圖與逐步步驟）</a></li>
+<li><a href="#-四程式庫下載與安裝">程式庫下載與安裝</a></li>
+<li><a href="#-五程式邏輯流程圖">程式邏輯流程圖</a></li>
+<li><a href="#-六完整程式碼">完整程式碼</a></li>
+<li><a href="#-七上傳與驗證步驟">上傳與驗證步驟</a></li>
+<li><a href="#-八疑難排解-faq">疑難排解 FAQ</a></li>
+<li><a href="#-九延伸思考與進階主題">延伸思考與進階主題</a></li>
+<li><a href="#-提示詞歷史與變更記錄-prompt-archive">提示詞歷史與變更記錄</a></li>
+</ol>
+<hr />
+<h2 id="_2">🔍 一、程式碼重點解析</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">項目</th>
+<th style="text-align: left;">本程式設定</th>
+<th style="text-align: left;">說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">開發板</td>
+<td style="text-align: left;">Arduino Uno（或相容板）</td>
+<td style="text-align: left;">I2C 硬體腳位固定為 <strong>A4 (SDA)</strong>、<strong>A5 (SCL)</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">DHT 資料腳</td>
+<td style="text-align: left;"><code>#define DHTPIN 8</code></td>
+<td style="text-align: left;"><strong>接 D8</strong>（注意：先前筆記為 D7，本程式為 D8）</td>
+</tr>
+<tr>
+<td style="text-align: left;">感測器型號</td>
+<td style="text-align: left;"><code>DHT11</code></td>
+<td style="text-align: left;">溫度 0–50 °C（±2 °C）、濕度 20–90 %RH（±5 %）</td>
+</tr>
+<tr>
+<td style="text-align: left;">LCD 位址</td>
+<td style="text-align: left;"><code>0x27</code>，16×2</td>
+<td style="text-align: left;">若無顯示改試 <code>0x3F</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">取樣間隔</td>
+<td style="text-align: left;"><code>sensor.min_delay / 1000</code>，最少 1000 ms</td>
+<td style="text-align: left;">DHT11 庫回報 min_delay 為 2,000,000 µs → 實際 <strong>2000 ms</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">度數符號</td>
+<td style="text-align: left;"><code>lcd.print((char)223)</code></td>
+<td style="text-align: left;">HD44780 字型表中 223 (0xDF) 即 <code>°</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">序列埠</td>
+<td style="text-align: left;">9600 baud</td>
+<td style="text-align: left;">同步輸出溫濕度到 Serial Monitor</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>📌 注意</strong>
+本程式使用 <code>DHT_Unified</code>，所以<strong>必須同時安裝 Adafruit Unified Sensor</strong>（<code>Adafruit_Sensor.h</code>），少裝會直接編譯失敗。</p>
+</blockquote>
+<hr />
+<h2 id="_3">🧰 二、材料清單</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">數量</th>
+<th style="text-align: left;">元件</th>
+<th style="text-align: left;">備註</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">Arduino Uno + USB 線（A–B）</td>
+<td style="text-align: left;">同時負責供電與上傳程式</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">I2C LCD 1602 模組（背面有 PCF8574 小板，4 針腳）</td>
+<td style="text-align: left;">針腳：GND / VCC / SDA / SCL</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">DHT11 溫濕度感測器</td>
+<td style="text-align: left;"><strong>3 針模組版</strong>（附小電路板）或 <strong>4 針裸感測器</strong>，見下方說明</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">麵包板</td>
+<td style="text-align: left;">提供 5V / GND 共用軌</td>
+</tr>
+<tr>
+<td style="text-align: center;">若干</td>
+<td style="text-align: left;">公對公杜邦線；若 LCD 為排針則用公對母</td>
+<td style="text-align: left;">建議紅=5V、黑/棕=GND</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">10 kΩ 電阻</td>
+<td style="text-align: left;"><strong>僅 4 針裸 DHT11 需要</strong>（上拉電阻）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_4">🔌 三、接線指引</h2>
+<blockquote>
+<p>⚠️ <strong>接線前先拔掉 USB 線</strong>，全部接好、檢查無誤後再通電，避免短路。</p>
+</blockquote>
+<h3 id="30">3.0 實際接線照片與核對重點</h3>
+<p><img alt="Arduino Uno + DHT11 + I2C LCD 1602 實際接線" src="./2026-10-22-140028.jpg" /></p>
+<p>從照片可確認：</p>
+<ul>
+<li>LCD 為<strong>綠色 1602 + 紅色 I2C 背板</strong>（含藍色對比度電位器），背板 4 針排針接出 4 條線（紅、橘、黃、白）。</li>
+<li>DHT11 為<strong>藍色小板的 3 針模組</strong>（照片左中），<strong>不需</strong>外接上拉電阻。</li>
+<li>電源經麵包板紅/藍軌分配，Uno 已通電（綠色 ON 燈亮）。</li>
+<li>照片中導線顏色與本文建議色不同，<strong>顏色不是重點，請依針腳逐條核對</strong>：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">核對項目</th>
+<th style="text-align: left;">應該是</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">LCD 背板 SDA / SCL 排針</td>
+<td style="text-align: left;">各自通到 Uno <strong>A4 / A5</strong>（不可對調）</td>
+</tr>
+<tr>
+<td style="text-align: left;">LCD VCC / GND</td>
+<td style="text-align: left;">5V / GND（不可對調）</td>
+</tr>
+<tr>
+<td style="text-align: left;">DHT11 DATA（絲印 <code>S</code> 或 <code>OUT</code>）</td>
+<td style="text-align: left;">Uno <strong>D8</strong>（程式為 <code>DHTPIN 8</code>）</td>
+</tr>
+<tr>
+<td style="text-align: left;">DHT11 VCC / GND</td>
+<td style="text-align: left;">5V / GND，依板上絲印確認</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ 受限於照片解析度與導線交疊，我無法逐條追蹤每條線的兩端，上表請以實物逐項勾選確認；若 LCD 顯示 <code>Error</code>，優先檢查 DHT11 的 DATA 是否在 D8。</p>
+</blockquote>
+<h3 id="31">3.1 總接線對照表</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">元件</th>
+<th style="text-align: left;">元件針腳</th>
+<th style="text-align: center;">→</th>
+<th style="text-align: left;">Arduino Uno</th>
+<th style="text-align: left;">建議線色</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>I2C LCD 1602</strong></td>
+<td style="text-align: left;">GND</td>
+<td style="text-align: center;">→</td>
+<td style="text-align: left;">GND</td>
+<td style="text-align: left;">黑</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">VCC</td>
+<td style="text-align: center;">→</td>
+<td style="text-align: left;">5V</td>
+<td style="text-align: left;">紅</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">SDA</td>
+<td style="text-align: center;">→</td>
+<td style="text-align: left;"><strong>A4</strong></td>
+<td style="text-align: left;">黃</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">SCL</td>
+<td style="text-align: center;">→</td>
+<td style="text-align: left;"><strong>A5</strong></td>
+<td style="text-align: left;">綠</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>DHT11（3 針模組）</strong></td>
+<td style="text-align: left;"><code>-</code> / GND</td>
+<td style="text-align: center;">→</td>
+<td style="text-align: left;">GND</td>
+<td style="text-align: left;">黑</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">中間 <code>+</code> / VCC</td>
+<td style="text-align: center;">→</td>
+<td style="text-align: left;">5V</td>
+<td style="text-align: left;">紅</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>S</code> / DATA / OUT</td>
+<td style="text-align: center;">→</td>
+<td style="text-align: left;"><strong>D8</strong></td>
+<td style="text-align: left;">白</td>
+</tr>
+</tbody>
+</table>
+<h3 id="32">3.2 接線示意圖（文字版）</h3>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">                 ┌─────────────────────────┐
+                 │       Arduino Uno       │
+                 │                         │
+   DHT11 DATA ───┤ D8                  5V  ├─── LCD VCC ／ DHT11 VCC
+                 │                    GND  ├─── LCD GND ／ DHT11 GND
+      LCD SDA ───┤ A4 (SDA)                │
+      LCD SCL ───┤ A5 (SCL)                │
+                 └─────────────────────────┘
+
+   Uno 只有一組 5V 與 GND ──&gt; 先接到麵包板紅(+)、藍(−)電源軌，再由軌分給兩個模組
+</code></pre></div>
+<h3 id="33">3.3 逐步接線步驟</h3>
+<ol>
+<li><strong>建立電源軌</strong>：Uno <code>5V</code> → 麵包板紅色(+)軌；Uno <code>GND</code> → 麵包板藍色(−)軌。</li>
+<li><strong>接 LCD 電源</strong>：LCD <code>VCC</code> → (+)軌；LCD <code>GND</code> → (−)軌。</li>
+<li><strong>接 LCD 通訊線</strong>：LCD <code>SDA</code> → Uno <code>A4</code>；LCD <code>SCL</code> → Uno <code>A5</code>。
+   （Uno R3 板上靠近 AREF 的 SDA/SCL 排針與 A4/A5 內部相通，擇一即可。）</li>
+<li><strong>接 DHT11 電源</strong>：<code>+</code>/VCC → (+)軌；<code>-</code>/GND → (−)軌。</li>
+<li><strong>接 DHT11 資料線</strong>：<code>S</code>/DATA → Uno <code>D8</code>。</li>
+<li><strong>檢查</strong>：紅線都在 5V 側、黑線都在 GND 側、SDA/SCL 沒有接反，再插上 USB。</li>
+</ol>
+<h3 id="34-dht11">3.4 DHT11 兩種版本的差異（務必先確認手上是哪一種）</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">版本</th>
+<th style="text-align: center;">針腳數</th>
+<th style="text-align: left;">接法</th>
+<th style="text-align: left;">需要外接電阻？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>3 針模組</strong>（藍/黑色小板）</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">依 3.1 表直接接</td>
+<td style="text-align: left;">❌ 板上已有 10 kΩ 上拉</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>4 針裸感測器</strong>（藍色格柵外殼）</td>
+<td style="text-align: center;">4（第 3 腳空接）</td>
+<td style="text-align: left;">面對格柵、由左到右：<strong>1=VCC、2=DATA、3=NC（空接）、4=GND</strong></td>
+<td style="text-align: left;">✅ DATA(腳 2) 與 VCC(腳 1) 之間接 <strong>10 kΩ</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>⚠️ 警告</strong>
+3 針模組的針腳順序因廠商而異（有的是 <code>S + -</code>，有的是 <code>- + S</code>），<strong>以板上絲印為準，不要憑位置猜</strong>。VCC 與 GND 接反會讓感測器發燙、損壞。</p>
+</blockquote>
+<h3 id="35-lcd-i2c">3.5 LCD 對比度與 I2C 位址</h3>
+<ul>
+<li>LCD 背面藍色小方塊是<strong>對比度電位器</strong>：若亮了背光但看不到字，用小起子慢慢轉動。</li>
+<li>預設位址 <code>0x27</code>；副廠 PCF8574A 板可能是 <code>0x3F</code>。不確定時可燒錄 I2C Scanner（見第八章）。</li>
+</ul>
+<hr />
+<h2 id="_5">📦 四、程式庫下載與安裝</h2>
+<p>本程式 <code>#include</code> 了 5 個標頭檔，對應 <strong>3 個需要安裝的程式庫</strong>（<code>Wire.h</code> 為 Arduino 內建，免安裝）：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><code>#include</code></th>
+<th style="text-align: left;">所屬程式庫</th>
+<th style="text-align: left;">作者</th>
+<th style="text-align: center;">是否需安裝</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>Wire.h</code></td>
+<td style="text-align: left;">Wire</td>
+<td style="text-align: left;">Arduino 內建</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>LiquidCrystal_I2C.h</code></td>
+<td style="text-align: left;"><strong>LiquidCrystal I2C</strong></td>
+<td style="text-align: left;">Frank de Brabander</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Adafruit_Sensor.h</code></td>
+<td style="text-align: left;"><strong>Adafruit Unified Sensor</strong></td>
+<td style="text-align: left;">Adafruit</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>DHT.h</code> / <code>DHT_U.h</code></td>
+<td style="text-align: left;"><strong>DHT sensor library</strong></td>
+<td style="text-align: left;">Adafruit</td>
+<td style="text-align: center;">✅</td>
+</tr>
+</tbody>
+</table>
+<h3 id="41-aarduino-ide">4.1 方法 A：Arduino IDE 程式庫管理員（推薦）</h3>
+<ol>
+<li>開啟 Arduino IDE → 左側欄點 <strong>程式庫管理員</strong>（圖示像書本），或選單 <strong>工具 → 管理程式庫…</strong>（快捷鍵 <code>Ctrl+Shift+I</code>）。</li>
+<li>搜尋並依序安裝：</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">搜尋關鍵字</th>
+<th style="text-align: left;">要選的項目</th>
+<th style="text-align: left;">備註</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>DHT sensor library</code></td>
+<td style="text-align: left;"><strong>DHT sensor library by Adafruit</strong></td>
+<td style="text-align: left;">安裝時若跳出「安裝相依程式庫」，選 <strong>Install all</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Adafruit Unified Sensor</code></td>
+<td style="text-align: left;"><strong>Adafruit Unified Sensor by Adafruit</strong></td>
+<td style="text-align: left;">若上一步選了 Install all 已自動裝好</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>LiquidCrystal I2C</code></td>
+<td style="text-align: left;"><strong>LiquidCrystal I2C by Frank de Brabander</strong></td>
+<td style="text-align: left;">搜尋結果有多個同名套件，認明作者</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>每個項目看到 <code>INSTALLED</code> 字樣即完成。</li>
+</ol>
+<h3 id="42-b-zip">4.2 方法 B：手動下載 ZIP（離線或搜尋不到時）</h3>
+<ol>
+<li>開啟下列 GitHub 頁面，點 <strong>Code → Download ZIP</strong>：</li>
+<li>DHT sensor library：<a href="https://github.com/adafruit/DHT-sensor-library">https://github.com/adafruit/DHT-sensor-library</a></li>
+<li>Adafruit Unified Sensor：<a href="https://github.com/adafruit/Adafruit_Sensor">https://github.com/adafruit/Adafruit_Sensor</a></li>
+<li>LiquidCrystal I2C：<a href="https://github.com/johnrickman/LiquidCrystal_I2C">https://github.com/johnrickman/LiquidCrystal_I2C</a>（亦有 Frank de Brabander 版本鏡像）</li>
+<li>Arduino IDE → <strong>草稿碼 → 匯入程式庫 → 加入 .ZIP 程式庫…</strong> → 選剛下載的 ZIP。</li>
+<li>三個 ZIP 各做一次。</li>
+</ol>
+<h3 id="43">4.3 驗證是否安裝成功</h3>
+<ul>
+<li>選單 <strong>檔案 → 範例</strong>，往下應能看到 <code>DHT sensor library</code>、<code>LiquidCrystal I2C</code>、<code>Adafruit Unified Sensor</code>。</li>
+<li>或直接按 <strong>驗證 ✔</strong>：沒有 <code>fatal error: xxx.h: No such file or directory</code> 即成功。</li>
+</ul>
+<h3 id="44">4.4 常見安裝錯誤對照</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">編譯錯誤訊息</th>
+<th style="text-align: left;">缺少的程式庫</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>fatal error: LiquidCrystal_I2C.h: No such file</code></td>
+<td style="text-align: left;">LiquidCrystal I2C</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>fatal error: Adafruit_Sensor.h: No such file</code></td>
+<td style="text-align: left;">Adafruit Unified Sensor</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>fatal error: DHT.h</code> / <code>DHT_U.h: No such file</code></td>
+<td style="text-align: left;">DHT sensor library</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_6">🚀 五、程式邏輯流程圖</h2>
+<pre class="mermaid">flowchart TD
+    A(["通電 / 重置"]) --> B["setup(): Serial.begin(9600)"]
+    B --> C["lcd.init() + backlight() + clear()"]
+    C --> D["LCD 顯示 Sensor Starting"]
+    D --> E["dht.begin() 初始化 DHT11"]
+    E --> F["讀取 sensor.min_delay → delayMS"]
+    F --> G{"delayMS < 1000 ?"}
+    G -- 是 --> H["delayMS = 1000"]
+    G -- 否 --> I["保留 delayMS（DHT11 約 2000 ms）"]
+    H --> J["delay(1000) 後 lcd.clear()"]
+    I --> J
+    J --> K["loop(): delay(delayMS)"]
+    K --> L["讀取溫度 getEvent"]
+    L --> M{"isnan 溫度?"}
+    M -- 是 --> N["LCD 第 1 行 Error + Serial 報錯"]
+    M -- 否 --> O["LCD 第 1 行 Temp: xx.x°C + Serial 輸出"]
+    N --> P["讀取濕度 getEvent"]
+    O --> P
+    P --> Q{"isnan 濕度?"}
+    Q -- 是 --> R["LCD 第 2 行 Error + Serial 報錯"]
+    Q -- 否 --> S["LCD 第 2 行 Humi: xx.x% + Serial 輸出"]
+    R --> K
+    S --> K
+</pre>
+<hr />
+<h2 id="_7">💻 六、完整程式碼</h2>
+<blockquote>
+<p>完整程式亦存於 <a href="./arduino_dht11_pin8_lcd1602_i2c_example_1029.ino"><code>arduino_dht11_pin8_lcd1602_i2c_example_1029.ino</code></a>（內容與課堂檔 <code>example_1029.txt</code> 相同）。</p>
+</blockquote>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-cpp"><code class="language-cpp">#include &lt;Wire.h&gt;                  // I2C 通訊（內建）
+#include &lt;LiquidCrystal_I2C.h&gt;     // I2C LCD 驅動
+#include &lt;Adafruit_Sensor.h&gt;       // Adafruit 統一感測器介面
+#include &lt;DHT.h&gt;                   // DHT 基礎庫
+#include &lt;DHT_U.h&gt;                 // DHT Unified 版本
+
+// --- 設定 DHT 感測器 ---
+#define DHTPIN 8          // DHT 感測器腳位接在數位腳位 8
+#define DHTTYPE DHT11     // 感測器型號 DHT 11
+DHT_Unified dht(DHTPIN, DHTTYPE);
+
+// --- 設定 LCD 螢幕 ---
+// I2C 位址為 0x27，尺寸為 16x2
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+uint32_t delayMS;
+
+void setup() {
+  Serial.begin(9600);
+
+  // 初始化 LCD
+  lcd.init();
+  lcd.backlight();
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(&quot;Sensor Starting&quot;);
+
+  // 初始化 DHT 感測器
+  dht.begin();
+
+  // 取得感測器最低讀取間隔時間
+  sensor_t sensor;
+  dht.temperature().getSensor(&amp;sensor);
+  delayMS = sensor.min_delay / 1000;
+  if (delayMS &lt; 1000) {
+    delayMS = 1000; // 確保讀取間隔至少 1 秒
+  }
+
+  delay(1000);
+  lcd.clear();
+}
+
+void loop() {
+  // 等待感測器間隔時間
+  delay(delayMS);
+
+  // --- 讀取並顯示溫度 ---
+  sensors_event_t event;
+  dht.temperature().getEvent(&amp;event);
+
+  lcd.setCursor(0, 0); // 第一行
+  lcd.print(&quot;Temp: &quot;);
+  if (isnan(event.temperature)) {
+    lcd.print(&quot;Error   &quot;);
+    Serial.println(F(&quot;Error reading temperature!&quot;));
+  } else {
+    lcd.print(event.temperature, 1); // 顯示小數點後 1 位
+    lcd.print((char)223);            // 顯示度數符號 '°'
+    lcd.print(&quot;C   &quot;);
+    Serial.print(F(&quot;Temperature: &quot;));
+    Serial.print(event.temperature);
+    Serial.println(F(&quot;°C&quot;));
+  }
+
+  // --- 讀取並顯示濕度 ---
+  dht.humidity().getEvent(&amp;event);
+
+  lcd.setCursor(0, 1); // 第二行
+  lcd.print(&quot;Humi: &quot;);
+  if (isnan(event.relative_humidity)) {
+    lcd.print(&quot;Error   &quot;);
+    Serial.println(F(&quot;Error reading humidity!&quot;));
+  } else {
+    lcd.print(event.relative_humidity, 1); // 顯示小數點後 1 位
+    lcd.print(&quot;%   &quot;);
+    Serial.print(F(&quot;Humidity: &quot;));
+    Serial.print(event.relative_humidity);
+    Serial.println(F(&quot;%&quot;));
+  }
+}
+</code></pre></div>
+<hr />
+<h2 id="_8">✅ 七、上傳與驗證步驟</h2>
+<ol>
+<li>確認接線（第三章）與三個程式庫（第四章）皆完成。</li>
+<li>USB 連接 Uno → Arduino IDE <strong>工具 → 開發板 → Arduino Uno</strong>；<strong>工具 → 連接埠</strong> 選 <code>COMx (Arduino Uno)</code>。</li>
+<li>貼上程式 → 按 <strong>驗證 ✔</strong>（編譯）→ 按 <strong>上傳 →</strong>。看到 <code>Done uploading</code> 即成功。</li>
+<li>預期結果：</li>
+<li>LCD 先顯示 <code>Sensor Starting</code> 約 1 秒，隨後約每 2 秒更新：
+     <code>text
+     Temp: 27.5°C
+     Humi: 61.0%</code></li>
+<li><strong>工具 → 序列埠監控視窗</strong>（鮑率選 <strong>9600</strong>）同步印出 <code>Temperature: 27.50°C</code> 等。</li>
+<li>驗證感測器真的在工作：用手握住或對 DHT11 呵氣，溫濕度數值應在數秒內上升。</li>
+</ol>
+<hr />
+<h2 id="faq">❓ 八、疑難排解 FAQ</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">現象</th>
+<th style="text-align: left;">可能原因</th>
+<th style="text-align: left;">處理方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">背光亮、只有方塊或無字</td>
+<td style="text-align: left;">對比度太低/太高</td>
+<td style="text-align: left;">轉動 LCD 背面藍色電位器</td>
+</tr>
+<tr>
+<td style="text-align: left;">完全沒反應、背光也不亮</td>
+<td style="text-align: left;">VCC/GND 沒接好，或 I2C 位址錯誤</td>
+<td style="text-align: left;">檢查 5V/GND；位址改 <code>0x3F</code> 或執行 I2C Scanner</td>
+</tr>
+<tr>
+<td style="text-align: left;">顯示 <code>Temp: Error</code> / <code>Humi: Error</code></td>
+<td style="text-align: left;">DATA 沒接 <strong>D8</strong>、針腳順序接錯、4 針版缺上拉電阻</td>
+<td style="text-align: left;">對照 3.1 與 3.4；DHT 剛通電請等 2 秒</td>
+</tr>
+<tr>
+<td style="text-align: left;">數值固定不變</td>
+<td style="text-align: left;">程式沒更新或感測器接觸不良</td>
+<td style="text-align: left;">重新上傳；重插 DHT11</td>
+</tr>
+<tr>
+<td style="text-align: left;">螢幕出現亂碼 <code>Â°C</code></td>
+<td style="text-align: left;">序列埠或 LCD 直接印 UTF-8 的 <code>°</code></td>
+<td style="text-align: left;">LCD 已用 <code>(char)223</code> 避免；Serial Monitor 若亂碼屬正常顯示編碼問題，不影響 LCD</td>
+</tr>
+<tr>
+<td style="text-align: left;">上傳失敗 <code>avrdude: stk500_getsync()</code></td>
+<td style="text-align: left;">連接埠/開發板選錯，或 D0/D1 有接線</td>
+<td style="text-align: left;">重選埠；本專案未使用 D0/D1</td>
+</tr>
+<tr>
+<td style="text-align: left;">編譯 <code>No such file</code></td>
+<td style="text-align: left;">缺程式庫</td>
+<td style="text-align: left;">見 4.4 對照表</td>
+</tr>
+</tbody>
+</table>
+<p><strong>I2C Scanner（找 LCD 位址）</strong>：</p>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-cpp"><code class="language-cpp">#include &lt;Wire.h&gt;                       // I2C 函式庫
+
+void setup() {
+  Wire.begin();                         // 啟動 I2C 主機
+  Serial.begin(9600);
+  Serial.println(&quot;I2C Scanner...&quot;);
+  for (byte addr = 1; addr &lt; 127; addr++) {   // 逐一探測 1~126 位址
+    Wire.beginTransmission(addr);
+    if (Wire.endTransmission() == 0) {        // 回應 0 代表有裝置
+      Serial.print(&quot;Found device at 0x&quot;);
+      Serial.println(addr, HEX);
+    }
+  }
+}
+
+void loop() {}
+</code></pre></div>
+<hr />
+<h2 id="_9">🧭 九、延伸思考與進階主題</h2>
+<ol>
+<li><strong>為何 DHT11 要等 ≥ 2 秒？</strong> DHT11 內部 ADC 取樣週期約 1–2 秒，過快讀取會得到 <code>NaN</code> 或舊值；程式透過 <code>min_delay</code> 自動取得安全間隔。</li>
+<li><strong>單線協定</strong>：DATA 線以脈衝寬度編碼 40 bit（濕度整數/小數、溫度整數/小數、checksum），因此對時序敏感，長導線（&gt; 20 m）或缺上拉電阻容易失敗。</li>
+<li><strong>I2C 的優勢</strong>：LCD 原本需 6+ 條資料線，透過 PCF8574 擴展後僅需 SDA/SCL 兩條，且可與其他 I2C 裝置共用匯流排（位址不可衝突）。</li>
+<li><strong>升級方向</strong>：換用 DHT22 / SHT31 / BME280 提高精度（只需改 <code>DHTTYPE</code> 或換庫）；加入蜂鳴器/繼電器做溫度警報；以 ESP8266/ESP32 上傳雲端。</li>
+<li><strong>與 Pin 7 版本比較</strong>：本版僅 DHT 腳位（D8）、顯示字串（<code>Temp:</code>/<code>Humi:</code>）與初始化流程略有不同，詳見 <a href="./arduino_i2c_lcd1602_dht11_unified_display.md">arduino_i2c_lcd1602_dht11_unified_display.md</a>。</li>
+</ol>
+<hr />
+<h2 id="prompt-archive">📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+<h3 id="2026-10-22-140108-claude-sonnet-55-claude-code-pin-8">🔹 [2026-10-22 14:01:08] [Claude Sonnet 5.5 / Claude Code] 建立 Pin 8 版接線指引與程式庫下載手冊</h3>
+<ul>
+<li><strong>模型/Agent</strong>: Claude Sonnet 5.5 / Claude Code</li>
+<li><strong>Prompt 原文</strong>:
+  <code>text
+  C:\Users\User\Desktop\onclass\example_1029.txt 這是一個完整的程式碼，幫我撰寫詳細的接線指引以及程式庫下載方式</code></li>
+<li><strong>變更摘要</strong>: 依 <code>example_1029.txt</code>（DHT11 接 D8、I2C LCD 0x27）新增詳細接線表、3 針/4 針 DHT11 差異、程式庫（LiquidCrystal I2C、DHT sensor library、Adafruit Unified Sensor）的 IDE 與 ZIP 安裝流程、流程圖、驗證步驟與疑難排解；並將程式存為 <code>.ino</code>。</li>
+</ul>
+  </section>
+</div>
+<footer><div class="container"><p>📘 CLASS_NOTE 電子電路與單晶片專題 • 相關：<a href="arduino_i2c_lcd1602_dht11_unified_display.html">Pin 7 整合版</a></p></div></footer>
+<script>
+function copyCode(btn){
+  const code=btn.nextElementSibling.querySelector('code').innerText;
+  navigator.clipboard.writeText(code).then(()=>{const t=btn.innerText;btn.innerText='✅ 已複製！';setTimeout(()=>{btn.innerText=t},2000)});
+}
+</script>
+</body>
+</html>
