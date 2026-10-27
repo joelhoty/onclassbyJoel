@@ -1,0 +1,1103 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>U8g2 顯示模式比較（查核校訂版）</title><style>
+:root{--ink:#183047;--muted:#55697c;--accent:#087e82;--blue:#2458b8;--line:#dce5eb;--paper:#fff}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#edf2f6;color:var(--ink);font:17px/1.85 "Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif}header{background:#132d44;color:white;padding:26px max(22px,calc((100% - 1120px)/2))}header p{margin:0;color:#bbd4e6}.toolbar{display:flex;gap:12px;flex-wrap:wrap;margin-top:15px}button,.button{border:1px solid #bfd0dc;border-radius:8px;background:white;color:#173047;padding:9px 14px;font:inherit;cursor:pointer;text-decoration:none}button:hover,.button:hover{background:#e5f5f2}button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #c47a00;outline-offset:3px}main{max-width:1180px;margin:26px auto;background:white;border:1px solid var(--line);border-radius:16px;padding:40px 46px}h1{font-size:2rem;line-height:1.5;margin:0 0 20px}h2{margin:54px 0 20px;border-bottom:2px solid #bcd3de;padding-bottom:10px;font-size:1.5rem}h3{margin:30px 0 12px;font-size:1.16rem}a{color:var(--blue);text-underline-offset:3px}blockquote{margin:20px 0;padding:10px 20px;border-left:4px solid var(--accent);background:#eff7f8;color:#385267}blockquote p{margin:0}p{margin:16px 0}img{max-width:100%;height:auto;display:block;border-radius:12px}figure{margin:20px 0}.flowchart{max-width:760px;margin:24px auto}.flowchart svg{width:100%;height:auto;display:block}.table-scroll{overflow:auto;margin:22px 0}table{width:100%;border-collapse:collapse;font-size:.94rem;line-height:1.7}th,td{border:1px solid var(--line);padding:11px 14px;text-align:left;vertical-align:top}th{background:#eaf1f6}tr:nth-child(even){background:#f8fafc}code{font-family:Consolas,"Cascadia Code",monospace;font-size:.92em;background:#edf3f7;border-radius:4px;padding:2px 4px}pre{background:#12283a;color:#e1eef7;border-radius:10px;padding:50px 20px 22px;position:relative;overflow:auto;line-height:1.7;font-size:14px}pre code{background:transparent;color:inherit;padding:0;white-space:pre}.copy{position:absolute;right:10px;top:9px;padding:3px 12px;font-size:13px;background:#dcebf3}li{margin:6px 0}hr{border:0;border-top:1px solid var(--line);margin:45px 0}.simulator{border:2px solid #84b7b9;padding:24px;border-radius:14px;margin-top:40px;background:#f3faf9}.simulator h2{margin:0}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.controls label{display:grid;gap:4px;font-size:15px}.controls select,.controls input{width:100%;font:inherit;padding:8px;border:1px solid #b6cad4;border-radius:6px;background:white}.memorybar{display:flex;height:24px;border:1px solid #a2b6c3;background:white;border-radius:5px;overflow:hidden}#reservedBar{background:#9aa9b7}#bufferBar{background:#087e82}.legend{font-size:14px;color:var(--muted)}.simstage{display:grid;grid-template-columns:1fr 1fr;gap:24px}.simstage h3{font-size:16px}.tileview{display:grid;gap:2px;min-height:30px}.tile{aspect-ratio:1;background:#e2e9ee;border:1px solid #d1dce3}.tile.active{background:#087e82;border-color:#087e82}.tile.full{background:#2458b8;border-color:#2458b8}.tile.ghost{background:transparent;border-style:dashed}.actions{display:flex;gap:10px;margin-top:18px}.warning{color:#ac3427;font-weight:bold}footer{max-width:1180px;margin:20px auto 40px;color:var(--muted);padding:0 25px;font-size:14px}
+@media(max-width:700px){body{font-size:16px}main{margin:0;border-radius:0;padding:25px 18px}h1{font-size:1.65rem}.controls,.simstage{grid-template-columns:1fr}pre{font-size:12px}.simulator{padding:15px}}
+@media print{@page{size:A4;margin:15mm}body{background:white;font-size:10pt;line-height:1.6}header,.toolbar,.copy,.simulator,.actions,footer{display:none!important}main{max-width:none;border:0;margin:0;padding:0}h1{font-size:21pt}h2{font-size:16pt;margin-top:22pt;break-after:avoid}h3{font-size:12pt;break-after:avoid}p,li{orphans:3;widows:3}table{font-size:8pt;min-width:0}th,td{padding:5px;overflow-wrap:anywhere}.table-scroll{overflow:visible}thead{display:table-header-group}tr{break-inside:avoid}img,figure{break-inside:avoid}pre{background:#f3f5f7;color:#111;white-space:pre-wrap;overflow:visible;padding:12px;font-size:8pt}pre code{white-space:pre-wrap;overflow-wrap:anywhere}a{color:#184777}blockquote{background:#f5f7f8}.flowchart{max-width:105mm}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style></head><body><header><p>U8g2 參考筆記 · 官方資料與本機程式庫校訂</p><div class="toolbar"><button type="button" onclick="window.print()">匯出成 PDF／列印</button><a class="button" href="./u8g2_display_modes_comparison.md">Markdown 原稿</a><a class="button" href="./u8g2_display_modes_memory_guide.html">完整圖解、NodeMCU-32S 與多語言教學</a><a class="button" href="../index.html">回索引</a></div></header><main><h1>🖥️ U8g2 螢幕顯示模式深度解析：U8x8、Page Buffer 與 Full Buffer 比較及開發板記憶體適配指南</h1>
+<blockquote>
+<p><strong>最後更新時間</strong>: 2026-10-27 16:07:29 (UTC+8)
+<strong>使用模型</strong>: Gemini 4 Argon (Medium)
+<strong>執行 Agent</strong>: Antigravity
+<strong>相關筆記</strong>: <a href="./arduino_dht11_ssd1306_u8g2_guide.md">Arduino Uno + DHT11 + SSD1306 OLED（U8g2 / I2C）指南</a> | <a href="./u8g2_display_modes_comparison.html">互動版 HTML</a></p>
+<p><strong>校訂說明</strong>: 本次保留原筆記結構，修正容量、字型與效能敘述。更完整的圖解、NodeMCU-32S、六語切換、容量量測及官方來源請見 <a href="./u8g2_display_modes_memory_guide.html">校核後完整教學</a>。本機查核版本：U8g2 2.36.19、Arduino-ESP32 3.2.0。</p>
+</blockquote>
+<hr/>
+<h2>📑 目錄</h2>
+<ol>
+<li><a href="#ref-core">核心概念與顯示模式</a></li>
+<li><a href="#ref-boards">開發板與記憶體預算</a></li>
+<li><a href="#ref-examples">完整範例與流程</a></li>
+<li><a href="#ref-advanced">進階應用與局部更新</a></li>
+<li><a href="#ref-fonts">字型、符號與多語言</a></li>
+<li><a href="#ref-history">提示詞歷史</a></li>
+</ol>
+<hr/>
+<p><a id="ref-core"></a></p>
+<h2>🧠 1. 核心概念剖析 (Core Concepts)：U8g2 四種顯示模式底層原理</h2>
+<h3>1.1 為什麼需要不同的緩衝模式？（RAM vs. 效能權衡）</h3>
+<p>以最常見的 <strong>0.96 吋 / 1.3 吋單色 OLED（SSD1306 / SH1106，解析度 <span class="math">128 × 64</span>）</strong> 為例：
+螢幕上共有 <span class="math">128 × 64 = 8,192</span> 個像素點（Pixels）。由於是單色螢幕，每個像素只需 <span class="math">1 bit</span>（亮或暗）即可表示，因此一整張畫面需要的原始影像記憶體（GDDRAM，Graphic Display Data RAM）為：</p>
+<div class="equation">Full Frame Size = (128 × 64  bits) / (8  bits/byte) = 1,024  Bytes  (1  KB)</div>
+<p>然而，因為 <strong>SSD1306 在 I2C 介面下不支援「讀取」螢幕上的記憶體（Write-Only）</strong>，當我們想在螢幕上畫一個圓或疊加文字時，微控制器（MCU）若不先在自己的 SRAM 中準備好像素點陣，就無法做到「修改其中一個 pixel 而不覆蓋同一個 byte 裡的其他 7 個垂直 pixels」。</p>
+<p>這在 <strong>Arduino Uno（ATmega328P，總 SRAM 僅 <span class="math">2,048 Bytes</span>）</strong> 等資源受限的 8 位元單晶片上造成了嚴重衝突：若單單螢幕緩衝區就吃掉 <span class="math">1,024 Bytes</span>（50% 記憶體），加上 <code>Wire</code>、感測器庫與堆疊（Stack），程式極易崩潰。因此，U8g2 作者 Oliver Kraus 設計了 <strong>三種核心架構（細分為四種建構設定）</strong>，讓開發者能自由在 <strong>「記憶體（SRAM）空間」</strong> 與 <strong>「CPU 運算 / 通訊時間」</strong> 之間做出最佳權衡：</p>
+<ol>
+<li><strong>U8x8（無緩衝字元模式）</strong>：放棄「任意座標畫點/畫線」，直接把 <span class="math">8 × 8</span> 像素的字元區塊（Tile）透過 I2C/SPI 寫入 OLED 對應的頁與欄。<strong>MCU 端緩衝區 = <span class="math">0 Bytes</span></strong>。</li>
+<li><strong>Page Buffer <code>_1</code>（單頁緩衝模式）</strong>：MCU 只配置 <strong>1 頁（<span class="math">128 × 8 bits = 128 Bytes</span>）</strong> 緩衝。把同一套繪圖指令重跑 <strong>8 次</strong>，第 <span class="math">k</span> 次只保留落在第 <span class="math">k</span> 頁的像素並送出。</li>
+<li><strong>Page Buffer <code>_2</code>（兩頁工作區模式）</strong>：MCU 配置 <strong>2 頁（<span class="math">128 × 16 bits = 256 Bytes</span>）</strong> 緩衝。繪圖迴圈只需重跑 <strong>4 次</strong>，場景呼叫次數減半；整體速度提升須量測，不保證兩倍。</li>
+<li><strong>Full Buffer <code>_F</code>（全畫面緩衝模式）</strong>：MCU 直接配置完整的 <strong><span class="math">8 頁 = 1,024 Bytes</span></strong> 緩衝。所有圖形與文字在記憶體中一次畫完，最後呼叫 <code>sendBuffer()</code> 透過匯流排逐段傳送至螢幕。</li>
+</ol>
+<hr/>
+<h3>1.2 建構子命名規則與記憶體計算公式</h3>
+<p>在 U8g2 中，決定使用哪種顯示模式完全取決於<strong>宣告物件時的類別名稱（Constructor）</strong>：</p>
+<figure class="flowchart"><svg aria-label='程式邏輯流程圖：flowchart TD
+    A["確認控制器與解析度"] --&gt; B["依 RAM 選擇 U8x8、1、2 或 F"]
+    B --&gt; C["依接線選擇 I2C 或 SPI 建構式"]
+    C --&gt; D["使用相符的直接寫入、分頁或完整 buffer 更新流程"]
+' role="img" viewbox="0 0 1000 493" xmlns="http://www.w3.org/2000/svg"><title>程式邏輯流程圖：flowchart TD
+    A["確認控制器與解析度"] --&gt; B["依 RAM 選擇 U8x8、1、2 或 F"]
+    B --&gt; C["依接線選擇 I2C 或 SPI 建構式"]
+    C --&gt; D["使用相符的直接寫入、分頁或完整 buffer 更新流程"]
+</title><metadata></metadata><defs><marker id="arrow" markerheight="9" markerwidth="9" orient="auto" refx="8" refy="4"><path d="M0,0 L8,4 L0,8" fill="#64748b"></path></marker></defs><g font-family="Microsoft JhengHei,Noto Sans TC,Arial,sans-serif"><rect fill="#f5f8fb" height="491" rx="18" stroke="#d9e2eb" width="998" x="1" y="1"></rect><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="78"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="115.0">確認控制器與解析度</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="178"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="215.0">依 RAM 選擇 U8x8、1、2 或 F</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="278"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="315.0">依接線選擇 I2C 或 SPI 建構式</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="378"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="415.0">使用相符的直接寫入、分頁或完整 buffer 更新流程</text><path d="M550,140 L550,178" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,240 L550,278" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,340 L550,378" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path></g></svg></figure>
+<pre><button aria-label="複製此程式區塊" class="copy" type="button">複製</button><code class="language-text">// 1. U8x8 模式（字元直寫，載入 &lt;U8x8lib.h&gt;）
+U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8(U8X8_PIN_NONE);
+
+// 2. U8g2 Page Buffer (1 Page = 128B)，注意中間的 "_1_"
+U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
+
+// 3. U8g2 Page Buffer (2 Pages = 256B)，注意中間的 "_2_"
+U8G2_SSD1306_128X64_NONAME_2_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
+
+// 4. U8g2 Full Buffer (8 Pages = 1024B)，注意中間的 "_F_"
+U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
+</code></pre>
+<h4>📐 通用緩衝區大小計算公式</h4>
+<p>假設螢幕寬度為 <span class="math">W</span>、高度為 <span class="math">H</span>（例如 <span class="math">128 × 64</span> 或 <span class="math">128 × 32</span>）：
+- <strong>單頁大小 (<span class="math">Page Size</span>)</strong> <span class="math">= W × 1 Byte = W Bytes</span>
+- <strong>總頁數 (<span class="math">N_pages</span>)</strong> <span class="math">= (H) / (8)</span>
+- <strong><code>_1</code> 模式 RAM 緩衝</strong> <span class="math">= W Bytes</span> （迴圈執行 <span class="math">N_pages</span> 次）
+- <strong><code>_2</code> 模式 RAM 緩衝</strong> <span class="math">= 2 × W Bytes</span> （迴圈執行 <span class="math">\fracN_pages2</span> 次）
+- <strong><code>_F</code> 模式 RAM 緩衝</strong> <span class="math">= W × (H) / (8) Bytes</span> （繪圖僅執行 <span class="math">1</span> 次）</p>
+<hr/>
+<h3>1.3 四大顯示模式全方位對照表</h3>
+<div class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align: left;">比較項目</th>
+<th style="text-align: left;"><code>U8x8</code> (Text Only)</th>
+<th style="text-align: left;"><code>Page Buffer (_1)</code></th>
+<th style="text-align: left;"><code>Page Buffer (_2)</code></th>
+<th style="text-align: left;"><code>Full Buffer (_F)</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>建構子代號</strong></td>
+<td style="text-align: left;"><code>U8X8_...</code></td>
+<td style="text-align: left;"><code>U8G2_..._1_...</code></td>
+<td style="text-align: left;"><code>U8G2_..._2_...</code></td>
+<td style="text-align: left;"><code>U8G2_..._F_...</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>緩衝區 SRAM (128×64)</strong></td>
+<td style="text-align: left;"><strong>0 Bytes</strong></td>
+<td style="text-align: left;"><strong>128 Bytes</strong></td>
+<td style="text-align: left;"><strong>256 Bytes</strong></td>
+<td style="text-align: left;"><strong>1024 Bytes</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>像素以外的 SRAM</strong></td>
+<td style="text-align: left;">依架構與版本而變</td>
+<td style="text-align: left;">物件、Wire、變數及堆疊另計</td>
+<td style="text-align: left;">同左</td>
+<td style="text-align: left;">同左</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>每幀繪圖程式執行次數</strong></td>
+<td style="text-align: left;">依更新字元／tile 數</td>
+<td style="text-align: left;"><strong>8 次</strong>（每次畫 8 px 高）</td>
+<td style="text-align: left;"><strong>4 次</strong>（每次畫 16 px 高）</td>
+<td style="text-align: left;"><strong>1 次</strong>（畫完整張再送）</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>繪圖功能（點/線/圓/圖）</strong></td>
+<td style="text-align: left;">無 U8g2 任意像素圖形 API；可用 drawTile 等底層操作</td>
+<td style="text-align: left;">✅ 完整支援</td>
+<td style="text-align: left;">✅ 完整支援</td>
+<td style="text-align: left;">✅ 完整支援</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>任意比例字型與中文字</strong></td>
+<td style="text-align: left;">依 U8x8 字型集與 tile 網格；亦有較大字型</td>
+<td style="text-align: left;">✅ 支援所有像素字型与 UTF-8</td>
+<td style="text-align: left;">✅ 支援所有像素字型与 UTF-8</td>
+<td style="text-align: left;">✅ 支援所有像素字型与 UTF-8</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>座標系統</strong></td>
+<td style="text-align: left;"><strong>字元格</strong> <code>(col: 0~15, row: 0~7)</code></td>
+<td style="text-align: left;"><strong>像素</strong> <code>(x: 0~127, y: 0~63)</code></td>
+<td style="text-align: left;"><strong>像素</strong> <code>(x: 0~127, y: 0~63)</code></td>
+<td style="text-align: left;"><strong>像素</strong> <code>(x: 0~127, y: 0~63)</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>核心刷新結構</strong></td>
+<td style="text-align: left;"><code>drawString()</code> 立即生效</td>
+<td style="text-align: left;"><code>firstPage()</code> + <code>do...while(nextPage())</code></td>
+<td style="text-align: left;"><code>firstPage()</code> + <code>do...while(nextPage())</code></td>
+<td style="text-align: left;"><code>clearBuffer()</code> ➔ 繪圖 ➔ <code>sendBuffer()</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>局部保留 / 增量繪圖</strong></td>
+<td style="text-align: left;">✅ 可單獨覆寫某幾個字元格</td>
+<td style="text-align: left;">❌ 每次皆須重畫整個畫面</td>
+<td style="text-align: left;">❌ 每次皆須重畫整個畫面</td>
+<td style="text-align: left;">✅ 可不呼叫 <code>clearBuffer()</code> 直接疊加或局部傳送</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>CPU 運算負擔</strong></td>
+<td style="text-align: left;">⭐ 極低</td>
+<td style="text-align: left;">⭐⭐⭐⭐ 高（重複裁切計算 8 次）</td>
+<td style="text-align: left;">⭐⭐⭐ 中（重複裁切計算 4 次）</td>
+<td style="text-align: left;">⭐ 低（僅計算 1 次）</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>更新一致性</strong></td>
+<td style="text-align: left;">直接更新字元／tile</td>
+<td style="text-align: left;">全部頁面須用相同資料快照</td>
+<td style="text-align: left;">同左</td>
+<td style="text-align: left;">一張 buffer 不代表面板原子交換；仍受傳輸與掃描影響</td>
+</tr>
+</tbody>
+</table></div>
+<hr/>
+<p><a id="ref-boards"></a></p>
+<h2>🎛️ 2. 開發板記憶體限制與適配指南 (MCU Memory Sizing &amp; Selection)</h2>
+<p>在嵌入式開發中，選擇 U8g2 模式的第一準則就是 <strong>「看開發板的 SRAM 與 Flash 容量」</strong>。以下整理教學與實務最常見的微控制器開發板適配表：</p>
+<h3>2.1 主流微控制器 (MCU) SRAM / Flash 規格與建議模式</h3>
+<div class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th>開發板／晶片</th>
+<th>SRAM</th>
+<th>Flash（晶片／常見板型）</th>
+<th>128×64 Full 像素 buffer 占比</th>
+<th>建議</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ATtiny85</td>
+<td>512 B</td>
+<td>8 KiB，bootloader 另計</td>
+<td>200%</td>
+<td>full 不可行；先試 U8x8，page 須以實際精簡程式與核心驗證</td>
+</tr>
+<tr>
+<td>Uno R3／經典 Nano／Pro Mini，ATmega328P</td>
+<td>2 KiB</td>
+<td>32 KiB</td>
+<td>50%</td>
+<td>圖形優先 page；簡單 full 專案也可能放得下，不可斷言加感測器必然當機</td>
+</tr>
+<tr>
+<td>Leonardo／Micro</td>
+<td>2.5 KiB</td>
+<td>32 KiB</td>
+<td>40%</td>
+<td>page 較有餘裕；USB 與物件開銷依版本配置</td>
+</tr>
+<tr>
+<td>Mega 2560</td>
+<td>8 KiB</td>
+<td>256 KiB</td>
+<td>12.5%</td>
+<td>小 OLED 可評估 full；大型字型須留意 AVR 的字型／程式位址支援</td>
+</tr>
+<tr>
+<td>Uno R4 Minima／WiFi，RA4M1</td>
+<td>32 KiB</td>
+<td>256 KiB</td>
+<td>3.125%</td>
+<td>通常優先 full，依整體專案預算調整</td>
+</tr>
+<tr>
+<td>STM32F103C8T6</td>
+<td>20 KiB</td>
+<td>規格 64 KiB</td>
+<td>5%</td>
+<td>full 常合適；Flash 可能先成為字型瓶頸</td>
+</tr>
+<tr>
+<td>ESP8266 NodeMCU／D1 mini</td>
+<td>可用 heap 隨 SDK／應用而變</td>
+<td>常見板款 4 MiB，依模組</td>
+<td>不用未量測 heap 計算固定比例</td>
+<td>小 OLED 通常可用 full；不能保證總有 40／45 KiB 空閒</td>
+</tr>
+<tr>
+<td><strong>NodeMCU-32S，經典 ESP32</strong></td>
+<td><strong>520 KiB 片上 SRAM，包含系統用途</strong></td>
+<td>常見 Arduino 板型 4 MiB</td>
+<td>名目約 0.19%</td>
+<td><strong>優先 full；SDA21／SCL22，I/O 為 3.3 V</strong></td>
+</tr>
+<tr>
+<td>ESP32-S3／ESP32-C3</td>
+<td>分別 512／400 KiB 片上 SRAM</td>
+<td>依模組與板款</td>
+<td>名目約 0.20%／0.25%</td>
+<td>小 OLED 常選 full；不可套用 NodeMCU-32S 腳位或當作全是可用 heap</td>
+</tr>
+<tr>
+<td>Pico／Pico W，RP2040</td>
+<td>264 KiB</td>
+<td>官方板 2 MiB</td>
+<td>約 0.38%</td>
+<td>可選 full，依周邊配置評估</td>
+</tr>
+<tr>
+<td>Pico 2／Pico 2 W，RP2350</td>
+<td>520 KiB</td>
+<td>官方板 4 MiB</td>
+<td>約 0.19%</td>
+<td>RP2350 是 Cortex-M33 或 Hazard3 RISC-V 架構，不是 RP2040 的 Cortex-M0+</td>
+</tr>
+</tbody>
+</table></div>
+<p>板子與容量來源、Arduino 核心適用性及 NodeMCU-32S 專用完整範例，見 <a href="./u8g2_display_modes_memory_guide.html#boards">校核後教學第五、六、十一節</a>。以上百分比只計像素 buffer；Flash 不是 SRAM，中文字庫也須另算。</p>
+<hr/>
+<h3>2.2 記憶體預算示例（Uno R3：2,048 B）</h3>
+<p>不要把 Wire、Serial、USB、U8g2 物件大小視為跨板固定常數。以下假設像素以外的物件、通訊、變數與執行時安全預留合計 <strong>1,200 B</strong>，只是教學假設，不是量測。</p>
+<div class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>像素 buffer</th>
+<th>假設合計</th>
+<th>名目剩餘</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>U8x8</td>
+<td>無整屏 buffer</td>
+<td>1,200 B</td>
+<td>848 B</td>
+</tr>
+<tr>
+<td>Page <code>_1_</code></td>
+<td>128 B</td>
+<td>1,328 B</td>
+<td>720 B</td>
+</tr>
+<tr>
+<td>Page <code>_2_</code></td>
+<td>256 B</td>
+<td>1,456 B</td>
+<td>592 B</td>
+</tr>
+<tr>
+<td>Full <code>_F_</code></td>
+<td>1,024 B</td>
+<td>2,224 B</td>
+<td>超出 176 B</td>
+</tr>
+</tbody>
+</table></div>
+<p>編譯器的全域變數 RAM 摘要不包含所有動態堆積與執行時堆疊。<code>sizeof(u8g2)</code> 也不一定包含由程式庫另外配置的像素陣列。可參照 <a href="./u8g2_display_modes_memory_guide.html#simulator">互動 RAM 試算與圖解</a>。</p>
+<hr/>
+<p><a id="ref-examples"></a></p>
+<h2>💻 3. 實作與應用範例 (Practical Examples)：三種模式完整程式碼與流程圖</h2>
+<p>以下我們以<strong>同一個應用場景：「顯示即時溫濕度數值與動態進度條」</strong>，分別展示 <code>U8x8</code>、<code>Page Buffer (_1)</code> 與 <code>Full Buffer (_F)</code> 三種標準寫法的差異。</p>
+<hr/>
+<h3>3.1 模式一：<code>U8x8</code> 字元直寫模式（0 Byte 緩衝，極致省 RAM）</h3>
+<h4>📌 適用情境</h4>
+<ul>
+<li>開發板為 <strong>ATtiny85</strong>，或是 <strong>Arduino Uno 已經接了 SD 卡模組（<code>SD.h</code> 等常見實作需 512B sector 快取及其他資料）</strong> 導致記憶體見底。</li>
+<li>只需要顯示英數字元、感測器讀值與狀態文字，不需要畫圓形、斜線或自訂小像素圖示。</li>
+<li>喜歡類似 <code>LiquidCrystal_I2C</code> 的 <code>(col, row)</code> 直覺寫法。</li>
+</ul>
+<h4>🔄 程式邏輯流程圖</h4>
+<figure class="flowchart"><svg aria-label="程式邏輯流程圖：flowchart TD
+    A([&quot;程式啟動 setup()&quot;]) --&gt; B[&quot;u8x8.begin() 初始化螢幕&quot;]
+    B --&gt; C[&quot;u8x8.setFont() 設定 8x8 字型&quot;]
+    C --&gt; D[&quot;繪製固定標題列 (只需畫一次，不必每輪重畫！)&quot;]
+    D --&gt; E[&quot;進入 loop() 讀取溫濕度與轉換字串&quot;]
+    E --&gt; F[&quot;u8x8.drawString(col, row, str)&lt;br/&gt;直接定位字元格覆寫數值區域&quot;]
+    F --&gt; G[&quot;使用 '=' 字元模擬文字型進度條&quot;]
+    G --&gt; H[&quot;delay(1000) 等待下次更新&quot;]
+    H --&gt; E
+" role="img" viewbox="0 0 1000 899" xmlns="http://www.w3.org/2000/svg"><title>程式邏輯流程圖：flowchart TD
+    A(["程式啟動 setup()"]) --&gt; B["u8x8.begin() 初始化螢幕"]
+    B --&gt; C["u8x8.setFont() 設定 8x8 字型"]
+    C --&gt; D["繪製固定標題列 (只需畫一次，不必每輪重畫！)"]
+    D --&gt; E["進入 loop() 讀取溫濕度與轉換字串"]
+    E --&gt; F["u8x8.drawString(col, row, str)&lt;br/&gt;直接定位字元格覆寫數值區域"]
+    F --&gt; G["使用 '=' 字元模擬文字型進度條"]
+    G --&gt; H["delay(1000) 等待下次更新"]
+    H --&gt; E
+</title><metadata></metadata><defs><marker id="arrow" markerheight="9" markerwidth="9" orient="auto" refx="8" refy="4"><path d="M0,0 L8,4 L0,8" fill="#64748b"></path></marker></defs><g font-family="Microsoft JhengHei,Noto Sans TC,Arial,sans-serif"><rect fill="#f5f8fb" height="897" rx="18" stroke="#d9e2eb" width="998" x="1" y="1"></rect><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="78"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="115.0">程式啟動 setup()</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="178"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="215.0">u8x8.begin() 初始化螢幕</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="278"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="315.0">u8x8.setFont() 設定 8x8 字型</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="378"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="415.0">繪製固定標題列 (只需畫一次，不必每輪重畫！)</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="478"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="515.0">進入 loop() 讀取溫濕度與轉換字串</text><rect fill="#fff" height="68" rx="13" stroke="#7eb6b6" width="620" x="240" y="578"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="606.0">u8x8.drawString(col, row, str) /</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="630.0"> 直接定位字元格覆寫數值區域</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="684"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="721.0">使用 '=' 字元模擬文字型進度條</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="784"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="821.0">delay(1000) 等待下次更新</text><path d="M550,140 L550,178" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,240 L550,278" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,340 L550,378" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,440 L550,478" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,540 L550,578" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,646 L550,684" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,746 L550,784" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M240,815 H130 V509 H238" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path></g></svg></figure>
+<h4>💻 範例程式碼（含詳細註解）</h4>
+<pre><button aria-label="複製此程式區塊" class="copy" type="button">複製</button><code class="language-cpp">#include &lt;Arduino.h&gt;
+#include &lt;U8x8lib.h&gt; // 注意：只使用 U8x8 時引入 U8x8lib.h 即可
+
+// 宣告 U8x8 硬體 I2C 物件 (無須指定 R0 旋轉，RAM 緩衝 = 0 Bytes)
+U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8(/* reset=*/ U8X8_PIN_NONE);
+
+void setup() {
+  u8x8.begin(); // 初始化 OLED
+
+  // 選擇 8x8 像素字型 (128x64 螢幕剛好切為 16 欄 x 8 列)
+  u8x8.setFont(u8x8_font_chroma48medium8_r);
+
+  // ✨ U8x8 特有優勢：因為沒有整頁重刷機制，固定不變的標題可在 setup() 畫一次就好！
+  u8x8.inverse();                        // 開啟反白字體效果
+  u8x8.drawString(0, 0, "  ENV MONITOR   "); // 第 0 列：16 個字元寬標題
+  u8x8.noInverse();                      // 關閉反白
+
+  u8x8.drawString(0, 2, "Temp:");        // 第 2 列固定標籤
+  u8x8.drawString(0, 4, "Humd:");        // 第 4 列固定標籤
+}
+
+void loop() {
+  // 模擬感測器讀值 (實務上可替換為 DHT11 讀取)
+  float temp = 26.4 + (millis() % 30) * 0.1;
+  float humd = 62.0 + (millis() % 50) * 0.2;
+
+  char buf[12];
+
+  // 1. 更新溫度數值 (僅覆寫第 2 列、第 6 欄開始的字元格)
+  dtostrf(temp, 4, 1, buf);              // 將 float 轉為字串，如 "26.4"
+  u8x8.drawString(6, 2, buf);            // 寫入第 6 欄、第 2 列
+  u8x8.drawString(11, 2, "C");
+
+  // 2. 更新濕度數值 (僅覆寫第 4 列、第 6 欄開始的字元格)
+  dtostrf(humd, 4, 1, buf);
+  u8x8.drawString(6, 4, buf);
+  u8x8.drawString(11, 4, "%");
+
+  // 3. 用純文字模擬濕度進度條 (第 6 列，共 16 格)
+  int bars = (int)(humd / 100.0 * 14);   // 換算成 0~14 格 '#'
+  char barLine[17];
+  barLine[0] = '[';
+  for (int i = 1; i &lt;= 14; i++) {
+    barLine[i] = (i &lt;= bars) ? '#' : '-';
+  }
+  barLine[15] = ']';
+  barLine[16] = '\0';
+  u8x8.drawString(0, 6, barLine);        // 印出如 "[########------]"
+
+  delay(1000);
+}
+</code></pre>
+<hr/>
+<h3>3.2 模式二：<code>Page Buffer</code> 分頁緩衝模式（<code>_1</code> / <code>_2</code>，Uno / Nano 首選）</h3>
+<h4>📌 適用情境</h4>
+<ul>
+<li>開發板為 <strong>Arduino Uno / Nano / Pro Mini / Leonardo</strong>（SRAM 僅 <span class="math">2 KB ～ 2.5 KB</span>）。</li>
+<li>需要繪製<strong>精美多尺寸字型、外框線條、圖形進度條、小圖示（XBM Bitmap）</strong>，同時又要保留充足記憶體給其他感測器與邏輯。</li>
+<li>若 RAM 還算充裕，可將建構子的 <code>_1_</code> 改為 <code>_2_</code>，RAM 僅多花 <span class="math">128 B</span>，但整體刷新速度仍受匯流排限制，不保證兩倍。</li>
+</ul>
+<h4>🔄 程式邏輯流程圖</h4>
+<figure class="flowchart"><svg aria-label='程式邏輯流程圖：flowchart TD
+    A(["進入 loop()"]) --&gt; B["【迴圈外】讀取感測器 &amp; 計算進度條寬度&lt;br/&gt;並用 dtostrf/snprintf 預先組好字串"]
+    B --&gt; C["呼叫 u8g2.firstPage()&lt;br/&gt;將頁指標重設為 Page 0，清空 128B 緩衝"]
+    C --&gt; D["【do-while 迴圈內】&lt;br/&gt;1. 畫標題外框 drawFrame()&lt;br/&gt;2. 印出溫濕度字串 drawStr()&lt;br/&gt;3. 畫實心進度條 drawBox()"]
+    D --&gt; E["呼叫 u8g2.nextPage()&lt;br/&gt;將當前頁 128B 透過 I2C 送出至 OLED，&lt;br/&gt;並切換至下一頁 (Page + 1)"]
+    E --&gt; F{"所有 Page (0~7)&lt;br/&gt;都畫完了嗎？"}
+    F -- "尚未 (回傳 true，共重複 8 次)" --&gt; D
+    F -- "全部完成 (回傳 false)" --&gt; G["delay(1000) 等待下一輪"]
+' role="img" viewbox="0 0 1000 865" xmlns="http://www.w3.org/2000/svg"><title>程式邏輯流程圖：flowchart TD
+    A(["進入 loop()"]) --&gt; B["【迴圈外】讀取感測器 &amp; 計算進度條寬度&lt;br/&gt;並用 dtostrf/snprintf 預先組好字串"]
+    B --&gt; C["呼叫 u8g2.firstPage()&lt;br/&gt;將頁指標重設為 Page 0，清空 128B 緩衝"]
+    C --&gt; D["【do-while 迴圈內】&lt;br/&gt;1. 畫標題外框 drawFrame()&lt;br/&gt;2. 印出溫濕度字串 drawStr()&lt;br/&gt;3. 畫實心進度條 drawBox()"]
+    D --&gt; E["呼叫 u8g2.nextPage()&lt;br/&gt;將當前頁 128B 透過 I2C 送出至 OLED，&lt;br/&gt;並切換至下一頁 (Page + 1)"]
+    E --&gt; F{"所有 Page (0~7)&lt;br/&gt;都畫完了嗎？"}
+    F -- "尚未 (回傳 true，共重複 8 次)" --&gt; D
+    F -- "全部完成 (回傳 false)" --&gt; G["delay(1000) 等待下一輪"]
+</title><metadata></metadata><defs><marker id="arrow" markerheight="9" markerwidth="9" orient="auto" refx="8" refy="4"><path d="M0,0 L8,4 L0,8" fill="#64748b"></path></marker></defs><g font-family="Microsoft JhengHei,Noto Sans TC,Arial,sans-serif"><rect fill="#f5f8fb" height="863" rx="18" stroke="#d9e2eb" width="998" x="1" y="1"></rect><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="78"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="115.0">進入 loop()</text><rect fill="#fff" height="68" rx="13" stroke="#7eb6b6" width="620" x="240" y="178"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="206.0">【迴圈外】讀取感測器 &amp; 計算進度條寬度 / 並用 dtostr</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="230.0">f/snprintf 預先組好字串</text><rect fill="#fff" height="68" rx="13" stroke="#7eb6b6" width="620" x="240" y="284"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="312.0">呼叫 u8g2.firstPage() / 將頁指標重設為 Pa</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="336.0">ge 0，清空 128B 緩衝</text><rect fill="#fff" height="92" rx="13" stroke="#7eb6b6" width="620" x="240" y="390"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="418.0">【do-while 迴圈內】 / 1. 畫標題外框 drawFr</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="442.0">ame() / 2. 印出溫濕度字串 drawStr() / 3</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="466.0">. 畫實心進度條 drawBox()</text><rect fill="#fff" height="92" rx="13" stroke="#7eb6b6" width="620" x="240" y="520"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="548.0">呼叫 u8g2.nextPage() / 將當前頁 128B 透</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="572.0">過 I2C 送出至 OLED， / 並切換至下一頁 (Page </text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="596.0">+ 1)</text><rect fill="#e9effc" height="62" rx="13" stroke="#2458b8" width="620" x="240" y="650"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="687.0">所有 Page (0~7) / 都畫完了嗎？</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="750"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="787.0">delay(1000) 等待下一輪</text><path d="M550,140 L550,178" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,246 L550,284" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,352 L550,390" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,482 L550,520" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,612 L550,650" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M240,681 H165 V421 H238" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><text fill="#173047" font-size="14" font-weight="normal" text-anchor="start" x="171" y="546.0">尚未 (回傳 true，共重複 8 次)</text><path d="M550,712 L550,750" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><text fill="#173047" font-size="14" font-weight="normal" text-anchor="start" x="565" y="734">全部完成 (回傳 false)</text></g></svg></figure>
+<h4>💻 範例程式碼（含詳細註解）</h4>
+<pre><button aria-label="複製此程式區塊" class="copy" type="button">複製</button><code class="language-cpp">#include &lt;Arduino.h&gt;
+#include &lt;U8g2lib.h&gt;
+#include &lt;Wire.h&gt;
+
+// 宣告 Page Buffer 物件：
+// "_1_" 代表 128 Bytes 緩衝 (重畫 8 次)；若改為 "_2_" 則為 256 Bytes 緩衝 (重畫 4 次)
+U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+
+void setup() {
+  u8g2.setBusClock(400000);     // 需確認所有裝置、接線與上拉支援 400 kHz。
+  u8g2.begin();                 // 初始化 OLED
+}
+
+void loop() {
+  // =========================================================================
+  // ✅ 第一階段（迴圈外）：所有感測器讀取、浮點數轉字串與邏輯運算「只做 1 次」
+  // =========================================================================
+  float temp = 26.4 + (millis() % 30) * 0.1;
+  float humd = 62.0 + (millis() % 50) * 0.2;
+
+  char tStr[8], hStr[8];
+  char lineTemp[22], lineHumd[22];
+
+  dtostrf(temp, 4, 1, tStr);
+  dtostrf(humd, 4, 1, hStr);
+  snprintf(lineTemp, sizeof(lineTemp), "Temp: %s C", tStr);
+  snprintf(lineHumd, sizeof(lineHumd), "Humd: %s %%", hStr);
+
+  // 計算進度條像素寬度 (總寬 100 px)
+  int barWidth = (int)(humd / 100.0 * 100);
+  if (barWidth &gt; 100) barWidth = 100;
+
+  // =========================================================================
+  // ✅ 第二階段（Picture Loop 內）：純繪圖指令（在 _1 模式下會被自動執行 8 次）
+  // =========================================================================
+  u8g2.firstPage();
+  do {
+    // 1. 繪製頂部反白標題橫幅
+    u8g2.setFont(u8g2_font_6x10_tr);
+    u8g2.drawBox(0, 0, 128, 12);         // 畫頂部實心黑底長條 (y: 0~11)
+    u8g2.setDrawColor(0);                // 切換畫筆為「擦除/反白模式」
+    u8g2.drawStr(22, 10, "ENV MONITOR (P1)");
+    u8g2.setDrawColor(1);                // 恢復正常白色畫筆
+
+    // 2. 繪製溫濕度文字 (使用較大字型)
+    u8g2.setFont(u8g2_font_ncenB10_tr);
+    u8g2.drawStr(4, 28, lineTemp);       // y=28 為文字基線 (Baseline)
+    u8g2.drawStr(4, 45, lineHumd);       // y=45 為文字基線
+
+    // 3. 繪製底部圖形化濕度進度條 (y: 52~61)
+    u8g2.drawFrame(14, 52, 104, 10);     // 外框 (寬 104, 高 10)
+    u8g2.drawBox(16, 54, barWidth, 6);   // 內部實心進度條 (隨濕度變化)
+  } while (u8g2.nextPage());             // 送出當前頁，若還有下一頁則繼續迴圈
+
+  delay(1000);
+}
+</code></pre>
+<hr/>
+<h3>3.3 模式三：<code>Full Buffer</code> 全螢幕緩衝模式（<code>_F</code>，ESP32 / STM32 首選）</h3>
+<h4>📌 適用情境</h4>
+<ul>
+<li>開發板為 <strong>ESP32、ESP8266、Raspberry Pi Pico (RP2040)、STM32、Arduino Uno R4、Mega 2560</strong>。</li>
+<li>需要<strong>較低重繪 CPU 成本的動畫</strong>、複雜波形圖（如心電圖/溫濕度歷史折線圖）、或是需要混用 <code>clearBuffer()</code> / 局部疊加繪圖。</li>
+<li>程式碼結構最直覺，沒有 <code>do...while</code> 迴圈限制，可隨時在函式內進行計算並畫進緩衝區。</li>
+</ul>
+<h4>🔄 程式邏輯流程圖</h4>
+<figure class="flowchart"><svg aria-label='程式邏輯流程圖：flowchart TD
+    A(["進入 loop()"]) --&gt; B["呼叫 u8g2.clearBuffer()&lt;br/&gt;將 MCU 內部的 1024 Bytes 緩衝區全部歸零"]
+    B --&gt; C["在記憶體中直接作畫（僅執行 1 次）：&lt;br/&gt;drawBox() / drawStr() / drawFrame() / 畫折線圖"]
+    C --&gt; D["呼叫 u8g2.sendBuffer()&lt;br/&gt;一次性將 1024 Bytes 完整畫面送往 OLED"]
+    D --&gt; E["delay() 或進入下一幀動畫"]
+    E --&gt; A
+' role="img" viewbox="0 0 1000 611" xmlns="http://www.w3.org/2000/svg"><title>程式邏輯流程圖：flowchart TD
+    A(["進入 loop()"]) --&gt; B["呼叫 u8g2.clearBuffer()&lt;br/&gt;將 MCU 內部的 1024 Bytes 緩衝區全部歸零"]
+    B --&gt; C["在記憶體中直接作畫（僅執行 1 次）：&lt;br/&gt;drawBox() / drawStr() / drawFrame() / 畫折線圖"]
+    C --&gt; D["呼叫 u8g2.sendBuffer()&lt;br/&gt;一次性將 1024 Bytes 完整畫面送往 OLED"]
+    D --&gt; E["delay() 或進入下一幀動畫"]
+    E --&gt; A
+</title><metadata></metadata><defs><marker id="arrow" markerheight="9" markerwidth="9" orient="auto" refx="8" refy="4"><path d="M0,0 L8,4 L0,8" fill="#64748b"></path></marker></defs><g font-family="Microsoft JhengHei,Noto Sans TC,Arial,sans-serif"><rect fill="#f5f8fb" height="609" rx="18" stroke="#d9e2eb" width="998" x="1" y="1"></rect><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="78"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="115.0">進入 loop()</text><rect fill="#fff" height="68" rx="13" stroke="#7eb6b6" width="620" x="240" y="178"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="206.0">呼叫 u8g2.clearBuffer() / 將 MCU 內部</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="230.0">的 1024 Bytes 緩衝區全部歸零</text><rect fill="#fff" height="68" rx="13" stroke="#7eb6b6" width="620" x="240" y="284"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="312.0">在記憶體中直接作畫（僅執行 1 次）： / drawBox() </text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="336.0">/ drawStr() / drawFrame() / 畫折線圖</text><rect fill="#fff" height="68" rx="13" stroke="#7eb6b6" width="620" x="240" y="390"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="418.0">呼叫 u8g2.sendBuffer() / 一次性將 1024</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="442.0"> Bytes 完整畫面送往 OLED</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="496"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="533.0">delay() 或進入下一幀動畫</text><path d="M550,140 L550,178" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,246 L550,284" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,352 L550,390" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,458 L550,496" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M240,527 H130 V109 H238" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path></g></svg></figure>
+<h4>💻 範例程式碼（含詳細註解）</h4>
+<pre><button aria-label="複製此程式區塊" class="copy" type="button">複製</button><code class="language-cpp">#include &lt;Arduino.h&gt;
+#include &lt;U8g2lib.h&gt;
+#include &lt;Wire.h&gt;
+
+// 宣告 Full Buffer 物件：
+// 注意中間的 "_F_"，會在 SRAM 中配置完整的 1024 Bytes 畫面緩衝區
+U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+
+void setup() {
+  u8g2.setBusClock(400000);     // 需確認線路支援 400 kHz。
+  u8g2.begin();                 // 初始化 OLED
+}
+
+void loop() {
+  float temp = 26.4 + (millis() % 30) * 0.1;
+  float humd = 62.0 + (millis() % 50) * 0.2;
+  int barWidth = (int)(humd / 100.0 * 100);
+
+  // 1. 清空 MCU 內部的 1024 Bytes 緩衝區
+  u8g2.clearBuffer();
+
+  // 2. 在記憶體中作畫（全部只執行 1 次，可直接呼叫 print(float) 不怕重複運算！）
+  u8g2.setFont(u8g2_font_6x10_tr);
+  u8g2.drawBox(0, 0, 128, 12);
+  u8g2.setDrawColor(0);
+  u8g2.drawStr(16, 10, "ENV MONITOR (FULL)");
+  u8g2.setDrawColor(1);
+
+  u8g2.setFont(u8g2_font_ncenB10_tr);
+  u8g2.setCursor(4, 28);
+  u8g2.print("Temp: ");
+  u8g2.print(temp, 1);          // 在 Full Buffer 中直接 print(float) 完全沒問題
+  u8g2.print(" C");
+
+  u8g2.setCursor(4, 45);
+  u8g2.print("Humd: ");
+  u8g2.print(humd, 1);
+  u8g2.print(" %");
+
+  // 畫進度條
+  u8g2.drawFrame(14, 52, 104, 10);
+  u8g2.drawBox(16, 54, barWidth, 6);
+
+  // 3. 一次性把 1024 Bytes 緩衝送出至 OLED 顯示
+  u8g2.sendBuffer();
+
+  delay(1000);
+}
+</code></pre>
+<hr/>
+<p><a id="ref-advanced"></a></p>
+<h2>🚀 4. 延伸思考與進階主題 (Extensions &amp; Advanced Topics)</h2>
+<h3>4.1 Page Buffer 的致命陷阱：迴圈內副作用 (Side Effects) 與最佳化</h3>
+<p>初學者在使用 <code>Page Buffer (_1 / _2)</code> 時，最常犯的錯誤就是把<strong>具有狀態改變（Stateful）或耗時的操作</strong>放進 <code>do { ... } while (u8g2.nextPage());</code> 迴圈裡面。</p>
+<h4>❌ 錯誤示範（千萬不要這樣寫！）</h4>
+<figure class="flowchart"><svg aria-label='程式邏輯流程圖：flowchart TD
+    A["錯誤：進入每一頁都重新取樣"] --&gt; B["每頁取得不同數字與亂數"]
+    B --&gt; C["同一個字或圖形的上下區段不一致"]
+    C --&gt; D["修正：迴圈外固定快照，再重畫所有頁"]
+' role="img" viewbox="0 0 1000 493" xmlns="http://www.w3.org/2000/svg"><title>程式邏輯流程圖：flowchart TD
+    A["錯誤：進入每一頁都重新取樣"] --&gt; B["每頁取得不同數字與亂數"]
+    B --&gt; C["同一個字或圖形的上下區段不一致"]
+    C --&gt; D["修正：迴圈外固定快照，再重畫所有頁"]
+</title><metadata></metadata><defs><marker id="arrow" markerheight="9" markerwidth="9" orient="auto" refx="8" refy="4"><path d="M0,0 L8,4 L0,8" fill="#64748b"></path></marker></defs><g font-family="Microsoft JhengHei,Noto Sans TC,Arial,sans-serif"><rect fill="#f5f8fb" height="491" rx="18" stroke="#d9e2eb" width="998" x="1" y="1"></rect><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="78"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="115.0">錯誤：進入每一頁都重新取樣</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="178"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="215.0">每頁取得不同數字與亂數</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="278"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="315.0">同一個字或圖形的上下區段不一致</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="378"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="415.0">修正：迴圈外固定快照，再重畫所有頁</text><path d="M550,140 L550,178" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,240 L550,278" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,340 L550,378" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path></g></svg></figure>
+<pre><button aria-label="複製此程式區塊" class="copy" type="button">複製</button><code class="language-cpp">int frameCount = 0;
+
+u8g2.firstPage();
+do {
+  frameCount++;                          // ❌ 錯誤 1：畫一幀畫面，計數器卻暴增了 8！
+  float t = dht.readTemperature();       // ❌ 錯誤 2：讀取 8 次感測器（實際是否讀硬體或命中快取依感測器程式庫而定；應將取樣移出迴圈）
+  u8g2.setCursor(0, 24);
+  u8g2.print(random(0, 100));            // ❌ 錯誤 3：每次重畫亂數都不同，導致一個數字上下半部是不同號碼！
+} while (u8g2.nextPage());
+</code></pre>
+<blockquote>
+<p>[!CAUTION]
+<strong>為什麼會造成畫面上下半部斷裂（Tearing / Glitch）？</strong><br/>
+假設一行大字跨越了 Page 1（<code>y=8~15</code>）與 Page 2（<code>y=16~23</code>）。如果迴圈跑 Page 1 時讀到的數值是 <code>25.9</code>，跑到 Page 2 時數值變成 <code>26.0</code>，那麼螢幕上半部會畫出 <code>25.9</code> 的頭，下半部卻畫出 <code>26.0</code> 的腳，字體就會破碎無法辨識！</p>
+</blockquote>
+<hr/>
+<h3>4.2 Full Buffer 進階技巧：<code>updateDisplayArea()</code> 局部畫面刷新</h3>
+<p>在 <code>Full Buffer (_F)</code> 模式下，每次呼叫 <code>u8g2.sendBuffer()</code> 都會透過 I2C 傳送完整的 <span class="math">1,024 Bytes</span>（在標準 <span class="math">100 kHz</span> I2C 下約需耗時 <span class="math">90～ 100 ms</span>）。如果畫面上只有一個小區域（例如右下角的秒數）在變動，可以使用 <strong><code>updateDisplayArea(tx, ty, tw, th)</code></strong> 只傳送變動的 <span class="math">8× 8</span> 圖塊（Tile）區域！</p>
+<ul>
+<li><strong>參數單位</strong>：注意！<code>tx, ty, tw, th</code> 的單位不是像素，而是 <strong>Tile（<span class="math">8× 8</span> 像素區塊）</strong>。</li>
+<li>例如想要局部更新像素範圍 <code>x = 64~127</code>、<code>y = 16~31</code>：</li>
+<li><code>tx</code> <span class="math">= 64 / 8 = 8</span></li>
+<li><code>ty</code> <span class="math">= 16 / 8 = 2</span></li>
+<li><code>tw</code> <span class="math">= (128 - 64) / 8 = 8</span></li>
+<li><code>th</code> <span class="math">= (32 - 16) / 8 = 2</span></li>
+</ul>
+<h4>🔄 局部刷新流程圖</h4>
+<figure class="flowchart"><svg aria-label='程式邏輯流程圖：flowchart LR
+    A["1. 以畫筆顏色 0 畫實心方塊&lt;br/&gt;抹除舊數值區域"] --&gt; B["2. 以畫筆顏色 1&lt;br/&gt;寫上新數值"] --&gt; C["3. updateDisplayArea(tx,ty,tw,th)&lt;br/&gt;只傳送該區塊至 OLED (需量測實際時間)"]
+' role="img" viewbox="0 0 1000 399" xmlns="http://www.w3.org/2000/svg"><title>程式邏輯流程圖：flowchart LR
+    A["1. 以畫筆顏色 0 畫實心方塊&lt;br/&gt;抹除舊數值區域"] --&gt; B["2. 以畫筆顏色 1&lt;br/&gt;寫上新數值"] --&gt; C["3. updateDisplayArea(tx,ty,tw,th)&lt;br/&gt;只傳送該區塊至 OLED (需量測實際時間)"]
+</title><metadata></metadata><defs><marker id="arrow" markerheight="9" markerwidth="9" orient="auto" refx="8" refy="4"><path d="M0,0 L8,4 L0,8" fill="#64748b"></path></marker></defs><g font-family="Microsoft JhengHei,Noto Sans TC,Arial,sans-serif"><rect fill="#f5f8fb" height="397" rx="18" stroke="#d9e2eb" width="998" x="1" y="1"></rect><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="78"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="115.0">1. 以畫筆顏色 0 畫實心方塊 / 抹除舊數值區域</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="178"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="215.0">2. 以畫筆顏色 1 / 寫上新數值</text><rect fill="#fff" height="68" rx="13" stroke="#7eb6b6" width="620" x="240" y="278"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="306.0">3. updateDisplayArea(tx,ty,tw,th</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="330.0">) / 只傳送該區塊至 OLED (需量測實際時間)</text><path d="M550,140 L550,178" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path></g></svg></figure>
+<h4>💻 局部刷新程式碼片段</h4>
+<pre><button aria-label="複製此程式區塊" class="copy" type="button">複製</button><code class="language-cpp">// 用於本文 SSD1306、R0、Full Buffer；更新時間依匯流排與驅動而定。
+void updateSecondsOnly(unsigned long sec) {
+  sec %= 1000000UL; // 限制最多六位數，避免文字超出 64 pixels 寬的區域。
+  // 1. 局部清除緩衝區內 (x:64~127, y:16~31) 的舊像素
+  u8g2.setDrawColor(0);
+  u8g2.drawBox(64, 16, 64, 16);
+
+  // 2. 寫入新的秒數
+  u8g2.setDrawColor(1);
+  u8g2.setFont(u8g2_font_ncenB10_tr);
+  u8g2.setCursor(64, 30);
+  u8g2.print(sec);
+
+  // 3. 只把 (tx=8, ty=2, tw=8, th=2) 的區塊透過 I2C 送給 OLED
+  u8g2.updateDisplayArea(8, 2, 8, 2);
+}
+</code></pre>
+<hr/>
+<h3>4.3 字型佔用 Flash 問題與 PROGMEM 決策</h3>
+<p>除了 SRAM（動態記憶體）之外，在 <strong>Arduino Uno（Flash 僅 <span class="math">32 KB</span>）</strong> 上使用 U8g2 也很容易遇到 <strong>「草稿碼太大（Sketch too big）」</strong> 的 Flash 爆滿問題。這是因為 U8g2 的字型檔是儲存在 Flash（<code>PROGMEM</code>）中。選用字型時請務必認識字型名稱最後兩個字母的意義：</p>
+<div class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align: center;">字型後綴</th>
+<th style="text-align: left;">涵蓋字元範圍</th>
+<th style="text-align: center;">Flash 佔用大小 (以 10pt 字型為例)</th>
+<th style="text-align: left;">適用開發板與情境</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong><code>_tn</code></strong></td>
+<td style="text-align: left;">數字與部分日期時間符號，具體字集依預覽</td>
+<td style="text-align: center;">依字型大小與 glyph 而變</td>
+<td style="text-align: left;">純數字儀表可優先評估，並非必須使用</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong><code>_tr</code></strong></td>
+<td style="text-align: left;"><strong>Restricted</strong>：標準英文 ASCII <code>32~127</code></td>
+<td style="text-align: center;"><strong>小 (~1.2 KB)</strong></td>
+<td style="text-align: left;"><strong>Uno / Nano 預設首選</strong>（不含 <code>°</code> 度數符號）</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong><code>_tf</code></strong></td>
+<td style="text-align: left;"><strong>Full</strong>：完整 ASCII + Latin-1 擴充字元 (<code>32~255</code>)</td>
+<td style="text-align: center;"><strong>中 (~2.4 KB)</strong></td>
+<td style="text-align: left;">需要直接印出 <code>\xb0</code> (<code>°</code>) 符號時使用</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong><code>_te</code></strong></td>
+<td style="text-align: left;"><strong>Extended</strong>：包含更多歐洲語系特殊符號</td>
+<td style="text-align: center;"><strong>大 (~3.5 KB+)</strong></td>
+<td style="text-align: left;">一般英文/數字專題不建議在 Uno 上使用</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong><code>_t_chinese1/2/3</code></strong></td>
+<td style="text-align: left;">三種選定字集，均非完整中文</td>
+<td style="text-align: center;">本機版本分別 13,796／19,889／36,601 B</td>
+<td style="text-align: left;">是否可用取決於整個 sketch、Flash 與核心限制；繁體字須逐字檢查</td>
+</tr>
+</tbody>
+</table></div>
+<hr/>
+<h3>4.4 選型決策樹 (Decision Flowchart)</h3>
+<p>當你開始一個新的單晶片螢幕專案時，可以依照以下決策樹快速決定最適合的 U8g2 顯示模式：</p>
+<figure class="flowchart"><svg aria-label='程式邏輯流程圖：flowchart TD
+    Start(["開始新專案：選擇 U8g2 顯示模式"]) --&gt; Q1{"開發板 剩餘 RAM 是否足夠容納此解析度的 full buffer？&lt;br/&gt;(如 ESP32 / ESP8266 / Pico /&lt;br/&gt;STM32 / Uno R4 / Mega)"}
+
+    Q1 -- "是 (SRAM 充裕)" --&gt; A_Full["🏆 首選：Full Buffer (_F)&lt;br/&gt;U8G2_..._F_HW_I2C&lt;br/&gt;• 寫法最直覺 (clearBuffer / sendBuffer)&lt;br/&gt;• 繪圖只執行 1 次，支援高速動畫與局部刷新"]
+
+    Q1 -- "否：需節省 RAM" --&gt; Q2{"是否只需要顯示純英文/數字，&lt;br/&gt;完全不需要畫線、框或圓形？"}
+
+    Q2 -- "是 (純文字或 SRAM &lt;= 512B)" --&gt; A_U8x8["⚡ 選用：U8x8 無緩衝模式&lt;br/&gt;U8X8_..._HW_I2C&lt;br/&gt;• 0 Byte 畫面緩衝，極致省 RAM 與 Flash&lt;br/&gt;• 像 LCD 1602 一樣以 (col, row) 定位"]
+
+    Q2 -- "否 (需要圖形、多字型或進度條)" --&gt; Q3{"專案是否同時使用了高耗 RAM 庫？&lt;br/&gt;(如 SD.h / 複雜陣列)"}
+
+    Q3 -- "是 (RAM 非常吃緊)" --&gt; A_P1["🛡️ 選用：Page Buffer 單頁 (_1)&lt;br/&gt;U8G2_..._1_HW_I2C&lt;br/&gt;• 僅佔 128 Bytes 緩衝&lt;br/&gt;• 繪圖迴圈重跑 8 次 (務必在迴圈外先轉好字串)"]
+
+    Q3 -- "否 (一般感測器如 DHT11/超音波)" --&gt; A_P2["⚖️ 選用：Page Buffer 雙頁 (_2)&lt;br/&gt;U8G2_..._2_HW_I2C&lt;br/&gt;• 佔用 256 Bytes 緩衝&lt;br/&gt;• 繪圖迴圈減半為 4 次，場景呼叫次數減半；整體速度須實測。"]
+' role="img" viewbox="0 0 1000 1121" xmlns="http://www.w3.org/2000/svg"><title>程式邏輯流程圖：flowchart TD
+    Start(["開始新專案：選擇 U8g2 顯示模式"]) --&gt; Q1{"開發板 剩餘 RAM 是否足夠容納此解析度的 full buffer？&lt;br/&gt;(如 ESP32 / ESP8266 / Pico /&lt;br/&gt;STM32 / Uno R4 / Mega)"}
+
+    Q1 -- "是 (SRAM 充裕)" --&gt; A_Full["🏆 首選：Full Buffer (_F)&lt;br/&gt;U8G2_..._F_HW_I2C&lt;br/&gt;• 寫法最直覺 (clearBuffer / sendBuffer)&lt;br/&gt;• 繪圖只執行 1 次，支援高速動畫與局部刷新"]
+
+    Q1 -- "否：需節省 RAM" --&gt; Q2{"是否只需要顯示純英文/數字，&lt;br/&gt;完全不需要畫線、框或圓形？"}
+
+    Q2 -- "是 (純文字或 SRAM &lt;= 512B)" --&gt; A_U8x8["⚡ 選用：U8x8 無緩衝模式&lt;br/&gt;U8X8_..._HW_I2C&lt;br/&gt;• 0 Byte 畫面緩衝，極致省 RAM 與 Flash&lt;br/&gt;• 像 LCD 1602 一樣以 (col, row) 定位"]
+
+    Q2 -- "否 (需要圖形、多字型或進度條)" --&gt; Q3{"專案是否同時使用了高耗 RAM 庫？&lt;br/&gt;(如 SD.h / 複雜陣列)"}
+
+    Q3 -- "是 (RAM 非常吃緊)" --&gt; A_P1["🛡️ 選用：Page Buffer 單頁 (_1)&lt;br/&gt;U8G2_..._1_HW_I2C&lt;br/&gt;• 僅佔 128 Bytes 緩衝&lt;br/&gt;• 繪圖迴圈重跑 8 次 (務必在迴圈外先轉好字串)"]
+
+    Q3 -- "否 (一般感測器如 DHT11/超音波)" --&gt; A_P2["⚖️ 選用：Page Buffer 雙頁 (_2)&lt;br/&gt;U8G2_..._2_HW_I2C&lt;br/&gt;• 佔用 256 Bytes 緩衝&lt;br/&gt;• 繪圖迴圈減半為 4 次，場景呼叫次數減半；整體速度須實測。"]
+</title><metadata></metadata><defs><marker id="arrow" markerheight="9" markerwidth="9" orient="auto" refx="8" refy="4"><path d="M0,0 L8,4 L0,8" fill="#64748b"></path></marker></defs><g font-family="Microsoft JhengHei,Noto Sans TC,Arial,sans-serif"><rect fill="#f5f8fb" height="1119" rx="18" stroke="#d9e2eb" width="998" x="1" y="1"></rect><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="78"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="115.0">開始新專案：選擇 U8g2 顯示模式</text><rect fill="#e9effc" height="92" rx="13" stroke="#2458b8" width="620" x="240" y="178"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="206.0">開發板 剩餘 RAM 是否足夠容納此解析度的 full buff</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="230.0">er？ / (如 ESP32 / ESP8266 / Pico </text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="254.0">/ / STM32 / Uno R4 / Mega)</text><rect fill="#fff" height="116" rx="13" stroke="#7eb6b6" width="620" x="240" y="308"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="336.0">🏆 首選：Full Buffer (_F) / U8G2_...</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="360.0">_F_HW_I2C / • 寫法最直覺 (clearBuffer</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="384.0"> / sendBuffer) / • 繪圖只執行 1 次，支援高</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="408.0">速動畫與局部刷新</text><rect fill="#e9effc" height="62" rx="13" stroke="#2458b8" width="620" x="240" y="462"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="499.0">是否只需要顯示純英文/數字， / 完全不需要畫線、框或圓形？</text><rect fill="#fff" height="116" rx="13" stroke="#7eb6b6" width="620" x="240" y="562"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="590.0">⚡ 選用：U8x8 無緩衝模式 / U8X8_..._HW_I2</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="614.0">C / • 0 Byte 畫面緩衝，極致省 RAM 與 Flas</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="638.0">h / • 像 LCD 1602 一樣以 (col, row) </text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="662.0">定位</text><rect fill="#e9effc" height="68" rx="13" stroke="#2458b8" width="620" x="240" y="716"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="744.0">專案是否同時使用了高耗 RAM 庫？ / (如 SD.h / 複</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="768.0">雜陣列)</text><rect fill="#fff" height="92" rx="13" stroke="#7eb6b6" width="620" x="240" y="822"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="850.0">🛡️ 選用：Page Buffer 單頁 (_1) / U8G2</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="874.0">_..._1_HW_I2C / • 僅佔 128 Bytes 緩</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="898.0">衝 / • 繪圖迴圈重跑 8 次 (務必在迴圈外先轉好字串)</text><rect fill="#fff" height="116" rx="13" stroke="#7eb6b6" width="620" x="240" y="952"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="980.0">⚖️ 選用：Page Buffer 雙頁 (_2) / U8G2</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="1004.0">_..._2_HW_I2C / • 佔用 256 Bytes 緩</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="1028.0">衝 / • 繪圖迴圈減半為 4 次，場景呼叫次數減半；整體速度須</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="1052.0">實測。</text><path d="M550,140 L550,178" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,270 L550,308" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><text fill="#173047" font-size="14" font-weight="normal" text-anchor="start" x="565" y="292">是 (SRAM 充裕)</text><path d="M550,270 L550,462" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><text fill="#173047" font-size="14" font-weight="normal" text-anchor="start" x="565" y="292">否：需節省 RAM</text><path d="M550,524 L550,562" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><text fill="#173047" font-size="14" font-weight="normal" text-anchor="start" x="565" y="546">是 (純文字或 SRAM &lt;= 512B)</text><path d="M550,524 L550,716" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><text fill="#173047" font-size="14" font-weight="normal" text-anchor="start" x="565" y="546">否 (需要圖形、多字型或進度條)</text><path d="M550,784 L550,822" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><text fill="#173047" font-size="14" font-weight="normal" text-anchor="start" x="565" y="806">是 (RAM 非常吃緊)</text><path d="M550,784 L550,952" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><text fill="#173047" font-size="14" font-weight="normal" text-anchor="start" x="565" y="806">否 (一般感測器如 DHT11/超音波)</text></g></svg></figure>
+<hr/>
+<p><a id="ref-fonts"></a></p>
+<h2>🔤 5. U8g2 字型系統 (Fonts)、圖示符號 (Icons) 與多語言 (UTF-8 / 中文) 顯示專論</h2>
+<p>U8g2 最強大的核心優勢之一，就是內建了<strong>大量點陣字型與專用圖示字集（Glyphs &amp; Icons）</strong>，並且原生支援 <strong>UTF-8 多國語言編碼</strong>。但若不了解字型的命名規則與編碼機制，極易遇到「印出亂碼」、「缺少度數符號 <code>°</code>」或「Flash 記憶體瞬間爆滿」的問題。</p>
+<hr/>
+<h3>5.1 U8g2 字型命名密碼拆解（Font Naming Convention）</h3>
+<p>每一個 U8g2 字型名稱都遵循嚴格的五段式結構，只要看懂後綴，就能預判該字型的功能與記憶體消耗：</p>
+<p><img alt="字串解碼、字型查找與像素 buffer 流程" src="./assets/u8g2_font_pipeline.svg"/></p>
+<pre><button aria-label="複製此程式區塊" class="copy" type="button">複製</button><code class="language-text">u8g2 _ font _ ncenB14 _ t _ r
+ │       │       │      │   └── ⑤ 字元集範圍 (Char Set)：n=純數字, r=基本英文, f=含符號, chinese1=中文...
+ │       │       │      └────── ④ 字形配置類型 (Build Mode)：t=透明(Transparent), h=等高實心, m=等寬實心, 8=8x8網格
+ │       │       └───────────── ③ 字體家族與像素高度 (Name &amp; Size)：ncen=New Century, B=粗體(Bold), 14=字型系列尺寸，實際像素高度須查字型預覽
+ └───────┴───────────────────── ①② 固定前綴 (Prefix)
+</code></pre>
+<h4>📌 第四段：字形配置類型 (<code>t</code> / <code>h</code> / <code>m</code> / <code>8</code>)</h4>
+<div class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align: center;">代號</th>
+<th style="text-align: left;">名稱</th>
+<th style="text-align: left;">特性與底層行為</th>
+<th style="text-align: left;">典型用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong><code>t</code></strong></td>
+<td style="text-align: left;"><strong>Transparent</strong> (透明)</td>
+<td style="text-align: left;">為透明繪字設計的可變寬配置；執行時使用 setFontMode(1)，不等同自動切換背景模式</td>
+<td style="text-align: left;"><strong>最常用預設值</strong>，適合在框線內或搭配 <code>clearBuffer()</code> 使用</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong><code>h</code></strong></td>
+<td style="text-align: left;"><strong>Common Height</strong> (等高)</td>
+<td style="text-align: left;">同一字型內所有字元的背景框高度一致，搭配 <code>setFontMode(0)</code> 可直接覆蓋舊字</td>
+<td style="text-align: left;">適合在 <code>Full Buffer</code> 不清全屏、直接覆寫變動文字</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong><code>m</code></strong></td>
+<td style="text-align: left;"><strong>Monospace</strong> (等寬等高)</td>
+<td style="text-align: left;">每個字元寬度與高度完全固定（如數字 <code>1</code> 與 <code>8</code> 同寬）</td>
+<td style="text-align: left;"><strong>計時器、電子錶頭、跳動數值</strong>（防止數字改變時版面左右抖動）</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong><code>8</code></strong></td>
+<td style="text-align: left;"><strong>8x8 Pixel Grid</strong></td>
+<td style="text-align: left;">字元強制對齊 <span class="math">8 × 8</span> 倍數網格</td>
+<td style="text-align: left;">U8g2 的固定 8x8 字形配置；不可因此直接當成 U8x8 格式字型使用</td>
+</tr>
+</tbody>
+</table></div>
+<h4>📌 第五段：字元集範圍 (<code>n</code> / <code>r</code> / <code>f</code> / <code>e</code> / 多語言字集)</h4>
+<div class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align: center;">代號</th>
+<th style="text-align: left;">涵蓋 Unicode 編碼範圍</th>
+<th style="text-align: left;">內容說明</th>
+<th style="text-align: center;">典型 Flash 消耗</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong><code>n</code></strong></td>
+<td style="text-align: left;">數字與部分日期時間符號，依字型預覽確認</td>
+<td style="text-align: left;"><strong>純數字與小數點、冒號、正負號</strong>（無英文字母）</td>
+<td style="text-align: center;"><strong>極省 (~250B ~ 600B)</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong><code>r</code></strong></td>
+<td style="text-align: left;">ASCII <code>32 ~ 127</code></td>
+<td style="text-align: left;">標準半形英文大小寫、數字與鍵盤標點符號（<strong>不含 <code>°</code> 符號！</strong>）</td>
+<td style="text-align: center;"><strong>省 (~1 KB ~ 2 KB)</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong><code>f</code></strong></td>
+<td style="text-align: left;">Unicode <code>32 ~ 255</code> (Latin-1)</td>
+<td style="text-align: left;">完整 ASCII + 西歐重音字母 + <strong>常用符號（含 <code>°</code> 度數、<code>±</code>、<code>µ</code>、<code>©</code>）</strong></td>
+<td style="text-align: center;"><strong>中 (~2 KB ~ 4 KB)</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong><code>e</code></strong></td>
+<td style="text-align: left;">Unicode <code>32 ~ 701</code> 範圍的 extended 選集（實際 glyph 依原字型）</td>
+<td style="text-align: left;">涵蓋東歐與更多拉丁擴充字母</td>
+<td style="text-align: center;">較大 (~3.5 KB+)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong><code>u</code></strong></td>
+<td style="text-align: left;">Uppercase 選集</td>
+<td style="text-align: left;">大寫字母與數字，不是 Unicode 的縮寫</td>
+<td style="text-align: center;">依字型</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong><code>_t_...</code></strong></td>
+<td style="text-align: left;">特別選集</td>
+<td style="text-align: left;">例如 cyrillic、greek、japanese、chinese；須查實際字集</td>
+<td style="text-align: center;">依字型，不宜一概估計</td>
+</tr>
+</tbody>
+</table></div>
+<hr/>
+<h3>5.2 文字繪製函式對決：<code>drawStr()</code> vs. <code>drawUTF8()</code> vs. <code>print()</code></h3>
+<p>U8g2 提供四種印出文字與符號的 API，<strong>選錯函式會導致非 ASCII 符號（如 <code>°</code> 或中文）變成亂碼</strong>：</p>
+<div class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align: left;">繪製函式</th>
+<th style="text-align: left;">座標設定方式</th>
+<th style="text-align: left;">支援編碼範圍</th>
+<th style="text-align: center;">支援變數直印 (<code>float</code>/<code>int</code>)</th>
+<th style="text-align: left;">最佳使用時機</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong><code>u8g2.drawStr(x, y, "ABC")</code></strong></td>
+<td style="text-align: left;">函式內直接帶入 <code>(x, y)</code></td>
+<td style="text-align: left;">僅單一位元組 ASCII / Latin-1 (<code>\xb0</code>)</td>
+<td style="text-align: center;">❌ 僅收 <code>const char*</code></td>
+<td style="text-align: left;">純英文/數字字串，速度最快</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>u8g2.drawUTF8(x, y, "溫度°C")</code></strong></td>
+<td style="text-align: left;">函式內直接帶入 <code>(x, y)</code></td>
+<td style="text-align: left;"><strong>UTF-8 解碼；一般以 Unicode BMP 為主，仍須字型有字</strong></td>
+<td style="text-align: center;">❌ 僅收 <code>const char*</code></td>
+<td style="text-align: left;">直接在原始碼寫 <code>"°C"</code> 或 <code>"溫濕度"</code> 時必用</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>u8g2.drawGlyph(x, y, code)</code></strong></td>
+<td style="text-align: left;">函式內直接帶入 <code>(x, y)</code></td>
+<td style="text-align: left;">任意 <strong>16-bit Unicode 編碼值</strong></td>
+<td style="text-align: center;">❌ 僅收 <code>uint16_t</code> 編碼</td>
+<td style="text-align: left;">**畫單一特殊符號或圖示（Icon）**最精準的做法</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>u8g2.print(...)</code></strong></td>
+<td style="text-align: left;">需先呼叫 <code>u8g2.setCursor(x, y)</code></td>
+<td style="text-align: left;">預設僅 ASCII；呼叫 <strong><code>enableUTF8Print()</code></strong> 後解碼 UTF-8，仍受碼點與字型範圍限制</td>
+<td style="text-align: center;">✅ 支援 <code>print(temp, 1)</code></td>
+<td style="text-align: left;">混合印出中文標籤、浮點數與單位時最方便</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>[!IMPORTANT]
+<strong>為什麼在 Arduino IDE 直接打 <code>u8g2.drawStr(0, 20, "25°C");</code> 會印出亂碼（如 <code>25Â°C</code>）？</strong><br/>
+因為 Arduino IDE 的原始碼檔案預設採用 <strong>UTF-8 編碼</strong>，其中 <code>°</code>（U+00B0）在 UTF-8 中是由兩個位元組 <code>0xC2 0xB0</code> 組成。<code>drawStr()</code> 不會解析 UTF-8，而是把 <code>0xC2</code>（<code>Â</code>）和 <code>0xB0</code>（<code>°</code>）當成兩個獨立字元印出來！<br/>
+<strong>解決方法有 3 種</strong>（皆須搭配實際含 U+00B0 的字型，不限 <code>_tf</code>）：
+1. 改用 <strong><code>u8g2.drawUTF8(0, 20, "25°C");</code></strong>（最直覺，自動解析 UTF-8）。
+2. 使用十六進位跳脫字元：<strong><code>u8g2.drawStr(0, 20, "25\xb0" "C");</code></strong>。
+3. 使用 <strong><code>u8g2.drawGlyph(x, y, 0x00b0);</code></strong> 直接指定 Unicode 碼位。</p>
+</blockquote>
+<hr/>
+<h3>5.3 特殊符號（<code>°C</code>）與內建點陣圖示字型（Open Iconic / Weather / Battery）</h3>
+<p>在單色 OLED 上，與其自己用小畫家轉 XBM 點陣圖陣列，不如直接使用 U8g2 內建的 <strong>符號與圖示字型（Icon Fonts）</strong>！只需切換 <code>setFont()</code> 並呼叫 <code>drawGlyph(x, y, code)</code>，就能畫出極高品質的天氣、電池、Wi-Fi、藍牙與箭頭圖示：</p>
+<div class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th>字型</th>
+<th>用途與碼點</th>
+<th>本機 2.36.19 陣列大小</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>u8g2_font_open_iconic_weather_2x_t</code></td>
+<td>16×16 天氣圖示，碼點 0x40–0x45；按該字型圖表選圖</td>
+<td>189 B</td>
+</tr>
+<tr>
+<td><code>u8g2_font_battery19_tn</code></td>
+<td>8×19 電池狀態，字元碼 '0'–'7'；不是 Unicode 電池 emoji</td>
+<td>185 B</td>
+</tr>
+<tr>
+<td><code>u8g2_font_unifont_t_symbols</code></td>
+<td>Unicode 符號選集，須逐一確認符號存在</td>
+<td>依版本查陣列</td>
+</tr>
+<tr>
+<td><code>u8g2_font_open_iconic_embedded_2x_t</code>／Siji</td>
+<td>內嵌系統與狀態圖示</td>
+<td>碼點屬該字型圖表，不可套用別的圖示庫</td>
+</tr>
+</tbody>
+</table></div>
+<p>以上是點陣字型，並非執行時向量渲染；同一碼點在不同圖示字型可能是不同圖形。<a href="https://github.com/olikraus/u8g2/wiki/fntgrpiconic">官方圖示預覽</a></p>
+<hr/>
+<h3>5.4 多國語言與繁體/簡體中文（CJK UTF-8）顯示方案與記憶體考量</h3>
+<p>U8g2 支援在螢幕上顯示中文、日文、韓文、俄文、希臘文等多國語言，但 <strong>中文字數龐大（常用字超過 3,000 ~ 7,000 字）</strong>，因此在選擇中文字型時，<strong>開發板的 Flash（程式儲存空間）容量是決定性關鍵</strong>：</p>
+<h4>📊 U8g2 內建中文字型分級比較表</h4>
+<div class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th>字型</th>
+<th>本機 2.36.19 陣列大小</th>
+<th>收錄與限制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>u8g2_font_unifont_t_chinese1</code></td>
+<td>13,796 B</td>
+<td>412 個總 glyph，包含非漢字；不是完整繁體字庫</td>
+</tr>
+<tr>
+<td><code>u8g2_font_unifont_t_chinese2</code></td>
+<td>19,889 B</td>
+<td>575 個總 glyph；不是約 2,500 字／88 KB</td>
+</tr>
+<tr>
+<td><code>u8g2_font_unifont_t_chinese3</code></td>
+<td>36,601 B</td>
+<td>994 個總 glyph；不是約 7,000 字／240 KB</td>
+</tr>
+<tr>
+<td><code>u8g2_font_wqy12_t_gb2312a</code></td>
+<td>109,189 B</td>
+<td>GB2312 子集；不是任意繁體字全覆蓋</td>
+</tr>
+<tr>
+<td><code>u8g2_font_wqy16_t_chinese1</code></td>
+<td>13,882 B</td>
+<td>精選字集；逐字確認標籤</td>
+</tr>
+<tr>
+<td><code>u8g2_font_b12_t_japanese1</code></td>
+<td>33,370 B</td>
+<td>字型本身超過 Uno R3 整顆 32 KiB Flash</td>
+</tr>
+</tbody>
+</table></div>
+<p>數字是字型常數陣列大小，不是整個 sketch 或 framebuffer 用量；大型字型在部分 AVR 核心的提供方式也可能受限制。切換 page buffer 能省 SRAM，不能減少已引用字庫的 Flash。<a href="https://github.com/olikraus/u8g2/blob/master/csrc/u8g2_fonts.c">官方字型原始碼</a></p>
+<blockquote>
+<p>[!TIP]
+<strong>如何在 Arduino Uno (32KB Flash) 上顯示事先挑選的繁體中文（如「溫濕度監測系統」）且不爆 Flash？</strong><br/>
+實務上有兩個黃金解法：
+1. <strong>方法 A（少量固定中文字，推薦！）</strong>：使用線上工具或取模軟體將「溫度：」、「濕度：」轉成 <strong>XBM 點陣圖 (<code>drawXBMP</code>)</strong>，每個 16×16 單色字圖的原始像素資料為 32 B；10 個為 320 B，另計程式、索引和宣告開銷。
+2. <strong>方法 B（使用 U8g2 官方 <code>bdfconv</code> 自訂子集字型）</strong>：只挑出專題會用到的 20 個中文字編譯成專屬 <code>my_custom_chinese_font</code> 陣列，Flash 大小以產出檔與編譯結果為準（詳見 5.6 節）。</p>
+</blockquote>
+<hr/>
+<h3>5.5 實戰範例：多語言（中文/英文）+ 天氣與電池圖示 + <code>°C</code> 符號整合儀表板</h3>
+<p>以下示範如何在 U8g2 中開啟 <strong><code>enableUTF8Print()</code></strong>，並在同一個畫面上混用：
+1. <strong>中文字型</strong>（顯示繁體/簡體中文標題与標籤）
+2. <strong>Open Iconic 圖示字型</strong>（顯示 ☀️ 太陽圖示與 🔋 電池電量圖示）
+3. <strong>Latin-1 <code>_tf</code> 字型</strong>（顯示 <code>°C</code> 度數符號；<code>t</code> 不保證等寬，等寬字型另選 <code>_m</code> 配置）</p>
+<h4>🔄 多字型與多語言切換繪製流程圖</h4>
+<figure class="flowchart"><svg aria-label="程式邏輯流程圖：flowchart TD
+    A([&quot;setup(): 初始化與啟用 UTF-8&quot;]) --&gt; B[&quot;u8g2.begin()&lt;br/&gt;u8g2.enableUTF8Print() ← 關鍵！讓 print() 支援中文與 °C&quot;]
+    B --&gt; C[&quot;進入繪圖階段 (Full Buffer 或 Page Buffer)&quot;]
+    C --&gt; D[&quot;1️⃣ 切換圖示字型 (open_iconic_weather / battery19)&lt;br/&gt;呼叫 drawGlyph 畫天氣與電池&quot;]
+    D --&gt; E[&quot;2️⃣ 切換中文字型 (unifont_t_chinese1 / wqy)&lt;br/&gt;呼叫 u8g2.drawUTF8() 或 print() 印出中文標籤&quot;]
+    E --&gt; F[&quot;3️⃣ 切換含符號英數字型 (ncenB10_tf)&lt;br/&gt;印出感測器浮點數與 '°C' 符號&quot;]
+    F --&gt; G[&quot;送出畫面至 OLED 顯示&quot;]
+" role="img" viewbox="0 0 1000 871" xmlns="http://www.w3.org/2000/svg"><title>程式邏輯流程圖：flowchart TD
+    A(["setup(): 初始化與啟用 UTF-8"]) --&gt; B["u8g2.begin()&lt;br/&gt;u8g2.enableUTF8Print() ← 關鍵！讓 print() 支援中文與 °C"]
+    B --&gt; C["進入繪圖階段 (Full Buffer 或 Page Buffer)"]
+    C --&gt; D["1️⃣ 切換圖示字型 (open_iconic_weather / battery19)&lt;br/&gt;呼叫 drawGlyph 畫天氣與電池"]
+    D --&gt; E["2️⃣ 切換中文字型 (unifont_t_chinese1 / wqy)&lt;br/&gt;呼叫 u8g2.drawUTF8() 或 print() 印出中文標籤"]
+    E --&gt; F["3️⃣ 切換含符號英數字型 (ncenB10_tf)&lt;br/&gt;印出感測器浮點數與 '°C' 符號"]
+    F --&gt; G["送出畫面至 OLED 顯示"]
+</title><metadata></metadata><defs><marker id="arrow" markerheight="9" markerwidth="9" orient="auto" refx="8" refy="4"><path d="M0,0 L8,4 L0,8" fill="#64748b"></path></marker></defs><g font-family="Microsoft JhengHei,Noto Sans TC,Arial,sans-serif"><rect fill="#f5f8fb" height="869" rx="18" stroke="#d9e2eb" width="998" x="1" y="1"></rect><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="78"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="115.0">setup(): 初始化與啟用 UTF-8</text><rect fill="#fff" height="68" rx="13" stroke="#7eb6b6" width="620" x="240" y="178"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="206.0">u8g2.begin() / u8g2.enableUTF8Pr</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="230.0">int() ← 關鍵！讓 print() 支援中文與 °C</text><rect fill="#fff" height="68" rx="13" stroke="#7eb6b6" width="620" x="240" y="284"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="312.0">進入繪圖階段 (Full Buffer 或 Page Buffe</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="336.0">r)</text><rect fill="#fff" height="92" rx="13" stroke="#7eb6b6" width="620" x="240" y="390"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="418.0">1️⃣ 切換圖示字型 (open_iconic_weather </text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="442.0">/ battery19) / 呼叫 drawGlyph 畫天氣與</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="466.0">電池</text><rect fill="#fff" height="92" rx="13" stroke="#7eb6b6" width="620" x="240" y="520"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="548.0">2️⃣ 切換中文字型 (unifont_t_chinese1 /</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="572.0"> wqy) / 呼叫 u8g2.drawUTF8() 或 pri</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="596.0">nt() 印出中文標籤</text><rect fill="#fff" height="68" rx="13" stroke="#7eb6b6" width="620" x="240" y="650"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="678.0">3️⃣ 切換含符號英數字型 (ncenB10_tf) / 印出感</text><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="702.0">測器浮點數與 '°C' 符號</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="756"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="793.0">送出畫面至 OLED 顯示</text><path d="M550,140 L550,178" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,246 L550,284" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,352 L550,390" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,482 L550,520" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,612 L550,650" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,718 L550,756" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path></g></svg></figure>
+<h4>💻 完整範例程式碼（含詳細註解）</h4>
+<pre><button aria-label="複製此程式區塊" class="copy" type="button">複製</button><code class="language-cpp">#include &lt;Arduino.h&gt;
+#include &lt;U8g2lib.h&gt;
+#include &lt;Wire.h&gt;
+
+// 若在 Arduino Uno 上測試，請使用 "_1_" 或 "_2_"；若在 ESP32 上可改為 "_F_"
+U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+
+void setup() {
+  u8g2.setBusClock(400000);  // 所有裝置與線路必須支援。
+  u8g2.begin();
+
+  // 🌟 關鍵設定：啟用 print() 的 UTF-8 解析功能（使用 print 輸出 UTF-8 時需要；drawUTF8 不需要這項設定。）
+  u8g2.enableUTF8Print();
+}
+
+void loop() {
+  float temp = 27.8;
+  float humd = 65.2;
+
+  u8g2.firstPage();
+  do {
+    // =====================================================================
+    // 1. 繪製右上角「電池圖示」与左上角「天氣太陽圖示」(Icon Fonts)
+    // =====================================================================
+    // 畫天氣圖示 (16x16 px)：代碼 69，依該字型圖表確認圖形
+    u8g2.setFont(u8g2_font_open_iconic_weather_2x_t);
+    u8g2.drawGlyph(2, 16, 69);
+
+    // 畫電池圖示 (8x19 px)：字元 '4' 代表 4 格電量
+    u8g2.setFont(u8g2_font_battery19_tn);
+    u8g2.drawGlyph(116, 19, '4');
+
+    // =====================================================================
+    // 2. 繪製「多語言（中文）」標題與欄位名稱
+    // =====================================================================
+    // 使用 chinese2，已確認包含你好世界；若改標籤須重新檢查缺字與 Flash。
+    u8g2.setFont(u8g2_font_unifont_t_chinese2);
+    u8g2.drawUTF8(24, 16, "你好世界");     // 使用已確認存在的共通中文問候文字
+    u8g2.drawHLine(0, 19, 128);           // 分隔橫線
+
+    // 繪製中文標籤（本例使用 ASCII 欄位，避免未經查核的繁體缺字）
+    u8g2.setCursor(2, 39);
+    u8g2.print("Temp:");                  // 搭配 enableUTF8Print() 可直接 print 中文
+
+    u8g2.setCursor(2, 59);
+    u8g2.print("Humd:");
+
+    // =====================================================================
+    // 3. 繪製「數值」與「特殊符號 °C」（使用 _tf 字型以支援 Latin-1 符號）
+    // =====================================================================
+    u8g2.setFont(u8g2_font_ncenB10_tf);   // 此 _tf 字型包含 '°' (U+00B0) 與 '±' (U+00B1)
+
+    // 印出溫度與 °C 符號
+    u8g2.setCursor(46, 39);
+    u8g2.print(temp, 1);
+    u8g2.print(" °C");                    // 因為開了 enableUTF8Print()，直接打 " °C" 即可正常顯示！
+
+    // 印出濕度與 % 符號
+    u8g2.setCursor(46, 59);
+    u8g2.print(humd, 1);
+    u8g2.print(" %");
+
+  } while (u8g2.nextPage());
+
+  delay(2000);
+}
+</code></pre>
+<hr/>
+<h3>5.6 使用 bdfconv 建立專案自己的字庫</h3>
+<p>先整理真正需要的 Unicode 字元，取得包含那些字的合法 BDF 字型，再使用官方工具產生資料。不能保證特定字數必然少於 600 B 或 1 KiB；需看字形複雜度、字集、壓縮和最後編譯結果。</p>
+<figure class="flowchart"><svg aria-label='程式邏輯流程圖：flowchart TD
+    A["列出 ASCII、度數及專案繁體字碼點"] --&gt; B["確認來源 BDF 包含全部字形"]
+    B --&gt; C["執行 bdfconv 並輸出 project_zh.h"]
+    C --&gt; D["引用真實產出字型，檢查缺字與韌體大小"]
+' role="img" viewbox="0 0 1000 493" xmlns="http://www.w3.org/2000/svg"><title>程式邏輯流程圖：flowchart TD
+    A["列出 ASCII、度數及專案繁體字碼點"] --&gt; B["確認來源 BDF 包含全部字形"]
+    B --&gt; C["執行 bdfconv 並輸出 project_zh.h"]
+    C --&gt; D["引用真實產出字型，檢查缺字與韌體大小"]
+</title><metadata></metadata><defs><marker id="arrow" markerheight="9" markerwidth="9" orient="auto" refx="8" refy="4"><path d="M0,0 L8,4 L0,8" fill="#64748b"></path></marker></defs><g font-family="Microsoft JhengHei,Noto Sans TC,Arial,sans-serif"><rect fill="#f5f8fb" height="491" rx="18" stroke="#d9e2eb" width="998" x="1" y="1"></rect><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="78"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="115.0">列出 ASCII、度數及專案繁體字碼點</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="178"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="215.0">確認來源 BDF 包含全部字形</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="278"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="315.0">執行 bdfconv 並輸出 project_zh.h</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="378"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="415.0">引用真實產出字型，檢查缺字與韌體大小</text><path d="M550,140 L550,178" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,240 L550,278" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,340 L550,378" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path></g></svg></figure>
+<pre><button aria-label="複製此程式區塊" class="copy" type="button">複製</button><code class="language-powershell"># 命令格式示例：需事先取得 bdfconv.exe 與真實的 font.bdf。
+# 24230=度，28331=溫，28629=濕；176=度數符號。
+.\bdfconv.exe -v -f 1 -b 0 -m "32-127,176,24230,28331,28629" font.bdf -o project_zh.h -n project_zh
+</code></pre>
+<p>將輸出的 project_zh.h 加入專案，再使用該陣列。含有 <code>...</code> 的示意壓縮字串不是有效字型資料，不應拿來執行。若只需少量固定標籤，也可製作 XBM；16×16 字圖的原始像素為 32 B，另計索引與程式碼。</p>
+<p>參考：<a href="https://github.com/olikraus/u8g2/tree/master/tools/font/bdfconv">官方 bdfconv</a>、<a href="./u8g2_display_modes_memory_guide.html#fonts">完整教學的字型章</a>。</p>
+<h3>5.7 校訂重點與驗證邊界</h3>
+<ul>
+<li><code>_2_</code> 減少場景呼叫，不保證整屏更新速度兩倍；full 也不是 OLED 原子換幀。</li>
+<li>區域 64×16 含 128 B 像素：100 kHz 的資料時間下限約 11.52 ms、400 kHz 約 2.88 ms，實際更長，不保證低於 5 ms。</li>
+<li><code>_tf</code> 不等於完整 Unicode；<code>_u</code> 是 uppercase；U8g2 的 <code>_8</code> 配置不表示字型格式可直接交給 U8x8。</li>
+<li>UTF-8 解碼不等於字型覆蓋、阿拉伯文 shaping 或雙向排版；繁體字須逐字檢查。</li>
+<li>本機一般配置不可直接呼叫 <code>getBufferSize()</code>；使用 tile 寬×高×8 計算標準配置的像素工作區。</li>
+<li>程式未經實體 OLED 燒錄／幀率量測。各字型大小已對照本機原始碼，完整範例與語法檢查範圍見校核後教學。</li>
+</ul>
+<hr/>
+<h3>5.8 本機 U8g2 v2.36.19 程式庫原始碼與 GitHub 官方範例核對清單</h3>
+<p>以下列出本機安裝之 <strong><code>C:/Users/User/Documents/Arduino/libraries/U8g2</code> (v2.36.19)</strong> 核心原始碼與官方 <code>olikraus/u8g2</code> GitHub Wiki 查核對照：</p>
+<ol>
+<li><strong>三種緩衝區靜態配置 (<code>src/clib/u8g2_d_memory.c</code> L39–L71 &amp; <code>u8g2_d_setup.c</code>)</strong>：
+   - <code>u8g2_m_16_8_1()</code>：配置 <code>static uint8_t buf[128]; *page_cnt = 1;</code>（對應 <code>U8g2lib.h</code> L1586 <code>U8G2_SSD1306_128X64_NONAME_1_HW_I2C</code>）。
+   - <code>u8g2_m_16_8_2()</code>：配置 <code>static uint8_t buf[256]; *page_cnt = 2;</code>（對應 <code>U8g2lib.h</code> L1640 <code>U8G2_SSD1306_128X64_NONAME_2_HW_I2C</code>）。
+   - <code>u8g2_m_16_8_f()</code>：配置 <code>static uint8_t buf[1024]; *page_cnt = 8;</code>（對應 <code>U8g2lib.h</code> L1694 <code>U8G2_SSD1306_128X64_NONAME_F_HW_I2C</code>）。</li>
+<li><strong>大型字庫 32KB 編譯保護巨集 (<code>src/clib/u8g2.h</code> L191–L197 &amp; <code>u8g2_fonts.c</code>)</strong>：
+   - <code>u8g2.h</code> 僅在 32 位元架構（<code>__arm__</code>、<code>ESP8266</code>、<code>ESP_PLATFORM</code> 等）自動定義 <code>#define U8G2_USE_LARGE_FONTS</code>。
+   - 8 位元 AVR（如 Arduino Uno / Mega）因 <code>PROGMEM</code> 單一陣列受 32,768 Bytes 索引上限限制，預設<strong>不定義</strong> <code>U8G2_USE_LARGE_FONTS</code>；因此 <code>u8g2_font_unifont_t_chinese3[36601]</code>、<code>u8g2_font_wqy12_t_gb2312[202690]</code>、<code>u8g2_font_wqy16_t_gb2312[308472]</code> 皆受 <code>#ifdef U8G2_USE_LARGE_FONTS</code> 保護。
+   - 若在 AVR 上需較多中文字且不超過 32KB，可評估 <code>u8g2_font_boutique_bitmap_9x9_t_chinese3[19490]</code>（收錄 993/12408 glyphs，佔 19,490 B，未受 <code>U8G2_USE_LARGE_FONTS</code> 限制）。</li>
+<li><strong>字型陣列精確位元組與 Glyph 數量 (<code>src/clib/u8g2_fonts.c</code>)</strong>：
+   - <code>u8g2_font_ncenB08_tn[196]</code>（18/756 glyphs，196 B）、<code>_tr[1166]</code>（95/756 glyphs，1,166 B）、<code>_tf[2465]</code>（191/756 glyphs，2,465 B）、<code>_te[6637]</code>（452/756 glyphs，6,637 B）。
+   - <code>u8g2_font_unifont_t_chinese1[13796]</code>（412/57084 glyphs）、<code>chinese2[19889]</code>（575/57084 glyphs）、<code>chinese3[36601]</code>（994/57084 glyphs）。</li>
+<li><strong>官方內建範例對照 (<code>examples/page_buffer/</code> &amp; <code>examples/full_buffer/</code>)</strong>：
+   - <code>examples/page_buffer/Chinese/Chinese.ino</code>（L416–L434）：官方示範於 <code>setup()</code> 呼叫 <code>u8g2.enableUTF8Print()</code>，並使用 <code>u8g2_font_unifont_t_chinese2</code> 搭配 <code>u8g2.print("你好世界")</code> 或 <code>u8g2_font_b10_t_japanese1</code> 印出 <code>"こんにちは世界"</code>。
+   - <code>examples/page_buffer/Weather/Weather.ino</code>（L427–L466）：官方示範 <code>u8g2_font_open_iconic_weather_6x_t</code> 搭配 <code>drawGlyph(x, y, 69)</code>（SUN）、<code>65</code>（SUN_CLOUD）、<code>64</code>（CLOUD）、<code>67</code>（RAIN），以及 <code>u8g2_font_open_iconic_embedded_6x_t</code> 代碼 <code>67</code>（THUNDER），並以 <code>u8g2.print("°C")</code> 輸出度數。
+   - <code>examples/full_buffer/UpdateArea/UpdateArea.ino</code>（L420–L468）：官方示範 <code>u8g2.updateDisplayArea(tile_area_x_pos, tile_area_y_pos, tile_area_width, tile_area_height)</code> 以 <span class="math">8  imes 8</span> Tile 為單位局部刷新跑馬燈區域。</li>
+</ol>
+<hr/>
+<p><a id="ref-history"></a></p>
+<h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+<h3>🔹 [2026-10-27 15:27:18] [Gemini 4 Argon (Medium) / Antigravity] 建立 U8g2 顯示模式比較與開發板記憶體適配指南</h3>
+<ul>
+<li><strong>模型/Agent</strong>: Gemini 4 Argon (Medium) / Antigravity</li>
+<li><strong>Prompt 原文</strong>:
+  <code>text
+  u8g2有許多種不同的螢幕顯示方式  u8x8, page_buffer,full_buffer等，分別針對這些顯示方法進行詳細比較與範例說明，並配合適用在那些開發版(記憶體限制考量)</code></li>
+<li><strong>變更摘要</strong>: 新建 <code>ec/u8g2_display_modes_comparison.md</code> 與 <code>ec/u8g2_display_modes_comparison.html</code>，深入剖析 U8g2 四種顯示設定（<code>U8x8</code>、<code>Page Buffer _1</code>、<code>Page Buffer _2</code>、<code>Full Buffer _F</code>）之底層記憶體原理與全方位對照表；整理主流開發板（ATtiny85、Uno R3、Leonardo、Mega 2560、Uno R4、STM32、ESP8266、ESP32、RP2040）SRAM/Flash 限制與適配建議；提供三種模式完整程式碼與 Mermaid 邏輯流程圖，並補充 Page Buffer 副作用陷阱、<code>updateDisplayArea()</code> 局部刷新及字型 Flash 優化策略。</li>
+</ul>
+<h3>🔹 [2026-10-27 15:43:12] [Gemini 4 Argon (Medium) / Antigravity] 增補 U8g2 字型系統 (Fonts)、圖示符號 (Icons) 與多語言 (UTF-8 / 中文) 顯示專論</h3>
+<ul>
+<li><strong>模型/Agent</strong>: Gemini 4 Argon (Medium) / Antigravity</li>
+<li><strong>Prompt 原文</strong>:
+  <code>text
+  增加u8g2 font與符號 多語言的顯示說明</code></li>
+<li><strong>變更摘要</strong>: 新增第 5 章「U8g2 字型系統、圖示符號與多語言顯示專論」，詳解字型五段式命名規則（<code>t</code>/<code>h</code>/<code>m</code>/<code>8</code> 繪製模式與 <code>n</code>/<code>r</code>/<code>f</code>/<code>e</code> 字元範圍）、比較 <code>drawStr()</code> / <code>drawUTF8()</code> / <code>drawGlyph()</code> / <code>print()</code> 四種文字繪製 API、解析 <code>°C</code> 亂碼原因與三種解法、整理內建向量圖示字型（Open Iconic Weather/Embedded、Battery、Unifont Symbols）、比較各級中文字庫（<code>chinese1/2/3</code>、<code>wqy</code>）之 Flash 記憶體限制，並提供多語言＋天氣電池圖示整合範例程式碼與 <code>bdfconv</code> 自訂子集字庫流程。</li>
+</ul>
+<h3>🔹 [2026-10-27 15:59:19] [GPT-6 / Codex /root] 官方查核與跨筆記整合校訂</h3>
+<ul>
+<li><strong>模型/Agent</strong>: GPT-6 / Codex /root</li>
+<li><strong>Prompt 原文</strong>:
+  <code>text
+  file:///D:/CLASS_NOTE/ec/u8g2_display_modes_comparison.md 參考這一份檔案，將你沒有考慮到的資訊 增加進來‘‘並確認資訊與敘述正確</code></li>
+<li><strong>變更摘要</strong>: 保留先前歷史；修正字型容量與 glyph 數、API 限制、UTF-8／圖示格式、效能保證及板子規格，刪除無效字型占位資料；將缺少的實務資訊補入完整教學並同步 HTML。</li>
+</ul>
+<h3>🔹 [2026-10-27 16:05:00] [Gemini 4 Argon (Medium) / Antigravity] 增補本機 U8g2 v2.36.19 程式庫原始碼與 GitHub 官方範例核對清單</h3>
+<ul>
+<li><strong>模型/Agent</strong>: Gemini 4 Argon (Medium) / Antigravity</li>
+<li><strong>Prompt 原文</strong>:
+  <code>text
+  有先查詢過程式庫與github原始說明嗎</code></li>
+<li><strong>變更摘要</strong>: 直接查核本機安裝之 <code>Arduino/libraries/U8g2</code> (v2.36.19) 原始碼（<code>U8g2lib.h</code>、<code>src/clib/u8g2.h</code>、<code>u8g2_d_memory.c</code>、<code>u8g2_d_setup.c</code>、<code>u8g2_fonts.c</code>）與官方內建範例（<code>Chinese.ino</code>、<code>PrintUTF8.ino</code>、<code>Weather.ino</code>、<code>UpdateArea.ino</code>）及 <code>olikraus/u8g2</code> GitHub Wiki，新增第 5.8 節「本機 U8g2 v2.36.19 程式庫原始碼與 GitHub 官方範例核對清單」，明確標註原始碼行號、<code>U8G2_USE_LARGE_FONTS</code> 巨集限制與各字型陣列精確大小。</li>
+</ul></main><script>
+const $ = id => document.getElementById(id);
+document.querySelectorAll('.copy').forEach(button => button.addEventListener('click', async () => {
+ const code = button.parentElement.querySelector('code').textContent;
+ try {
+  if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(code);
+  else {const area=document.createElement('textarea');area.value=code;area.style.position='fixed';area.style.opacity='0';document.body.append(area);area.select();const ok=document.execCommand('copy');area.remove();if(!ok)throw new Error('copy');}
+  button.textContent='已複製';
+ } catch(e) {button.textContent='請選取程式碼複製';}
+ setTimeout(()=>button.textContent='複製',1800);
+}));
+</script></body></html>

@@ -1,8 +1,8 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-10-22 15:01:30 (UTC+8)  
-> **使用模型**: Claude Sonnet 5.5  
-> **執行 Agent**: Claude Code  
+> **最後更新時間**: 2026-10-27 16:13:32 (UTC+8)
+> **使用模型**: GPT-6
+> **執行 Agent**: Codex /root
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 
 ---
@@ -38,6 +38,13 @@
 * `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
+* `2026-10-27` | [U8g2 顯示模式、Page／Full 圖解、開發板 RAM 與多語言字型教學 (HTML)](./ec/u8g2_display_modes_memory_guide.html) (HTML)
+* `2026-10-27` | [U8g2 顯示模式、Page／Full 圖解、開發板 RAM 與多語言字型教學 (MD)](./ec/u8g2_display_modes_memory_guide.md) (MD)
+* `2026-10-27` | [U8g2 Page Buffer／Full Buffer RAM 與傳送方式比較圖 (SVG)](./ec/assets/u8g2_buffer_comparison.svg) (SVG)
+* `2026-10-27` | [U8g2 分頁繪製與資料快照圖 (SVG)](./ec/assets/u8g2_page_loop.svg) (SVG)
+* `2026-10-27` | [U8g2 UTF-8、Unicode 與字型流程圖 (SVG)](./ec/assets/u8g2_font_pipeline.svg) (SVG)
+* `2026-10-27` | [U8g2 螢幕顯示模式深度解析：U8x8、Page Buffer 與 Full Buffer 比較及開發板記憶體適配指南 (HTML)](./ec/u8g2_display_modes_comparison.html) (HTML)
+* `2026-10-27` | [U8g2 螢幕顯示模式深度解析：U8x8、Page Buffer 與 Full Buffer 比較及開發板記憶體適配指南 (MD)](./ec/u8g2_display_modes_comparison.md) (MD)
 * `2026-10-22` | [Arduino Uno + DHT11 + SSD1306 OLED（U8g2 / I2C）作法、程式庫比較與 Page Buffer 優缺點 (HTML)](./ec/arduino_dht11_ssd1306_u8g2_guide.html) (HTML)
 * `2026-10-22` | [Arduino Uno + DHT11 + SSD1306 OLED（U8g2 / I2C）作法、程式庫比較與 Page Buffer 優缺點 (MD)](./ec/arduino_dht11_ssd1306_u8g2_guide.md) (MD)
 * `2026-10-22` | [Arduino Uno DHT11(D8) + SSD1306 OLED (U8g2) 範例程式碼 1022-ssd1306 (INO)](./ec/1022-ssd1306.ino) (INO)
@@ -543,3 +550,59 @@
   keynote 加入index索引後提交並推送
   ```
 - **變更摘要**: 新增 Keynote／課程簡報分類，收錄 Arduino 實作與設計流程 18 頁核心簡報；同步更新 INDEX.md 與 index.html，將現有簡報 HTML 納入 Git 版本管理。
+
+### 🔹 [2026-10-27 15:27:18] [Gemini 4 Argon (Medium) / Antigravity] 新增 U8g2 顯示模式比較與開發板記憶體適配指南
+- **模型/Agent**: Gemini 4 Argon (Medium) / Antigravity
+- **Prompt 原文**:
+  ```text
+  u8g2有許多種不同的螢幕顯示方式  u8x8, page_buffer,full_buffer等，分別針對這些顯示方法進行詳細比較與範例說明，並配合適用在那些開發版(記憶體限制考量)
+  ```
+- **變更摘要**: 於 `ec/` 新增 `u8g2_display_modes_comparison.md` 與 `u8g2_display_modes_comparison.html`，比較 U8x8、Page Buffer (`_1`/`_2`) 與 Full Buffer (`_F`)，並同步更新 `index.md` 與 `index.html`。
+
+
+### 🔹 [2026-10-27 15:49:12] [GPT-6 / Codex /root] U8g2 顯示與字型教學索引
+
+- **模型/Agent**: GPT-6 / Codex /root
+- **Prompt 原文**:
+
+```text
+針對u8g2程式庫完整的說明，包含u8g2有許多種不同的螢幕顯示方式  u8x8, page_buffer,full_buffer等，分別針對這些顯示方法進行詳細比較與範例說明，並配合適用在那些開發版(記憶體限制考量)
+```
+
+```text
+加入nodemcu32s這個開發版
+```
+
+```text
+page_buffer, full_buffer的比較與詳細說明範例(圖解釋)
+```
+
+```text
+增加u8g2 font與符號 多語言的顯示說明
+```
+
+- **變更摘要**: 新增 U8g2 Markdown／HTML 與三張 SVG 圖解索引，保留既有歷史。
+
+
+### 🔹 [2026-10-27 16:00:49] [GPT-6 / Codex /root] U8g2 查核整合
+
+- **模型/Agent**: GPT-6 / Codex /root
+- **Prompt 原文**:
+
+```text
+file:///D:/CLASS_NOTE/ec/u8g2_display_modes_comparison.md 參考這一份檔案，將你沒有考慮到的資訊 增加進來‘‘並確認資訊與敘述正確
+```
+
+- **變更摘要**: 參照指定筆記，補充硬體與字型資訊並同步校訂兩份筆記的 MD／HTML。
+
+
+### 🔹 [2026-10-27 16:13:32] [GPT-6 / Codex /root] 提交前索引核對
+
+- **模型/Agent**: GPT-6 / Codex /root
+- **Prompt 原文**:
+
+```text
+git commit all, git push
+```
+
+- **變更摘要**: 核對兩份 U8g2 筆記及三張 SVG 的索引，準備提交工作區所有變更並推送 main。

@@ -312,9 +312,9 @@
             <p class="subtitle">彙整 AI、電子電路、樂高機器人、數學統計、廟宇人文、平面設計、電腦視覺相關筆記與 Keynote 課程簡報 (檔案依日期由新至舊排列)</p>
             
             <div class="metadata-box">
-                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-10-22 15:01:30 (UTC+8)</div>
-                <div class="metadata-item"><strong>使用模型:</strong> Gemini 3.8 Flash</div>
-                <div class="metadata-item"><strong>執行 Agent:</strong> Antigravity</div>
+                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-10-27 16:13:32 (UTC+8)</div>
+                <div class="metadata-item"><strong>使用模型:</strong> GPT-6</div>
+                <div class="metadata-item"><strong>執行 Agent:</strong> Codex /root</div>
                 <div class="metadata-item"><strong>GitHub Repo:</strong> <a href="https://github.com/joelhoty/onclassbyJoel" style="color:#38bdf8;" target="_blank">joelhoty/onclassbyJoel</a></div>
             </div>
 
@@ -738,9 +738,28 @@
             <div class="card" data-category="ec">
                 <div class="card-header">
                     <h2 class="card-title">⚡ 電子電路與硬體實驗</h2>
-                    <span class="badge-count">76 檔案</span>
+                    <span class="badge-count">86 檔案</span>
                 </div>
                 <ul class="file-list">
+<li class="file-item"><a class="file-link" href="./ec/u8g2_display_modes_memory_guide.html">U8g2 顯示模式、Page／Full 圖解、開發板 RAM 與多語言字型教學 (HTML)</a><div class="file-meta"><span class="file-date">2026-10-27</span><span class="tag tag-html">HTML</span></div></li>
+<li class="file-item"><a class="file-link" href="./ec/u8g2_display_modes_memory_guide.md">U8g2 顯示模式、Page／Full 圖解、開發板 RAM 與多語言字型教學 (MD)</a><div class="file-meta"><span class="file-date">2026-10-27</span><span class="tag tag-md">MD</span></div></li>
+<li class="file-item"><a class="file-link" href="./ec/assets/u8g2_buffer_comparison.svg">U8g2 Page Buffer／Full Buffer RAM 與傳送方式比較圖 (SVG)</a><div class="file-meta"><span class="file-date">2026-10-27</span><span class="tag tag-svg">SVG</span></div></li>
+<li class="file-item"><a class="file-link" href="./ec/assets/u8g2_page_loop.svg">U8g2 分頁繪製與資料快照圖 (SVG)</a><div class="file-meta"><span class="file-date">2026-10-27</span><span class="tag tag-svg">SVG</span></div></li>
+<li class="file-item"><a class="file-link" href="./ec/assets/u8g2_font_pipeline.svg">U8g2 UTF-8、Unicode 與字型流程圖 (SVG)</a><div class="file-meta"><span class="file-date">2026-10-27</span><span class="tag tag-svg">SVG</span></div></li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/u8g2_display_modes_comparison.html">U8g2 螢幕顯示模式深度解析：U8x8、Page Buffer 與 Full Buffer 比較及開發板記憶體適配指南 (HTML)</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-10-27</span>
+                            <span class="tag tag-html">HTML</span>
+                        </div>
+                    </li>
+                    <li class="file-item">
+                        <a class="file-link" href="./ec/u8g2_display_modes_comparison.md">U8g2 螢幕顯示模式深度解析：U8x8、Page Buffer 與 Full Buffer 比較及開發板記憶體適配指南 (MD)</a>
+                        <div class="file-meta">
+                            <span class="file-date">2026-10-27</span>
+                            <span class="tag tag-md">MD</span>
+                        </div>
+                    </li>
                     <li class="file-item">
                         <a class="file-link" href="./ec/arduino_dht11_ssd1306_u8g2_guide.html">Arduino Uno + DHT11 + SSD1306 OLED（U8g2 / I2C）作法、程式庫比較與 Page Buffer 優缺點 (HTML)</a>
                         <div class="file-meta">
@@ -1946,7 +1965,14 @@ go</pre>
                 <pre>git commit and push</pre>
                 <p><strong>變更摘要:</strong> 配合工作區規範第 6 條執行 Git 提交與推播同步程序。將 Arduino Uno 整合 I2C LCD 1602 與 DHT11 溫濕度監測系統實作筆記、實測程式碼 (1015-dht11.ino / 1015.txt)、實體驗證成果照片、AI 分類新增檔案與全站目錄索引推播至遠端 GitHub 儲存庫。</p>
             </div>
-        </div>
+            <div class="prompt-archive" style="margin-top: 15px;">
+                <h4>🔹 [2026-10-27 15:27:18] [Gemini 4 Argon (Medium) / Antigravity] 新增 U8g2 顯示模式比較與開發板記憶體適配指南</h4>
+                <p><strong>模型/Agent:</strong> Gemini 4 Argon (Medium) / Antigravity</p>
+                <p><strong>Prompt 原文:</strong></p>
+                <pre>u8g2有許多種不同的螢幕顯示方式  u8x8, page_buffer,full_buffer等，分別針對這些顯示方法進行詳細比較與範例說明，並配合適用在那些開發版(記憶體限制考量)</pre>
+                <p><strong>變更摘要:</strong> 於 `ec/` 新增 `u8g2_display_modes_comparison.md` 與 `u8g2_display_modes_comparison.html`，比較 U8x8、Page Buffer (`_1`/`_2`) 與 Full Buffer (`_F`)，並同步更新 `index.md` 與 `index.html`。</p>
+            </div>
+        <div class="prompt-archive" style="margin-top:15px"><h4>🔹 [2026-10-27 15:49:12] [GPT-6 / Codex /root] U8g2 教學索引</h4><p><strong>模型/Agent:</strong> GPT-6 / Codex /root</p><p><strong>Prompt 原文:</strong></p><pre><code class="language-text">針對u8g2程式庫完整的說明，包含u8g2有許多種不同的螢幕顯示方式  u8x8, page_buffer,full_buffer等，分別針對這些顯示方法進行詳細比較與範例說明，並配合適用在那些開發版(記憶體限制考量)</code></pre><pre><code class="language-text">加入nodemcu32s這個開發版</code></pre><pre><code class="language-text">page_buffer, full_buffer的比較與詳細說明範例(圖解釋)</code></pre><pre><code class="language-text">增加u8g2 font與符號 多語言的顯示說明</code></pre><p><strong>變更摘要:</strong> 新增 U8g2 Markdown／HTML、三張 SVG 圖解與多語言字型教學索引，保留原有歷史。</p></div><div class="prompt-archive"><h4>🔹 [2026-10-27 16:00:49] [GPT-6 / Codex /root] U8g2 查核整合</h4><p><strong>模型/Agent:</strong> GPT-6 / Codex /root</p><pre><code class="language-text">file:///D:/CLASS_NOTE/ec/u8g2_display_modes_comparison.md 參考這一份檔案，將你沒有考慮到的資訊 增加進來‘‘並確認資訊與敘述正確</code></pre><p>參照指定筆記，補充硬體與字型資訊並同步校訂兩份筆記的 MD／HTML。</p></div><div class="prompt-archive"><h4>🔹 [2026-10-27 16:13:32] [GPT-6 / Codex /root] 提交前索引核對</h4><p><strong>模型/Agent:</strong> GPT-6 / Codex /root</p><p><strong>Prompt 原文:</strong></p><pre><code class="language-text">git commit all, git push</code></pre><p><strong>變更摘要:</strong> 核對兩份 U8g2 筆記及三張 SVG 的索引，準備提交工作區所有變更並推送 main。</p></div></div>
     </footer>
 
     <script>
