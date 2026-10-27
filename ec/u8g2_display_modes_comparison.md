@@ -1,8 +1,8 @@
 # 🖥️ U8g2 螢幕顯示模式深度解析：U8x8、Page Buffer 與 Full Buffer 比較及開發板記憶體適配指南
 
-> **最後更新時間**: 2026-10-27 16:07:29 (UTC+8)
-> **使用模型**: Gemini 4 Argon (Medium)
-> **執行 Agent**: Antigravity
+> **最後更新時間**: 2026-10-27 18:05:00 (UTC+8)
+> **使用模型**: Claude Opus 5.5（前版：Gemini 4 Argon (Medium)、GPT-6）
+> **執行 Agent**: Claude Code（前版：Antigravity、Codex /root）
 > **相關筆記**: [Arduino Uno + DHT11 + SSD1306 OLED（U8g2 / I2C）指南](./arduino_dht11_ssd1306_u8g2_guide.md) | [互動版 HTML](./u8g2_display_modes_comparison.html)
 
 > **校訂說明**: 本次保留原筆記結構，修正容量、字型與效能敘述。更完整的圖解、NodeMCU-32S、六語切換、容量量測及官方來源請見 [校核後完整教學](./u8g2_display_modes_memory_guide.html)。本機查核版本：U8g2 2.36.19、Arduino-ESP32 3.2.0。
@@ -69,11 +69,11 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 
 #### 📐 通用緩衝區大小計算公式
 假設螢幕寬度為 $W$、高度為 $H$（例如 $128 \times 64$ 或 $128 \times 32$）：
-- **單頁大小 ($\text{Page Size}$)** $= W \times 1\text{ Byte} = W\text{ Bytes}$
-- **總頁數 ($N_{\text{pages}}$)** $= \frac{H}{8}$
-- **`_1` 模式 RAM 緩衝** $= W\text{ Bytes}$ （迴圈執行 $N_{\text{pages}}$ 次）
-- **`_2` 模式 RAM 緩衝** $= 2 \times W\text{ Bytes}$ （迴圈執行 $\frac{N_{\text{pages}}}{2}$ 次）
-- **`_F` 模式 RAM 緩衝** $= W \times \frac{H}{8}\text{ Bytes}$ （繪圖僅執行 $1$ 次）
+- **單頁大小 ($\text{Page Size}$)** $= \lceil W/8 \rceil \times 8\text{ Bytes}$（寬度先進位到 8 的倍數；$W=128$ 時即 $128\text{ Bytes}$）
+- **總頁數 ($N_{\text{pages}}$)** $= \lceil H/8 \rceil$
+- **`_1` 模式 RAM 緩衝** $= 1 \times \text{Page Size}$ （迴圈執行 $N_{\text{pages}}$ 次）
+- **`_2` 模式 RAM 緩衝** $= 2 \times \text{Page Size}$ （迴圈執行 $\lceil N_{\text{pages}}/2 \rceil$ 次）
+- **`_F` 模式 RAM 緩衝** $= N_{\text{pages}} \times \text{Page Size}$ （繪圖僅執行 $1$ 次）
 
 ---
 
@@ -86,10 +86,10 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 | **像素以外的 SRAM** | 依架構與版本而變 | 物件、Wire、變數及堆疊另計 | 同左 | 同左 |
 | **每幀繪圖程式執行次數** | 依更新字元／tile 數 | **8 次**（每次畫 8 px 高） | **4 次**（每次畫 16 px 高） | **1 次**（畫完整張再送） |
 | **繪圖功能（點/線/圓/圖）** | 無 U8g2 任意像素圖形 API；可用 drawTile 等底層操作 | ✅ 完整支援 | ✅ 完整支援 | ✅ 完整支援 |
-| **任意比例字型與中文字** | 依 U8x8 字型集與 tile 網格；亦有較大字型 | ✅ 支援所有像素字型与 UTF-8 | ✅ 支援所有像素字型与 UTF-8 | ✅ 支援所有像素字型与 UTF-8 |
+| **任意比例字型與中文字** | 依 U8x8 字型集與 tile 網格；亦有較大字型 | ✅ 支援所有像素字型與 UTF-8 | ✅ 支援所有像素字型與 UTF-8 | ✅ 支援所有像素字型與 UTF-8 |
 | **座標系統** | **字元格** `(col: 0~15, row: 0~7)` | **像素** `(x: 0~127, y: 0~63)` | **像素** `(x: 0~127, y: 0~63)` | **像素** `(x: 0~127, y: 0~63)` |
 | **核心刷新結構** | `drawString()` 立即生效 | `firstPage()` + `do...while(nextPage())` | `firstPage()` + `do...while(nextPage())` | `clearBuffer()` ➔ 繪圖 ➔ `sendBuffer()` |
-| **局部保留 / 增量繪圖** | ✅ 可單獨覆寫某幾個字元格 | ❌ 每次皆須重畫整個畫面 | ❌ 每次皆須重畫整個畫面 | ✅ 可不呼叫 `clearBuffer()` 直接疊加或局部傳送 |
+| **局部保留 / 增量繪圖** | ✅ 可單獨覆寫某幾個字元格 | ⚠️ 一般 picture loop 須重畫整張；進階可用 `setBufferCurrTileRow()` 只送特定頁列（官方 UpdatePartly 範例） | ⚠️ 同左 | ✅ 可不呼叫 `clearBuffer()` 直接疊加或局部傳送 |
 | **CPU 運算負擔** | ⭐ 極低 | ⭐⭐⭐⭐ 高（重複裁切計算 8 次） | ⭐⭐⭐ 中（重複裁切計算 4 次） | ⭐ 低（僅計算 1 次） |
 | **更新一致性** | 直接更新字元／tile | 全部頁面須用相同資料快照 | 同左 | 一張 buffer 不代表面板原子交換；仍受傳輸與掃描影響 |
 
@@ -131,6 +131,8 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 | Page `_1_` | 128 B | 1,328 B | 720 B |
 | Page `_2_` | 256 B | 1,456 B | 592 B |
 | Full `_F_` | 1,024 B | 2,224 B | 超出 176 B |
+
+> **實測對照（Uno R3 實際連結，`-Os`）：** 3.3 節 Full 範例的靜態 RAM（全域與 static 變數）為 1,586 B，約 77%，可以編譯；Page 範例 680 B、U8x8 範例 434 B。這表示上表 1,200 B 是偏保守的教學假設；但靜態 RAM 不含執行時堆疊，Full 版仍須保留足夠堆疊空間，加入感測器或 SD 程式庫後要重新評估。
 
 編譯器的全域變數 RAM 摘要不包含所有動態堆積與執行時堆疊。`sizeof(u8g2)` 也不一定包含由程式庫另外配置的像素陣列。可參照 [互動 RAM 試算與圖解](./u8g2_display_modes_memory_guide.html#simulator)。
 
@@ -251,7 +253,7 @@ flowchart TD
 U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
 void setup() {
-  u8g2.setBusClock(400000);     // 需確認所有裝置、接線與上拉支援 400 kHz。
+  u8g2.setBusClock(400000);     // SSD1306 HW_I2C 在 U8g2 預設即 400 kHz；線路或其他裝置不支援時改成 100000。
   u8g2.begin();                 // 初始化 OLED
 }
 
@@ -330,7 +332,7 @@ flowchart TD
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
 void setup() {
-  u8g2.setBusClock(400000);     // 需確認線路支援 400 kHz。
+  u8g2.setBusClock(400000);     // SSD1306 HW_I2C 在 U8g2 預設即 400 kHz；線路或其他裝置不支援時改成 100000。
   u8g2.begin();                 // 初始化 OLED
 }
 
@@ -395,7 +397,7 @@ int frameCount = 0;
 
 u8g2.firstPage();
 do {
-  frameCount++;                          // ❌ 錯誤 1：畫一幀畫面，計數器卻暴增了 8！
+  frameCount++;                          // ❌ 錯誤 1：畫一幀畫面，計數器在 _1 下暴增 8、在 _2 下暴增 4！
   float t = dht.readTemperature();       // ❌ 錯誤 2：讀取 8 次感測器（實際是否讀硬體或命中快取依感測器程式庫而定；應將取樣移出迴圈）
   u8g2.setCursor(0, 24);
   u8g2.print(random(0, 100));            // ❌ 錯誤 3：每次重畫亂數都不同，導致一個數字上下半部是不同號碼！
@@ -410,7 +412,7 @@ do {
 
 ### 4.2 Full Buffer 進階技巧：`updateDisplayArea()` 局部畫面刷新
 
-在 `Full Buffer (_F)` 模式下，每次呼叫 `u8g2.sendBuffer()` 都會透過 I2C 傳送完整的 $1,024\text{ Bytes}$（在標準 $100\text{ kHz}$ I2C 下約需耗時 $90\sim 100\text{ ms}$）。如果畫面上只有一個小區域（例如右下角的秒數）在變動，可以使用 **`updateDisplayArea(tx, ty, tw, th)`** 只傳送變動的 $8\times 8$ 圖塊（Tile）區域！
+在 `Full Buffer (_F)` 模式下，每次呼叫 `u8g2.sendBuffer()` 都會透過 I2C 傳送完整的 $1,024\text{ Bytes}$（若以 `setBusClock(100000)` 降到 100 kHz，像素資料約需 $90\sim 100\text{ ms}$；SSD1306 HW_I2C 在 U8g2 的預設是 400 kHz，理論約 $23\sim 25\text{ ms}$，實際仍須量測）。如果畫面上只有一個小區域（例如右下角的秒數）在變動，可以使用 **`updateDisplayArea(tx, ty, tw, th)`** 只傳送變動的 $8\times 8$ 圖塊（Tile）區域！此函式只在 Full Buffer 有效；在 `_1`／`_2` 模式呼叫時，原始碼會直接返回、不傳送任何資料。
 
 - **參數單位**：注意！`tx, ty, tw, th` 的單位不是像素，而是 **Tile（$8\times 8$ 像素區塊）**。
 - 例如想要局部更新像素範圍 `x = 64~127`、`y = 16~31`：
@@ -451,13 +453,13 @@ void updateSecondsOnly(unsigned long sec) {
 
 除了 SRAM（動態記憶體）之外，在 **Arduino Uno（Flash 僅 $32\text{ KB}$）** 上使用 U8g2 也很容易遇到 **「草稿碼太大（Sketch too big）」** 的 Flash 爆滿問題。這是因為 U8g2 的字型檔是儲存在 Flash（`PROGMEM`）中。選用字型時請務必認識字型名稱最後兩個字母的意義：
 
-| 字型後綴 | 涵蓋字元範圍 | Flash 佔用大小 (以 10pt 字型為例) | 適用開發板與情境 |
+| 字型後綴 | 涵蓋字元範圍 | Flash 陣列大小（本機 ncenB08／ncenB10 實例） | 適用開發板與情境 |
 | :---: | :--- | :---: | :--- |
-| **`_tn`** | 數字與部分日期時間符號，具體字集依預覽 | 依字型大小與 glyph 而變 | 純數字儀表可優先評估，並非必須使用 |
-| **`_tr`** | **Restricted**：標準英文 ASCII `32~127` | **小 (~1.2 KB)** | **Uno / Nano 預設首選**（不含 `°` 度數符號） |
-| **`_tf`** | **Full**：完整 ASCII + Latin-1 擴充字元 (`32~255`) | **中 (~2.4 KB)** | 需要直接印出 `\xb0` (`°`) 符號時使用 |
-| **`_te`** | **Extended**：包含更多歐洲語系特殊符號 | **大 (~3.5 KB+)** | 一般英文/數字專題不建議在 Uno 上使用 |
-| **`_t_chinese1/2/3`** | 三種選定字集，均非完整中文 | 本機版本分別 13,796／19,889／36,601 B | 是否可用取決於整個 sketch、Flash 與核心限制；繁體字須逐字檢查 |
+| **`_tn`** | 數字與部分日期時間符號，具體字集依預覽 | 196 B／238 B | 純數字儀表可優先評估，並非必須使用 |
+| **`_tr`** | **Restricted**：標準英文 ASCII `32~127` | **1,166 B／1,559 B** | **Uno / Nano 預設首選**（不含 `°` 度數符號） |
+| **`_tf`** | **Full**：完整 ASCII + Latin-1 擴充字元 (`32~255`) | **2,465 B／3,358 B** | 需要直接印出 `\xb0` (`°`) 符號時使用 |
+| **`_te`** | **Extended**：包含更多歐洲語系特殊符號 | **6,637 B／9,294 B** | 一般英文/數字專題不建議在 Uno 上使用 |
+| **`_t_chinese1/2/3`** | 三種選定字集，均非完整中文 | 本機版本分別 13,796／19,889／36,601 B | chinese3 在 AVR 不提供（見 5.4）；其餘取決於整個 sketch 與 Flash；繁體字須逐字檢查 |
 
 ---
 
@@ -517,10 +519,10 @@ u8g2 _ font _ ncenB14 _ t _ r
 #### 📌 第五段：字元集範圍 (`n` / `r` / `f` / `e` / 多語言字集)
 | 代號 | 涵蓋 Unicode 編碼範圍 | 內容說明 | 典型 Flash 消耗 |
 | :---: | :--- | :--- | :---: |
-| **`n`** | 數字與部分日期時間符號，依字型預覽確認 | **純數字與小數點、冒號、正負號**（無英文字母） | **極省 (~250B ~ 600B)** |
+| **`n`** | 數字與部分日期時間符號，依字型預覽確認 | **純數字與小數點、冒號、正負號**（無英文字母） | **極省（約 200–600 B）** |
 | **`r`** | ASCII `32 ~ 127` | 標準半形英文大小寫、數字與鍵盤標點符號（**不含 `°` 符號！**） | **省 (~1 KB ~ 2 KB)** |
 | **`f`** | Unicode `32 ~ 255` (Latin-1) | 完整 ASCII + 西歐重音字母 + **常用符號（含 `°` 度數、`±`、`µ`、`©`）** | **中 (~2 KB ~ 4 KB)** |
-| **`e`** | Unicode `32 ~ 701` 範圍的 extended 選集（實際 glyph 依原字型） | 涵蓋東歐與更多拉丁擴充字母 | 較大 (~3.5 KB+) |
+| **`e`** | Unicode `32 ~ 701` 範圍的 extended 選集（實際 glyph 依原字型） | 涵蓋東歐與更多拉丁擴充字母 | 較大（ncenB08_te 6.6 KB、ncenB10_te 9.3 KB） |
 | **`u`** | Uppercase 選集 | 大寫字母與數字，不是 Unicode 的縮寫 | 依字型 |
 | **`_t_...`** | 特別選集 | 例如 cyrillic、greek、japanese、chinese；須查實際字集 | 依字型，不宜一概估計 |
 
@@ -535,7 +537,7 @@ U8g2 提供四種印出文字與符號的 API，**選錯函式會導致非 ASCII
 | **`u8g2.drawStr(x, y, "ABC")`** | 函式內直接帶入 `(x, y)` | 僅單一位元組 ASCII / Latin-1 (`\xb0`) | ❌ 僅收 `const char*` | 純英文/數字字串，速度最快 |
 | **`u8g2.drawUTF8(x, y, "溫度°C")`** | 函式內直接帶入 `(x, y)` | **UTF-8 解碼；一般以 Unicode BMP 為主，仍須字型有字** | ❌ 僅收 `const char*` | 直接在原始碼寫 `"°C"` 或 `"溫濕度"` 時必用 |
 | **`u8g2.drawGlyph(x, y, code)`** | 函式內直接帶入 `(x, y)` | 任意 **16-bit Unicode 編碼值** | ❌ 僅收 `uint16_t` 編碼 | **畫單一特殊符號或圖示（Icon）**最精準的做法 |
-| **`u8g2.print(...)`** | 需先呼叫 `u8g2.setCursor(x, y)` | 預設僅 ASCII；呼叫 **`enableUTF8Print()`** 後解碼 UTF-8，仍受碼點與字型範圍限制 | ✅ 支援 `print(temp, 1)` | 混合印出中文標籤、浮點數與單位時最方便 |
+| **`u8g2.print(...)`** | 需先呼叫 `u8g2.setCursor(x, y)` | 預設逐位元組送出（0–255，不解碼 UTF-8）；呼叫 **`enableUTF8Print()`** 後解碼 UTF-8，仍受碼點與字型範圍限制 | ✅ 支援 `print(temp, 1)` | 混合印出中文標籤、浮點數與單位時最方便 |
 
 > [!IMPORTANT]
 > **為什麼在 Arduino IDE 直接打 `u8g2.drawStr(0, 20, "25°C");` 會印出亂碼（如 `25Â°C`）？**  
@@ -555,7 +557,7 @@ U8g2 提供四種印出文字與符號的 API，**選錯函式會導致非 ASCII
 | --- | --- | --- |
 | `u8g2_font_open_iconic_weather_2x_t` | 16×16 天氣圖示，碼點 0x40–0x45；按該字型圖表選圖 | 189 B |
 | `u8g2_font_battery19_tn` | 8×19 電池狀態，字元碼 '0'–'7'；不是 Unicode 電池 emoji | 185 B |
-| `u8g2_font_unifont_t_symbols` | Unicode 符號選集，須逐一確認符號存在 | 依版本查陣列 |
+| `u8g2_font_unifont_t_symbols` | Unicode 符號選集，須逐一確認符號存在 | 9,015 B（531 glyphs） |
 | `u8g2_font_open_iconic_embedded_2x_t`／Siji | 內嵌系統與狀態圖示 | 碼點屬該字型圖表，不可套用別的圖示庫 |
 
 以上是點陣字型，並非執行時向量渲染；同一碼點在不同圖示字型可能是不同圖形。[官方圖示預覽](https://github.com/olikraus/u8g2/wiki/fntgrpiconic)
@@ -576,7 +578,7 @@ U8g2 支援在螢幕上顯示中文、日文、韓文、俄文、希臘文等多
 | `u8g2_font_wqy16_t_chinese1` | 13,882 B | 精選字集；逐字確認標籤 |
 | `u8g2_font_b12_t_japanese1` | 33,370 B | 字型本身超過 Uno R3 整顆 32 KiB Flash |
 
-數字是字型常數陣列大小，不是整個 sketch 或 framebuffer 用量；大型字型在部分 AVR 核心的提供方式也可能受限制。切換 page buffer 能省 SRAM，不能減少已引用字庫的 Flash。[官方字型原始碼](https://github.com/olikraus/u8g2/blob/master/csrc/u8g2_fonts.c)
+數字是字型常數陣列大小，不是整個 sketch 或 framebuffer 用量；`chinese3`、`wqy12_t_gb2312a`、`b12_t_japanese1` 等大於 32 KB 的字型只在定義 `U8G2_USE_LARGE_FONTS` 的平台（ARM、ESP8266、ESP32 等）提供；Uno／Mega 等 AVR 編譯可過，但連結時會出現 undefined reference。切換 page buffer 能省 SRAM，不能減少已引用字庫的 Flash。[官方字型原始碼](https://github.com/olikraus/u8g2/blob/master/csrc/u8g2_fonts.c)
 
 > [!TIP]
 > **如何在 Arduino Uno (32KB Flash) 上顯示事先挑選的繁體中文（如「溫濕度監測系統」）且不爆 Flash？**  
@@ -589,7 +591,7 @@ U8g2 支援在螢幕上顯示中文、日文、韓文、俄文、希臘文等多
 ### 5.5 實戰範例：多語言（中文/英文）+ 天氣與電池圖示 + `°C` 符號整合儀表板
 
 以下示範如何在 U8g2 中開啟 **`enableUTF8Print()`**，並在同一個畫面上混用：
-1. **中文字型**（顯示繁體/簡體中文標題与標籤）
+1. **中文字型**（顯示繁體/簡體中文標題與標籤）
 2. **Open Iconic 圖示字型**（顯示 ☀️ 太陽圖示與 🔋 電池電量圖示）
 3. **Latin-1 `_tf` 字型**（顯示 `°C` 度數符號；`t` 不保證等寬，等寬字型另選 `_m` 配置）
 
@@ -610,11 +612,12 @@ flowchart TD
 #include <U8g2lib.h>
 #include <Wire.h>
 
-// 若在 Arduino Uno 上測試，請使用 "_1_" 或 "_2_"；若在 ESP32 上可改為 "_F_"
+// 本例含 unifont_t_chinese2（19,889 B）等字型，Uno 實測連結約 35 KB，超過 Uno R3 可用的 32,256 B Flash；
+// 請在 ESP32／RP2040／Uno R4 等板子執行（RAM 足夠時可改 "_F_"）。Uno 上請改用 XBM 或 bdfconv 子集字型。
 U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
 void setup() {
-  u8g2.setBusClock(400000);  // 所有裝置與線路必須支援。
+  u8g2.setBusClock(400000);  // SSD1306 HW_I2C 在 U8g2 預設即 400 kHz；線路或其他裝置不支援時改成 100000。
   u8g2.begin();
   
   // 🌟 關鍵設定：啟用 print() 的 UTF-8 解析功能（使用 print 輸出 UTF-8 時需要；drawUTF8 不需要這項設定。）
@@ -628,7 +631,7 @@ void loop() {
   u8g2.firstPage();
   do {
     // =====================================================================
-    // 1. 繪製右上角「電池圖示」与左上角「天氣太陽圖示」(Icon Fonts)
+    // 1. 繪製右上角「電池圖示」與左上角「天氣太陽圖示」(Icon Fonts)
     // =====================================================================
     // 畫天氣圖示 (16x16 px)：代碼 69，依該字型圖表確認圖形
     u8g2.setFont(u8g2_font_open_iconic_weather_2x_t);
@@ -710,14 +713,14 @@ flowchart TD
 
 ### 5.8 本機 U8g2 v2.36.19 程式庫原始碼與 GitHub 官方範例核對清單
 
-以下列出本機安裝之 **`C:/Users/User/Documents/Arduino/libraries/U8g2` (v2.36.19)** 核心原始碼與官方 `olikraus/u8g2` GitHub Wiki 查核對照：
+以下列出作者 Windows 機器安裝之 **`C:/Users/User/Documents/Arduino/libraries/U8g2` (v2.36.19)**（2026-10-27 另以 macOS 的同版 U8g2 2.36.19 複核） 核心原始碼與官方 `olikraus/u8g2` GitHub Wiki 查核對照：
 
 1. **三種緩衝區靜態配置 (`src/clib/u8g2_d_memory.c` L39–L71 & `u8g2_d_setup.c`)**：
    - `u8g2_m_16_8_1()`：配置 `static uint8_t buf[128]; *page_cnt = 1;`（對應 `U8g2lib.h` L1586 `U8G2_SSD1306_128X64_NONAME_1_HW_I2C`）。
    - `u8g2_m_16_8_2()`：配置 `static uint8_t buf[256]; *page_cnt = 2;`（對應 `U8g2lib.h` L1640 `U8G2_SSD1306_128X64_NONAME_2_HW_I2C`）。
    - `u8g2_m_16_8_f()`：配置 `static uint8_t buf[1024]; *page_cnt = 8;`（對應 `U8g2lib.h` L1694 `U8G2_SSD1306_128X64_NONAME_F_HW_I2C`）。
 2. **大型字庫 32KB 編譯保護巨集 (`src/clib/u8g2.h` L191–L197 & `u8g2_fonts.c`)**：
-   - `u8g2.h` 僅在 32 位元架構（`__arm__`、`ESP8266`、`ESP_PLATFORM` 等）自動定義 `#define U8G2_USE_LARGE_FONTS`。
+   - `u8g2.h` 只對白名單平台（`unix`、`__arm__`、`__arc__`、`ESP8266`、`ESP_PLATFORM`、`__LUATOS__`）自動定義 `#define U8G2_USE_LARGE_FONTS`，不是所有 32 位元架構都會定義。字型的 `extern` 宣告沒有被此條件包住，所以 AVR 上引用這些字型時編譯會過，但在連結階段失敗。
    - 8 位元 AVR（如 Arduino Uno / Mega）因 `PROGMEM` 單一陣列受 32,768 Bytes 索引上限限制，預設**不定義** `U8G2_USE_LARGE_FONTS`；因此 `u8g2_font_unifont_t_chinese3[36601]`、`u8g2_font_wqy12_t_gb2312[202690]`、`u8g2_font_wqy16_t_gb2312[308472]` 皆受 `#ifdef U8G2_USE_LARGE_FONTS` 保護。
    - 若在 AVR 上需較多中文字且不超過 32KB，可評估 `u8g2_font_boutique_bitmap_9x9_t_chinese3[19490]`（收錄 993/12408 glyphs，佔 19,490 B，未受 `U8G2_USE_LARGE_FONTS` 限制）。
 3. **字型陣列精確位元組與 Glyph 數量 (`src/clib/u8g2_fonts.c`)**：
@@ -726,7 +729,7 @@ flowchart TD
 4. **官方內建範例對照 (`examples/page_buffer/` & `examples/full_buffer/`)**：
    - `examples/page_buffer/Chinese/Chinese.ino`（L416–L434）：官方示範於 `setup()` 呼叫 `u8g2.enableUTF8Print()`，並使用 `u8g2_font_unifont_t_chinese2` 搭配 `u8g2.print("你好世界")` 或 `u8g2_font_b10_t_japanese1` 印出 `"こんにちは世界"`。
    - `examples/page_buffer/Weather/Weather.ino`（L427–L466）：官方示範 `u8g2_font_open_iconic_weather_6x_t` 搭配 `drawGlyph(x, y, 69)`（SUN）、`65`（SUN_CLOUD）、`64`（CLOUD）、`67`（RAIN），以及 `u8g2_font_open_iconic_embedded_6x_t` 代碼 `67`（THUNDER），並以 `u8g2.print("°C")` 輸出度數。
-   - `examples/full_buffer/UpdateArea/UpdateArea.ino`（L420–L468）：官方示範 `u8g2.updateDisplayArea(tile_area_x_pos, tile_area_y_pos, tile_area_width, tile_area_height)` 以 $8 	imes 8$ Tile 為單位局部刷新跑馬燈區域。
+   - `examples/full_buffer/UpdateArea/UpdateArea.ino`（L420–L468）：官方示範 `u8g2.updateDisplayArea(tile_area_x_pos, tile_area_y_pos, tile_area_width, tile_area_height)` 以 $8 \times 8$ Tile 為單位局部刷新跑馬燈區域。
 
 ---
 
@@ -765,3 +768,11 @@ flowchart TD
   有先查詢過程式庫與github原始說明嗎
   ```
 - **變更摘要**: 直接查核本機安裝之 `Arduino/libraries/U8g2` (v2.36.19) 原始碼（`U8g2lib.h`、`src/clib/u8g2.h`、`u8g2_d_memory.c`、`u8g2_d_setup.c`、`u8g2_fonts.c`）與官方內建範例（`Chinese.ino`、`PrintUTF8.ino`、`Weather.ino`、`UpdateArea.ino`）及 `olikraus/u8g2` GitHub Wiki，新增第 5.8 節「本機 U8g2 v2.36.19 程式庫原始碼與 GitHub 官方範例核對清單」，明確標註原始碼行號、`U8G2_USE_LARGE_FONTS` 巨集限制與各字型陣列精確大小。
+
+### 🔹 [2026-10-27 18:05:00] [Claude Opus 5.5 / Claude Code] 依本機 U8g2 原始碼與實際編譯逐項查核修正
+- **模型/Agent**: Claude Opus 5.5 / Claude Code（含查核子代理）
+- **Prompt 原文**:
+  ```text
+  另外也檢查 ec/u8g2_display_modes_comparison.md 確認資料與敘述的正確性
+  ```
+- **變更摘要**: 以本機 U8g2 2.36.19 原始碼、主機編譯 clib 與 AVR 實際連結查核。修正：5.5 多語言範例在 Uno 實測約 35 KB，超過 32,256 B Flash，註解改為不適用 Uno；SSD1306 HW_I2C 預設已是 400 kHz（`setBusClock` 註解與 4.2 傳輸時間）；4.3／5.1 字型大小改用 ncenB08／ncenB10 實測陣列大小（原 `_te` 嚴重低估、「10pt」說法錯誤）；大型字型在 AVR 不提供、連結時才失敗；`$8 \times 8$` 跳脫錯誤；緩衝公式改為寬度進位；page 模式可用 `setBufferCurrTileRow()` 局部更新、`updateDisplayArea()` 只在 full 有效；`print()` 預設逐位元組；補 unifont_t_symbols 大小、Uno 實測 RAM 對照、簡體「与」。HTML 同步修正並重建被壓平的公式清單、5.8 巢狀清單與提示詞程式區塊。

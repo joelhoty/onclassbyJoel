@@ -1,8 +1,8 @@
 # U8g2 顯示模式完整教學：U8x8、Page Buffer、Full Buffer 與開發板記憶體選擇
 
-> **最後更新時間**: 2026-10-27 16:07:29 (UTC+8)  
-> **使用模型**: GPT-6  
-> **執行 Agent**: Codex /root  
+> **最後更新時間**: 2026-10-27 18:20:00 (UTC+8)  
+> **使用模型**: Claude Opus 5.5（前版：GPT-6）  
+> **執行 Agent**: Claude Code（前版：Codex /root）  
 > **主題分類**: ec／Arduino／OLED／嵌入式記憶體  
 > **HTML 筆記**: [開啟互動版：記憶體試算、流程圖、複製程式碼與匯出 PDF](./u8g2_display_modes_memory_guide.html)
 
@@ -17,7 +17,7 @@
 3. [圖解 Page Buffer 與 Full Buffer](#diagrams)
 4. [記憶體公式與容量預算](#memory)
 5. [開發板適用性：Uno 到 NodeMCU-32S](#boards)
-6. [安裝、接線與建構式](#setup)
+6. [安裝、接線與類別建構式（`_1`／`_2`／`_F` 解剖與選擇）](#setup)
 7. [範例 A：U8x8 文字顯示](#example-u8x8)
 8. [範例 B：Page Buffer `_1_`](#example-page1)
 9. [範例 C：Page Buffer `_2_`](#example-page2)
@@ -85,24 +85,28 @@ page buffer 每次只準備一段像素，傳送後重用同一塊 RAM；full bu
 
 ### 3.1 圖一：RAM 保存的範圍與傳送次序
 
-![Page Buffer 與 Full Buffer 的 RAM、繪圖次數與 OLED 傳送方式比較](./assets/u8g2_buffer_comparison.svg)
+![圖一：Page _1_、_2_ 與 Full _F_ 的 RAM 等比例長條，以及每一輪 buffer 內容與 OLED 狀態的時間軸](./assets/u8g2_buffer_comparison.svg)
 
-**Page `_1_` 的八個階段：**
+圖一使用第八～十節範例的**實際像素**（以主機編譯 U8g2 2.36.19 算出），依三個區塊閱讀：
 
-| 階段 | 此次 buffer 對應的全螢幕 y 範圍 | 程式執行 | CPU 最後傳送 |
-| --- | --- | --- | --- |
-| 1 | 0–7 | 呼叫完整 `drawScene()` | 第 1 個 128 B 區段 |
-| 2 | 8–15 | 再呼叫完整 `drawScene()` | 第 2 個 128 B 區段 |
-| 3 | 16–23 | 再呼叫完整 `drawScene()` | 第 3 個 128 B 區段 |
-| 4 | 24–31 | 再呼叫完整 `drawScene()` | 第 4 個 128 B 區段 |
-| 5 | 32–39 | 再呼叫完整 `drawScene()` | 第 5 個 128 B 區段 |
-| 6 | 40–47 | 再呼叫完整 `drawScene()` | 第 6 個 128 B 區段 |
-| 7 | 48–55 | 再呼叫完整 `drawScene()` | 第 7 個 128 B 區段 |
-| 8 | 56–63 | 再呼叫完整 `drawScene()` | 第 8 個 128 B 區段 |
+1. **① RAM 長條（等比例）**：每一格代表一列 tile，也就是 128×8 像素、128 B。`_1_` 只放得下 1 格，`_2_` 放 2 格，`_F_` 放全部 8 格。三種模式在記憶體上的差別只有這一點。
+2. **② 時間軸（由左到右）**：每一欄上方的細條是**這一輪 MCU buffer 實際存的像素**，下方是**這一輪送完後 OLED 的樣子**。亮青色是已更新的列，暗色是尚未送到、仍是上一張畫面的列，彩色框是本輪 buffer 對應的位置。
+3. **Page 模式每一輪都做同樣四件事**：清除 buffer → 呼叫完整 `drawScene()` → U8g2 只保留落在當前列的像素 → `nextPage()` 送出。因此 `_1_` 第 1 輪只拿到標題的上半部（y5–7），第 2 輪才補上下半部（y8–11）。`_2_` 每輪 16 列，標題可以整行落在同一輪。
+4. **Full 模式只畫一次，但 `sendBuffer()` 內部仍逐列送出 tile 列 0→7。** 傳送進行到一半時，OLED 上半部已是新畫面，下半部仍是舊畫面；因此 full buffer 不等於整屏瞬間切換。
 
-例如 `drawScene()` 中有文字、外框與長條圖，每一頁仍呼叫這三種繪圖命令；U8g2 自動只留下與當前頁交集的像素。**座標始終是全螢幕座標，不必自己把 y 減 8，也不必手動切割字型或圖案。**
+| 輪次 | `_1_` buffer 對應 y | `_2_` buffer 對應 y | `_F_` buffer 對應 y | 本輪程式動作 |
+| --- | --- | --- | --- | --- |
+| 1 | 0–7 | 0–15 | 0–63（唯一一輪） | 清除 → 完整 `drawScene()` → 送出 |
+| 2 | 8–15 | 16–31 | — | 同上 |
+| 3 | 16–23 | 32–47 | — | 同上 |
+| 4 | 24–31 | 48–63（`_2_` 最後一輪） | — | 同上 |
+| 5 | 32–39（本例全空白，仍照常清除與送出） | — | — | 同上 |
+| 6–8 | 40–47、48–55、56–63 | — | — | 同上；第 8 輪 `nextPage()` 傳回 false |
+| 每輪 buffer | 同一塊 128 B 重用 | 同一塊 256 B 重用 | 1,024 B 一次放滿 | — |
 
-`_2_` 則依序處理 y=0–15、16–31、32–47、48–63，總共執行四次場景；buffer 是同一塊 256 B 重複使用。`_F_` 只執行一次場景，整張像素都留在 1,024 B buffer 中，再交給 `sendBuffer()` 傳送。
+例如 `drawScene()` 中有文字、外框與長條圖，每一輪仍執行這三種繪圖命令，U8g2 自動只留下與當前列交集的像素。**座標始終是全螢幕座標，不必自己把 y 減 8，也不必手動切割字型或圖案。**
+
+實測三種模式點亮的像素總數都是 **1,569 點**（`_1_` 八輪相加、`_2_` 四輪相加、`_F_` 一次），證明分頁只是把同一張畫面分段完成，不會遺漏像素，也不會降低畫質。這套機制在原始碼層面怎麼由建構式決定，見 [6.3 類別建構式解剖](#constructor)。
 
 ### 3.2 圖二：分頁迴圈不是動畫迴圈
 
@@ -229,6 +233,171 @@ NodeMCU-32S 的 I/O 為 3.3 V 邏輯；I²C 的上拉電阻也必須拉到合適
 
 I²C 掃描器常報 7-bit 位址 `0x3C`／`0x3D`；U8g2 的 `setI2CAddress()` 則要傳入左移一位的值，例如 `0x3C << 1`，並在 `begin()` 前設定。以下範例明確使用 `0x3C`；若掃描結果不同，須修改。[官方 U8x8 位址 API](https://github.com/olikraus/u8g2/wiki/u8x8reference#seti2caddress)
 
+<a id="constructor"></a>
+### 6.3 類別建構式解剖：`_1`、`_2`、`_F` 在 C++ 裡做了什麼？
+
+#### 6.3.1 核心概念：類別、物件與建構式
+
+`U8G2_SSD1306_128X64_NONAME_1_HW_I2C` 不是函式，而是 `U8g2lib.h` 定義的 **C++ 類別（class）**；`u8g2` 是用這個類別建立的**物件**；括號內的值交給該類別的**建構式（constructor）**。U8g2 為每一種「控制器＋解析度＋變體＋緩衝模式＋介面」組合各寫一個類別，全部繼承共用的 `U8G2` 基底類別，因此 `drawStr()`、`firstPage()`、`sendBuffer()` 在每個類別中的寫法都相同。
+
+![建構式名稱解剖：六個片段分別由硬體、接腳與需求決定，以及三種介面的參數順序](./assets/u8g2_constructor_anatomy.svg)
+
+| 寫法片段 | C++ 角色 | 本文範例的意思 |
+| --- | --- | --- |
+| `U8G2_SSD1306_128X64_NONAME_1_HW_I2C` | 類別（型別） | 決定驅動程式、初始化命令、buffer 大小與傳輸方式 |
+| `u8g2` | 物件名稱，可自取 | 之後以 `u8g2.begin()`、`u8g2.drawStr()` 呼叫 |
+| `U8G2_R0` | 建構式第 1 參數：旋轉 | `R0`、`R1`（90°）、`R2`（180°）、`R3`（270°）、`U8G2_MIRROR` |
+| `U8X8_PIN_NONE` | HW_I2C 第 2 參數：reset 腳 | 模組沒有 RES 腳，或 RES 不接 MCU |
+| `22, 21` | HW_I2C 第 3、4 參數：clock、data | 只有 ESP8266／ESP32 核心會用來呼叫 `Wire.begin(data, clock)`；其他核心忽略，固定用板子的預設 I²C 腳 |
+
+**參數順序依介面而不同**：`HW_I2C` 是 `(rotation, reset, clock, data)`，`SW_I2C` 是 `(rotation, clock, data, reset)`，`4W_HW_SPI` 是 `(rotation, cs, dc, reset)`。從 HW 改成 SW 時，不能只改類別名稱而沿用原本的參數。以上依本機 U8g2 2.36.19 `U8g2lib.h` 與 `U8x8lib.cpp` 查核。
+
+#### 6.3.2 建構式內部：只設定、不通訊
+
+![建構式呼叫鏈：全域物件建立時選定驅動並取得 static buffer，begin() 才初始化 I²C 與 OLED](./assets/u8g2_constructor_chain.svg)
+
+流程圖：
+
+```mermaid
+flowchart TD
+  A[宣告全域物件 u8g2] --> B[C++ 在 setup 之前執行類別建構式]
+  B --> C[u8g2_Setup_ssd1306_i2c_128x64_noname_1 選定驅動與命令格式]
+  C --> D[u8g2_m_16_8_1 取得 static buf 128 B 與 h=1]
+  D --> E[u8g2_SetupBuffer 記錄 buffer 指標、h 與旋轉]
+  E --> F[u8x8_SetPin_HW_I2C 只記錄腳位]
+  F --> G[setup 中的 begin 才初始化 Wire 與 OLED]
+```
+
+下面是程式庫原始碼的**摘錄與註解**（不是要貼進 sketch 的程式），可看出 `_1`／`_2`／`_F` 三個類別只差在呼叫哪一個設定函式：
+
+```cpp
+// U8g2lib.h（2.36.19）摘錄：_1 版本的類別定義
+class U8G2_SSD1306_128X64_NONAME_1_HW_I2C : public U8G2 {
+  public: U8G2_SSD1306_128X64_NONAME_1_HW_I2C(const u8g2_cb_t *rotation,
+      uint8_t reset = U8X8_PIN_NONE, uint8_t clock = U8X8_PIN_NONE,
+      uint8_t data = U8X8_PIN_NONE) : U8G2() {
+    // 依控制器＋解析度＋變體＋緩衝模式選定的 C 設定函式；_2、_F 版只差最後的 _2／_f。
+    u8g2_Setup_ssd1306_i2c_128x64_noname_1(&u8g2, rotation,
+        u8x8_byte_arduino_hw_i2c, u8x8_gpio_and_delay_arduino);
+    // 只把腳位寫進物件；真正的 Wire.begin() 在 begin() 時才執行。
+    u8x8_SetPin_HW_I2C(getU8x8(), reset, clock, data);
+  }
+};
+
+// u8g2_d_memory.c 摘錄：buffer 是函式內的 static 陣列，程式啟動時就存在。
+uint8_t *u8g2_m_16_8_1(uint8_t *page_cnt) {
+  static uint8_t buf[128];   // 16 tile 寬 × 1 tile 高 × 8 B
+  *page_cnt = 1;             // tile_buf_height：一次保存 1 列 tile
+  return buf;
+}
+// u8g2_m_16_8_2：static buf[256]，page_cnt = 2
+// u8g2_m_16_8_f：static buf[1024]，page_cnt = 8
+```
+
+#### 6.3.3 `_1`／`_2`／`_F` 的唯一差異：tile_buf_height
+
+| 項目 | `_1` | `_2` | `_F` |
+| --- | --- | --- | --- |
+| 建構式呼叫的設定函式 | `…_noname_1()` | `…_noname_2()` | `…_noname_f()` |
+| 記憶體函式與 static 陣列 | `u8g2_m_16_8_1` → `buf[128]` | `u8g2_m_16_8_2` → `buf[256]` | `u8g2_m_16_8_f` → `buf[1024]` |
+| `getBufferTileHeight()`（h） | 1 | 2 | 8 |
+| `nextPage()` 每次 row 增加 | 1 | 2 | 8 |
+| picture loop 輪數 | 8 | 4 | 1 |
+| 可用的更新寫法 | `firstPage()`／`nextPage()` | 同左 | `clearBuffer()`／`sendBuffer()`，或 picture loop（只跑 1 輪） |
+
+![_1、_2、_F 的工作區窗口、nextPage 邏輯與 buffer byte 排列](./assets/u8g2_tile_window.svg)
+
+從原始碼推得的四個重要結論：
+
+1. **建構式不碰硬體。** 全域物件在 `setup()` 之前建立，此時只記錄驅動、buffer 與腳位；`Serial` 尚未啟動、I²C 也還沒通訊。所以 `setI2CAddress()`、`setBusClock()` 要寫在 `begin()` 之前，硬體初始化由 `begin()` 完成（`initDisplay()` → `clearDisplay()` → `setPowerSave(0)`）。
+2. **buffer 是 static 陣列。** 它在編譯時就占用 SRAM，所以 Arduino IDE 編譯報告的「全域變數使用」已包含 128／256／1,024 B；不是執行時才配置。同型別的兩個物件會共用同一個陣列（見 13.5）。
+3. **`nextPage()` 的演算法只用到 h。** 送出目前 h 列 tile → `row += h` → `row ≥ 8` 就結束，否則清空 buffer 並把裁切視窗移到新的 row。同一份 picture loop 程式碼在 `_1`、`_2`、`_F` 都能正確執行，只是輪數不同。
+4. **反方向不成立。** `_1`／`_2` 搭配 `clearBuffer()`／`sendBuffer()` 時，`sendBuffer()` 只會把 buffer 的 h 列送到 row 0，結果只更新最上面 8／16 列。
+
+#### 6.3.4 實作：用同一支程式驗證三種建構式
+
+只修改建構式的 `_1_`／`_2_`／`_F_`，從序列埠讀出 tile 配置與實際的 picture loop 輪數，用來確認上面的表格。
+
+流程圖：
+
+```mermaid
+flowchart TD
+  A[只改建構式的 _1 _2 _F] --> B[begin 初始化 OLED]
+  B --> C[讀取 tile 寬高並計算 buffer bytes]
+  C --> D[firstPage 開始一張畫面]
+  D --> E[passes 加一並畫完整場景]
+  E --> F{nextPage 還有下一輪？}
+  F -->|是| E
+  F -->|否| G[列印輪數並與表格比對]
+```
+
+```cpp
+#include <Arduino.h>
+#include <Wire.h>
+#include <U8g2lib.h>
+
+// 只改這一行的 _1_／_2_／_F_；其餘程式不必修改。
+U8G2_SSD1306_128X64_NONAME_2_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
+
+void setup() {
+  Serial.begin(115200);
+  u8g2.setI2CAddress(0x3C << 1);  // 位址須在 begin() 前設定。
+  u8g2.begin();                   // 第一次 I2C 通訊發生在這裡。
+  u8g2.setFont(u8g2_font_6x12_tr);
+
+  const uint8_t tileW = u8g2.getBufferTileWidth();   // 128 / 8 = 16
+  const uint8_t tileH = u8g2.getBufferTileHeight();  // _1=1、_2=2、_F=8
+  Serial.print("tile buffer: ");
+  Serial.print(tileW);
+  Serial.print(" x ");
+  Serial.println(tileH);
+  Serial.print("buffer bytes: ");
+  Serial.println((uint16_t)tileW * tileH * 8U);       // 128／256／1024
+
+  uint8_t passes = 0;  // 計算同一張畫面重畫幾輪。
+  u8g2.firstPage();
+  do {
+    passes++;
+    u8g2.drawStr(0, 12, "constructor test");
+    u8g2.drawFrame(0, 20, 128, 40);  // 跨越多列 tile 的方框。
+  } while (u8g2.nextPage());
+  Serial.print("picture loop passes: ");
+  Serial.println(passes);  // _1=8、_2=4、_F=1
+}
+
+void loop() {
+  // 本例只在開機時驗證一次。
+}
+```
+
+| 建構式 | 預期序列埠輸出 |
+| --- | --- |
+| `…_1_HW_I2C` | `tile buffer: 16 x 1`、`buffer bytes: 128`、`picture loop passes: 8` |
+| `…_2_HW_I2C` | `tile buffer: 16 x 2`、`buffer bytes: 256`、`picture loop passes: 4` |
+| `…_F_HW_I2C` | `tile buffer: 16 x 8`、`buffer bytes: 1024`、`picture loop passes: 1` |
+
+預期值已用主機編譯 U8g2 2.36.19 的 C 程式庫實際執行同樣的分頁迴圈得到；Arduino 實機輸出仍以你的板子為準。也可以把三個版本分別編譯，比較 IDE 顯示的「全域變數」差值：理論上 `_1`→`_2` 增加 128 B、`_2`→`_F` 增加 768 B。
+
+<a id="constructor-choice"></a>
+### 6.4 建構式怎麼選？硬體規格與需求各管哪一段
+
+**結論：兩者都要看，而且有先後順序。** 類別名稱的前段（控制器、解析度、變體、介面）由**硬體規格**決定，選錯通常不亮、亂碼或畫面錯位；後段的 `U8G2`／`U8X8` 與 `_1`／`_2`／`_F` 由**需求與開發板 RAM** 決定，選錯只會造成 RAM 不足或程式寫法不符。I²C 位址、旋轉、腳位則是參數或函式，不在類別名稱中。
+
+![建構式選擇決策圖：先依硬體規格決定控制器、解析度、介面與變體，再依需求選擇 API 與緩衝模式](./assets/u8g2_constructor_decision.svg)
+
+| 名稱片段 | 由誰決定 | 如何確認 | 選錯的現象 |
+| --- | --- | --- | --- |
+| `SSD1306`／`SH1106` | 硬體：控制器晶片 | 模組背面標示、賣場規格；0.96 吋多為 SSD1306，1.3 吋常見 SH1106，但以標示為準 | 畫面偏移 2 像素、右側出現雜點或亂碼 |
+| `128X64`／`128X32_UNIVISION`… | 硬體：解析度 | 模組規格 | 只顯示一半、上下拉伸 |
+| `NONAME`／`ALT0`／`VCOMH0` | 硬體：模組變體（初始化命令） | 先用 `NONAME`；隔行顯示或上下錯位改試 `ALT0`（COM 腳配置 `0xDA` 由 `0x12` 改為 `0x02`）；`VCOMH0` 對比範圍較大，但原始碼註明並非每片都適用 | 隔行、亮度或對比異常 |
+| `HW_I2C`／`SW_I2C`／`4W_HW_SPI` | 硬體接腳＋接線 | 4 腳（VCC、GND、SCL、SDA）是 I²C；7 腳（D0、D1、RES、DC、CS）是 SPI；接在板子硬體 I²C 腳用 `HW_I2C`，任意腳用 `SW_I2C` | 完全無回應 |
+| `U8G2`／`U8X8` | 需求 | 只顯示文字數值選 `U8X8`；要圖形、任意字型選 `U8G2` | 沒有需要的 API |
+| `_1`／`_2`／`_F` | 需求＋開發板 RAM | 依第四、五節的 RAM 預算 | RAM 不足、重啟；或寫法不符而只更新部分畫面 |
+
+以同一片 0.96 吋 4 腳 SSD1306 為例：Uno R3 要畫圖形選 `U8G2_SSD1306_128X64_NONAME_1_HW_I2C`；NodeMCU-32S 要曲線或動畫選 `…_F_HW_I2C`；任何板子只顯示溫度文字可選 `U8X8_SSD1306_128X64_NONAME_HW_I2C`。**三者的硬體段完全相同，只有需求段不同。**
+
+`NONAME`、`ALT0`、`VCOMH0` 的差異依本機 `u8x8_d_ssd1306_128x64_noname.c` 的初始化序列查核。若畫面不亮，先回頭檢查硬體段與位址；能亮但 RAM 不足或速度不夠，再調整需求段。
+
 <a id="example-u8x8"></a>
 ## 七、範例 A：U8x8，文字狀態板
 
@@ -278,6 +447,10 @@ void loop() {
 ## 八、範例 B：Page Buffer `_1_`，128 B 畫出完整圖形
 
 **用途：** Uno R3 等小 RAM 開發板的圖形介面。本例在 y=12、30、43、45 等全螢幕座標畫圖；即使工作區只高 8 pixels，仍能完成跨頁文字和方框。
+
+**圖解：這個範例的畫面被切成哪 8 輪？** 下圖是本例在數值 60% 時的實際像素。標題文字落在 y5–11，橫跨第 1、2 輪；第二行落在 y23–29，橫跨第 3、4 輪；第 5 輪沒有任何圖形，但仍要清除並送出 128 B；外框與長條橫跨第 6～8 輪。
+
+![範例 B 的實際像素與 8 輪分頁：每輪只保留 8 列，標題與第二行文字被切成上下兩半，第 5 輪為空白](./assets/u8g2_example_page1_bands.svg)
 
 流程圖：
 
@@ -342,6 +515,10 @@ void loop() {
 
 **用途：** 希望比 `_1_` 少做幾次繪圖運算，且能多拿出 128 B RAM。可直接把上一例建構式的 `_1_` 改成 `_2_`，其餘程式完全相同。下面另給可獨立執行的版本。
 
+**圖解：同一張畫面改成 4 輪。** 每輪保留 16 列，標題（y5–11）和第二行（y23–29）都能整行落在同一輪；外框與長條橫跨第 3、4 輪。四輪點亮像素合計仍是 1,569 點，和 `_1_` 完全相同。
+
+![範例 C 的實際像素與 4 輪分頁：每輪保留 16 列，文字不再被切半](./assets/u8g2_example_page2_bands.svg)
+
 流程圖：
 
 ```mermaid
@@ -398,6 +575,10 @@ void loop() {
 ## 十、範例 D：Full Buffer `_F_`，1,024 B、一次畫完
 
 **用途：** NodeMCU-32S、Mega 2560、Uno R4 等資源較充裕的板子；或已確認 RAM 預算足夠的 Uno R3。使用與上例完全相同的文字及圖形，方便比較。
+
+**圖解：整張畫面一次留在 RAM。** 1,024 B buffer 同時保存全部 64 列，`drawScene()` 只執行 1 次；最終像素與範例 B、C 完全相同，差別只在 RAM 用量與重畫次數。
+
+![範例 D 的實際像素：Full Buffer 一次保存整張 128×64 畫面](./assets/u8g2_example_full_bands.svg)
 
 流程圖：
 
@@ -459,6 +640,8 @@ void loop() {
 
 **不能只把 `_F_` 改成 `_1_`，卻繼續沿用 `clearBuffer()`／`sendBuffer()`。** 這樣通常只能更新第一段 8 或 16 列，並非完整分頁繪製。[官方模式切換警告](https://github.com/olikraus/u8g2/wiki/u8g2setupcpp#buffer-size)
 
+反方向則可行：`_F_` 搭配 `firstPage()`／`nextPage()` 會正常顯示，迴圈只跑 1 輪（`tile_buf_height` 為 8，第一次 `nextPage()` 就傳回 false，已用主機編譯實測）。若想讓同一份程式在 `_1_`／`_2_`／`_F_` 之間只改建構式就能切換，可以統一使用 picture loop；原理見 [6.3.3](#constructor)。
+
 <a id="nodemcu"></a>
 ## 十一、NodeMCU-32S：建議先用 Full Buffer
 
@@ -496,7 +679,7 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(
 void setup() {
   Serial.begin(115200);
   u8g2.setI2CAddress(0x3C << 1);  // 若模組是 0x3D，修改此處。
-  u8g2.setBusClock(100000);        // 先用 100 kHz；穩定後再評估 400 kHz。
+  u8g2.setBusClock(100000);        // U8g2 對 SSD1306 預設 400 kHz；此處先降到 100 kHz 確認接線。
   u8g2.begin();
   u8g2.setFont(u8g2_font_6x12_tr);
 
@@ -706,7 +889,7 @@ void loop() {
 | `u8g2_font_unifont_t_cyrillic` | 6,659 B | 西里爾字集 |
 | `u8g2_font_unifont_t_chinese1` | 13,796 B | 選定中文字集，並非完整中文 |
 | `u8g2_font_unifont_t_chinese2` | 19,889 B | 與 chinese1 是不同選集，不是整套繁體 |
-| `u8g2_font_unifont_t_chinese3` | 36,601 B | 超過 Uno R3 整顆 32 KiB Flash；不是 240 KB |
+| `u8g2_font_unifont_t_chinese3` | 36,601 B | 超過 Uno R3 整顆 32 KiB Flash；且只在定義 `U8G2_USE_LARGE_FONTS` 的平台（ARM、ESP8266、ESP32 等）提供，AVR 連結時會失敗 |
 | `u8g2_font_wqy12_t_gb2312a` | 109,189 B | GB2312 子集，仍不能推論包含所有繁體字 |
 | `u8g2_font_wqy16_t_chinese1` | 13,882 B | 需逐字確認專案標籤 |
 | `u8g2_font_b12_t_japanese1` | 33,370 B | 字型本身已超過 Uno R3 32 KiB，不應宣稱一定裝得下 |
@@ -777,7 +960,7 @@ flowchart TD
 | 100 kHz | 1,024×9／100,000 ≈ 92.16 ms | 約 10.85 fps |
 | 400 kHz | 1,024×9／400,000 ≈ 23.04 ms | 約 43.40 fps |
 
-這些是**模型推算，非實測成績**；地址、控制 byte、命令、Wire 分包、驅動、CPU 繪圖都會增加時間。page/full 全屏重畫的像素總量相近，所以從 `_1_` 改成 `_F_` 不必然得到八倍 fps。也不可只因 ESP32 CPU 快，就預期 100 kHz I²C 能達到 60 fps。
+U8g2 的 SSD1306 HW_I2C 驅動預設 bus clock 為 400 kHz（`u8x8_d_ssd1306_128x64_noname.c` 的 `i2c_bus_clock_100kHz = 4`），沒有呼叫 `setBusClock()` 的範例都以 400 kHz 傳輸；11.2 與 13.3 範例刻意降到 100 kHz 方便排查接線。這些是**模型推算，非實測成績**；地址、控制 byte、命令、Wire 分包、驅動、CPU 繪圖都會增加時間。page/full 全屏重畫的像素總量相近，所以從 `_1_` 改成 `_F_` 不必然得到八倍 fps。也不可只因 ESP32 CPU 快，就預期 100 kHz I²C 能達到 60 fps。
 
 ### 13.3 Full Buffer 的區域更新與殘影
 
@@ -810,7 +993,7 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 
 void setup() {
   u8g2.setI2CAddress(0x3C << 1);
-  u8g2.setBusClock(100000);  // 先確認接線穩定。
+  u8g2.setBusClock(100000);  // 預設 400 kHz；先降速確認接線穩定。
   u8g2.begin();
   u8g2.setFont(u8g2_font_6x12_tr);
   u8g2.setFontMode(1);
@@ -856,8 +1039,11 @@ page/full 都能使用相同 U8g2 字型。要顯示中文，除了 UTF-8 解碼
 | Uno 會重啟或畫面亂碼 | RAM 過量、電源或接線問題 | 先換 `_1_`，縮減字串與資料，檢查 RAM 預算及供電 |
 | 全黑或無回應 | 控制器、位址、接線或 reset 不符 | 核對 SSD1306／SH1106、SDA/SCL、0x3C／0x3D |
 | 以為 `_1_` 只能畫 8 列 | 把工作區高度當成螢幕高度 | 使用完整分頁迴圈，座標仍用全屏 |
+| 畫面偏移 2 像素、右側有雜點 | 1.3 吋 SH1106 模組誤用 SSD1306 類別 | 改用 `U8G2_SH1106_128X64_NONAME_…` |
+| 隔行顯示或上下錯位 | 模組 COM 腳配置與 `NONAME` 初始化命令不符 | 改試 `…_128X64_ALT0_…` 類別 |
+| 從 HW_I2C 改成 SW_I2C 後不亮 | 兩者參數順序不同 | SW_I2C 為 `(rotation, clock, data, reset)` |
 | U8x8 文字位置不對 | 把 tile 座標當像素 | 128×64／8×8 字型使用 16 欄×8 列 |
-| Full Buffer 還是慢 | I²C 傳輸成為瓶頸 | 量測繪圖／傳輸時間，評估 400 kHz、SPI 或區域更新 |
+| Full Buffer 還是慢 | I²C 傳輸成為瓶頸 | 量測繪圖／傳輸時間；確認沒有用 `setBusClock()` 降速（SSD1306 HW_I2C 預設已是 400 kHz），再評估 SPI 或區域更新 |
 | NodeMCU-32S 顯示 heap 很少 | 系統、網路或其他物件占用 | 在連線及傳輸尖峰觀察，降低應用層記憶體負擔 |
 
 建議做四個對照實驗：
@@ -889,6 +1075,8 @@ page/full 都能使用相同 U8g2 字型。要顯示中文，除了 UTF-8 解碼
 容量與 fps 表是依明確條件推算；未完成實體接線、燒錄或 OLED 幀率量測。已使用實際 Uno 核心對前四個基本範例執行 C++ 語法檢查，並以實際 NodeMCU-32S／Arduino-ESP32 3.2.0 標頭檢查七個完整範例與多語言 page 變體；這些是 **syntax-only 檢查，不是完整韌體連結或硬體執行**。六語字串、度數與天氣圖示已逐一對照本機字型資料確認存在。
 
 HTML 已經由實際瀏覽器檢查桌面／手機寬度、圖解載入、四種互動模式及 PDF 列印產出。自訂字庫命令已對照官方工具參數；因未提供來源 BDF，沒有宣稱已產生或量測該自訂字庫。
+
+**2026-10-27 補充查核（建構式與圖解）：** 6.3／6.4 節的類別定義、參數順序、`u8g2_m_16_8_1/2/f` 的 static buffer、`nextPage()` 邏輯、HW_I2C 腳位只在 ESP8266／ESP32 生效、`NONAME`／`ALT0`／`VCOMH0` 初始化差異，皆直接對照本機 U8g2 2.36.19 原始碼。圖一與範例 B～D 的像素圖、每輪點亮數（合計 1,569 點）與 picture loop 輪數（8／4／1，含 `_F_` 使用 picture loop），是以主機編譯 U8g2 C 程式庫實際執行得到。6.3.4 驗證程式已用 Arduino AVR 1.8.8 核心對 `_1_`／`_2_`／`_F_` 三個版本做 syntax-only 檢查；尚未在實機燒錄。
 
 ---
 
@@ -948,3 +1136,36 @@ file:///D:/CLASS_NOTE/ec/u8g2_display_modes_comparison.md 參考這一份檔案�
 ```
 
 - **變更摘要**: 參照指定筆記，補充 SSD1306 byte 改寫原理、ATtiny85／STM32／ESP8266、局部更新完整例、電池與 XBM 圖示、自訂字庫命令；依官方資料及本機標頭／字型陣列修正容量、API 與效能敘述。
+
+### 🔹 [2026-10-27 18:20:00] [Claude Opus 5.5 / Claude Code] 補充類別建構式 _1／_2 解說與圖解
+
+- **模型/Agent**: Claude Opus 5.5 / Claude Code
+- **Prompt 原文**:
+
+```text
+ec/u8g2_display_modes_memory_guide.md 檢視這份資料，並補充 class construct _1 _2的說明，並在解說與範例加上適合的圖形解說
+```
+
+- **變更摘要**: 新增 6.3「類別建構式解剖」（類別／物件／建構式、參數順序、建構式呼叫鏈、static buffer、tile_buf_height 與 nextPage 演算法、`_1`／`_2`／`_F` 驗證程式與預期輸出）；新增建構式解剖、呼叫鏈、工作區窗口三張 SVG；範例 B／C／D 加入以實際像素繪製的分頁輪次圖；10.1 補充 `_F_` 可用 picture loop；FAQ 新增 SH1106、ALT0、SW_I2C 參數順序三列。查核姊妹筆記時發現 SSD1306 HW_I2C 預設 400 kHz、chinese3 在 AVR 不提供，一併修正 11.2／13.2／13.3／12.7 與 FAQ。所有原始碼敘述對照本機 U8g2 2.36.19。
+
+### 🔹 [2026-10-27 18:20:00] [Claude Opus 5.5 / Claude Code] 建構式選擇依據：硬體規格與需求
+
+- **模型/Agent**: Claude Opus 5.5 / Claude Code
+- **Prompt 原文**:
+
+```text
+建構式與硬體ssd 1306為例 要如何選擇？根據需求還是根據硬體的規格
+```
+
+- **變更摘要**: 新增 6.4「建構式怎麼選」：名稱前段（控制器、解析度、變體、介面）依硬體規格，後段（U8G2／U8X8、_1／_2／_F）依需求與 RAM；附決策圖、對照表、選錯現象與三種情境的組合結果。
+
+### 🔹 [2026-10-27 18:20:00] [Claude Opus 5.5 / Claude Code] 重繪 3.1 圖一並改寫說明
+
+- **模型/Agent**: Claude Opus 5.5 / Claude Code
+- **Prompt 原文**:
+
+```text
+另外 3.1 圖一 的內容與說明不是很清楚 需要修正更新
+```
+
+- **變更摘要**: 重繪 `assets/u8g2_buffer_comparison.svg`：RAM 等比例長條＋`_1_`／`_2_`／`_F_` 三列時間軸（每輪 buffer 內容與 OLED 狀態，使用實際像素），標示 sendBuffer 仍逐列傳送；3.1 改為分區讀圖說明與三模式輪次對照表，並加入 1,569 點實測驗證。

@@ -4,9 +4,9 @@
 @media print{@page{size:A4;margin:15mm}body{background:white;font-size:10pt;line-height:1.6}header,.toolbar,.copy,.simulator,.actions,footer{display:none!important}main{max-width:none;border:0;margin:0;padding:0}h1{font-size:21pt}h2{font-size:16pt;margin-top:22pt;break-after:avoid}h3{font-size:12pt;break-after:avoid}p,li{orphans:3;widows:3}table{font-size:8pt;min-width:0}th,td{padding:5px;overflow-wrap:anywhere}.table-scroll{overflow:visible}thead{display:table-header-group}tr{break-inside:avoid}img,figure{break-inside:avoid}pre{background:#f3f5f7;color:#111;white-space:pre-wrap;overflow:visible;padding:12px;font-size:8pt}pre code{white-space:pre-wrap;overflow-wrap:anywhere}a{color:#184777}blockquote{background:#f5f7f8}.flowchart{max-width:105mm}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 </style></head><body><header><p>U8g2 參考筆記 · 官方資料與本機程式庫校訂</p><div class="toolbar"><button type="button" onclick="window.print()">匯出成 PDF／列印</button><a class="button" href="./u8g2_display_modes_comparison.md">Markdown 原稿</a><a class="button" href="./u8g2_display_modes_memory_guide.html">完整圖解、NodeMCU-32S 與多語言教學</a><a class="button" href="../index.html">回索引</a></div></header><main><h1>🖥️ U8g2 螢幕顯示模式深度解析：U8x8、Page Buffer 與 Full Buffer 比較及開發板記憶體適配指南</h1>
 <blockquote>
-<p><strong>最後更新時間</strong>: 2026-10-27 16:07:29 (UTC+8)
-<strong>使用模型</strong>: Gemini 4 Argon (Medium)
-<strong>執行 Agent</strong>: Antigravity
+<p><strong>最後更新時間</strong>: 2026-10-27 18:05:00 (UTC+8)
+<strong>使用模型</strong>: Claude Opus 5.5（前版：Gemini 4 Argon (Medium)、GPT-6）
+<strong>執行 Agent</strong>: Claude Code（前版：Antigravity、Codex /root）
 <strong>相關筆記</strong>: <a href="./arduino_dht11_ssd1306_u8g2_guide.md">Arduino Uno + DHT11 + SSD1306 OLED（U8g2 / I2C）指南</a> | <a href="./u8g2_display_modes_comparison.html">互動版 HTML</a></p>
 <p><strong>校訂說明</strong>: 本次保留原筆記結構，修正容量、字型與效能敘述。更完整的圖解、NodeMCU-32S、六語切換、容量量測及官方來源請見 <a href="./u8g2_display_modes_memory_guide.html">校核後完整教學</a>。本機查核版本：U8g2 2.36.19、Arduino-ESP32 3.2.0。</p>
 </blockquote>
@@ -60,12 +60,14 @@ U8G2_SSD1306_128X64_NONAME_2_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 </code></pre>
 <h4>📐 通用緩衝區大小計算公式</h4>
-<p>假設螢幕寬度為 <span class="math">W</span>、高度為 <span class="math">H</span>（例如 <span class="math">128 × 64</span> 或 <span class="math">128 × 32</span>）：
-- <strong>單頁大小 (<span class="math">Page Size</span>)</strong> <span class="math">= W × 1 Byte = W Bytes</span>
-- <strong>總頁數 (<span class="math">N_pages</span>)</strong> <span class="math">= (H) / (8)</span>
-- <strong><code>_1</code> 模式 RAM 緩衝</strong> <span class="math">= W Bytes</span> （迴圈執行 <span class="math">N_pages</span> 次）
-- <strong><code>_2</code> 模式 RAM 緩衝</strong> <span class="math">= 2 × W Bytes</span> （迴圈執行 <span class="math">\fracN_pages2</span> 次）
-- <strong><code>_F</code> 模式 RAM 緩衝</strong> <span class="math">= W × (H) / (8) Bytes</span> （繪圖僅執行 <span class="math">1</span> 次）</p>
+<p>假設螢幕寬度為 <span class="math">W</span>、高度為 <span class="math">H</span>（例如 <span class="math">128 × 64</span> 或 <span class="math">128 × 32</span>）：</p>
+<ul>
+<li><strong>單頁大小 (<span class="math">Page Size</span>)</strong> <span class="math">= ⌈W/8⌉ × 8 Bytes</span>（寬度先進位到 8 的倍數；W=128 時即 128 Bytes）</li>
+<li><strong>總頁數 (<span class="math">N_pages</span>)</strong> <span class="math">= ⌈H/8⌉</span></li>
+<li><strong><code>_1</code> 模式 RAM 緩衝</strong> <span class="math">= 1 × Page Size</span>（迴圈執行 <span class="math">N_pages</span> 次）</li>
+<li><strong><code>_2</code> 模式 RAM 緩衝</strong> <span class="math">= 2 × Page Size</span>（迴圈執行 <span class="math">⌈N_pages/2⌉</span> 次）</li>
+<li><strong><code>_F</code> 模式 RAM 緩衝</strong> <span class="math">= N_pages × Page Size</span>（繪圖僅執行 <span class="math">1</span> 次）</li>
+</ul>
 <hr/>
 <h3>1.3 四大顯示模式全方位對照表</h3>
 <div class="table-scroll" tabindex="0"><table>
@@ -117,9 +119,9 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 <tr>
 <td style="text-align: left;"><strong>任意比例字型與中文字</strong></td>
 <td style="text-align: left;">依 U8x8 字型集與 tile 網格；亦有較大字型</td>
-<td style="text-align: left;">✅ 支援所有像素字型与 UTF-8</td>
-<td style="text-align: left;">✅ 支援所有像素字型与 UTF-8</td>
-<td style="text-align: left;">✅ 支援所有像素字型与 UTF-8</td>
+<td style="text-align: left;">✅ 支援所有像素字型與 UTF-8</td>
+<td style="text-align: left;">✅ 支援所有像素字型與 UTF-8</td>
+<td style="text-align: left;">✅ 支援所有像素字型與 UTF-8</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>座標系統</strong></td>
@@ -138,8 +140,8 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 <tr>
 <td style="text-align: left;"><strong>局部保留 / 增量繪圖</strong></td>
 <td style="text-align: left;">✅ 可單獨覆寫某幾個字元格</td>
-<td style="text-align: left;">❌ 每次皆須重畫整個畫面</td>
-<td style="text-align: left;">❌ 每次皆須重畫整個畫面</td>
+<td style="text-align: left;">⚠️ 一般 picture loop 須重畫整張；進階可用 <code>setBufferCurrTileRow()</code> 只送特定頁列（官方 UpdatePartly 範例）</td>
+<td style="text-align: left;">⚠️ 同左</td>
 <td style="text-align: left;">✅ 可不呼叫 <code>clearBuffer()</code> 直接疊加或局部傳送</td>
 </tr>
 <tr>
@@ -293,6 +295,9 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 </tr>
 </tbody>
 </table></div>
+<blockquote>
+<p><strong>實測對照（Uno R3 實際連結，<code>-Os</code>）：</strong> 3.3 節 Full 範例的靜態 RAM（全域與 static 變數）為 1,586 B，約 77%，可以編譯；Page 範例 680 B、U8x8 範例 434 B。這表示上表 1,200 B 是偏保守的教學假設；但靜態 RAM 不含執行時堆疊，Full 版仍須保留足夠堆疊空間，加入感測器或 SD 程式庫後要重新評估。</p>
+</blockquote>
 <p>編譯器的全域變數 RAM 摘要不包含所有動態堆積與執行時堆疊。<code>sizeof(u8g2)</code> 也不一定包含由程式庫另外配置的像素陣列。可參照 <a href="./u8g2_display_modes_memory_guide.html#simulator">互動 RAM 試算與圖解</a>。</p>
 <hr/>
 <p><a id="ref-examples"></a></p>
@@ -415,7 +420,7 @@ void loop() {
 U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
 void setup() {
-  u8g2.setBusClock(400000);     // 需確認所有裝置、接線與上拉支援 400 kHz。
+  u8g2.setBusClock(400000);     // SSD1306 HW_I2C 在 U8g2 預設即 400 kHz；線路或其他裝置不支援時改成 100000。
   u8g2.begin();                 // 初始化 OLED
 }
 
@@ -495,7 +500,7 @@ void loop() {
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
 void setup() {
-  u8g2.setBusClock(400000);     // 需確認線路支援 400 kHz。
+  u8g2.setBusClock(400000);     // SSD1306 HW_I2C 在 U8g2 預設即 400 kHz；線路或其他裝置不支援時改成 100000。
   u8g2.begin();                 // 初始化 OLED
 }
 
@@ -554,7 +559,7 @@ void loop() {
 
 u8g2.firstPage();
 do {
-  frameCount++;                          // ❌ 錯誤 1：畫一幀畫面，計數器卻暴增了 8！
+  frameCount++;                          // ❌ 錯誤 1：畫一幀畫面，計數器在 _1 下暴增 8、在 _2 下暴增 4！
   float t = dht.readTemperature();       // ❌ 錯誤 2：讀取 8 次感測器（實際是否讀硬體或命中快取依感測器程式庫而定；應將取樣移出迴圈）
   u8g2.setCursor(0, 24);
   u8g2.print(random(0, 100));            // ❌ 錯誤 3：每次重畫亂數都不同，導致一個數字上下半部是不同號碼！
@@ -567,7 +572,7 @@ do {
 </blockquote>
 <hr/>
 <h3>4.2 Full Buffer 進階技巧：<code>updateDisplayArea()</code> 局部畫面刷新</h3>
-<p>在 <code>Full Buffer (_F)</code> 模式下，每次呼叫 <code>u8g2.sendBuffer()</code> 都會透過 I2C 傳送完整的 <span class="math">1,024 Bytes</span>（在標準 <span class="math">100 kHz</span> I2C 下約需耗時 <span class="math">90～ 100 ms</span>）。如果畫面上只有一個小區域（例如右下角的秒數）在變動，可以使用 <strong><code>updateDisplayArea(tx, ty, tw, th)</code></strong> 只傳送變動的 <span class="math">8× 8</span> 圖塊（Tile）區域！</p>
+<p>在 <code>Full Buffer (_F)</code> 模式下，每次呼叫 <code>u8g2.sendBuffer()</code> 都會透過 I2C 傳送完整的 <span class="math">1,024 Bytes</span>（若以 <code>setBusClock(100000)</code> 降到 100 kHz，像素資料約需 <span class="math">90～100 ms</span>；SSD1306 HW_I2C 在 U8g2 的預設是 400 kHz，理論約 <span class="math">23～25 ms</span>，實際仍須量測）。如果畫面上只有一個小區域（例如右下角的秒數）在變動，可以使用 <strong><code>updateDisplayArea(tx, ty, tw, th)</code></strong> 只傳送變動的 <span class="math">8× 8</span> 圖塊（Tile）區域！此函式只在 Full Buffer 有效；在 <code>_1</code>／<code>_2</code> 模式呼叫時，原始碼會直接返回、不傳送任何資料。</p>
 <ul>
 <li><strong>參數單位</strong>：注意！<code>tx, ty, tw, th</code> 的單位不是像素，而是 <strong>Tile（<span class="math">8× 8</span> 像素區塊）</strong>。</li>
 <li>例如想要局部更新像素範圍 <code>x = 64~127</code>、<code>y = 16~31</code>：</li>
@@ -608,7 +613,7 @@ void updateSecondsOnly(unsigned long sec) {
 <tr>
 <th style="text-align: center;">字型後綴</th>
 <th style="text-align: left;">涵蓋字元範圍</th>
-<th style="text-align: center;">Flash 佔用大小 (以 10pt 字型為例)</th>
+<th style="text-align: center;">Flash 陣列大小（本機 ncenB08／ncenB10 實例）</th>
 <th style="text-align: left;">適用開發板與情境</th>
 </tr>
 </thead>
@@ -616,32 +621,32 @@ void updateSecondsOnly(unsigned long sec) {
 <tr>
 <td style="text-align: center;"><strong><code>_tn</code></strong></td>
 <td style="text-align: left;">數字與部分日期時間符號，具體字集依預覽</td>
-<td style="text-align: center;">依字型大小與 glyph 而變</td>
+<td style="text-align: center;">196 B／238 B</td>
 <td style="text-align: left;">純數字儀表可優先評估，並非必須使用</td>
 </tr>
 <tr>
 <td style="text-align: center;"><strong><code>_tr</code></strong></td>
 <td style="text-align: left;"><strong>Restricted</strong>：標準英文 ASCII <code>32~127</code></td>
-<td style="text-align: center;"><strong>小 (~1.2 KB)</strong></td>
+<td style="text-align: center;"><strong>1,166 B／1,559 B</strong></td>
 <td style="text-align: left;"><strong>Uno / Nano 預設首選</strong>（不含 <code>°</code> 度數符號）</td>
 </tr>
 <tr>
 <td style="text-align: center;"><strong><code>_tf</code></strong></td>
 <td style="text-align: left;"><strong>Full</strong>：完整 ASCII + Latin-1 擴充字元 (<code>32~255</code>)</td>
-<td style="text-align: center;"><strong>中 (~2.4 KB)</strong></td>
+<td style="text-align: center;"><strong>2,465 B／3,358 B</strong></td>
 <td style="text-align: left;">需要直接印出 <code>\xb0</code> (<code>°</code>) 符號時使用</td>
 </tr>
 <tr>
 <td style="text-align: center;"><strong><code>_te</code></strong></td>
 <td style="text-align: left;"><strong>Extended</strong>：包含更多歐洲語系特殊符號</td>
-<td style="text-align: center;"><strong>大 (~3.5 KB+)</strong></td>
+<td style="text-align: center;"><strong>6,637 B／9,294 B</strong></td>
 <td style="text-align: left;">一般英文/數字專題不建議在 Uno 上使用</td>
 </tr>
 <tr>
 <td style="text-align: center;"><strong><code>_t_chinese1/2/3</code></strong></td>
 <td style="text-align: left;">三種選定字集，均非完整中文</td>
 <td style="text-align: center;">本機版本分別 13,796／19,889／36,601 B</td>
-<td style="text-align: left;">是否可用取決於整個 sketch、Flash 與核心限制；繁體字須逐字檢查</td>
+<td style="text-align: left;">chinese3 在 AVR 不提供（見 5.4）；其餘取決於整個 sketch 與 Flash；繁體字須逐字檢查</td>
 </tr>
 </tbody>
 </table></div>
@@ -743,7 +748,7 @@ void updateSecondsOnly(unsigned long sec) {
 <td style="text-align: center;"><strong><code>n</code></strong></td>
 <td style="text-align: left;">數字與部分日期時間符號，依字型預覽確認</td>
 <td style="text-align: left;"><strong>純數字與小數點、冒號、正負號</strong>（無英文字母）</td>
-<td style="text-align: center;"><strong>極省 (~250B ~ 600B)</strong></td>
+<td style="text-align: center;"><strong>極省（約 200–600 B）</strong></td>
 </tr>
 <tr>
 <td style="text-align: center;"><strong><code>r</code></strong></td>
@@ -761,7 +766,7 @@ void updateSecondsOnly(unsigned long sec) {
 <td style="text-align: center;"><strong><code>e</code></strong></td>
 <td style="text-align: left;">Unicode <code>32 ~ 701</code> 範圍的 extended 選集（實際 glyph 依原字型）</td>
 <td style="text-align: left;">涵蓋東歐與更多拉丁擴充字母</td>
-<td style="text-align: center;">較大 (~3.5 KB+)</td>
+<td style="text-align: center;">較大（ncenB08_te 6.6 KB、ncenB10_te 9.3 KB）</td>
 </tr>
 <tr>
 <td style="text-align: center;"><strong><code>u</code></strong></td>
@@ -815,7 +820,7 @@ void updateSecondsOnly(unsigned long sec) {
 <tr>
 <td style="text-align: left;"><strong><code>u8g2.print(...)</code></strong></td>
 <td style="text-align: left;">需先呼叫 <code>u8g2.setCursor(x, y)</code></td>
-<td style="text-align: left;">預設僅 ASCII；呼叫 <strong><code>enableUTF8Print()</code></strong> 後解碼 UTF-8，仍受碼點與字型範圍限制</td>
+<td style="text-align: left;">預設逐位元組送出（0–255，不解碼 UTF-8）；呼叫 <strong><code>enableUTF8Print()</code></strong> 後解碼 UTF-8，仍受碼點與字型範圍限制</td>
 <td style="text-align: center;">✅ 支援 <code>print(temp, 1)</code></td>
 <td style="text-align: left;">混合印出中文標籤、浮點數與單位時最方便</td>
 </tr>
@@ -855,7 +860,7 @@ void updateSecondsOnly(unsigned long sec) {
 <tr>
 <td><code>u8g2_font_unifont_t_symbols</code></td>
 <td>Unicode 符號選集，須逐一確認符號存在</td>
-<td>依版本查陣列</td>
+<td>9,015 B（531 glyphs）</td>
 </tr>
 <tr>
 <td><code>u8g2_font_open_iconic_embedded_2x_t</code>／Siji</td>
@@ -910,7 +915,7 @@ void updateSecondsOnly(unsigned long sec) {
 </tr>
 </tbody>
 </table></div>
-<p>數字是字型常數陣列大小，不是整個 sketch 或 framebuffer 用量；大型字型在部分 AVR 核心的提供方式也可能受限制。切換 page buffer 能省 SRAM，不能減少已引用字庫的 Flash。<a href="https://github.com/olikraus/u8g2/blob/master/csrc/u8g2_fonts.c">官方字型原始碼</a></p>
+<p>數字是字型常數陣列大小，不是整個 sketch 或 framebuffer 用量；<code>chinese3</code>、<code>wqy12_t_gb2312a</code>、<code>b12_t_japanese1</code> 等大於 32 KB 的字型只在定義 <code>U8G2_USE_LARGE_FONTS</code> 的平台（ARM、ESP8266、ESP32 等）提供；Uno／Mega 等 AVR 編譯可過，但連結時會出現 undefined reference。切換 page buffer 能省 SRAM，不能減少已引用字庫的 Flash。<a href="https://github.com/olikraus/u8g2/blob/master/csrc/u8g2_fonts.c">官方字型原始碼</a></p>
 <blockquote>
 <p>[!TIP]
 <strong>如何在 Arduino Uno (32KB Flash) 上顯示事先挑選的繁體中文（如「溫濕度監測系統」）且不爆 Flash？</strong><br/>
@@ -921,7 +926,7 @@ void updateSecondsOnly(unsigned long sec) {
 <hr/>
 <h3>5.5 實戰範例：多語言（中文/英文）+ 天氣與電池圖示 + <code>°C</code> 符號整合儀表板</h3>
 <p>以下示範如何在 U8g2 中開啟 <strong><code>enableUTF8Print()</code></strong>，並在同一個畫面上混用：
-1. <strong>中文字型</strong>（顯示繁體/簡體中文標題与標籤）
+1. <strong>中文字型</strong>（顯示繁體/簡體中文標題與標籤）
 2. <strong>Open Iconic 圖示字型</strong>（顯示 ☀️ 太陽圖示與 🔋 電池電量圖示）
 3. <strong>Latin-1 <code>_tf</code> 字型</strong>（顯示 <code>°C</code> 度數符號；<code>t</code> 不保證等寬，等寬字型另選 <code>_m</code> 配置）</p>
 <h4>🔄 多字型與多語言切換繪製流程圖</h4>
@@ -945,11 +950,12 @@ void updateSecondsOnly(unsigned long sec) {
 #include &lt;U8g2lib.h&gt;
 #include &lt;Wire.h&gt;
 
-// 若在 Arduino Uno 上測試，請使用 "_1_" 或 "_2_"；若在 ESP32 上可改為 "_F_"
+// 本例含 unifont_t_chinese2（19,889 B）等字型，Uno 實測連結約 35 KB，超過 Uno R3 可用的 32,256 B Flash；
+// 請在 ESP32／RP2040／Uno R4 等板子執行（RAM 足夠時可改 "_F_"）。Uno 上請改用 XBM 或 bdfconv 子集字型。
 U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
 void setup() {
-  u8g2.setBusClock(400000);  // 所有裝置與線路必須支援。
+  u8g2.setBusClock(400000);  // SSD1306 HW_I2C 在 U8g2 預設即 400 kHz；線路或其他裝置不支援時改成 100000。
   u8g2.begin();
 
   // 🌟 關鍵設定：啟用 print() 的 UTF-8 解析功能（使用 print 輸出 UTF-8 時需要；drawUTF8 不需要這項設定。）
@@ -963,7 +969,7 @@ void loop() {
   u8g2.firstPage();
   do {
     // =====================================================================
-    // 1. 繪製右上角「電池圖示」与左上角「天氣太陽圖示」(Icon Fonts)
+    // 1. 繪製右上角「電池圖示」與左上角「天氣太陽圖示」(Icon Fonts)
     // =====================================================================
     // 畫天氣圖示 (16x16 px)：代碼 69，依該字型圖表確認圖形
     u8g2.setFont(u8g2_font_open_iconic_weather_2x_t);
@@ -1037,23 +1043,31 @@ void loop() {
 </ul>
 <hr/>
 <h3>5.8 本機 U8g2 v2.36.19 程式庫原始碼與 GitHub 官方範例核對清單</h3>
-<p>以下列出本機安裝之 <strong><code>C:/Users/User/Documents/Arduino/libraries/U8g2</code> (v2.36.19)</strong> 核心原始碼與官方 <code>olikraus/u8g2</code> GitHub Wiki 查核對照：</p>
+<p>以下列出作者 Windows 機器安裝之 <strong><code>C:/Users/User/Documents/Arduino/libraries/U8g2</code> (v2.36.19)</strong>（2026-10-27 另以 macOS 的同版 U8g2 2.36.19 複核） 核心原始碼與官方 <code>olikraus/u8g2</code> GitHub Wiki 查核對照：</p>
 <ol>
-<li><strong>三種緩衝區靜態配置 (<code>src/clib/u8g2_d_memory.c</code> L39–L71 &amp; <code>u8g2_d_setup.c</code>)</strong>：
-   - <code>u8g2_m_16_8_1()</code>：配置 <code>static uint8_t buf[128]; *page_cnt = 1;</code>（對應 <code>U8g2lib.h</code> L1586 <code>U8G2_SSD1306_128X64_NONAME_1_HW_I2C</code>）。
-   - <code>u8g2_m_16_8_2()</code>：配置 <code>static uint8_t buf[256]; *page_cnt = 2;</code>（對應 <code>U8g2lib.h</code> L1640 <code>U8G2_SSD1306_128X64_NONAME_2_HW_I2C</code>）。
-   - <code>u8g2_m_16_8_f()</code>：配置 <code>static uint8_t buf[1024]; *page_cnt = 8;</code>（對應 <code>U8g2lib.h</code> L1694 <code>U8G2_SSD1306_128X64_NONAME_F_HW_I2C</code>）。</li>
-<li><strong>大型字庫 32KB 編譯保護巨集 (<code>src/clib/u8g2.h</code> L191–L197 &amp; <code>u8g2_fonts.c</code>)</strong>：
-   - <code>u8g2.h</code> 僅在 32 位元架構（<code>__arm__</code>、<code>ESP8266</code>、<code>ESP_PLATFORM</code> 等）自動定義 <code>#define U8G2_USE_LARGE_FONTS</code>。
-   - 8 位元 AVR（如 Arduino Uno / Mega）因 <code>PROGMEM</code> 單一陣列受 32,768 Bytes 索引上限限制，預設<strong>不定義</strong> <code>U8G2_USE_LARGE_FONTS</code>；因此 <code>u8g2_font_unifont_t_chinese3[36601]</code>、<code>u8g2_font_wqy12_t_gb2312[202690]</code>、<code>u8g2_font_wqy16_t_gb2312[308472]</code> 皆受 <code>#ifdef U8G2_USE_LARGE_FONTS</code> 保護。
-   - 若在 AVR 上需較多中文字且不超過 32KB，可評估 <code>u8g2_font_boutique_bitmap_9x9_t_chinese3[19490]</code>（收錄 993/12408 glyphs，佔 19,490 B，未受 <code>U8G2_USE_LARGE_FONTS</code> 限制）。</li>
-<li><strong>字型陣列精確位元組與 Glyph 數量 (<code>src/clib/u8g2_fonts.c</code>)</strong>：
-   - <code>u8g2_font_ncenB08_tn[196]</code>（18/756 glyphs，196 B）、<code>_tr[1166]</code>（95/756 glyphs，1,166 B）、<code>_tf[2465]</code>（191/756 glyphs，2,465 B）、<code>_te[6637]</code>（452/756 glyphs，6,637 B）。
-   - <code>u8g2_font_unifont_t_chinese1[13796]</code>（412/57084 glyphs）、<code>chinese2[19889]</code>（575/57084 glyphs）、<code>chinese3[36601]</code>（994/57084 glyphs）。</li>
-<li><strong>官方內建範例對照 (<code>examples/page_buffer/</code> &amp; <code>examples/full_buffer/</code>)</strong>：
-   - <code>examples/page_buffer/Chinese/Chinese.ino</code>（L416–L434）：官方示範於 <code>setup()</code> 呼叫 <code>u8g2.enableUTF8Print()</code>，並使用 <code>u8g2_font_unifont_t_chinese2</code> 搭配 <code>u8g2.print("你好世界")</code> 或 <code>u8g2_font_b10_t_japanese1</code> 印出 <code>"こんにちは世界"</code>。
-   - <code>examples/page_buffer/Weather/Weather.ino</code>（L427–L466）：官方示範 <code>u8g2_font_open_iconic_weather_6x_t</code> 搭配 <code>drawGlyph(x, y, 69)</code>（SUN）、<code>65</code>（SUN_CLOUD）、<code>64</code>（CLOUD）、<code>67</code>（RAIN），以及 <code>u8g2_font_open_iconic_embedded_6x_t</code> 代碼 <code>67</code>（THUNDER），並以 <code>u8g2.print("°C")</code> 輸出度數。
-   - <code>examples/full_buffer/UpdateArea/UpdateArea.ino</code>（L420–L468）：官方示範 <code>u8g2.updateDisplayArea(tile_area_x_pos, tile_area_y_pos, tile_area_width, tile_area_height)</code> 以 <span class="math">8  imes 8</span> Tile 為單位局部刷新跑馬燈區域。</li>
+<li><strong>三種緩衝區靜態配置 (<code>src/clib/u8g2_d_memory.c</code> L39–L71 &amp; <code>u8g2_d_setup.c</code>)</strong>：<ul>
+<li><code>u8g2_m_16_8_1()</code>：配置 <code>static uint8_t buf[128]; *page_cnt = 1;</code>（對應 <code>U8g2lib.h</code> L1586 <code>U8G2_SSD1306_128X64_NONAME_1_HW_I2C</code>）。</li>
+<li><code>u8g2_m_16_8_2()</code>：配置 <code>static uint8_t buf[256]; *page_cnt = 2;</code>（對應 <code>U8g2lib.h</code> L1640 <code>U8G2_SSD1306_128X64_NONAME_2_HW_I2C</code>）。</li>
+<li><code>u8g2_m_16_8_f()</code>：配置 <code>static uint8_t buf[1024]; *page_cnt = 8;</code>（對應 <code>U8g2lib.h</code> L1694 <code>U8G2_SSD1306_128X64_NONAME_F_HW_I2C</code>）。</li>
+</ul>
+</li>
+<li><strong>大型字庫 32KB 編譯保護巨集 (<code>src/clib/u8g2.h</code> L191–L197 &amp; <code>u8g2_fonts.c</code>)</strong>：<ul>
+<li><code>u8g2.h</code> 只對白名單平台（<code>unix</code>、<code>__arm__</code>、<code>__arc__</code>、<code>ESP8266</code>、<code>ESP_PLATFORM</code>、<code>__LUATOS__</code>）自動定義 <code>#define U8G2_USE_LARGE_FONTS</code>，不是所有 32 位元架構都會定義。字型的 <code>extern</code> 宣告沒有被此條件包住，所以 AVR 上引用這些字型時編譯會過，但在連結階段失敗。</li>
+<li>8 位元 AVR（如 Arduino Uno / Mega）因 <code>PROGMEM</code> 單一陣列受 32,768 Bytes 索引上限限制，預設<strong>不定義</strong> <code>U8G2_USE_LARGE_FONTS</code>；因此 <code>u8g2_font_unifont_t_chinese3[36601]</code>、<code>u8g2_font_wqy12_t_gb2312[202690]</code>、<code>u8g2_font_wqy16_t_gb2312[308472]</code> 皆受 <code>#ifdef U8G2_USE_LARGE_FONTS</code> 保護。</li>
+<li>若在 AVR 上需較多中文字且不超過 32KB，可評估 <code>u8g2_font_boutique_bitmap_9x9_t_chinese3[19490]</code>（收錄 993/12408 glyphs，佔 19,490 B，未受 <code>U8G2_USE_LARGE_FONTS</code> 限制）。</li>
+</ul>
+</li>
+<li><strong>字型陣列精確位元組與 Glyph 數量 (<code>src/clib/u8g2_fonts.c</code>)</strong>：<ul>
+<li><code>u8g2_font_ncenB08_tn[196]</code>（18/756 glyphs，196 B）、<code>_tr[1166]</code>（95/756 glyphs，1,166 B）、<code>_tf[2465]</code>（191/756 glyphs，2,465 B）、<code>_te[6637]</code>（452/756 glyphs，6,637 B）。</li>
+<li><code>u8g2_font_unifont_t_chinese1[13796]</code>（412/57084 glyphs）、<code>chinese2[19889]</code>（575/57084 glyphs）、<code>chinese3[36601]</code>（994/57084 glyphs）。</li>
+</ul>
+</li>
+<li><strong>官方內建範例對照 (<code>examples/page_buffer/</code> &amp; <code>examples/full_buffer/</code>)</strong>：<ul>
+<li><code>examples/page_buffer/Chinese/Chinese.ino</code>（L416–L434）：官方示範於 <code>setup()</code> 呼叫 <code>u8g2.enableUTF8Print()</code>，並使用 <code>u8g2_font_unifont_t_chinese2</code> 搭配 <code>u8g2.print("你好世界")</code> 或 <code>u8g2_font_b10_t_japanese1</code> 印出 <code>"こんにちは世界"</code>。</li>
+<li><code>examples/page_buffer/Weather/Weather.ino</code>（L427–L466）：官方示範 <code>u8g2_font_open_iconic_weather_6x_t</code> 搭配 <code>drawGlyph(x, y, 69)</code>（SUN）、<code>65</code>（SUN_CLOUD）、<code>64</code>（CLOUD）、<code>67</code>（RAIN），以及 <code>u8g2_font_open_iconic_embedded_6x_t</code> 代碼 <code>67</code>（THUNDER），並以 <code>u8g2.print("°C")</code> 輸出度數。</li>
+<li><code>examples/full_buffer/UpdateArea/UpdateArea.ino</code>（L420–L468）：官方示範 <code>u8g2.updateDisplayArea(tile_area_x_pos, tile_area_y_pos, tile_area_width, tile_area_height)</code> 以 <span class="math">8 × 8</span> Tile 為單位局部刷新跑馬燈區域。</li>
+</ul>
+</li>
 </ol>
 <hr/>
 <p><a id="ref-history"></a></p>
@@ -1061,34 +1075,52 @@ void loop() {
 <h3>🔹 [2026-10-27 15:27:18] [Gemini 4 Argon (Medium) / Antigravity] 建立 U8g2 顯示模式比較與開發板記憶體適配指南</h3>
 <ul>
 <li><strong>模型/Agent</strong>: Gemini 4 Argon (Medium) / Antigravity</li>
-<li><strong>Prompt 原文</strong>:
-  <code>text
-  u8g2有許多種不同的螢幕顯示方式  u8x8, page_buffer,full_buffer等，分別針對這些顯示方法進行詳細比較與範例說明，並配合適用在那些開發版(記憶體限制考量)</code></li>
+<li><strong>Prompt 原文</strong>:</li>
+</ul>
+<pre><button aria-label="複製此程式區塊" class="copy" type="button">複製</button><code class="language-text">u8g2有許多種不同的螢幕顯示方式  u8x8, page_buffer,full_buffer等，分別針對這些顯示方法進行詳細比較與範例說明，並配合適用在那些開發版(記憶體限制考量)
+</code></pre>
+<ul>
 <li><strong>變更摘要</strong>: 新建 <code>ec/u8g2_display_modes_comparison.md</code> 與 <code>ec/u8g2_display_modes_comparison.html</code>，深入剖析 U8g2 四種顯示設定（<code>U8x8</code>、<code>Page Buffer _1</code>、<code>Page Buffer _2</code>、<code>Full Buffer _F</code>）之底層記憶體原理與全方位對照表；整理主流開發板（ATtiny85、Uno R3、Leonardo、Mega 2560、Uno R4、STM32、ESP8266、ESP32、RP2040）SRAM/Flash 限制與適配建議；提供三種模式完整程式碼與 Mermaid 邏輯流程圖，並補充 Page Buffer 副作用陷阱、<code>updateDisplayArea()</code> 局部刷新及字型 Flash 優化策略。</li>
 </ul>
 <h3>🔹 [2026-10-27 15:43:12] [Gemini 4 Argon (Medium) / Antigravity] 增補 U8g2 字型系統 (Fonts)、圖示符號 (Icons) 與多語言 (UTF-8 / 中文) 顯示專論</h3>
 <ul>
 <li><strong>模型/Agent</strong>: Gemini 4 Argon (Medium) / Antigravity</li>
-<li><strong>Prompt 原文</strong>:
-  <code>text
-  增加u8g2 font與符號 多語言的顯示說明</code></li>
+<li><strong>Prompt 原文</strong>:</li>
+</ul>
+<pre><button aria-label="複製此程式區塊" class="copy" type="button">複製</button><code class="language-text">增加u8g2 font與符號 多語言的顯示說明
+</code></pre>
+<ul>
 <li><strong>變更摘要</strong>: 新增第 5 章「U8g2 字型系統、圖示符號與多語言顯示專論」，詳解字型五段式命名規則（<code>t</code>/<code>h</code>/<code>m</code>/<code>8</code> 繪製模式與 <code>n</code>/<code>r</code>/<code>f</code>/<code>e</code> 字元範圍）、比較 <code>drawStr()</code> / <code>drawUTF8()</code> / <code>drawGlyph()</code> / <code>print()</code> 四種文字繪製 API、解析 <code>°C</code> 亂碼原因與三種解法、整理內建向量圖示字型（Open Iconic Weather/Embedded、Battery、Unifont Symbols）、比較各級中文字庫（<code>chinese1/2/3</code>、<code>wqy</code>）之 Flash 記憶體限制，並提供多語言＋天氣電池圖示整合範例程式碼與 <code>bdfconv</code> 自訂子集字庫流程。</li>
 </ul>
 <h3>🔹 [2026-10-27 15:59:19] [GPT-6 / Codex /root] 官方查核與跨筆記整合校訂</h3>
 <ul>
 <li><strong>模型/Agent</strong>: GPT-6 / Codex /root</li>
-<li><strong>Prompt 原文</strong>:
-  <code>text
-  file:///D:/CLASS_NOTE/ec/u8g2_display_modes_comparison.md 參考這一份檔案，將你沒有考慮到的資訊 增加進來‘‘並確認資訊與敘述正確</code></li>
+<li><strong>Prompt 原文</strong>:</li>
+</ul>
+<pre><button aria-label="複製此程式區塊" class="copy" type="button">複製</button><code class="language-text">file:///D:/CLASS_NOTE/ec/u8g2_display_modes_comparison.md 參考這一份檔案，將你沒有考慮到的資訊 增加進來‘‘並確認資訊與敘述正確
+</code></pre>
+<ul>
 <li><strong>變更摘要</strong>: 保留先前歷史；修正字型容量與 glyph 數、API 限制、UTF-8／圖示格式、效能保證及板子規格，刪除無效字型占位資料；將缺少的實務資訊補入完整教學並同步 HTML。</li>
 </ul>
 <h3>🔹 [2026-10-27 16:05:00] [Gemini 4 Argon (Medium) / Antigravity] 增補本機 U8g2 v2.36.19 程式庫原始碼與 GitHub 官方範例核對清單</h3>
 <ul>
 <li><strong>模型/Agent</strong>: Gemini 4 Argon (Medium) / Antigravity</li>
-<li><strong>Prompt 原文</strong>:
-  <code>text
-  有先查詢過程式庫與github原始說明嗎</code></li>
+<li><strong>Prompt 原文</strong>:</li>
+</ul>
+<pre><button aria-label="複製此程式區塊" class="copy" type="button">複製</button><code class="language-text">有先查詢過程式庫與github原始說明嗎
+</code></pre>
+<ul>
 <li><strong>變更摘要</strong>: 直接查核本機安裝之 <code>Arduino/libraries/U8g2</code> (v2.36.19) 原始碼（<code>U8g2lib.h</code>、<code>src/clib/u8g2.h</code>、<code>u8g2_d_memory.c</code>、<code>u8g2_d_setup.c</code>、<code>u8g2_fonts.c</code>）與官方內建範例（<code>Chinese.ino</code>、<code>PrintUTF8.ino</code>、<code>Weather.ino</code>、<code>UpdateArea.ino</code>）及 <code>olikraus/u8g2</code> GitHub Wiki，新增第 5.8 節「本機 U8g2 v2.36.19 程式庫原始碼與 GitHub 官方範例核對清單」，明確標註原始碼行號、<code>U8G2_USE_LARGE_FONTS</code> 巨集限制與各字型陣列精確大小。</li>
+</ul>
+<h3>🔹 [2026-10-27 18:05:00] [Claude Opus 5.5 / Claude Code] 依本機 U8g2 原始碼與實際編譯逐項查核修正</h3>
+<ul>
+<li><strong>模型/Agent</strong>: Claude Opus 5.5 / Claude Code（含查核子代理）</li>
+<li><strong>Prompt 原文</strong>:</li>
+</ul>
+<pre><button aria-label="複製此程式區塊" class="copy" type="button">複製</button><code class="language-text">另外也檢查 ec/u8g2_display_modes_comparison.md 確認資料與敘述的正確性
+</code></pre>
+<ul>
+<li><strong>變更摘要</strong>: 以本機 U8g2 2.36.19 原始碼、主機編譯 clib 與 AVR 實際連結查核。修正：5.5 多語言範例在 Uno 實測約 35 KB，超過 32,256 B Flash，註解改為不適用 Uno；SSD1306 HW_I2C 預設已是 400 kHz（<code>setBusClock</code> 註解與 4.2 傳輸時間）；4.3／5.1 字型大小改用 ncenB08／ncenB10 實測陣列大小（原 <code>_te</code> 嚴重低估、「10pt」說法錯誤）；大型字型在 AVR 不提供、連結時才失敗；<code>8 × 8</code> 跳脫錯誤；緩衝公式改為寬度進位；page 模式可用 <code>setBufferCurrTileRow()</code> 局部更新、<code>updateDisplayArea()</code> 只在 full 有效；<code>print()</code> 預設逐位元組；補 unifont_t_symbols 大小、Uno 實測 RAM 對照、簡體「与」。HTML 同步修正並重建被壓平的公式清單、5.8 巢狀清單與提示詞程式區塊。</li>
 </ul></main><script>
 const $ = id => document.getElementById(id);
 document.querySelectorAll('.copy').forEach(button => button.addEventListener('click', async () => {

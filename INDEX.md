@@ -1,8 +1,8 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-10-27 16:13:32 (UTC+8)
-> **使用模型**: GPT-6
-> **執行 Agent**: Codex /root
+> **最後更新時間**: 2026-10-27 18:10:00 (UTC+8)
+> **使用模型**: Claude Opus 5.5
+> **執行 Agent**: Claude Code
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 
 ---
@@ -40,7 +40,14 @@
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
 * `2026-10-27` | [U8g2 顯示模式、Page／Full 圖解、開發板 RAM 與多語言字型教學 (HTML)](./ec/u8g2_display_modes_memory_guide.html) (HTML)
 * `2026-10-27` | [U8g2 顯示模式、Page／Full 圖解、開發板 RAM 與多語言字型教學 (MD)](./ec/u8g2_display_modes_memory_guide.md) (MD)
-* `2026-10-27` | [U8g2 Page Buffer／Full Buffer RAM 與傳送方式比較圖 (SVG)](./ec/assets/u8g2_buffer_comparison.svg) (SVG)
+* `2026-10-27` | [U8g2 圖一：_1／_2／_F 的 RAM 與逐輪傳送比較圖 (SVG)](./ec/assets/u8g2_buffer_comparison.svg) (SVG)
+* `2026-10-27` | [U8g2 建構式名稱與參數解剖圖 (SVG)](./ec/assets/u8g2_constructor_anatomy.svg) (SVG)
+* `2026-10-27` | [U8g2 建構式呼叫鏈與記憶體去向圖 (SVG)](./ec/assets/u8g2_constructor_chain.svg) (SVG)
+* `2026-10-27` | [U8g2 _1／_2／_F 工作區窗口與 byte 排列圖 (SVG)](./ec/assets/u8g2_tile_window.svg) (SVG)
+* `2026-10-27` | [U8g2 SSD1306 建構式選擇決策圖（硬體規格 vs 需求） (SVG)](./ec/assets/u8g2_constructor_decision.svg) (SVG)
+* `2026-10-27` | [U8g2 範例 B：Page _1_ 實際像素與 8 輪分頁圖 (SVG)](./ec/assets/u8g2_example_page1_bands.svg) (SVG)
+* `2026-10-27` | [U8g2 範例 C：Page _2_ 實際像素與 4 輪分頁圖 (SVG)](./ec/assets/u8g2_example_page2_bands.svg) (SVG)
+* `2026-10-27` | [U8g2 範例 D：Full _F_ 實際像素圖 (SVG)](./ec/assets/u8g2_example_full_bands.svg) (SVG)
 * `2026-10-27` | [U8g2 分頁繪製與資料快照圖 (SVG)](./ec/assets/u8g2_page_loop.svg) (SVG)
 * `2026-10-27` | [U8g2 UTF-8、Unicode 與字型流程圖 (SVG)](./ec/assets/u8g2_font_pipeline.svg) (SVG)
 * `2026-10-27` | [U8g2 螢幕顯示模式深度解析：U8x8、Page Buffer 與 Full Buffer 比較及開發板記憶體適配指南 (HTML)](./ec/u8g2_display_modes_comparison.html) (HTML)
@@ -606,3 +613,15 @@ git commit all, git push
 ```
 
 - **變更摘要**: 核對兩份 U8g2 筆記及三張 SVG 的索引，準備提交工作區所有變更並推送 main。
+
+
+### 🔹 [2026-10-27 18:10:00] [Claude Opus 5.5 / Claude Code] U8g2 建構式圖解索引與提交
+
+- **模型/Agent**: Claude Opus 5.5 / Claude Code
+- **Prompt 原文**:
+
+```text
+go
+```
+
+- **變更摘要**: 新增 7 張 U8g2 建構式與分頁圖解 SVG 索引、更新圖一名稱；對應 u8g2_display_modes_memory_guide（補充 _1／_2 建構式說明、建構式選擇、重繪圖一）與 u8g2_display_modes_comparison（逐項查核修正）兩份筆記，準備提交並推送 main。

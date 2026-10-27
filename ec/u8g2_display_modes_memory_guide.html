@@ -1,12 +1,12 @@
 <!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="U8g2 Page Buffer、Full Buffer、U8x8 圖解比較，NodeMCU-32S、開發板 RAM 與多語言字型教學。"><title>U8g2 顯示模式、記憶體與多語言字型教學</title><style>
-:root{--ink:#183047;--muted:#55697c;--accent:#087e82;--blue:#2458b8;--line:#dce5eb;--paper:#fff}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#edf2f6;color:var(--ink);font:17px/1.85 "Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif}header{background:#132d44;color:white;padding:26px max(22px,calc((100% - 1120px)/2))}header p{margin:0;color:#bbd4e6}.toolbar{display:flex;gap:12px;flex-wrap:wrap;margin-top:15px}button,.button{border:1px solid #bfd0dc;border-radius:8px;background:white;color:#173047;padding:9px 14px;font:inherit;cursor:pointer;text-decoration:none}button:hover,.button:hover{background:#e5f5f2}button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #c47a00;outline-offset:3px}main{max-width:1180px;margin:26px auto;background:white;border:1px solid var(--line);border-radius:16px;padding:40px 46px}h1{font-size:2rem;line-height:1.5;margin:0 0 20px}h2{margin:54px 0 20px;border-bottom:2px solid #bcd3de;padding-bottom:10px;font-size:1.5rem}h3{margin:30px 0 12px;font-size:1.16rem}a{color:var(--blue);text-underline-offset:3px}blockquote{margin:20px 0;padding:10px 20px;border-left:4px solid var(--accent);background:#eff7f8;color:#385267}blockquote p{margin:0}p{margin:16px 0}img{max-width:100%;height:auto;display:block;border-radius:12px}figure{margin:20px 0}.flowchart{max-width:760px;margin:24px auto}.flowchart svg{width:100%;height:auto;display:block}.table-scroll{overflow:auto;margin:22px 0}table{width:100%;border-collapse:collapse;font-size:.94rem;line-height:1.7}th,td{border:1px solid var(--line);padding:11px 14px;text-align:left;vertical-align:top}th{background:#eaf1f6}tr:nth-child(even){background:#f8fafc}code{font-family:Consolas,"Cascadia Code",monospace;font-size:.92em;background:#edf3f7;border-radius:4px;padding:2px 4px}pre{background:#12283a;color:#e1eef7;border-radius:10px;padding:50px 20px 22px;position:relative;overflow:auto;line-height:1.7;font-size:14px}pre code{background:transparent;color:inherit;padding:0;white-space:pre}.copy{position:absolute;right:10px;top:9px;padding:3px 12px;font-size:13px;background:#dcebf3}li{margin:6px 0}hr{border:0;border-top:1px solid var(--line);margin:45px 0}.simulator{border:2px solid #84b7b9;padding:24px;border-radius:14px;margin-top:40px;background:#f3faf9}.simulator h2{margin:0}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.controls label{display:grid;gap:4px;font-size:15px}.controls select,.controls input{width:100%;font:inherit;padding:8px;border:1px solid #b6cad4;border-radius:6px;background:white}.memorybar{display:flex;height:24px;border:1px solid #a2b6c3;background:white;border-radius:5px;overflow:hidden}#reservedBar{background:#9aa9b7}#bufferBar{background:#087e82}.legend{font-size:14px;color:var(--muted)}.simstage{display:grid;grid-template-columns:1fr 1fr;gap:24px}.simstage h3{font-size:16px}.tileview{display:grid;gap:2px;min-height:30px}.tile{aspect-ratio:1;background:#e2e9ee;border:1px solid #d1dce3}.tile.active{background:#087e82;border-color:#087e82}.tile.full{background:#2458b8;border-color:#2458b8}.tile.ghost{background:transparent;border-style:dashed}.actions{display:flex;gap:10px;margin-top:18px}.warning{color:#ac3427;font-weight:bold}footer{max-width:1180px;margin:20px auto 40px;color:var(--muted);padding:0 25px;font-size:14px}
+:root{--ink:#183047;--muted:#55697c;--accent:#087e82;--blue:#2458b8;--line:#dce5eb;--paper:#fff}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#edf2f6;color:var(--ink);font:17px/1.85 "Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif}header{background:#132d44;color:white;padding:26px max(22px,calc((100% - 1120px)/2))}header p{margin:0;color:#bbd4e6}.toolbar{display:flex;gap:12px;flex-wrap:wrap;margin-top:15px}button,.button{border:1px solid #bfd0dc;border-radius:8px;background:white;color:#173047;padding:9px 14px;font:inherit;cursor:pointer;text-decoration:none}button:hover,.button:hover{background:#e5f5f2}button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #c47a00;outline-offset:3px}main{max-width:1180px;margin:26px auto;background:white;border:1px solid var(--line);border-radius:16px;padding:40px 46px}h1{font-size:2rem;line-height:1.5;margin:0 0 20px}h2{margin:54px 0 20px;border-bottom:2px solid #bcd3de;padding-bottom:10px;font-size:1.5rem}h3{margin:30px 0 12px;font-size:1.16rem}h4{margin:26px 0 10px;font-size:1.04rem;color:var(--accent)}a{color:var(--blue);text-underline-offset:3px}blockquote{margin:20px 0;padding:10px 20px;border-left:4px solid var(--accent);background:#eff7f8;color:#385267}blockquote p{margin:0}p{margin:16px 0}img{max-width:100%;height:auto;display:block;border-radius:12px}figure{margin:20px 0}.flowchart{max-width:760px;margin:24px auto}.flowchart svg{width:100%;height:auto;display:block}.table-scroll{overflow:auto;margin:22px 0}table{width:100%;border-collapse:collapse;font-size:.94rem;line-height:1.7}th,td{border:1px solid var(--line);padding:11px 14px;text-align:left;vertical-align:top}th{background:#eaf1f6}tr:nth-child(even){background:#f8fafc}code{font-family:Consolas,"Cascadia Code",monospace;font-size:.92em;background:#edf3f7;border-radius:4px;padding:2px 4px}pre{background:#12283a;color:#e1eef7;border-radius:10px;padding:50px 20px 22px;position:relative;overflow:auto;line-height:1.7;font-size:14px}pre code{background:transparent;color:inherit;padding:0;white-space:pre}.copy{position:absolute;right:10px;top:9px;padding:3px 12px;font-size:13px;background:#dcebf3}li{margin:6px 0}hr{border:0;border-top:1px solid var(--line);margin:45px 0}.simulator{border:2px solid #84b7b9;padding:24px;border-radius:14px;margin-top:40px;background:#f3faf9}.simulator h2{margin:0}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.controls label{display:grid;gap:4px;font-size:15px}.controls select,.controls input{width:100%;font:inherit;padding:8px;border:1px solid #b6cad4;border-radius:6px;background:white}.memorybar{display:flex;height:24px;border:1px solid #a2b6c3;background:white;border-radius:5px;overflow:hidden}#reservedBar{background:#9aa9b7}#bufferBar{background:#087e82}.legend{font-size:14px;color:var(--muted)}.simstage{display:grid;grid-template-columns:1fr 1fr;gap:24px}.simstage h3{font-size:16px}.tileview{display:grid;gap:2px;min-height:30px}.tile{aspect-ratio:1;background:#e2e9ee;border:1px solid #d1dce3}.tile.active{background:#087e82;border-color:#087e82}.tile.full{background:#2458b8;border-color:#2458b8}.tile.ghost{background:transparent;border-style:dashed}.actions{display:flex;gap:10px;margin-top:18px}.warning{color:#ac3427;font-weight:bold}footer{max-width:1180px;margin:20px auto 40px;color:var(--muted);padding:0 25px;font-size:14px}
 @media(max-width:700px){body{font-size:16px}main{margin:0;border-radius:0;padding:25px 18px}h1{font-size:1.65rem}.controls,.simstage{grid-template-columns:1fr}pre{font-size:12px}.simulator{padding:15px}}
 @media print{@page{size:A4;margin:15mm}body{background:white;font-size:10pt;line-height:1.6}header,.toolbar,.copy,.simulator,.actions,footer{display:none!important}main{max-width:none;border:0;margin:0;padding:0}h1{font-size:21pt}h2{font-size:16pt;margin-top:22pt;break-after:avoid}h3{font-size:12pt;break-after:avoid}p,li{orphans:3;widows:3}table{font-size:8pt;min-width:0}th,td{padding:5px;overflow-wrap:anywhere}.table-scroll{overflow:visible}thead{display:table-header-group}tr{break-inside:avoid}img,figure{break-inside:avoid}pre{background:#f3f5f7;color:#111;white-space:pre-wrap;overflow:visible;padding:12px;font-size:8pt}pre code{white-space:pre-wrap;overflow-wrap:anywhere}a{color:#184777}blockquote{background:#f5f7f8}.flowchart{max-width:105mm}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 </style></head><body><header><p>CLASS NOTE · 電子電路與嵌入式顯示</p><div class="toolbar"><button type="button" onclick="window.print()">匯出成 PDF／列印</button><a class="button" href="./u8g2_display_modes_memory_guide.md">Markdown 原稿</a><a class="button" href="#simulator">互動 RAM 試算</a><a class="button" href="#fonts">字型與多語言</a><a class="button" href="../index.html">回課程索引</a></div></header><main><h1>U8g2 顯示模式完整教學：U8x8、Page Buffer、Full Buffer 與開發板記憶體選擇</h1>
 <blockquote>
-<p><strong>最後更新時間</strong>: 2026-10-27 16:07:29 (UTC+8)<br/>
-<strong>使用模型</strong>: GPT-6<br/>
-<strong>執行 Agent</strong>: Codex /root<br/>
+<p><strong>最後更新時間</strong>: 2026-10-27 18:20:00 (UTC+8)<br/>
+<strong>使用模型</strong>: Claude Opus 5.5（前版：GPT-6）<br/>
+<strong>執行 Agent</strong>: Claude Code（前版：Codex /root）<br/>
 <strong>主題分類</strong>: ec／Arduino／OLED／嵌入式記憶體<br/>
 <strong>HTML 筆記</strong>: <a href="./u8g2_display_modes_memory_guide.html">開啟互動版：記憶體試算、流程圖、複製程式碼與匯出 PDF</a></p>
 </blockquote>
@@ -19,7 +19,7 @@
 <li><a href="#diagrams">圖解 Page Buffer 與 Full Buffer</a></li>
 <li><a href="#memory">記憶體公式與容量預算</a></li>
 <li><a href="#boards">開發板適用性：Uno 到 NodeMCU-32S</a></li>
-<li><a href="#setup">安裝、接線與建構式</a></li>
+<li><a href="#setup">安裝、接線與類別建構式（<code>_1</code>／<code>_2</code>／<code>_F</code> 解剖與選擇）</a></li>
 <li><a href="#example-u8x8">範例 A：U8x8 文字顯示</a></li>
 <li><a href="#example-page1">範例 B：Page Buffer <code>_1_</code></a></li>
 <li><a href="#example-page2">範例 C：Page Buffer <code>_2_</code></a></li>
@@ -162,70 +162,78 @@
 <p><a id="diagrams"></a></p>
 <h2>三、圖解：Page Buffer 和 Full Buffer 如何生成同一張畫面？</h2>
 <h3>3.1 圖一：RAM 保存的範圍與傳送次序</h3>
-<p><img alt="Page Buffer 與 Full Buffer 的 RAM、繪圖次數與 OLED 傳送方式比較" src="./assets/u8g2_buffer_comparison.svg"/></p>
-<p><strong>Page <code>_1_</code> 的八個階段：</strong></p>
+<p><img alt="圖一：Page _1_、_2_ 與 Full _F_ 的 RAM 等比例長條，以及每一輪 buffer 內容與 OLED 狀態的時間軸" src="./assets/u8g2_buffer_comparison.svg"/></p>
+<p>圖一使用第八～十節範例的<strong>實際像素</strong>（以主機編譯 U8g2 2.36.19 算出），依三個區塊閱讀：</p>
+<ol>
+<li><strong>① RAM 長條（等比例）</strong>：每一格代表一列 tile，也就是 128×8 像素、128 B。<code>_1_</code> 只放得下 1 格，<code>_2_</code> 放 2 格，<code>_F_</code> 放全部 8 格。三種模式在記憶體上的差別只有這一點。</li>
+<li><strong>② 時間軸（由左到右）</strong>：每一欄上方的細條是<strong>這一輪 MCU buffer 實際存的像素</strong>，下方是<strong>這一輪送完後 OLED 的樣子</strong>。亮青色是已更新的列，暗色是尚未送到、仍是上一張畫面的列，彩色框是本輪 buffer 對應的位置。</li>
+<li><strong>Page 模式每一輪都做同樣四件事</strong>：清除 buffer → 呼叫完整 <code>drawScene()</code> → U8g2 只保留落在當前列的像素 → <code>nextPage()</code> 送出。因此 <code>_1_</code> 第 1 輪只拿到標題的上半部（y5–7），第 2 輪才補上下半部（y8–11）。<code>_2_</code> 每輪 16 列，標題可以整行落在同一輪。</li>
+<li><strong>Full 模式只畫一次，但 <code>sendBuffer()</code> 內部仍逐列送出 tile 列 0→7。</strong> 傳送進行到一半時，OLED 上半部已是新畫面，下半部仍是舊畫面；因此 full buffer 不等於整屏瞬間切換。</li>
+</ol>
 <div class="table-scroll" tabindex="0"><table>
 <thead>
 <tr>
-<th>階段</th>
-<th>此次 buffer 對應的全螢幕 y 範圍</th>
-<th>程式執行</th>
-<th>CPU 最後傳送</th>
+<th>輪次</th>
+<th><code>_1_</code> buffer 對應 y</th>
+<th><code>_2_</code> buffer 對應 y</th>
+<th><code>_F_</code> buffer 對應 y</th>
+<th>本輪程式動作</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>1</td>
 <td>0–7</td>
-<td>呼叫完整 <code>drawScene()</code></td>
-<td>第 1 個 128 B 區段</td>
+<td>0–15</td>
+<td>0–63（唯一一輪）</td>
+<td>清除 → 完整 <code>drawScene()</code> → 送出</td>
 </tr>
 <tr>
 <td>2</td>
 <td>8–15</td>
-<td>再呼叫完整 <code>drawScene()</code></td>
-<td>第 2 個 128 B 區段</td>
+<td>16–31</td>
+<td>—</td>
+<td>同上</td>
 </tr>
 <tr>
 <td>3</td>
 <td>16–23</td>
-<td>再呼叫完整 <code>drawScene()</code></td>
-<td>第 3 個 128 B 區段</td>
+<td>32–47</td>
+<td>—</td>
+<td>同上</td>
 </tr>
 <tr>
 <td>4</td>
 <td>24–31</td>
-<td>再呼叫完整 <code>drawScene()</code></td>
-<td>第 4 個 128 B 區段</td>
+<td>48–63（<code>_2_</code> 最後一輪）</td>
+<td>—</td>
+<td>同上</td>
 </tr>
 <tr>
 <td>5</td>
-<td>32–39</td>
-<td>再呼叫完整 <code>drawScene()</code></td>
-<td>第 5 個 128 B 區段</td>
+<td>32–39（本例全空白，仍照常清除與送出）</td>
+<td>—</td>
+<td>—</td>
+<td>同上</td>
 </tr>
 <tr>
-<td>6</td>
-<td>40–47</td>
-<td>再呼叫完整 <code>drawScene()</code></td>
-<td>第 6 個 128 B 區段</td>
+<td>6–8</td>
+<td>40–47、48–55、56–63</td>
+<td>—</td>
+<td>—</td>
+<td>同上；第 8 輪 <code>nextPage()</code> 傳回 false</td>
 </tr>
 <tr>
-<td>7</td>
-<td>48–55</td>
-<td>再呼叫完整 <code>drawScene()</code></td>
-<td>第 7 個 128 B 區段</td>
-</tr>
-<tr>
-<td>8</td>
-<td>56–63</td>
-<td>再呼叫完整 <code>drawScene()</code></td>
-<td>第 8 個 128 B 區段</td>
+<td>每輪 buffer</td>
+<td>同一塊 128 B 重用</td>
+<td>同一塊 256 B 重用</td>
+<td>1,024 B 一次放滿</td>
+<td>—</td>
 </tr>
 </tbody>
 </table></div>
-<p>例如 <code>drawScene()</code> 中有文字、外框與長條圖，每一頁仍呼叫這三種繪圖命令；U8g2 自動只留下與當前頁交集的像素。<strong>座標始終是全螢幕座標，不必自己把 y 減 8，也不必手動切割字型或圖案。</strong></p>
-<p><code>_2_</code> 則依序處理 y=0–15、16–31、32–47、48–63，總共執行四次場景；buffer 是同一塊 256 B 重複使用。<code>_F_</code> 只執行一次場景，整張像素都留在 1,024 B buffer 中，再交給 <code>sendBuffer()</code> 傳送。</p>
+<p>例如 <code>drawScene()</code> 中有文字、外框與長條圖，每一輪仍執行這三種繪圖命令，U8g2 自動只留下與當前列交集的像素。<strong>座標始終是全螢幕座標，不必自己把 y 減 8，也不必手動切割字型或圖案。</strong></p>
+<p>實測三種模式點亮的像素總數都是 <strong>1,569 點</strong>（<code>_1_</code> 八輪相加、<code>_2_</code> 四輪相加、<code>_F_</code> 一次），證明分頁只是把同一張畫面分段完成，不會遺漏像素，也不會降低畫質。這套機制在原始碼層面怎麼由建構式決定，見 <a href="#constructor">6.3 類別建構式解剖</a>。</p>
 <h3>3.2 圖二：分頁迴圈不是動畫迴圈</h3>
 <p><img alt="分頁繪製流程與資料快照：同一筆資料重畫八次，避免頁面內容不一致" src="./assets/u8g2_page_loop.svg"/></p>
 <p><code>firstPage()</code> 到最後一次 <code>nextPage()</code> 是完成<strong>同一張畫面</strong>的多次繪製。每一輪不是新影格。如果把數值加一、讀感測器或 <code>random()</code> 放在繪圖函式內，頁與頁之間可能使用不同資料，造成數字上下部不一致、長條接縫或動畫物件斷裂。</p>
@@ -534,6 +542,280 @@
 </table></div>
 <p><code>SW_I2C</code> 是軟體 I²C，<code>4W_HW_SPI</code> 是硬體四線 SPI；它們不決定 page/full。範例用 <code>U8X8_PIN_NONE</code> 表示模組沒有連接可控制的 reset 腳；若實物有 reset 接線，改填對應 GPIO。<a href="https://github.com/olikraus/u8g2/wiki/u8g2setupcpp">官方建構式參考</a></p>
 <p>I²C 掃描器常報 7-bit 位址 <code>0x3C</code>／<code>0x3D</code>；U8g2 的 <code>setI2CAddress()</code> 則要傳入左移一位的值，例如 <code>0x3C &lt;&lt; 1</code>，並在 <code>begin()</code> 前設定。以下範例明確使用 <code>0x3C</code>；若掃描結果不同，須修改。<a href="https://github.com/olikraus/u8g2/wiki/u8x8reference#seti2caddress">官方 U8x8 位址 API</a></p>
+<p><a id="constructor"></a></p>
+<h3>6.3 類別建構式解剖：<code>_1</code>、<code>_2</code>、<code>_F</code> 在 C++ 裡做了什麼？</h3>
+<h4>6.3.1 核心概念：類別、物件與建構式</h4>
+<p><code>U8G2_SSD1306_128X64_NONAME_1_HW_I2C</code> 不是函式，而是 <code>U8g2lib.h</code> 定義的 <strong>C++ 類別（class）</strong>；<code>u8g2</code> 是用這個類別建立的<strong>物件</strong>；括號內的值交給該類別的<strong>建構式（constructor）</strong>。U8g2 為每一種「控制器＋解析度＋變體＋緩衝模式＋介面」組合各寫一個類別，全部繼承共用的 <code>U8G2</code> 基底類別，因此 <code>drawStr()</code>、<code>firstPage()</code>、<code>sendBuffer()</code> 在每個類別中的寫法都相同。</p>
+<p><img alt="建構式名稱解剖：六個片段分別由硬體、接腳與需求決定，以及三種介面的參數順序" src="./assets/u8g2_constructor_anatomy.svg"/></p>
+<div class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th>寫法片段</th>
+<th>C++ 角色</th>
+<th>本文範例的意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>U8G2_SSD1306_128X64_NONAME_1_HW_I2C</code></td>
+<td>類別（型別）</td>
+<td>決定驅動程式、初始化命令、buffer 大小與傳輸方式</td>
+</tr>
+<tr>
+<td><code>u8g2</code></td>
+<td>物件名稱，可自取</td>
+<td>之後以 <code>u8g2.begin()</code>、<code>u8g2.drawStr()</code> 呼叫</td>
+</tr>
+<tr>
+<td><code>U8G2_R0</code></td>
+<td>建構式第 1 參數：旋轉</td>
+<td><code>R0</code>、<code>R1</code>（90°）、<code>R2</code>（180°）、<code>R3</code>（270°）、<code>U8G2_MIRROR</code></td>
+</tr>
+<tr>
+<td><code>U8X8_PIN_NONE</code></td>
+<td>HW_I2C 第 2 參數：reset 腳</td>
+<td>模組沒有 RES 腳，或 RES 不接 MCU</td>
+</tr>
+<tr>
+<td><code>22, 21</code></td>
+<td>HW_I2C 第 3、4 參數：clock、data</td>
+<td>只有 ESP8266／ESP32 核心會用來呼叫 <code>Wire.begin(data, clock)</code>；其他核心忽略，固定用板子的預設 I²C 腳</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>參數順序依介面而不同</strong>：<code>HW_I2C</code> 是 <code>(rotation, reset, clock, data)</code>，<code>SW_I2C</code> 是 <code>(rotation, clock, data, reset)</code>，<code>4W_HW_SPI</code> 是 <code>(rotation, cs, dc, reset)</code>。從 HW 改成 SW 時，不能只改類別名稱而沿用原本的參數。以上依本機 U8g2 2.36.19 <code>U8g2lib.h</code> 與 <code>U8x8lib.cpp</code> 查核。</p>
+<h4>6.3.2 建構式內部：只設定、不通訊</h4>
+<p><img alt="建構式呼叫鏈：全域物件建立時選定驅動並取得 static buffer，begin() 才初始化 I²C 與 OLED" src="./assets/u8g2_constructor_chain.svg"/></p>
+<p>流程圖：</p>
+<figure class="flowchart"><svg aria-label="程式邏輯流程圖：flowchart TD
+  A[宣告全域物件 u8g2] --&gt; B[C++ 在 setup 之前執行類別建構式]
+  B --&gt; C[u8g2_Setup_ssd1306_i2c_128x64_noname_1 選定驅動與命令格式]
+  C --&gt; D[u8g2_m_16_8_1 取得 static buf 128 B 與 h=1]
+  D --&gt; E[u8g2_SetupBuffer 記錄 buffer 指標、h 與旋轉]
+  E --&gt; F[u8x8_SetPin_HW_I2C 只記錄腳位]
+  F --&gt; G[setup 中的 begin 才初始化 Wire 與 OLED]
+" role="img" viewbox="0 0 1000 793" xmlns="http://www.w3.org/2000/svg"><title>程式邏輯流程圖：flowchart TD
+  A[宣告全域物件 u8g2] --&gt; B[C++ 在 setup 之前執行類別建構式]
+  B --&gt; C[u8g2_Setup_ssd1306_i2c_128x64_noname_1 選定驅動與命令格式]
+  C --&gt; D[u8g2_m_16_8_1 取得 static buf 128 B 與 h=1]
+  D --&gt; E[u8g2_SetupBuffer 記錄 buffer 指標、h 與旋轉]
+  E --&gt; F[u8x8_SetPin_HW_I2C 只記錄腳位]
+  F --&gt; G[setup 中的 begin 才初始化 Wire 與 OLED]
+</title><metadata></metadata><defs><marker id="arrow" markerheight="9" markerwidth="9" orient="auto" refx="8" refy="4"><path d="M0,0 L8,4 L0,8" fill="#64748b"></path></marker></defs><g font-family="Microsoft JhengHei,Noto Sans TC,Arial,sans-serif"><rect fill="#f5f8fb" height="791" rx="18" stroke="#d9e2eb" width="998" x="1" y="1"></rect><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="78"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="115.0">宣告全域物件 u8g2</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="178"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="215.0">C++ 在 setup 之前執行類別建構式</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="278"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="315.0">u8g2_Setup_ssd1306_i2c_128x64_noname_1 選定驅動與命令格式</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="378"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="415.0">u8g2_m_16_8_1 取得 static buf 128 B 與 h=1</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="478"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="515.0">u8g2_SetupBuffer 記錄 buffer 指標、h 與旋轉</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="578"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="615.0">u8x8_SetPin_HW_I2C 只記錄腳位</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="678"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="715.0">setup 中的 begin 才初始化 Wire 與 OLED</text><path d="M550,140 L550,178" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,240 L550,278" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,340 L550,378" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,440 L550,478" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,540 L550,578" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,640 L550,678" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path></g></svg></figure>
+<p>下面是程式庫原始碼的<strong>摘錄與註解</strong>（不是要貼進 sketch 的程式），可看出 <code>_1</code>／<code>_2</code>／<code>_F</code> 三個類別只差在呼叫哪一個設定函式：</p>
+<pre><button aria-label="複製此程式區塊" class="copy" type="button">複製</button><code class="language-cpp">// U8g2lib.h（2.36.19）摘錄：_1 版本的類別定義
+class U8G2_SSD1306_128X64_NONAME_1_HW_I2C : public U8G2 {
+  public: U8G2_SSD1306_128X64_NONAME_1_HW_I2C(const u8g2_cb_t *rotation,
+      uint8_t reset = U8X8_PIN_NONE, uint8_t clock = U8X8_PIN_NONE,
+      uint8_t data = U8X8_PIN_NONE) : U8G2() {
+    // 依控制器＋解析度＋變體＋緩衝模式選定的 C 設定函式；_2、_F 版只差最後的 _2／_f。
+    u8g2_Setup_ssd1306_i2c_128x64_noname_1(&amp;u8g2, rotation,
+        u8x8_byte_arduino_hw_i2c, u8x8_gpio_and_delay_arduino);
+    // 只把腳位寫進物件；真正的 Wire.begin() 在 begin() 時才執行。
+    u8x8_SetPin_HW_I2C(getU8x8(), reset, clock, data);
+  }
+};
+
+// u8g2_d_memory.c 摘錄：buffer 是函式內的 static 陣列，程式啟動時就存在。
+uint8_t *u8g2_m_16_8_1(uint8_t *page_cnt) {
+  static uint8_t buf[128];   // 16 tile 寬 × 1 tile 高 × 8 B
+  *page_cnt = 1;             // tile_buf_height：一次保存 1 列 tile
+  return buf;
+}
+// u8g2_m_16_8_2：static buf[256]，page_cnt = 2
+// u8g2_m_16_8_f：static buf[1024]，page_cnt = 8
+</code></pre>
+<h4>6.3.3 <code>_1</code>／<code>_2</code>／<code>_F</code> 的唯一差異：tile_buf_height</h4>
+<div class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th><code>_1</code></th>
+<th><code>_2</code></th>
+<th><code>_F</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>建構式呼叫的設定函式</td>
+<td><code>…_noname_1()</code></td>
+<td><code>…_noname_2()</code></td>
+<td><code>…_noname_f()</code></td>
+</tr>
+<tr>
+<td>記憶體函式與 static 陣列</td>
+<td><code>u8g2_m_16_8_1</code> → <code>buf[128]</code></td>
+<td><code>u8g2_m_16_8_2</code> → <code>buf[256]</code></td>
+<td><code>u8g2_m_16_8_f</code> → <code>buf[1024]</code></td>
+</tr>
+<tr>
+<td><code>getBufferTileHeight()</code>（h）</td>
+<td>1</td>
+<td>2</td>
+<td>8</td>
+</tr>
+<tr>
+<td><code>nextPage()</code> 每次 row 增加</td>
+<td>1</td>
+<td>2</td>
+<td>8</td>
+</tr>
+<tr>
+<td>picture loop 輪數</td>
+<td>8</td>
+<td>4</td>
+<td>1</td>
+</tr>
+<tr>
+<td>可用的更新寫法</td>
+<td><code>firstPage()</code>／<code>nextPage()</code></td>
+<td>同左</td>
+<td><code>clearBuffer()</code>／<code>sendBuffer()</code>，或 picture loop（只跑 1 輪）</td>
+</tr>
+</tbody>
+</table></div>
+<p><img alt="_1、_2、_F 的工作區窗口、nextPage 邏輯與 buffer byte 排列" src="./assets/u8g2_tile_window.svg"/></p>
+<p>從原始碼推得的四個重要結論：</p>
+<ol>
+<li><strong>建構式不碰硬體。</strong> 全域物件在 <code>setup()</code> 之前建立，此時只記錄驅動、buffer 與腳位；<code>Serial</code> 尚未啟動、I²C 也還沒通訊。所以 <code>setI2CAddress()</code>、<code>setBusClock()</code> 要寫在 <code>begin()</code> 之前，硬體初始化由 <code>begin()</code> 完成（<code>initDisplay()</code> → <code>clearDisplay()</code> → <code>setPowerSave(0)</code>）。</li>
+<li><strong>buffer 是 static 陣列。</strong> 它在編譯時就占用 SRAM，所以 Arduino IDE 編譯報告的「全域變數使用」已包含 128／256／1,024 B；不是執行時才配置。同型別的兩個物件會共用同一個陣列（見 13.5）。</li>
+<li><strong><code>nextPage()</code> 的演算法只用到 h。</strong> 送出目前 h 列 tile → <code>row += h</code> → <code>row ≥ 8</code> 就結束，否則清空 buffer 並把裁切視窗移到新的 row。同一份 picture loop 程式碼在 <code>_1</code>、<code>_2</code>、<code>_F</code> 都能正確執行，只是輪數不同。</li>
+<li><strong>反方向不成立。</strong> <code>_1</code>／<code>_2</code> 搭配 <code>clearBuffer()</code>／<code>sendBuffer()</code> 時，<code>sendBuffer()</code> 只會把 buffer 的 h 列送到 row 0，結果只更新最上面 8／16 列。</li>
+</ol>
+<h4>6.3.4 實作：用同一支程式驗證三種建構式</h4>
+<p>只修改建構式的 <code>_1_</code>／<code>_2_</code>／<code>_F_</code>，從序列埠讀出 tile 配置與實際的 picture loop 輪數，用來確認上面的表格。</p>
+<p>流程圖：</p>
+<figure class="flowchart"><svg aria-label="程式邏輯流程圖：flowchart TD
+  A[只改建構式的 _1 _2 _F] --&gt; B[begin 初始化 OLED]
+  B --&gt; C[讀取 tile 寬高並計算 buffer bytes]
+  C --&gt; D[firstPage 開始一張畫面]
+  D --&gt; E[passes 加一並畫完整場景]
+  E --&gt; F{nextPage 還有下一輪？}
+  F --&gt;|是| E
+  F --&gt;|否| G[列印輪數並與表格比對]
+" role="img" viewbox="0 0 1000 793" xmlns="http://www.w3.org/2000/svg"><title>程式邏輯流程圖：flowchart TD
+  A[只改建構式的 _1 _2 _F] --&gt; B[begin 初始化 OLED]
+  B --&gt; C[讀取 tile 寬高並計算 buffer bytes]
+  C --&gt; D[firstPage 開始一張畫面]
+  D --&gt; E[passes 加一並畫完整場景]
+  E --&gt; F{nextPage 還有下一輪？}
+  F --&gt;|是| E
+  F --&gt;|否| G[列印輪數並與表格比對]
+</title><metadata></metadata><defs><marker id="arrow" markerheight="9" markerwidth="9" orient="auto" refx="8" refy="4"><path d="M0,0 L8,4 L0,8" fill="#64748b"></path></marker></defs><g font-family="Microsoft JhengHei,Noto Sans TC,Arial,sans-serif"><rect fill="#f5f8fb" height="791" rx="18" stroke="#d9e2eb" width="998" x="1" y="1"></rect><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="78"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="115.0">只改建構式的 _1 _2 _F</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="178"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="215.0">begin 初始化 OLED</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="278"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="315.0">讀取 tile 寬高並計算 buffer bytes</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="378"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="415.0">firstPage 開始一張畫面</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="478"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="515.0">passes 加一並畫完整場景</text><rect fill="#e9effc" height="62" rx="13" stroke="#2458b8" width="620" x="240" y="578"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="615.0">nextPage 還有下一輪？</text><rect fill="#fff" height="62" rx="13" stroke="#7eb6b6" width="620" x="240" y="678"></rect><text fill="#173047" font-size="18" font-weight="normal" text-anchor="middle" x="550" y="715.0">列印輪數並與表格比對</text><path d="M550,140 L550,178" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,240 L550,278" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,340 L550,378" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,440 L550,478" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M550,540 L550,578" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><path d="M240,609 H165 V509 H238" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><text fill="#173047" font-size="14" font-weight="normal" text-anchor="start" x="171" y="563.0">是</text><path d="M550,640 L550,678" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path><text fill="#173047" font-size="14" font-weight="normal" text-anchor="start" x="562" y="664.0">否</text></g></svg></figure>
+<pre><button aria-label="複製此程式區塊" class="copy" type="button">複製</button><code class="language-cpp">#include &lt;Arduino.h&gt;
+#include &lt;Wire.h&gt;
+#include &lt;U8g2lib.h&gt;
+
+// 只改這一行的 _1_／_2_／_F_；其餘程式不必修改。
+U8G2_SSD1306_128X64_NONAME_2_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
+
+void setup() {
+  Serial.begin(115200);
+  u8g2.setI2CAddress(0x3C &lt;&lt; 1);  // 位址須在 begin() 前設定。
+  u8g2.begin();                   // 第一次 I2C 通訊發生在這裡。
+  u8g2.setFont(u8g2_font_6x12_tr);
+
+  const uint8_t tileW = u8g2.getBufferTileWidth();   // 128 / 8 = 16
+  const uint8_t tileH = u8g2.getBufferTileHeight();  // _1=1、_2=2、_F=8
+  Serial.print(&quot;tile buffer: &quot;);
+  Serial.print(tileW);
+  Serial.print(&quot; x &quot;);
+  Serial.println(tileH);
+  Serial.print(&quot;buffer bytes: &quot;);
+  Serial.println((uint16_t)tileW * tileH * 8U);       // 128／256／1024
+
+  uint8_t passes = 0;  // 計算同一張畫面重畫幾輪。
+  u8g2.firstPage();
+  do {
+    passes++;
+    u8g2.drawStr(0, 12, &quot;constructor test&quot;);
+    u8g2.drawFrame(0, 20, 128, 40);  // 跨越多列 tile 的方框。
+  } while (u8g2.nextPage());
+  Serial.print(&quot;picture loop passes: &quot;);
+  Serial.println(passes);  // _1=8、_2=4、_F=1
+}
+
+void loop() {
+  // 本例只在開機時驗證一次。
+}
+</code></pre>
+<div class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th>建構式</th>
+<th>預期序列埠輸出</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>…_1_HW_I2C</code></td>
+<td><code>tile buffer: 16 x 1</code>、<code>buffer bytes: 128</code>、<code>picture loop passes: 8</code></td>
+</tr>
+<tr>
+<td><code>…_2_HW_I2C</code></td>
+<td><code>tile buffer: 16 x 2</code>、<code>buffer bytes: 256</code>、<code>picture loop passes: 4</code></td>
+</tr>
+<tr>
+<td><code>…_F_HW_I2C</code></td>
+<td><code>tile buffer: 16 x 8</code>、<code>buffer bytes: 1024</code>、<code>picture loop passes: 1</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>預期值已用主機編譯 U8g2 2.36.19 的 C 程式庫實際執行同樣的分頁迴圈得到；Arduino 實機輸出仍以你的板子為準。也可以把三個版本分別編譯，比較 IDE 顯示的「全域變數」差值：理論上 <code>_1</code>→<code>_2</code> 增加 128 B、<code>_2</code>→<code>_F</code> 增加 768 B。</p>
+<p><a id="constructor-choice"></a></p>
+<h3>6.4 建構式怎麼選？硬體規格與需求各管哪一段</h3>
+<p><strong>結論：兩者都要看，而且有先後順序。</strong> 類別名稱的前段（控制器、解析度、變體、介面）由<strong>硬體規格</strong>決定，選錯通常不亮、亂碼或畫面錯位；後段的 <code>U8G2</code>／<code>U8X8</code> 與 <code>_1</code>／<code>_2</code>／<code>_F</code> 由<strong>需求與開發板 RAM</strong> 決定，選錯只會造成 RAM 不足或程式寫法不符。I²C 位址、旋轉、腳位則是參數或函式，不在類別名稱中。</p>
+<p><img alt="建構式選擇決策圖：先依硬體規格決定控制器、解析度、介面與變體，再依需求選擇 API 與緩衝模式" src="./assets/u8g2_constructor_decision.svg"/></p>
+<div class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th>名稱片段</th>
+<th>由誰決定</th>
+<th>如何確認</th>
+<th>選錯的現象</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SSD1306</code>／<code>SH1106</code></td>
+<td>硬體：控制器晶片</td>
+<td>模組背面標示、賣場規格；0.96 吋多為 SSD1306，1.3 吋常見 SH1106，但以標示為準</td>
+<td>畫面偏移 2 像素、右側出現雜點或亂碼</td>
+</tr>
+<tr>
+<td><code>128X64</code>／<code>128X32_UNIVISION</code>…</td>
+<td>硬體：解析度</td>
+<td>模組規格</td>
+<td>只顯示一半、上下拉伸</td>
+</tr>
+<tr>
+<td><code>NONAME</code>／<code>ALT0</code>／<code>VCOMH0</code></td>
+<td>硬體：模組變體（初始化命令）</td>
+<td>先用 <code>NONAME</code>；隔行顯示或上下錯位改試 <code>ALT0</code>（COM 腳配置 <code>0xDA</code> 由 <code>0x12</code> 改為 <code>0x02</code>）；<code>VCOMH0</code> 對比範圍較大，但原始碼註明並非每片都適用</td>
+<td>隔行、亮度或對比異常</td>
+</tr>
+<tr>
+<td><code>HW_I2C</code>／<code>SW_I2C</code>／<code>4W_HW_SPI</code></td>
+<td>硬體接腳＋接線</td>
+<td>4 腳（VCC、GND、SCL、SDA）是 I²C；7 腳（D0、D1、RES、DC、CS）是 SPI；接在板子硬體 I²C 腳用 <code>HW_I2C</code>，任意腳用 <code>SW_I2C</code></td>
+<td>完全無回應</td>
+</tr>
+<tr>
+<td><code>U8G2</code>／<code>U8X8</code></td>
+<td>需求</td>
+<td>只顯示文字數值選 <code>U8X8</code>；要圖形、任意字型選 <code>U8G2</code></td>
+<td>沒有需要的 API</td>
+</tr>
+<tr>
+<td><code>_1</code>／<code>_2</code>／<code>_F</code></td>
+<td>需求＋開發板 RAM</td>
+<td>依第四、五節的 RAM 預算</td>
+<td>RAM 不足、重啟；或寫法不符而只更新部分畫面</td>
+</tr>
+</tbody>
+</table></div>
+<p>以同一片 0.96 吋 4 腳 SSD1306 為例：Uno R3 要畫圖形選 <code>U8G2_SSD1306_128X64_NONAME_1_HW_I2C</code>；NodeMCU-32S 要曲線或動畫選 <code>…_F_HW_I2C</code>；任何板子只顯示溫度文字可選 <code>U8X8_SSD1306_128X64_NONAME_HW_I2C</code>。<strong>三者的硬體段完全相同，只有需求段不同。</strong></p>
+<p><code>NONAME</code>、<code>ALT0</code>、<code>VCOMH0</code> 的差異依本機 <code>u8x8_d_ssd1306_128x64_noname.c</code> 的初始化序列查核。若畫面不亮，先回頭檢查硬體段與位址；能亮但 RAM 不足或速度不夠，再調整需求段。</p>
 <p><a id="example-u8x8"></a></p>
 <h2>七、範例 A：U8x8，文字狀態板</h2>
 <p><strong>用途：</strong> 只顯示溫度、狀態或計數。128×64 使用 8×8 字型時可排 16 欄×8 列，<code>drawString(0, 2, ...)</code> 代表第 0 欄、第 2 列，不是像素 y=2。</p>
@@ -581,6 +863,8 @@ void loop() {
 <p><a id="example-page1"></a></p>
 <h2>八、範例 B：Page Buffer <code>_1_</code>，128 B 畫出完整圖形</h2>
 <p><strong>用途：</strong> Uno R3 等小 RAM 開發板的圖形介面。本例在 y=12、30、43、45 等全螢幕座標畫圖；即使工作區只高 8 pixels，仍能完成跨頁文字和方框。</p>
+<p><strong>圖解：這個範例的畫面被切成哪 8 輪？</strong> 下圖是本例在數值 60% 時的實際像素。標題文字落在 y5–11，橫跨第 1、2 輪；第二行落在 y23–29，橫跨第 3、4 輪；第 5 輪沒有任何圖形，但仍要清除並送出 128 B；外框與長條橫跨第 6～8 輪。</p>
+<p><img alt="範例 B 的實際像素與 8 輪分頁：每輪只保留 8 列，標題與第二行文字被切成上下兩半，第 5 輪為空白" src="./assets/u8g2_example_page1_bands.svg"/></p>
 <p>流程圖：</p>
 <figure class="flowchart"><svg aria-label="程式邏輯流程圖：flowchart TD
   A[取得數值快照與格式化文字] --&gt; B[firstPage 定位並清除第一頁]
@@ -643,6 +927,8 @@ void loop() {
 <p><a id="example-page2"></a></p>
 <h2>九、範例 C：Page Buffer <code>_2_</code>，256 B、四次完成</h2>
 <p><strong>用途：</strong> 希望比 <code>_1_</code> 少做幾次繪圖運算，且能多拿出 128 B RAM。可直接把上一例建構式的 <code>_1_</code> 改成 <code>_2_</code>，其餘程式完全相同。下面另給可獨立執行的版本。</p>
+<p><strong>圖解：同一張畫面改成 4 輪。</strong> 每輪保留 16 列，標題（y5–11）和第二行（y23–29）都能整行落在同一輪；外框與長條橫跨第 3、4 輪。四輪點亮像素合計仍是 1,569 點，和 <code>_1_</code> 完全相同。</p>
+<p><img alt="範例 C 的實際像素與 4 輪分頁：每輪保留 16 列，文字不再被切半" src="./assets/u8g2_example_page2_bands.svg"/></p>
 <p>流程圖：</p>
 <figure class="flowchart"><svg aria-label="程式邏輯流程圖：flowchart TD
   A[固定數值與文字] --&gt; B[firstPage]
@@ -700,6 +986,8 @@ void loop() {
 <p><a id="example-full"></a></p>
 <h2>十、範例 D：Full Buffer <code>_F_</code>，1,024 B、一次畫完</h2>
 <p><strong>用途：</strong> NodeMCU-32S、Mega 2560、Uno R4 等資源較充裕的板子；或已確認 RAM 預算足夠的 Uno R3。使用與上例完全相同的文字及圖形，方便比較。</p>
+<p><strong>圖解：整張畫面一次留在 RAM。</strong> 1,024 B buffer 同時保存全部 64 列，<code>drawScene()</code> 只執行 1 次；最終像素與範例 B、C 完全相同，差別只在 RAM 用量與重畫次數。</p>
+<p><img alt="範例 D 的實際像素：Full Buffer 一次保存整張 128×64 畫面" src="./assets/u8g2_example_full_bands.svg"/></p>
 <p>流程圖：</p>
 <figure class="flowchart"><svg aria-label="程式邏輯流程圖：flowchart TD
   A[取得數值並準備文字] --&gt; B[clearBuffer 清除 MCU 畫面]
@@ -787,6 +1075,7 @@ void loop() {
 </tbody>
 </table></div>
 <p><strong>不能只把 <code>_F_</code> 改成 <code>_1_</code>，卻繼續沿用 <code>clearBuffer()</code>／<code>sendBuffer()</code>。</strong> 這樣通常只能更新第一段 8 或 16 列，並非完整分頁繪製。<a href="https://github.com/olikraus/u8g2/wiki/u8g2setupcpp#buffer-size">官方模式切換警告</a></p>
+<p>反方向則可行：<code>_F_</code> 搭配 <code>firstPage()</code>／<code>nextPage()</code> 會正常顯示，迴圈只跑 1 輪（<code>tile_buf_height</code> 為 8，第一次 <code>nextPage()</code> 就傳回 false，已用主機編譯實測）。若想讓同一份程式在 <code>_1_</code>／<code>_2_</code>／<code>_F_</code> 之間只改建構式就能切換，可以統一使用 picture loop；原理見 <a href="#constructor">6.3.3</a>。</p>
 <p><a id="nodemcu"></a></p>
 <h2>十一、NodeMCU-32S：建議先用 Full Buffer</h2>
 <h3>11.1 為什麼適合？</h3>
@@ -821,7 +1110,7 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(
 void setup() {
   Serial.begin(115200);
   u8g2.setI2CAddress(0x3C &lt;&lt; 1);  // 若模組是 0x3D，修改此處。
-  u8g2.setBusClock(100000);        // 先用 100 kHz；穩定後再評估 400 kHz。
+  u8g2.setBusClock(100000);        // U8g2 對 SSD1306 預設 400 kHz；此處先降到 100 kHz 確認接線。
   u8g2.begin();
   u8g2.setFont(u8g2_font_6x12_tr);
 
@@ -1149,7 +1438,7 @@ void loop() {
 <tr>
 <td><code>u8g2_font_unifont_t_chinese3</code></td>
 <td>36,601 B</td>
-<td>超過 Uno R3 整顆 32 KiB Flash；不是 240 KB</td>
+<td>超過 Uno R3 整顆 32 KiB Flash；且只在定義 <code>U8G2_USE_LARGE_FONTS</code> 的平台（ARM、ESP8266、ESP32 等）提供，AVR 連結時會失敗</td>
 </tr>
 <tr>
 <td><code>u8g2_font_wqy12_t_gb2312a</code></td>
@@ -1238,7 +1527,7 @@ void loop() {
 </tr>
 </tbody>
 </table></div>
-<p>這些是<strong>模型推算，非實測成績</strong>；地址、控制 byte、命令、Wire 分包、驅動、CPU 繪圖都會增加時間。page/full 全屏重畫的像素總量相近，所以從 <code>_1_</code> 改成 <code>_F_</code> 不必然得到八倍 fps。也不可只因 ESP32 CPU 快，就預期 100 kHz I²C 能達到 60 fps。</p>
+<p>U8g2 的 SSD1306 HW_I2C 驅動預設 bus clock 為 400 kHz（<code>u8x8_d_ssd1306_128x64_noname.c</code> 的 <code>i2c_bus_clock_100kHz = 4</code>），沒有呼叫 <code>setBusClock()</code> 的範例都以 400 kHz 傳輸；11.2 與 13.3 範例刻意降到 100 kHz 方便排查接線。這些是<strong>模型推算，非實測成績</strong>；地址、控制 byte、命令、Wire 分包、驅動、CPU 繪圖都會增加時間。page/full 全屏重畫的像素總量相近，所以從 <code>_1_</code> 改成 <code>_F_</code> 不必然得到八倍 fps。也不可只因 ESP32 CPU 快，就預期 100 kHz I²C 能達到 60 fps。</p>
 <h3>13.3 Full Buffer 的區域更新與殘影</h3>
 <p>full 保留整張畫面，適合在 RAM 中保留固定背景，只擦掉舊數值／舊物件後重畫變動區域。仍使用 <code>sendBuffer()</code> 時，傳輸量通常是整屏；要減少匯流排流量，需使用支援的區域更新機制。</p>
 <p><code>updateDisplayArea(tx, ty, tw, th)</code> 以 <strong>8×8 tiles</strong> 指定傳送區域；和 <code>drawBox()</code> 的像素座標不同。以 R0 的 128×64 為例，整屏是 16×8 tiles。必須先修好 RAM 中的區域、確保範圍合法，再傳送；部分控制器不完整支援此 API。裁切繪圖範圍也不會自動縮小 <code>sendBuffer()</code> 的傳輸範圍。<a href="https://github.com/olikraus/u8g2/wiki/u8g2reference#updatedisplayarea">官方區域更新與限制</a></p>
@@ -1267,7 +1556,7 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 
 void setup() {
   u8g2.setI2CAddress(0x3C &lt;&lt; 1);
-  u8g2.setBusClock(100000);  // 先確認接線穩定。
+  u8g2.setBusClock(100000);  // 預設 400 kHz；先降速確認接線穩定。
   u8g2.begin();
   u8g2.setFont(u8g2_font_6x12_tr);
   u8g2.setFontMode(1);
@@ -1336,6 +1625,26 @@ void loop() {
 <td>使用完整分頁迴圈，座標仍用全屏</td>
 </tr>
 <tr>
+<td>畫面偏移 2 像素、右側有雜點</td>
+<td>1.3 吋 SH1106 模組誤用 SSD1306 類別</td>
+<td>改用 <code>U8G2_SH1106_128X64_NONAME_…</code></td>
+</tr>
+<tr>
+<td>隔行顯示或上下錯位</td>
+<td>模組 COM 腳配置與 <code>NONAME</code> 初始化命令不符</td>
+<td>改試 <code>…_128X64_ALT0_…</code> 類別</td>
+</tr>
+<tr>
+<td>從 HW_I2C 改成 SW_I2C 後不亮</td>
+<td>兩者參數順序不同</td>
+<td>SW_I2C 為 <code>(rotation, clock, data, reset)</code></td>
+</tr>
+<tr>
+<td>U8x8 文字位置不對</td>
+<td>把 tile 座標當像素</td>
+<td>128×64／8×8 字型使用 16 欄×8 列</td>
+</tr>
+<tr>
 <td>U8x8 文字位置不對</td>
 <td>把 tile 座標當像素</td>
 <td>128×64／8×8 字型使用 16 欄×8 列</td>
@@ -1343,7 +1652,7 @@ void loop() {
 <tr>
 <td>Full Buffer 還是慢</td>
 <td>I²C 傳輸成為瓶頸</td>
-<td>量測繪圖／傳輸時間，評估 400 kHz、SPI 或區域更新</td>
+<td>量測繪圖／傳輸時間；確認沒有用 <code>setBusClock()</code> 降速（SSD1306 HW_I2C 預設已是 400 kHz），再評估 SPI 或區域更新</td>
 </tr>
 <tr>
 <td>NodeMCU-32S 顯示 heap 很少</td>
@@ -1418,6 +1727,7 @@ void loop() {
 </table></div>
 <p>容量與 fps 表是依明確條件推算；未完成實體接線、燒錄或 OLED 幀率量測。已使用實際 Uno 核心對前四個基本範例執行 C++ 語法檢查，並以實際 NodeMCU-32S／Arduino-ESP32 3.2.0 標頭檢查七個完整範例與多語言 page 變體；這些是 <strong>syntax-only 檢查，不是完整韌體連結或硬體執行</strong>。六語字串、度數與天氣圖示已逐一對照本機字型資料確認存在。</p>
 <p>HTML 已經由實際瀏覽器檢查桌面／手機寬度、圖解載入、四種互動模式及 PDF 列印產出。自訂字庫命令已對照官方工具參數；因未提供來源 BDF，沒有宣稱已產生或量測該自訂字庫。</p>
+<p><strong>2026-10-27 補充查核（建構式與圖解）：</strong> 6.3／6.4 節的類別定義、參數順序、<code>u8g2_m_16_8_1/2/f</code> 的 static buffer、<code>nextPage()</code> 邏輯、HW_I2C 腳位只在 ESP8266／ESP32 生效、<code>NONAME</code>／<code>ALT0</code>／<code>VCOMH0</code> 初始化差異，皆直接對照本機 U8g2 2.36.19 原始碼。圖一與範例 B～D 的像素圖、每輪點亮數（合計 1,569 點）與 picture loop 輪數（8／4／1，含 <code>_F_</code> 使用 picture loop），是以主機編譯 U8g2 C 程式庫實際執行得到。6.3.4 驗證程式已用 Arduino AVR 1.8.8 核心對 <code>_1_</code>／<code>_2_</code>／<code>_F_</code> 三個版本做 syntax-only 檢查；尚未在實機燒錄。</p>
 <hr/>
 <h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
 <h3>🔹 [2026-10-27 15:35:00] [GPT-6 / Codex /root] 建立完整說明</h3>
@@ -1469,6 +1779,36 @@ void loop() {
 </code></pre>
 <ul>
 <li><strong>變更摘要</strong>: 參照指定筆記，補充 SSD1306 byte 改寫原理、ATtiny85／STM32／ESP8266、局部更新完整例、電池與 XBM 圖示、自訂字庫命令；依官方資料及本機標頭／字型陣列修正容量、API 與效能敘述。</li>
+</ul>
+<h3>🔹 [2026-10-27 18:20:00] [Claude Opus 5.5 / Claude Code] 補充類別建構式 _1／_2 解說與圖解</h3>
+<ul>
+<li><strong>模型/Agent</strong>: Claude Opus 5.5 / Claude Code</li>
+<li><strong>Prompt 原文</strong>:</li>
+</ul>
+<pre><button aria-label="複製此程式區塊" class="copy" type="button">複製</button><code class="language-text">ec/u8g2_display_modes_memory_guide.md 檢視這份資料，並補充 class construct _1 _2的說明，並在解說與範例加上適合的圖形解說
+</code></pre>
+<ul>
+<li><strong>變更摘要</strong>: 新增 6.3「類別建構式解剖」（類別／物件／建構式、參數順序、建構式呼叫鏈、static buffer、tile_buf_height 與 nextPage 演算法、<code>_1</code>／<code>_2</code>／<code>_F</code> 驗證程式與預期輸出）；新增建構式解剖、呼叫鏈、工作區窗口三張 SVG；範例 B／C／D 加入以實際像素繪製的分頁輪次圖；10.1 補充 <code>_F_</code> 可用 picture loop；FAQ 新增 SH1106、ALT0、SW_I2C 參數順序三列。查核姊妹筆記時發現 SSD1306 HW_I2C 預設 400 kHz、chinese3 在 AVR 不提供，一併修正 11.2／13.2／13.3／12.7 與 FAQ。所有原始碼敘述對照本機 U8g2 2.36.19。</li>
+</ul>
+<h3>🔹 [2026-10-27 18:20:00] [Claude Opus 5.5 / Claude Code] 建構式選擇依據：硬體規格與需求</h3>
+<ul>
+<li><strong>模型/Agent</strong>: Claude Opus 5.5 / Claude Code</li>
+<li><strong>Prompt 原文</strong>:</li>
+</ul>
+<pre><button aria-label="複製此程式區塊" class="copy" type="button">複製</button><code class="language-text">建構式與硬體ssd 1306為例 要如何選擇？根據需求還是根據硬體的規格
+</code></pre>
+<ul>
+<li><strong>變更摘要</strong>: 新增 6.4「建構式怎麼選」：名稱前段（控制器、解析度、變體、介面）依硬體規格，後段（U8G2／U8X8、_1／_2／_F）依需求與 RAM；附決策圖、對照表、選錯現象與三種情境的組合結果。</li>
+</ul>
+<h3>🔹 [2026-10-27 18:20:00] [Claude Opus 5.5 / Claude Code] 重繪 3.1 圖一並改寫說明</h3>
+<ul>
+<li><strong>模型/Agent</strong>: Claude Opus 5.5 / Claude Code</li>
+<li><strong>Prompt 原文</strong>:</li>
+</ul>
+<pre><button aria-label="複製此程式區塊" class="copy" type="button">複製</button><code class="language-text">另外 3.1 圖一 的內容與說明不是很清楚 需要修正更新
+</code></pre>
+<ul>
+<li><strong>變更摘要</strong>: 重繪 <code>assets/u8g2_buffer_comparison.svg</code>：RAM 等比例長條＋<code>_1_</code>／<code>_2_</code>／<code>_F_</code> 三列時間軸（每輪 buffer 內容與 OLED 狀態，使用實際像素），標示 sendBuffer 仍逐列傳送；3.1 改為分區讀圖說明與三模式輪次對照表，並加入 1,569 點實測驗證。</li>
 </ul></main><footer>所有容量和時序試算均附假設。圖表與互動功能皆可離線使用；PDF 按鈕開啟瀏覽器列印，目的地選「另存為 PDF」。</footer><script>
 const $ = id => document.getElementById(id);
 document.querySelectorAll('.copy').forEach(button => button.addEventListener('click', async () => {
