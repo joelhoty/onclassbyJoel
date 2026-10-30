@@ -1,8 +1,8 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-10-27 18:10:00 (UTC+8)
-> **使用模型**: Claude Opus 5.5
-> **執行 Agent**: Claude Code
+> **最後更新時間**: 2026-10-30 09:50:00 (UTC+8)
+> **使用模型**: Gemini 3.8 Flash
+> **執行 Agent**: Antigravity Assistant
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 
 ---
@@ -10,6 +10,7 @@
 ## 🎯 工作區主題檔案分類與最後修改日期 (依日期由新至舊排列)
 
 ### 🤖 1. AI / 機器學習與深度學習 (`AI/`)
+* `2026-10-30` | [Agent 與 VS Code 操作驗收與小論文大綱作業 (1106_classwork.md)](./AI/1106_classwork.md) (MD)
 * 2026-10-21 | [Fooocus 影像生成課堂作業指引：Juggernaut XL 與 Voronoi LoRA 幾何細胞肖像實作 (HTML)](./AI/fooocus_voronoi_juggernaut_assignment.html) (HTML)
 * 2026-10-21 | [Fooocus 影像生成課堂作業指引：Juggernaut XL 與 Voronoi LoRA 幾何細胞肖像實作 (MD)](./AI/fooocus_voronoi_juggernaut_assignment.md) (MD)
 * 2026-10-21 | [Civitai 145848150 Voronoi 戰士課堂範例參考圖 (JPEG)](./AI/civitai_145848150.jpeg) (JPEG)
@@ -38,6 +39,10 @@
 * `2026-09-01` | [AI 研究提案計畫書 (b02)](./AI/research_proposal_b02.md) (MD)
 
 ### ⚡ 2. 電子電路與硬體實驗 (`ec/`)
+* `2026-10-29` | [Arduino Uno + DHT11：LCD1602 → SSD1306 OLED (U8x8) 溫濕度顯示與動態效果實作 1029 (HTML)](./ec/arduino_dht11_lcd1602_oled_u8x8_animation_1029.html) (HTML)
+* `2026-10-29` | [Arduino Uno + DHT11：LCD1602 → SSD1306 OLED (U8x8) 溫濕度顯示與動態效果實作 1029 (MD)](./ec/arduino_dht11_lcd1602_oled_u8x8_animation_1029.md) (MD)
+* `2026-10-29` | [Arduino Uno DHT11(D8) + SSD1306 OLED U8x8 動態效果版 1029-u8x8 (INO)](./ec/1029-u8x8.ino) (INO)
+* `2026-10-29` | [Arduino Uno DHT11(D8) + I2C LCD1602 第一行溫度第二行濕度 1029 (INO)](./ec/1029.ino) (INO)
 * `2026-10-27` | [U8g2 顯示模式、Page／Full 圖解、開發板 RAM 與多語言字型教學 (HTML)](./ec/u8g2_display_modes_memory_guide.html) (HTML)
 * `2026-10-27` | [U8g2 顯示模式、Page／Full 圖解、開發板 RAM 與多語言字型教學 (MD)](./ec/u8g2_display_modes_memory_guide.md) (MD)
 * `2026-10-27` | [U8g2 圖一：_1／_2／_F 的 RAM 與逐輪傳送比較圖 (SVG)](./ec/assets/u8g2_buffer_comparison.svg) (SVG)
@@ -128,6 +133,10 @@
 * `2026-09-08` | [紅色 LED 限流手冊](./ec/紅色%20LED%20限流電阻工程手冊與計算工具.pdf) (PDF)
 
 ### 🤖 3. 樂高機器人 EV3 / SPIKE (`ev3/`)
+* `2026-10-30` | [LEGO SPIKE 6-DOF 擬人化機械臂研究論文 (ARM.html)](./ev3/ARM.html) (HTML)
+* `2026-10-30` | [LEGO SPIKE 6-DOF 擬人化機械臂研究論文 (ARM.md)](./ev3/ARM.md) (MD)
+* `2026-10-30` | [LEGO SPIKE 仿生機械手臂研究指南：六馬達配置與五大研究題目解析 (HTML)](./ev3/spike_bionic_arm_research_topics.html) (HTML)
+* `2026-10-30` | [LEGO SPIKE 仿生機械手臂研究指南：六馬達配置與五大研究題目解析 (MD)](./ev3/spike_bionic_arm_research_topics.md) (MD)
 * `2026-10-19` | [EV3 跟車程式設計筆記：從四區間 Switch、變數分離到單一公式減速與 ACC (HTML)](./ev3/ev3_car_following_design_notes.html) (HTML)
 * `2026-10-19` | [EV3 跟車程式設計筆記：從四區間 Switch、變數分離到單一公式減速與 ACC (MD)](./ev3/ev3_car_following_design_notes.md) (MD)
 * `2026-10-19` | [EV3 跟車第二寫法截圖](./ev3/1019-2.jpg) (JPG)
@@ -625,3 +634,29 @@ go
 ```
 
 - **變更摘要**: 新增 7 張 U8g2 建構式與分頁圖解 SVG 索引、更新圖一名稱；對應 u8g2_display_modes_memory_guide（補充 _1／_2 建構式說明、建構式選擇、重繪圖一）與 u8g2_display_modes_comparison（逐項查核修正）兩份筆記，準備提交並推送 main。
+### 🔹 [2026-10-29 15:21:00] [Claude Opus 5.5 (Medium) / Antigravity] 1029 DHT11 LCD1602／OLED U8x8 筆記索引
+
+- **模型/Agent**: Claude Opus 5.5 (Medium) / Antigravity
+- **Prompt 原文**:
+
+```text
+有把以上的討論與程式整理成筆記嗎
+```
+
+- **變更摘要**: 於 `ec/` 新增 `arduino_dht11_lcd1602_oled_u8x8_animation_1029.md` / `.html`（LCD1602 兩行顯示、OLED U8x8 大字與符號、數字滾動／長條圖／趨勢箭頭動態效果），並加入 `1029.ino`、`1029-u8x8.ino`，同步更新 index.md 與 index.html。
+
+### 🔹 [2026-10-30 09:42:00] [Gemini 3.8 Flash / Antigravity Assistant] LEGO SPIKE 仿生手臂研究指南索引更新
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity Assistant
+- **Prompt 原文**:
+  ```text
+  你是一個生活科技老師，我想要做一個仿生機械手臂的研究，目前我有6個 lego spike的馬達，提供給我五個研究題目參考
+  ```
+- **變更摘要**: 於 `ev3/` 新增 `spike_bionic_arm_research_topics.md` 與 `spike_bionic_arm_research_topics.html`，提供六馬達配置策略、五大研究題目詳解、MicroPython 自適應負載控制範例與專題推展規劃，並同步更新 INDEX.md 與 index.html。
+
+### 🔹 [2026-10-30 09:48:00] [Gemini 3.8 Flash / Antigravity Assistant] 擬人化 6-DOF 關節臂專題論文建檔 (ARM.md)
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity Assistant
+- **Prompt 原文**:
+  ```text
+  擬人化6-DOF關節臂這個題目，撰寫研究動機 研究問題 文獻探討 研究方法 結果與討論 儲存ARM.md
+  ```
+- **變更摘要**: 撰寫擬人化 6-DOF 關節臂之完整專題研究報告（含動機、研究問題與假設、文獻探討、研究方法、結果與討論、MicroPython 解耦 IK 程式碼與重力補償量化分析），儲存為 `ev3/ARM.md`、`ev3/ARM.html` 與 `ARM.md`，並更新 INDEX。

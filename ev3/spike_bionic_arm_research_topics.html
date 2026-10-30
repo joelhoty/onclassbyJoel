@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEGO SPIKE 仿生機械手臂專題研究指南：六馬達配置與五大研究題目解析</title>
+    <!-- Mermaid CDN for rendering diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'dark',
+                themeVariables: {
+                    primaryColor: '#38bdf8',
+                    primaryTextColor: '#f8fafc',
+                    primaryBorderColor: '#0284c7',
+                    lineColor: '#94a3b8',
+                    secondaryColor: '#1e293b',
+                    tertiaryColor: '#0f172a'
+                }
+            });
+        });
+    </script>
+    <style>
+        :root {
+            --primary: #38bdf8;
+            --primary-dark: #0284c7;
+            --accent: #f59e0b;
+            --bg-color: #0b0f19;
+            --card-bg: #161c28;
+            --card-border: #2a3447;
+            --text-color: #cbd5e1;
+            --text-heading: #f8fafc;
+            --text-muted: #94a3b8;
+            --code-bg: #0f172a;
+            --tag-bg: rgba(56, 189, 248, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1040px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #111827 0%, #1e293b 100%);
+            padding: 36px 30px;
+            border-radius: 16px;
+            border: 1px solid #334155;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .badge {
+            display: inline-block;
+            background-color: var(--tag-bg);
+            color: var(--primary);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        h1 {
+            color: var(--text-heading);
+            font-size: 2.1rem;
+            font-weight: 800;
+            margin-bottom: 14px;
+            line-height: 1.3;
+        }
+
+        .meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #334155;
+        }
+
+        .btn-pdf {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+            transition: all 0.2s ease;
+            margin-top: 18px;
+        }
+
+        .btn-pdf:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(239, 68, 68, 0.5);
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+        }
+
+        .section-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 28px;
+            margin-bottom: 28px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: var(--text-heading);
+            font-size: 1.55rem;
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2a3447;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            color: var(--primary);
+            font-size: 1.25rem;
+            margin: 22px 0 12px 0;
+        }
+
+        h4 {
+            color: var(--accent);
+            font-size: 1.05rem;
+            margin: 14px 0 8px 0;
+        }
+
+        p {
+            margin-bottom: 14px;
+        }
+
+        ul, ol {
+            padding-left: 24px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .callout-box {
+            background: rgba(56, 189, 248, 0.08);
+            border-left: 4px solid var(--primary);
+            padding: 18px 20px;
+            border-radius: 0 10px 10px 0;
+            margin: 18px 0;
+        }
+
+        .callout-warning {
+            background: rgba(245, 158, 11, 0.08);
+            border-left: 4px solid var(--accent);
+            padding: 18px 20px;
+            border-radius: 0 10px 10px 0;
+            margin: 18px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 12px 14px;
+            text-align: left;
+            border: 1px solid var(--card-border);
+        }
+
+        th {
+            background-color: #1e293b;
+            color: var(--text-heading);
+            font-weight: 700;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .mermaid {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #1e293b;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 20px 0;
+            background: var(--code-bg);
+            border-radius: 10px;
+            border: 1px solid #1e293b;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1e293b;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .btn-copy {
+            background: rgba(56, 189, 248, 0.2);
+            color: var(--primary);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-copy:hover {
+            background: rgba(56, 189, 248, 0.4);
+            color: white;
+        }
+
+        pre {
+            padding: 16px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, "Courier New", monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #e2e8f0;
+        }
+
+        code {
+            font-family: Consolas, Monaco, "Courier New", monospace;
+        }
+
+        .topic-badge {
+            display: inline-block;
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        @media print {
+            body {
+                background-color: #fff !important;
+                color: #000 !important;
+                padding: 0;
+            }
+            .btn-pdf, .btn-copy {
+                display: none !important;
+            }
+            .section-card {
+                border: 1px solid #ccc !important;
+                background: #fff !important;
+                box-shadow: none !important;
+                page-break-inside: avoid;
+            }
+            h1, h2, h3, h4 {
+                color: #000 !important;
+            }
+            .code-container, pre {
+                background: #f8fafc !important;
+                color: #0f172a !important;
+                border: 1px solid #ccc !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <span class="badge">生活科技專題探究指引</span>
+        <h1>🦾 LEGO SPIKE 仿生機械手臂研究指南<br><span style="font-size: 1.3rem; font-weight: normal; color: #94a3b8;">六馬達配置策略與五大研究題目深度解析</span></h1>
+        
+        <div class="meta-info">
+            <div>📅 <strong>最後更新時間:</strong> 2026-10-30 09:40:00 (UTC+8)</div>
+            <div>🤖 <strong>使用模型:</strong> Gemini 3.8 Flash</div>
+            <div>🛠️ <strong>執行 Agent:</strong> Antigravity Assistant</div>
+        </div>
+
+        <button class="btn-pdf" onclick="window.print()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"/></svg>
+            匯出為 PDF 專題研究手冊
+        </button>
+    </header>
+
+    <!-- 老師的話 -->
+    <section class="section-card">
+        <h2>👨‍🏫 生活科技老師的開場剖析 (Teacher's Introduction)</h2>
+        <p>同學你好！看到你想運用 <strong>6 顆 LEGO SPIKE 馬達</strong> 來挑戰「仿生機械手臂（Bionic Robotic Arm）」的研究，老師非常讚賞你的雄心與選題！</p>
+        <p>在生活科技與工程領域中，「仿生學（Biomimetics）」並非只是拼裝出一隻長相類似手臂的外觀模型，而是<strong>深入探究自然界生物在力學、運動協調與結構演化上的機制</strong>（例如：前臂肌腱遠距索驅、多關節欠驅動自適應抓握、連桿過死點自鎖、無關節柔性連續體等），並透過機電整合與程式邏輯重現這些功能。</p>
+
+        <div class="callout-box">
+            <h4>💡 關鍵硬體限制與戰略優勢分析：</h4>
+            <ul>
+                <li><strong>連接埠飽和（Port Constraints）：</strong>標準 LEGO SPIKE Prime 集線器恰好只有 6 個連接埠（Port A ~ F）。當 6 顆馬達全插滿時，便無法外接超音波或顏色感測器。</li>
+                <li><strong>馬達即感測器（Motors as Sensors）：</strong>SPIKE 的角度馬達內建<strong>高精準絕對位置編碼器（Absolute Position Encoder）</strong>，並能即時反饋旋轉角度、轉速與馬達負載扭矩（Stall/Duty Cycle）；集線器本體更內建 6 軸陀螺儀/加速度計。充分利用編碼器反饋，即可做到高水準的閉迴路控制！</li>
+                <li><strong>力矩與結構剛性挑戰：</strong>機械臂伸長時力臂放大（$\tau = F \times d$），樂高塑膠件易產生形變。如何運用<strong>肌腱索驅（Tendon-driven）將重量後置於基座</strong>，是成功關鍵。</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- 題目總覽圖 -->
+    <section class="section-card">
+        <h2>🗺️ 五大研究方向架構圖</h2>
+        <div class="mermaid">
+graph TD
+    A["LEGO SPIKE 6馬達 仿生臂研究方向"] --> B["題目一：肌腱傳動欠驅動靈巧手<br>（手部解剖 / 索驅 / 自適應抓握）"]
+    A --> C["題目二：擬人化 6-DOF 關節臂<br>（人體肩肘腕 / 逆向運動學 / 配重平衡）"]
+    A --> D["題目三：主從同步雙向力回饋仿生臂<br>（外骨骼 / 編碼器映射 / 觸覺反饋）"]
+    A --> E["題目四：仿象鼻索驅連續體軟體臂<br>（肌肉水骨骼 / 雙節柔性脊椎 / 空間避障）"]
+    A --> F["題目五：仿猛禽猛爪與死點自鎖臂<br>（足部屈肌腱 / 過死點連桿 / 衝擊減震）"]
+        </div>
+    </section>
+
+    <!-- 題目詳解 -->
+    <section class="section-card">
+        <h2>🔬 五大仿生機械手臂研究題目深度規劃</h2>
+
+        <!-- 題目一 -->
+        <h3><span class="topic-badge">題目 1</span>【肌腱傳動型仿生人手】基於索驅（Tendon-driven）與欠驅動（Underactuated）之五指自適應靈巧手研究</h3>
+        <p><strong>🌿 仿生原型剖析：</strong>人類手指內部沒有肌肉，主要屈指肌群全在前臂，透過腕隧道的屈指肌腱拉動手指各關節，伸直時靠韌帶彈性回彈。藉此機制，手掌能保持極度輕巧敏捷。</p>
+        <p><strong>⚙️ 6 顆馬達分配方案：</strong></p>
+        <ul>
+            <li><strong>馬達 A (Wrist)：</strong>手腕俯仰/旋轉，調整整體抓握空間姿態。</li>
+            <li><strong>馬達 B (Thumb Opposition)：</strong>大拇指對掌旋轉軸（拇指能轉至掌心面對其餘四指，是靈長類抓握關鍵）。</li>
+            <li><strong>馬達 C (Thumb Flexion)：</strong>大拇指獨立屈伸抓握。</li>
+            <li><strong>馬達 D (Index Finger)：</strong>食指獨立屈伸（精細對捏 Pinch）。</li>
+            <li><strong>馬達 E (Middle Finger)：</strong>中指獨立屈伸（強力抓握主軸）。</li>
+            <li><strong>馬達 F (Ring & Pinky)：</strong>無名指與小指連動驅動（透過差動滑輪欠驅動機構，自動緊密包覆不規則物體）。</li>
+        </ul>
+        <div class="callout-box">
+            <strong>🎯 科學探究核心變因：</strong>探究肌腱走線阻力對拉力的耗損，以及自適應外包絡對圓球、圓柱、方塊與易碎紙杯的「包覆抓握接觸面積」與「最大防滑抗拉脫力（N）」。
+        </div>
+
+        <hr style="border-color: #2a3447; margin: 24px 0;">
+
+        <!-- 題目二 -->
+        <h3><span class="topic-badge">題目 2</span>【擬人化 6 自由度 (6-DOF) 機械臂】逆向運動學（IK）空間軌跡追蹤與重力補償研究</h3>
+        <p><strong>🌿 仿生原型剖析：</strong>完整重現人體上肢三大複合關節：胸肩關節（Ball-and-Socket 3-DOF）+ 肘關節（Hinge 1-DOF）+ 腕關節（Condyloid 2-DOF），使末端在笛卡爾三維空間具備完整的 6 軸運動能力。</p>
+        <p><strong>⚙️ 6 顆馬達分配方案：</strong></p>
+        <ul>
+            <li><strong>馬達 A (Joint 1 - Base Yaw)：</strong>基座水平旋轉（肩部水平擺向）。</li>
+            <li><strong>馬達 B (Joint 2 - Shoulder Pitch)：</strong>肩部大臂抬升俯仰（承受最大重力力矩，需雙層蝸輪減速）。</li>
+            <li><strong>馬達 C (Joint 3 - Arm Roll)：</strong>大臂軸向旋轉（模擬肱骨自轉）。</li>
+            <li><strong>馬達 D (Joint 4 - Elbow Pitch)：</strong>肘部屈伸。</li>
+            <li><strong>馬達 E (Joint 5 - Wrist Pitch)：</strong>手腕俯仰。</li>
+            <li><strong>馬達 F (Joint 6 - Wrist Roll / End Gripper)：</strong>手腕翻轉或末端開合夾爪。</li>
+        </ul>
+        <div class="callout-box">
+            <strong>🎯 科學探究核心變因：</strong>探究「橡皮筋張力平衡 / 配重塊平衡機構」對肩關節馬達發熱與堵轉電流的改善幅度，並驗證末端點執行直線插補運動時的空間軌跡偏差值（mm）。
+        </div>
+
+        <hr style="border-color: #2a3447; margin: 24px 0;">
+
+        <!-- 題目三 -->
+        <h3><span class="topic-badge">題目 3</span>【主從同步遙控與雙向擬態力回饋仿生臂】利用 SPIKE 馬達編碼器與阻抗負載檢測之遠端遙操作系統</h3>
+        <p><strong>🌿 仿生原型剖析：</strong>模仿人類神經系統的「本體感覺（Proprioception）」與「觸覺受器回饋」。操作者透過穿戴式裝置操作時，遠端手臂若碰觸障礙物，阻力能即刻反傳給操作端。</p>
+        <p><strong>⚙️ 6 顆馬達分配方案（單 Hub 3+3 主從模式）：</strong></p>
+        <ul>
+            <li><strong>主控端（Master 外骨骼穿戴輸入）：</strong>馬達 A（手肘輸入）、馬達 B（手腕輸入）、馬達 C（握力輸入）。</li>
+            <li><strong>受控端（Slave 仿生機械手臂執行）：</strong>馬達 D（手肘追隨）、馬達 E（手腕追隨）、馬達 F（夾爪抓取）。</li>
+        </ul>
+        <div class="callout-box">
+            <strong>🎯 科學探究核心變因：</strong>利用受控端馬達遇到阻力時的電流負載與轉速驟降變化，透過程式即時對主控端馬達施加反向力矩，測試操作者對海綿、木塊、硬幣等不同剛性物體的「遠端觸覺感知辨識率」。
+        </div>
+
+        <hr style="border-color: #2a3447; margin: 24px 0;">
+
+        <!-- 題目四 -->
+        <h3><span class="topic-badge">題目 4</span>【仿象鼻/章魚觸手之索驅連續體手臂】柔性脊柱曲率變形與空間避障抓取研究</h3>
+        <p><strong>🌿 仿生原型剖析：</strong>象鼻與章魚觸手屬於生物學上的「肌肉水骨骼（Muscular Hydrostat）」，全段無剛性關節鉸鏈，依靠無數縱向與環向肌肉纖維拉動，達成平滑三維彎曲與纏繞。</p>
+        <p><strong>⚙️ 6 顆馬達分配方案（雙節連續體 2 Segments × 3 Cables = 6 Motors）：</strong></p>
+        <ul>
+            <li><strong>近端節段（Proximal Segment 1）：</strong>馬達 A、B、C 牽引 3 根呈 $120^\circ$ 佈局的拉索，控制基部空間彎曲方向與角度。</li>
+            <li><strong>遠端節段（Distal Segment 2）：</strong>馬達 D、E、F 牽引穿過近端節段的另外 3 根拉索，獨立控制前端梢部的細緻曲率。</li>
+        </ul>
+        <div class="callout-box">
+            <strong>🎯 科學探究核心變因：</strong>探究索驅捲線筒半徑與中心彈性脊樑剛性對彎曲曲率的非線性影響，以及在狹窄複雜 S 型障礙管道中穿透與纏繞圓柱物體的成功率。
+        </div>
+
+        <hr style="border-color: #2a3447; margin: 24px 0;">
+
+        <!-- 題目五 -->
+        <h3><span class="topic-badge">題目 5</span>【仿猛禽利爪高速俯衝捕捉與被動自鎖減震臂】死點連桿自鎖與著陸衝擊吸收研究</h3>
+        <p><strong>🌿 仿生原型剖析：</strong>老鷹與猛禽在樹枝棲息或高速撲擊獵物時，依靠腳部「被動屈指肌腱鎖定（Digital Flexor Tendon Lock Mechanism）」——接觸時利用衝擊力自然卡入自鎖狀態，完全不需要肌肉持續消耗能量；腿部懸吊結構亦能吸收劇烈撞擊。</p>
+        <p><strong>⚙️ 6 顆馬達分配方案：</strong></p>
+        <ul>
+            <li><strong>馬達 A (Shoulder Extension)：</strong>大臂高速下壓伸展撲擊。</li>
+            <li><strong>馬達 B (Forearm Deployment)：</strong>前臂協同展開。</li>
+            <li><strong>馬達 C (Wrist Pitch & Angle)：</strong>爪部俯衝抓取動態角度補償。</li>
+            <li><strong>馬達 D (Front Claw Left)：</strong>前左仿生爪（配備過死點自鎖四連桿）。</li>
+            <li><strong>馬達 E (Front Claw Right)：</strong>前右仿生爪。</li>
+            <li><strong>馬達 F (Rear Opposing Talon)：</strong>後側對向猛禽大爪（形成三點包絡抓鎖）。</li>
+        </ul>
+        <div class="callout-box">
+            <strong>🎯 科學探究核心變因：</strong>探究連桿超越死點（Over-center Toggle）自鎖的角度臨界值，測試在馬達斷電（零功耗）狀態下抓住獵物的最大抗拉脫承重能力（g）。
+        </div>
+    </section>
+
+    <!-- 評估矩陣 -->
+    <section class="section-card">
+        <h2>📊 五大研究題目綜合評估與比較矩陣</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>題目編號與名稱</th>
+                    <th>機構複雜度</th>
+                    <th>程式難度</th>
+                    <th>仿生創新性</th>
+                    <th>科展/專題亮點</th>
+                    <th>老師推薦評語</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>1. 肌腱傳動欠驅動靈巧手</strong></td>
+                    <td>⭐⭐⭐⭐</td>
+                    <td>⭐⭐⭐</td>
+                    <td>⭐⭐⭐⭐⭐</td>
+                    <td>🥇 極高</td>
+                    <td>仿生度最高、欠驅動自適應抓取效果視覺衝擊強烈</td>
+                </tr>
+                <tr>
+                    <td><strong>2. 擬人化 6-DOF 關節臂</strong></td>
+                    <td>⭐⭐⭐⭐</td>
+                    <td>⭐⭐⭐⭐⭐</td>
+                    <td>⭐⭐⭐</td>
+                    <td>🥈 高</td>
+                    <td>最紮實的工業機器人學與逆向運動學（IK）基礎訓練</td>
+                </tr>
+                <tr>
+                    <td><strong>3. 主從同步力回饋仿生臂</strong></td>
+                    <td>⭐⭐⭐</td>
+                    <td>⭐⭐⭐⭐</td>
+                    <td>⭐⭐⭐⭐</td>
+                    <td>🥇 極高</td>
+                    <td>兼具外骨骼穿戴與人機協同互動，展示與互動效果極佳</td>
+                </tr>
+                <tr>
+                    <td><strong>4. 仿象鼻索驅連續體軟體臂</strong></td>
+                    <td>⭐⭐⭐⭐⭐</td>
+                    <td>⭐⭐⭐⭐</td>
+                    <td>⭐⭐⭐⭐⭐</td>
+                    <td>🥇 頂尖</td>
+                    <td>跳脫傳統剛性關節，屬於當前國際機器人柔性機構前沿</td>
+                </tr>
+                <tr>
+                    <td><strong>5. 仿猛禽死點自鎖減震臂</strong></td>
+                    <td>⭐⭐⭐</td>
+                    <td>⭐⭐⭐</td>
+                    <td>⭐⭐⭐⭐</td>
+                    <td>⭐⭐⭐⭐</td>
+                    <td>連桿死點自鎖機構精巧、具備零功耗保持特色</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- 程式實作範例 -->
+    <section class="section-card">
+        <h2>💻 程式控制演算法與實作範例</h2>
+        <p>以<strong>「題目一：肌腱傳動仿生靈巧手」</strong>為例，展示如何利用 LEGO SPIKE Prime Python API，透過馬達編碼器與負載（Load/Stall）監控，實現接觸物體時「自適應低力保壓」而不夾碎脆弱物體的控制演算法。</p>
+
+        <h3>🔄 程式控制邏輯流程圖 (Mermaid Flowchart)</h3>
+        <div class="mermaid">
+flowchart TD
+    Start(["開始抓握程序"]) --> Init["初始化 6 軸馬達<br>讀取絕對編碼器初始歸零"]
+    Init --> CloseFingers["啟動肌腱馬達以恆定速度收線<br>（屈曲手指向內閉合）"]
+    CloseFingers --> ReadData["即時循環讀取馬達即時轉角與負載扭矩<br>（Position & Duty Cycle/Load）"]
+    ReadData --> CheckTouch{"檢測到阻力驟增？<br>（Load > 臨界閾值 或 速度驟降）"}
+    CheckTouch -- "否 (仍在空中移動)" --> CheckLimit{"達到最大安全行程極限？"}
+    CheckLimit -- "否" --> ReadData
+    CheckLimit -- "是 (空抓握完畢)" --> HoldState["維持極限位置煞車"]
+    CheckTouch -- "是 (接觸物體！)" --> SoftGrip["立即切換至恆定微扭矩保持模式<br>避免壓碎脆弱目標物"]
+    SoftGrip --> WaitCommand{"等待釋放指令？"}
+    WaitCommand -- "收到釋放指令" --> OpenFingers["反轉馬達放鬆肌腱索<br>依靠彈簧回彈張開手指"]
+    OpenFingers --> End(["復位完成"])
+        </div>
+
+        <div class="code-container">
+            <div class="code-header">
+                <span>Python (LEGO SPIKE Prime MicroPython) - adaptive_bionic_hand.py</span>
+                <button class="btn-copy" onclick="copyCode(this)">複製程式碼</button>
+            </div>
+            <pre><code>"""
+LEGO SPIKE Prime 仿生機械手臂 - 肌腱驅動自適應抓握控制程式
+適用題目：題目一（肌腱傳動欠驅動靈巧手）
+核心邏輯：利用馬達負載檢測與編碼器回饋，達到自適應輕柔抓持（避免夾碎雞蛋/紙杯）
+"""
+
+import hub
+import utime
+
+# ================= 1. 硬體連接埠常數定義 =================
+# 6 顆馬達全配置 (滿載 Port A~F)
+PORT_WRIST       = hub.port.A  # 手腕俯仰
+PORT_THUMB_OPP   = hub.port.B  # 拇指對掌
+PORT_THUMB_FLEX  = hub.port.C  # 拇指屈伸
+PORT_INDEX       = hub.port.D  # 食指肌腱
+PORT_MIDDLE      = hub.port.E  # 中指肌腱
+PORT_RING_PINKY  = hub.port.F  # 無名指與小指連動肌腱
+
+# 抓握靈敏度參數
+TOUCH_LOAD_THRESHOLD = 35    # 觸碰負載閾值 (Duty cycle 百分比 0-100)
+MAX_GRIP_DEGREES     = 360   # 各指最大收線安全行程 (度)
+APPROACH_SPEED       = 25    # 接觸前進速度 (百分比，不宜過快)
+HOLD_POWER           = 12    # 夾住物體後維持接觸之輕柔保持力
+
+# ================= 2. 輔助函式定義 =================
+def init_motor(port_obj, name="Motor"):
+    """檢查並取得馬達物件"""
+    motor = port_obj.motor
+    if motor is None:
+        print("警告: 連接埠未檢測到馬達 ->", name)
+    return motor
+
+def adaptive_single_finger_grip(motor, name="Finger"):
+    """
+    單指自適應閉合控制核心演算法：
+    以低速牽引肌腱，當檢測到負載超過閾值（接觸物體）即刻煞車並切換為低功率保壓。
+    """
+    if motor is None:
+        return
+    
+    # 紀錄起始絕對編碼器角度
+    start_pos = motor.get()[1]
+    print(f"[{name}] 開始閉合抓握... 起始角度: {start_pos}")
+    
+    # 以正向低速平穩轉動拉動肌腱
+    motor.pwm(APPROACH_SPEED)
+    
+    grasped = False
+    start_time = utime.ticks_ms()
+    
+    while True:
+        pos_data = motor.get()
+        current_pos = pos_data[1]
+        current_speed = abs(pos_data[0])
+        
+        # 計算位移量
+        travel = abs(current_pos - start_pos)
+        
+        # 條件 A: 遇到障礙物（速度驟降至近乎零且已經過初期啟動時間）
+        elapsed = utime.ticks_diff(utime.ticks_ms(), start_time)
+        if elapsed > 150 and current_speed < 5:
+            print(f"[{name}] 檢測到物體接觸！位移量: {travel}°，切換至微力保壓。")
+            # 切換至極低微功率保持住，避免馬達高扭矩燒毀或壓壞物體
+            motor.pwm(HOLD_POWER)
+            grasped = True
+            break
+            
+        # 條件 B: 達到極限行程（空抓，未碰到物體）
+        if travel >= MAX_GRIP_DEGREES:
+            print(f"[{name}] 達到最大行程極限，停止收線。")
+            motor.brake()
+            break
+            
+        utime.sleep_ms(10)
+        
+    return grasped
+
+def release_all_fingers(motors):
+    """釋放所有肌腱，利用橡皮筋/回位彈簧張開手指"""
+    print("釋放所有手指...")
+    for m in motors:
+        if m:
+            m.pwm(-APPROACH_SPEED)  # 反轉放線
+    utime.sleep_ms(800)
+    for m in motors:
+        if m:
+            m.float()  # 放鬆狀態，完全依靠彈簧恢復初始張開姿態
+    print("手掌已完全張開！")
+
+# ================= 3. 主程序示範 =================
+def main():
+    print("=== LEGO SPIKE 仿生手控制系統啟動 ===")
+    
+    # 初始化 6 顆馬達
+    m_wrist      = init_motor(PORT_WRIST, "Wrist")
+    m_thumb_opp  = init_motor(PORT_THUMB_OPP, "Thumb Opposition")
+    m_thumb_flex = init_motor(PORT_THUMB_FLEX, "Thumb Flex")
+    m_index      = init_motor(PORT_INDEX, "Index")
+    m_middle     = init_motor(PORT_MIDDLE, "Middle")
+    m_ring_pinky = init_motor(PORT_RING_PINKY, "Ring & Pinky")
+    
+    all_finger_motors = [m_thumb_flex, m_index, m_middle, m_ring_pinky]
+    
+    # 步驟 1: 大拇指轉向對掌姿態 (Opposition)
+    if m_thumb_opp:
+        print("步驟 1: 大拇指旋轉對掌面向掌心...")
+        m_thumb_opp.run_for_degrees(90, 30)
+        utime.sleep_ms(500)
+        
+    # 步驟 2: 各手指同時執行自適應抓握
+    print("步驟 2: 執行自適應包覆抓握...")
+    for f_motor in all_finger_motors:
+        adaptive_single_finger_grip(f_motor)
+        
+    print(">> 抓握完成！維持抓取狀態 3 秒...")
+    utime.sleep_ms(3000)
+    
+    # 步驟 3: 釋放物品並復位
+    print("步驟 3: 釋放目標物...")
+    release_all_fingers(all_finger_motors)
+    
+    if m_thumb_opp:
+        m_thumb_opp.run_for_degrees(-90, 30)  # 大拇指復位
+        
+    print("=== 專題示範流程結束 ===")
+
+if __name__ == "__main__":
+    main()</code></pre>
+        </div>
+    </section>
+
+    <!-- 老師的專題推展規劃 -->
+    <section class="section-card">
+        <h2>💡 生活科技老師的專題研究推展建議 (Action Plan)</h2>
+        <ol>
+            <li><strong>第一階段：單指原型製作與驗證（1~2週）：</strong>切忌一開始就組裝整隻手！先用 1 顆馬達 + 樂高樑 + 釣魚線 + 橡皮筋做出單一關節索驅，觀察回彈速度與導管磨損。</li>
+            <li><strong>第二階段：剛性結構強化與配重配置（2~3週）：</strong>樂高手臂最大的敵人是「下垂重力」與「扭轉形變」。善用三角桁架結構強化主臂，並盡可能將 6 顆馬達重心後移置於底座。</li>
+            <li><strong>第三階段：量化數據探究與實驗（2週）：</strong>專題要出彩，必須有科學數據！測量抓取 10 種不同形狀與材質物體的「抓持成功率（%）」與「最大脫落拉力值（N）」，繪製成圖表。</li>
+        </ol>
+    </section>
+
+    <!-- 提示詞紀錄 -->
+    <section class="section-card">
+        <h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+        <div style="background: #0f172a; padding: 18px; border-radius: 8px; border: 1px solid #1e293b;">
+            <h4 style="color: #38bdf8; margin-top: 0;">🔹 [2026-10-30 09:40:00] [Gemini 3.8 Flash / Antigravity Assistant] 變更紀錄</h4>
+            <p style="margin-bottom: 6px;"><strong>模型/Agent:</strong> Gemini 3.8 Flash / Antigravity Assistant</p>
+            <p style="margin-bottom: 6px;"><strong>Prompt 原文:</strong></p>
+            <pre style="background: #090d16; border: 1px solid #2a3447; padding: 10px; border-radius: 6px; color: #a5b4fc;">你是一個生活科技老師，我想要做一個仿生機械手臂的研究，目前我有6個 lego spike的馬達，提供給我五個研究題目參考</pre>
+            <p style="margin-top: 10px;"><strong>變更摘要:</strong> 建立專題研究指南 HTML 頁面，配備列印 PDF 按鈕、代碼複製按鈕、Mermaid 流程圖繪製、五大研究題目架構、6 軸馬達分配分析與 MicroPython 自適應負載控制範例程式。</p>
+        </div>
+    </section>
+</div>
+
+<script>
+    function copyCode(btn) {
+        const code = btn.parentElement.nextElementSibling.querySelector('code').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+            const originalText = btn.innerText;
+            btn.innerText = '已複製！';
+            btn.style.background = '#10b981';
+            btn.style.color = '#ffffff';
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.background = '';
+                btn.style.color = '';
+            }, 2000);
+        });
+    }
+</script>
+</body>
+</html>

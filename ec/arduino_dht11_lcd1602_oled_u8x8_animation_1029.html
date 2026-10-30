@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌡️ Arduino Uno + DHT11：從 LCD1602 到 SSD1306 OLED (U8x8) 溫濕度顯示與動態效果實作 (1029)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true, theme:'neutral', securityLevel:'loose'});</script>
+<style>
+:root { --primary:#0284c7; --bg:#f8fafc; --card:#fff; --text:#1e293b; --muted:#64748b; --border:#e2e8f0; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Microsoft JhengHei",sans-serif; background:var(--bg); color:var(--text); line-height:1.8; padding:2rem 1rem; }
+.container { max-width:1100px; margin:0 auto; }
+header { background:linear-gradient(135deg,#0b132b 0%,#1e3a8a 55%,#0284c7 100%); color:#fff; padding:2.2rem 2rem; border-radius:16px; margin-bottom:2rem; box-shadow:0 10px 15px -3px rgba(0,0,0,.1); }
+.header-top { display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; flex-wrap:wrap; }
+h1 { font-size:1.8rem; line-height:1.35; font-weight:800; }
+.btn { display:inline-flex; align-items:center; gap:.4rem; padding:.6rem 1.1rem; font-size:.9rem; font-weight:600; border-radius:8px; border:none; cursor:pointer; text-decoration:none; transition:.2s; }
+.btn-pdf { background:#dc2626; color:#fff; } .btn-pdf:hover { background:#b91c1c; transform:translateY(-2px); }
+.btn-sec { background:rgba(255,255,255,.12); color:#fff; border:1px solid rgba(255,255,255,.25); }
+.metadata-box { background:rgba(15,23,42,.75); border:1px solid rgba(255,255,255,.15); border-radius:8px; padding:.9rem 1.2rem; font-size:.88rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:.6rem; margin-top:1.2rem; color:#cbd5e1; }
+.metadata-box strong { color:#f1f5f9; }
+main.card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:2.2rem; box-shadow:0 4px 6px -1px rgba(0,0,0,.08); }
+main h2 { font-size:1.45rem; margin:2.2rem 0 1rem; padding-bottom:.5rem; border-bottom:2px solid #e0f2fe; color:#0f172a; }
+main h2:first-child { margin-top:0; }
+main h3 { font-size:1.15rem; margin:1.6rem 0 .7rem; color:#0369a1; }
+main p, main ul, main ol { margin:.7rem 0; }
+main ul, main ol { padding-left:1.6rem; }
+main hr { border:none; border-top:1px dashed var(--border); margin:2rem 0; }
+main blockquote { border-left:4px solid var(--primary); background:#e0f2fe; padding:.7rem 1rem; border-radius:0 8px 8px 0; margin:1rem 0; color:#0c4a6e; }
+main code { background:#f1f5f9; padding:.1rem .35rem; border-radius:4px; font-size:.9em; color:#be185d; }
+.table-wrap { overflow-x:auto; margin:1rem 0; }
+table { border-collapse:collapse; width:100%; font-size:.93rem; }
+th, td { border:1px solid var(--border); padding:.55rem .8rem; text-align:left; vertical-align:top; }
+th { background:#f1f5f9; }
+tr:nth-child(even) td { background:#fafcff; }
+.code-container { position:relative; margin:1rem 0; }
+.code-container pre { border-radius:8px; padding:1.2rem 1rem; overflow-x:auto; font-size:.86rem; line-height:1.55; }
+.code-container pre code { background:none; color:inherit; padding:0; }
+.copy-btn { position:absolute; top:.5rem; right:.5rem; z-index:2; background:#334155; color:#fff; border:none; border-radius:6px; padding:.3rem .7rem; font-size:.8rem; cursor:pointer; opacity:.85; }
+.copy-btn:hover { opacity:1; background:#0284c7; }
+.mermaid-wrap { background:#f8fafc; border:1px solid var(--border); border-radius:8px; padding:1rem; margin:1rem 0; overflow-x:auto; text-align:center; }
+footer { text-align:center; color:var(--muted); font-size:.85rem; margin-top:2rem; }
+@media print {
+  body { background:#fff; padding:0; }
+  .no-print, .copy-btn { display:none !important; }
+  header { box-shadow:none; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  main.card { box-shadow:none; border:none; padding:0; }
+  .code-container pre { white-space:pre-wrap; word-break:break-all; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  h2, h3 { page-break-after:avoid; }
+  .mermaid-wrap, table { page-break-inside:avoid; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="header-top">
+    <h1>🌡️ Arduino Uno + DHT11：從 LCD1602 到 SSD1306 OLED (U8x8) 溫濕度顯示與動態效果實作 (1029)</h1>
+    <div class="no-print" style="display:flex;gap:.6rem;flex-wrap:wrap">
+      <button class="btn btn-pdf" onclick="window.print()">📄 匯出 PDF</button>
+      <a class="btn btn-sec" href="../index.html">🏠 返回索引</a>
+    </div>
+  </div>
+  <div class="metadata-box"><div><strong>最後更新時間</strong>：2026-10-29 15:20:00 (UTC+8)</div><div><strong>使用模型</strong>：Claude Opus 5.5 (Medium)</div><div><strong>執行 Agent</strong>：Antigravity</div></div>
+</header>
+<main class="card">
+<h2 id="0">📌 0. 本篇重點總覽</h2>
+<p>本篇整理 2026-10-29 課堂的三個實作階段，全部以 <strong>Arduino Uno + DHT11（D8）</strong> 為基礎：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>階段</th>
+<th>程式檔</th>
+<th>顯示器</th>
+<th>重點</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td><a href="./1029.ino"><code>1029.ino</code></a></td>
+<td>I2C LCD1602 (0x27)</td>
+<td>兩支範例程式合併；第一行溫度、第二行濕度</td>
+</tr>
+<tr>
+<td>B</td>
+<td>（本筆記第 4 章程式碼）</td>
+<td>SSD1306 128x64 OLED (U8x8)</td>
+<td>版面規劃、2x2 放大字、自訂「°」圖塊</td>
+</tr>
+<tr>
+<td>C</td>
+<td><a href="./1029-u8x8.ino"><code>1029-u8x8.ino</code></a></td>
+<td>SSD1306 128x64 OLED (U8x8)</td>
+<td>數字滾動、長條圖、趨勢箭頭、旋轉指示器、<code>millis()</code> 非阻塞</td>
+</tr>
+</tbody>
+</table></div>
+<div class="mermaid-wrap"><pre class="mermaid">flowchart LR
+    S1[&quot;1029.txt&lt;br/&gt;DHT 範例 + LCD 範例&quot;] --&gt; A[&quot;A. 1029.ino&lt;br/&gt;LCD1602 兩行顯示&quot;]
+    S2[&quot;1029-u8x8.txt&lt;br/&gt;U8x8 HelloWorld + 1029.ino&quot;] --&gt; B[&quot;B. OLED 靜態版&lt;br/&gt;大字 + 符號&quot;]
+    B --&gt; C[&quot;C. 1029-u8x8.ino&lt;br/&gt;動態效果版&quot;]
+</pre></div>
+<h3 id="_1">硬體接線</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>元件</th>
+<th>腳位</th>
+<th>Arduino Uno</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DHT11</td>
+<td>DATA</td>
+<td>D8</td>
+</tr>
+<tr>
+<td>DHT11</td>
+<td>VCC / GND</td>
+<td>5V / GND</td>
+</tr>
+<tr>
+<td>LCD1602 I2C 或 SSD1306 OLED</td>
+<td>SDA</td>
+<td>A4</td>
+</tr>
+<tr>
+<td>LCD1602 I2C 或 SSD1306 OLED</td>
+<td>SCL</td>
+<td>A5</td>
+</tr>
+<tr>
+<td>LCD1602 I2C 或 SSD1306 OLED</td>
+<td>VCC / GND</td>
+<td>5V / GND</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="_2">需要的函式庫</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>函式庫</th>
+<th>用途</th>
+<th>使用階段</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DHT sensor library (Adafruit)</td>
+<td>讀取 DHT11</td>
+<td>A / B / C</td>
+</tr>
+<tr>
+<td>Adafruit Unified Sensor</td>
+<td>DHT_Unified 介面</td>
+<td>A / B / C</td>
+</tr>
+<tr>
+<td>LiquidCrystal_I2C</td>
+<td>LCD1602 I2C</td>
+<td>A</td>
+</tr>
+<tr>
+<td>U8g2（內含 U8x8）</td>
+<td>SSD1306 OLED</td>
+<td>B / C</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="1-core-concepts">🧠 1. 核心概念剖析 (Core Concepts)</h2>
+<h3 id="11">1.1 為什麼兩支範例程式不能直接「貼在一起」？</h3>
+<p>Arduino 草稿碼（sketch）在編譯時是<strong>一個 C++ 程式</strong>，每個函式只能定義一次：</p>
+<ul>
+<li><code>setup()</code> 與 <code>loop()</code> 各只能有<strong>一個</strong> → 貼兩份會出現 <code>redefinition of 'void setup()'</code> 錯誤。</li>
+<li><code>#include</code> 統一放最上方；全域物件（<code>dht</code>、<code>lcd</code>、<code>u8x8</code>）各宣告一次。</li>
+<li><strong>整合原則</strong>：把兩份 <code>setup()</code> 的初始化合併成一個，把兩份 <code>loop()</code> 的工作合併成一個（讀感測器 → 輸出到顯示器）。</li>
+</ul>
+<div class="mermaid-wrap"><pre class="mermaid">flowchart TD
+    subgraph 範例1[&quot;DHT 範例&quot;]
+      D1[&quot;include DHT&quot;] --&gt; D2[&quot;setup: dht.begin + Serial 輸出規格&quot;] --&gt; D3[&quot;loop: 讀溫濕度 → Serial&quot;]
+    end
+    subgraph 範例2[&quot;顯示器範例&quot;]
+      L1[&quot;include 顯示器&quot;] --&gt; L2[&quot;setup: 初始化顯示器 + Hello World&quot;] --&gt; L3[&quot;loop: 空的或固定字串&quot;]
+    end
+    D1 &amp; L1 --&gt; M1[&quot;合併 include 與全域物件&quot;]
+    D2 &amp; L2 --&gt; M2[&quot;單一 setup: 兩者都初始化&quot;]
+    D3 &amp; L3 --&gt; M3[&quot;單一 loop: 讀 DHT → 寫到顯示器&quot;]
+</pre></div>
+<h3 id="12-dht11">1.2 DHT11 感測器特性</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>DHT11 規格</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>溫度範圍 / 精度</td>
+<td>0 ~ 50 °C / ±2 °C</td>
+</tr>
+<tr>
+<td>濕度範圍 / 精度</td>
+<td>20 ~ 90 %RH / ±5 %RH</td>
+</tr>
+<tr>
+<td>解析度</td>
+<td>1 °C、1 %RH</td>
+</tr>
+<tr>
+<td>取樣間隔</td>
+<td>至少 1 秒（建議 2 秒）</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>因為取樣間隔限制，程式中 <code>delayMS</code> 最少設為 <strong>2000 ms</strong>；讀取太快會得到 <code>NaN</code>（程式中以 <code>isnan()</code> 判斷）。</p>
+</blockquote>
+<h3 id="13-lcd1602">1.3 LCD1602 的度數符號</h3>
+<p>HD44780 控制器的字元 ROM 中，<strong>編號 223 (0xDF)</strong> 是「°」。原始碼中直接寫 <code>"°C"</code> 是 UTF-8 的兩個位元組，LCD 會顯示成亂碼，所以要寫：</p>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-cpp"><code class="language-cpp">lcd.print((char)223);   // HD44780 字元 ROM 的 °
+lcd.print(&quot;C&quot;);
+</code></pre></div>
+<h3 id="14-u8x8-tile">1.4 U8x8 的「圖塊（tile）」座標系</h3>
+<p>U8x8 是 U8g2 函式庫中<strong>不需要畫面緩衝區</strong>的文字模式，RAM 用量最省，適合 Uno（2 KB RAM）。</p>
+<ul>
+<li>128x64 螢幕切成 <strong>16 欄 x 8 列</strong>，每格 <strong>8x8 像素</strong>。</li>
+<li>座標 <code>(x, y)</code> 的單位是<strong>格子</strong>，不是像素：<code>drawString(0, 0, ...)</code> 表示左上角那一格。</li>
+<li><code>draw2x2String()</code>：每個字放大成 2x2 格（16x16 像素），一行最多 8 個字。</li>
+<li><code>drawTile(x, y, cnt, ptr)</code>：直接寫入自訂圖案；<strong>每個 byte 代表一個直行（8 個像素），LSB 在最上方</strong>。</li>
+</ul>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">byte 值 0x0E = 0000 1110 (bit7..bit0)
+         bit0 (最上) = 0
+         bit1        = 1  ■
+         bit2        = 1  ■
+         bit3        = 1  ■
+         bit4~7      = 0
+</code></pre></div>
+<p>以「°」圖塊 <code>{0x00, 0x0E, 0x11, 0x11, 0x11, 0x0E, 0x00, 0x00}</code> 為例（每個直行轉成橫向觀看）：</p>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">  byte:      00   0E   11   11   11   0E   00   00
+  col:        0    1    2    3    4    5    6    7
+  row0 (bit0) .    .    ■    ■    ■    .    .    .    ← 0x11 的 bit0
+  row1 (bit1) .    ■    .    .    .    ■    .    .    ← 0x0E 的 bit1
+  row2 (bit2) .    ■    .    .    .    ■    .    .    ← 0x0E 的 bit2
+  row3 (bit3) .    ■    .    .    .    ■    .    .    ← 0x0E 的 bit3
+  row4 (bit4) .    .    ■    ■    ■    .    .    .    ← 0x11 的 bit4
+  row5~7      .    .    .    .    .    .    .    .
+</code></pre></div>
+<p>0x0E（bit1~3）構成左右兩側、0x11（bit0、bit4）構成上下兩邊，組合起來就是位於格子上半部的小圓圈「°」。</p>
+<h3 id="15-delay-vs-millis">1.5 非阻塞排程：<code>delay()</code> vs <code>millis()</code></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>方式</th>
+<th>原理</th>
+<th>缺點 / 優點</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>delay(2000)</code></td>
+<td>CPU 原地等待 2 秒</td>
+<td>等待期間<strong>什麼都不能做</strong>，無法跑動畫</td>
+</tr>
+<tr>
+<td><code>millis()</code></td>
+<td>每次 loop 檢查「距離上次是否已超過 N 毫秒」</td>
+<td>可以同時跑多個不同週期的工作</td>
+</tr>
+</tbody>
+</table></div>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-cpp"><code class="language-cpp">if (now - lastRead &gt;= delayMS) { lastRead = now; readSensor(); }  // 每 2 秒
+if (now - lastFrame &gt;= FRAME_MS) { lastFrame = now; /* 畫動畫 */ } // 每 40 毫秒
+</code></pre></div>
+<blockquote>
+<p><code>now - last &gt;= interval</code> 的寫法在 <code>millis()</code> 約 49.7 天溢位歸零時依然正確（無號整數減法特性）。</p>
+</blockquote>
+<h3 id="16-easing">1.6 緩動（Easing）：讓數字「跑」到目標值</h3>
+<p>每一格動畫讓顯示值往目標值前進「剩餘差距的 1/6」，並設定最小步伐 0.1：</p>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">step = (目標值 - 顯示值) / 6        // 剩餘差距的 1/6
+若 |step| &lt; 0.1，則 step = ±0.1     // 最小步伐，方向跟著差距正負
+顯示值 = 顯示值 + step
+</code></pre></div>
+<ul>
+<li>差距大 → 步伐大，跑得快；差距小 → 接近時減速，視覺上很滑順（ease-out）。</li>
+<li>差距 &lt; 0.05 時直接等於目標值，避免永遠到不了。</li>
+</ul>
+<hr />
+<h2 id="2-alcd1602-1029ino">🅰️ 2. 階段 A：LCD1602 第一行溫度、第二行濕度（1029.ino）</h2>
+<h3 id="21">2.1 題目</h3>
+<blockquote>
+<p><code>1029.txt</code> 中包含 Adafruit DHT Unified 範例與 YWROBOT LiquidCrystal_I2C HelloWorld 範例，整合成 Arduino Uno 程式：<strong>第一行顯示溫度、第二行顯示濕度</strong>。</p>
+</blockquote>
+<h3 id="22">2.2 程式邏輯流程圖</h3>
+<div class="mermaid-wrap"><pre class="mermaid">flowchart TD
+    A[&quot;開機&quot;] --&gt; B[&quot;Serial.begin 9600&quot;]
+    B --&gt; C[&quot;dht.begin 初始化 DHT11&quot;]
+    C --&gt; D[&quot;lcd.init + backlight&lt;br/&gt;顯示 DHT11 Starting..&quot;]
+    D --&gt; E[&quot;讀取感測器 min_delay&lt;br/&gt;delayMS 至少 2000ms&quot;]
+    E --&gt; F[&quot;lcd.clear&quot;]
+    F --&gt; G[&quot;loop: delay delayMS&quot;]
+    G --&gt; H{&quot;溫度是 NaN?&quot;}
+    H -- 是 --&gt; H1[&quot;第 0 行: Temp: Error&quot;]
+    H -- 否 --&gt; H2[&quot;第 0 行: Temp: 25.0°C&quot;]
+    H1 --&gt; I{&quot;濕度是 NaN?&quot;}
+    H2 --&gt; I
+    I -- 是 --&gt; I1[&quot;第 1 行: Humi: Error&quot;]
+    I -- 否 --&gt; I2[&quot;第 1 行: Humi: 60.0%&quot;]
+    I1 --&gt; G
+    I2 --&gt; G
+</pre></div>
+<h3 id="23">2.3 完整程式碼</h3>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-cpp"><code class="language-cpp">// DHT11 溫濕度感測器 + I2C LCD1602 顯示
+// 第一行顯示溫度，第二行顯示濕度
+//
+// 需要的函式庫:
+// - DHT Sensor Library: https://github.com/adafruit/DHT-sensor-library
+// - Adafruit Unified Sensor Lib: https://github.com/adafruit/Adafruit_Sensor
+// - LiquidCrystal_I2C
+
+#include &lt;Adafruit_Sensor.h&gt;
+#include &lt;DHT.h&gt;
+#include &lt;DHT_U.h&gt;
+#include &lt;Wire.h&gt;
+#include &lt;LiquidCrystal_I2C.h&gt;
+
+#define DHTPIN 8          // DHT 感測器資料腳接 D8
+#define DHTTYPE DHT11     // 感測器型號 DHT11
+//#define DHTTYPE DHT22   // DHT 22 (AM2302)
+
+DHT_Unified dht(DHTPIN, DHTTYPE);
+LiquidCrystal_I2C lcd(0x27, 16, 2);  // LCD 位址 0x27，16 字 x 2 行
+
+uint32_t delayMS;
+
+void setup() {
+  Serial.begin(9600);
+
+  // 初始化 DHT 感測器
+  dht.begin();
+
+  // 初始化 LCD
+  lcd.init();
+  lcd.backlight();
+  lcd.setCursor(0, 0);
+  lcd.print(&quot;DHT11 Starting..&quot;);
+
+  // 依感測器規格設定讀取間隔
+  sensor_t sensor;
+  dht.humidity().getSensor(&amp;sensor);
+  delayMS = sensor.min_delay / 1000;
+  if (delayMS &lt; 2000) delayMS = 2000;   // DHT11 建議至少間隔 1~2 秒
+
+  delay(1000);
+  lcd.clear();
+}
+
+void loop() {
+  delay(delayMS);
+
+  sensors_event_t event;
+
+  // ---- 第一行：溫度 ----
+  dht.temperature().getEvent(&amp;event);
+  lcd.setCursor(0, 0);
+  if (isnan(event.temperature)) {
+    lcd.print(&quot;Temp: Error     &quot;);
+    Serial.println(F(&quot;Error reading temperature!&quot;));
+  } else {
+    lcd.print(&quot;Temp: &quot;);
+    lcd.print(event.temperature, 1);
+    lcd.print((char)223);              // LCD 的度數符號 °
+    lcd.print(&quot;C    &quot;);                // 補空白清除殘留字元
+    Serial.print(F(&quot;Temperature: &quot;));
+    Serial.print(event.temperature);
+    Serial.println(F(&quot; C&quot;));
+  }
+
+  // ---- 第二行：濕度 ----
+  dht.humidity().getEvent(&amp;event);
+  lcd.setCursor(0, 1);
+  if (isnan(event.relative_humidity)) {
+    lcd.print(&quot;Humi: Error     &quot;);
+    Serial.println(F(&quot;Error reading humidity!&quot;));
+  } else {
+    lcd.print(&quot;Humi: &quot;);
+    lcd.print(event.relative_humidity, 1);
+    lcd.print(&quot;%     &quot;);               // 補空白清除殘留字元
+    Serial.print(F(&quot;Humidity: &quot;));
+    Serial.print(event.relative_humidity);
+    Serial.println(F(&quot;%&quot;));
+  }
+}
+</code></pre></div>
+<h3 id="24">2.4 重點說明</h3>
+<ul>
+<li><strong>補空白清除殘留</strong>：LCD 不會自動清掉舊字元。例如由 <code>Error</code> 變成 <code>25.0°C</code>，若不補空白，尾端會殘留舊字。每次 <code>lcd.clear()</code> 雖然也行，但會造成閃爍。</li>
+<li><strong>原範例 <code>lcd.init()</code> 呼叫兩次</strong>：屬於範例的冗餘寫法，整合後保留一次即可。</li>
+<li><strong><code>F("...")</code> 巨集</strong>：把字串存在 Flash 而不是 RAM，Uno 只有 2 KB RAM，Serial 訊息多時很有幫助。</li>
+</ul>
+<hr />
+<h2 id="3-b-u8x8-helloworld">🅱️ 3. 階段 B 前置：U8x8 HelloWorld 範例解讀</h2>
+<p><code>1029-u8x8.txt</code> 的前半段是 U8g2 官方 <code>HelloWorld.ino</code>（U8x8 版），有約 280 行的<strong>建構子清單</strong>，只需取消註解符合自己螢幕的那一行：</p>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-cpp"><code class="language-cpp">U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(/* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);
+</code></pre></div>
+<p>建構子名稱拆解：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>片段</th>
+<th>意義</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>U8X8_</code></td>
+<td>使用 U8x8 文字模式（無緩衝區）</td>
+</tr>
+<tr>
+<td><code>SSD1306</code></td>
+<td>控制晶片</td>
+</tr>
+<tr>
+<td><code>128X64_NONAME</code></td>
+<td>解析度 / 一般副廠模組</td>
+</tr>
+<tr>
+<td><code>SW_I2C</code> / <code>HW_I2C</code></td>
+<td>軟體模擬 I2C / 硬體 I2C（較快）</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>整合時改用 <strong><code>HW_I2C</code></strong>：Uno 的硬體 I2C 就在 A4/A5，傳輸速度比軟體模擬快很多，對動畫版尤其重要。若畫面異常再改回 <code>SW_I2C</code>。</p>
+</blockquote>
+<hr />
+<h2 id="4-boled">🅱️ 4. 階段 B：OLED 靜態版——安排適當大小、顯示溫濕度與符號</h2>
+<h3 id="41-16-x-8">4.1 版面規劃（16 欄 x 8 列）</h3>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">     欄 0123456789012345
+列 0   [  TEMPERATURE   ]   ← 反白小字標題 (1x1)
+列 1                         
+列 2     25.0 °C             ← 2x2 大字 (占列 2~3)，° 為自訂小圖塊
+列 3     ~~~~ ~~             
+列 4   [    HUMIDITY    ]   ← 反白小字標題
+列 5                         
+列 6     60.0 %              ← 2x2 大字 (占列 6~7)
+列 7     ~~~~ ~             
+</code></pre></div>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>元素</th>
+<th>欄位範圍</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>數值 <code>25.0</code></td>
+<td>欄 2~9</td>
+<td>4 字 x 2 格寬</td>
+</tr>
+<tr>
+<td><code>°</code></td>
+<td>欄 11，列 2</td>
+<td>自訂 1x1 圖塊，放在大字上半部，看起來像上標</td>
+</tr>
+<tr>
+<td><code>C</code> / <code>%</code></td>
+<td>欄 12~13</td>
+<td>2x2 大字</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="42">4.2 程式邏輯流程圖</h3>
+<div class="mermaid-wrap"><pre class="mermaid">flowchart TD
+    A[&quot;開機&quot;] --&gt; B[&quot;dht.begin&quot;]
+    B --&gt; C[&quot;u8x8.begin + setPowerSave 0&lt;br/&gt;顯示 DHT11 Starting&quot;]
+    C --&gt; D[&quot;設定 delayMS 至少 2000ms&quot;]
+    D --&gt; E[&quot;drawLayout:&lt;br/&gt;清畫面 → 反白標題 → ° C % 單位&quot;]
+    E --&gt; F[&quot;loop: delay delayMS&quot;]
+    F --&gt; G[&quot;讀溫度&quot;]
+    G --&gt; H{&quot;NaN?&quot;}
+    H -- 是 --&gt; H1[&quot;列 2 顯示 ----&quot;]
+    H -- 否 --&gt; H2[&quot;dtostrf 轉固定 4 字寬&lt;br/&gt;draw2x2String 列 2&quot;]
+    H1 --&gt; I[&quot;讀濕度&quot;]
+    H2 --&gt; I
+    I --&gt; J{&quot;NaN?&quot;}
+    J -- 是 --&gt; J1[&quot;列 6 顯示 ----&quot;]
+    J -- 否 --&gt; J2[&quot;draw2x2String 列 6&quot;]
+    J1 --&gt; F
+    J2 --&gt; F
+</pre></div>
+<h3 id="43">4.3 完整程式碼（靜態版）</h3>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-cpp"><code class="language-cpp">// DHT11 溫濕度感測器 + SSD1306 128x64 OLED (U8x8 API)
+//
+// 畫面配置 (U8x8 = 16 欄 x 8 列，每格 8x8 像素)
+//   第 0 列    : [ TEMPERATURE ]   反白標題 (小字)
+//   第 2~3 列  :   25.0 °C         2x2 放大字
+//   第 4 列    : [  HUMIDITY   ]   反白標題 (小字)
+//   第 6~7 列  :   60.0 %          2x2 放大字
+
+#include &lt;Arduino.h&gt;
+#include &lt;U8x8lib.h&gt;
+#include &lt;Wire.h&gt;
+#include &lt;Adafruit_Sensor.h&gt;
+#include &lt;DHT.h&gt;
+#include &lt;DHT_U.h&gt;
+
+#define DHTPIN 8          // DHT 感測器資料腳接 D8
+#define DHTTYPE DHT11     // 感測器型號 DHT11
+
+DHT_Unified dht(DHTPIN, DHTTYPE);
+
+// SSD1306 128x64 OLED，硬體 I2C (A4/A5)
+U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8(/* reset=*/ U8X8_PIN_NONE);
+
+// 自訂度數符號 &quot;°&quot; (8x8 tile，每個 byte 為一直行，LSB 在上方)
+uint8_t degreeTile[8] = {0x00, 0x0E, 0x11, 0x11, 0x11, 0x0E, 0x00, 0x00};
+
+uint32_t delayMS;
+
+// 畫出固定的標題與單位符號 (只畫一次)
+void drawLayout() {
+  u8x8.clear();
+  u8x8.setFont(u8x8_font_chroma48medium8_r);
+
+  u8x8.setInverseFont(1);                        // 反白標題
+  u8x8.drawString(0, 0, &quot;  TEMPERATURE   &quot;);
+  u8x8.drawString(0, 4, &quot;    HUMIDITY    &quot;);
+  u8x8.setInverseFont(0);
+
+  u8x8.drawTile(11, 2, 1, degreeTile);           // °
+  u8x8.draw2x2String(12, 2, &quot;C&quot;);                // C
+  u8x8.draw2x2String(12, 6, &quot;%&quot;);                // %
+}
+
+void setup() {
+  Serial.begin(9600);
+  dht.begin();
+
+  u8x8.begin();
+  u8x8.setPowerSave(0);
+  u8x8.setFont(u8x8_font_chroma48medium8_r);
+  u8x8.drawString(0, 3, &quot; DHT11 Starting &quot;);
+
+  sensor_t sensor;
+  dht.humidity().getSensor(&amp;sensor);
+  delayMS = sensor.min_delay / 1000;
+  if (delayMS &lt; 2000) delayMS = 2000;   // DHT11 建議至少間隔 1~2 秒
+
+  delay(1000);
+  drawLayout();
+}
+
+void loop() {
+  delay(delayMS);
+
+  sensors_event_t event;
+  char buf[8];
+
+  u8x8.setFont(u8x8_font_chroma48medium8_r);
+
+  // ---- 溫度 (列 2~3，2x2 大字) ----
+  dht.temperature().getEvent(&amp;event);
+  if (isnan(event.temperature)) {
+    u8x8.draw2x2String(2, 2, &quot;----&quot;);
+  } else {
+    dtostrf(event.temperature, 4, 1, buf);   // 固定 4 字寬，例如 &quot;25.0&quot;
+    u8x8.draw2x2String(2, 2, buf);
+  }
+
+  // ---- 濕度 (列 6~7，2x2 大字) ----
+  dht.humidity().getEvent(&amp;event);
+  if (isnan(event.relative_humidity)) {
+    u8x8.draw2x2String(2, 6, &quot;----&quot;);
+  } else {
+    dtostrf(event.relative_humidity, 4, 1, buf);
+    u8x8.draw2x2String(2, 6, buf);
+  }
+}
+</code></pre></div>
+<h3 id="44">4.4 重點說明</h3>
+<ul>
+<li><strong>為何要自訂「°」</strong>：<code>u8x8_font_chroma48medium8_r</code> 的 <code>_r</code> 代表只含 ASCII 32~127，沒有 <code>°</code>（Unicode U+00B0）。用 <code>drawTile()</code> 畫一個 8x8 小圓圈最省資源。</li>
+<li><strong><code>dtostrf(val, 4, 1, buf)</code></strong>：AVR 的 <code>sprintf</code> 預設<strong>不支援 <code>%f</code></strong>，所以浮點數轉字串要用 <code>dtostrf</code>。寬度固定 4，數值變短時前面自動補空白，舊字會被覆蓋。</li>
+<li><strong>標題與單位只畫一次</strong>：<code>loop()</code> 只更新數字，減少 I2C 傳輸量，畫面不閃爍。</li>
+</ul>
+<hr />
+<h2 id="5-c1029-u8x8ino">🅲 5. 階段 C：數值動態效果版（1029-u8x8.ino）</h2>
+<h3 id="51">5.1 動態效果設計</h3>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">┌────────────────┐
+│  TEMPERATURE  /│ ← ④ 旋轉指示器 | / - \
+│████████░░░░░░░░│ ← ② 長條圖 (0~50°C)
+│  25.0 °C      ↑│ ← ① 數字滾動 + ③ 趨勢箭頭
+│                │
+│    HUMIDITY   /│
+│███████████░░░░░│ ← ② 長條圖 (0~100%)
+│  60.0 %       ↓│
+│                │
+└────────────────┘
+</code></pre></div>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>效果</th>
+<th>實作方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①</td>
+<td>數字滾動</td>
+<td><code>approach()</code> 緩動函式，顯示值 <code>dspT</code> 每格向目標值 <code>tgtT</code> 靠近</td>
+</tr>
+<tr>
+<td>②</td>
+<td>長條圖伸縮</td>
+<td>組一個 128 bytes 的圖塊陣列，<code>drawTile(0, row, 16, buf)</code> 一次畫滿整列</td>
+</tr>
+<tr>
+<td>③</td>
+<td>趨勢箭頭</td>
+<td>新讀數與上次比較 → ↑ / ↓；滾動期間每 5 格閃爍一次</td>
+</tr>
+<tr>
+<td>④</td>
+<td>旋轉指示器</td>
+<td>每 4 格依序切換「直線、斜線、橫線、反斜線」四個字元，表示程式仍在執行</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="52">5.2 程式邏輯流程圖</h3>
+<div class="mermaid-wrap"><pre class="mermaid">flowchart TD
+    A[&quot;setup: 初始化 DHT 與 OLED&lt;br/&gt;drawLayout 畫標題與單位&quot;] --&gt; B[&quot;lastRead = millis - delayMS&lt;br/&gt;讓第一次立即讀取&quot;]
+    B --&gt; L[&quot;loop 開始&lt;br/&gt;now = millis&quot;]
+    L --&gt; R{&quot;now - lastRead &gt;= 2000ms?&quot;}
+    R -- 是 --&gt; R1[&quot;readSensor:&lt;br/&gt;更新 tgtT tgtH&lt;br/&gt;計算趨勢 trend&quot;]
+    R -- 否 --&gt; F
+    R1 --&gt; F{&quot;now - lastFrame &gt;= 40ms?&quot;}
+    F -- 否 --&gt; L
+    F -- 是 --&gt; F1[&quot;frameCount++&quot;]
+    F1 --&gt; F2[&quot;dspT = approach dspT, tgtT&lt;br/&gt;dspH = approach dspH, tgtH&quot;]
+    F2 --&gt; F3[&quot;drawBar: 長條像素有變才重畫&quot;]
+    F3 --&gt; F4[&quot;drawValue: 數值 x10 有變才重畫&quot;]
+    F4 --&gt; F5[&quot;drawArrow: 滾動中閃爍&quot;]
+    F5 --&gt; F6[&quot;drawSpinner: 每 4 格轉一次&quot;]
+    F6 --&gt; L
+</pre></div>
+<h3 id="53">5.3 「只在有變化時才重畫」的機制</h3>
+<div class="mermaid-wrap"><pre class="mermaid">flowchart LR
+    A[&quot;計算新狀態&lt;br/&gt;例如 v10 = round val x 10&quot;] --&gt; B{&quot;與上次已畫的&lt;br/&gt;shown 相同?&quot;}
+    B -- 是 --&gt; C[&quot;直接 return&lt;br/&gt;不傳 I2C&quot;]
+    B -- 否 --&gt; D[&quot;shown = 新值&lt;br/&gt;重畫該區塊&quot;]
+</pre></div>
+<blockquote>
+<p>每秒 25 格動畫，如果每格都重畫整個螢幕，I2C 頻寬會吃緊。以「快取上次狀態」比較，靜止時幾乎沒有傳輸。</p>
+</blockquote>
+<h3 id="54">5.4 完整程式碼（動態效果版）</h3>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-cpp"><code class="language-cpp">// DHT11 溫濕度感測器 + SSD1306 128x64 OLED (U8x8 API) — 動態效果版
+//
+// 畫面配置 (U8x8 = 16 欄 x 8 列，每格 8x8 像素)
+//   第 0 列    : [ TEMPERATURE  ⟳]  反白標題 + 右上角旋轉指示器
+//   第 1 列    : ██████░░░░░░░░░░   溫度長條圖 (0~50°C)
+//   第 2~3 列  :   25.0 °C      ↑   2x2 放大字 + 趨勢箭頭
+//   第 4 列    : [   HUMIDITY   ⟳]  反白標題 + 旋轉指示器
+//   第 5 列    : ████████░░░░░░░░   濕度長條圖 (0~100%)
+//   第 6~7 列  :   60.0 %       ↓   2x2 放大字 + 趨勢箭頭
+//
+// 動態效果:
+//   1. 數字滾動：數值從舊值逐步「跑」到新值 (開機時從 0 往上數)
+//   2. 長條圖：跟著數字一起平滑伸縮
+//   3. 趨勢箭頭：上升 ↑ / 下降 ↓，數字滾動期間會閃爍
+//   4. 旋轉指示器：標題右側 | / - \ 持續轉動，表示程式運作中
+//
+// 接線 (Arduino UNO):
+//   OLED SDA -&gt; A4, SCL -&gt; A5, VCC -&gt; 5V, GND -&gt; GND
+//   DHT11 DATA -&gt; D8
+
+#include &lt;Arduino.h&gt;
+#include &lt;U8x8lib.h&gt;
+#include &lt;Wire.h&gt;
+#include &lt;Adafruit_Sensor.h&gt;
+#include &lt;DHT.h&gt;
+#include &lt;DHT_U.h&gt;
+
+#define DHTPIN 8          // DHT 感測器資料腳接 D8
+#define DHTTYPE DHT11     // 感測器型號 DHT11
+//#define DHTTYPE DHT22   // DHT 22 (AM2302)
+
+#define FRAME_MS   40     // 動畫每格間隔 (毫秒)，約 25 FPS
+#define TEMP_MAX   50.0   // 溫度長條圖滿格值 (DHT11 量測上限 50°C)
+#define HUMI_MAX   100.0  // 濕度長條圖滿格值
+
+DHT_Unified dht(DHTPIN, DHTTYPE);
+
+// SSD1306 128x64 OLED，硬體 I2C (A4/A5)
+U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8(/* reset=*/ U8X8_PIN_NONE);
+// 若畫面異常可改用軟體 I2C:
+//U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(/* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);
+
+// ---- 自訂圖塊 (8x8，每個 byte 為一直行，LSB 在上方) ----
+uint8_t degreeTile[8] = {0x00, 0x0E, 0x11, 0x11, 0x11, 0x0E, 0x00, 0x00}; // °
+uint8_t upTile[8]     = {0x00, 0x08, 0x0C, 0xFE, 0x0C, 0x08, 0x00, 0x00}; // ↑
+uint8_t downTile[8]   = {0x00, 0x10, 0x30, 0x7F, 0x30, 0x10, 0x00, 0x00}; // ↓
+uint8_t blankTile[8]  = {0, 0, 0, 0, 0, 0, 0, 0};
+
+// ---- 狀態變數 ----
+uint32_t delayMS;                 // 感測器讀取間隔
+unsigned long lastRead = 0;       // 上次讀取時間
+unsigned long lastFrame = 0;      // 上次動畫更新時間
+uint16_t frameCount = 0;          // 動畫格數計數
+
+float tgtT = 0, tgtH = 0;         // 目標值 (感測器最新讀數)
+float dspT = 0, dspH = 0;         // 目前畫面顯示值 (動畫中逐步接近目標)
+bool  okT = false, okH = false;   // 讀數是否有效
+bool  firstRead = true;
+int8_t trendT = 0, trendH = 0;    // 趨勢：1 上升 / -1 下降 / 0 持平
+
+// 用來避免重複繪製 (減少 I2C 傳輸、畫面不閃)
+int  shownT = -32768, shownH = -32768;  // 已顯示數值 (x10 整數)
+int  barPxT = -1, barPxH = -1;          // 已顯示長條像素
+int8_t arrowStT = -2, arrowStH = -2;    // 已顯示箭頭狀態
+
+// 讓 cur 平滑接近 tgt：差距大時走快，差距小時至少走 0.1
+float approach(float cur, float tgt) {
+  float d = tgt - cur;
+  if (fabs(d) &lt; 0.05) return tgt;
+  float step = d / 6.0;
+  if (fabs(step) &lt; 0.1) step = (d &gt; 0) ? 0.1 : -0.1;
+  return cur + step;
+}
+
+// 繪製 2x2 大數字 (只有數值改變時才重畫)
+void drawValue(uint8_t row, float val, bool ok, int &amp;shown) {
+  int v10 = ok ? (int)round(val * 10) : -32767;  // -32767 代表錯誤
+  if (v10 == shown) return;
+  shown = v10;
+  if (!ok) {
+    u8x8.draw2x2String(2, row, &quot;----&quot;);
+  } else {
+    char buf[8];
+    dtostrf(val, 4, 1, buf);   // 固定 4 字寬，例如 &quot;25.0&quot;
+    u8x8.draw2x2String(2, row, buf);
+  }
+}
+
+// 繪製長條圖 (整列 16 格 = 128 像素)
+void drawBar(uint8_t row, float val, float maxV, bool ok, int &amp;lastPx) {
+  int px = ok ? (int)(constrain(val / maxV, 0.0, 1.0) * 128) : 0;
+  if (px == lastPx) return;
+  lastPx = px;
+
+  uint8_t buf[128];
+  for (int i = 0; i &lt; 128; i++) {
+    if (i == 0 || i == 127)  buf[i] = 0x7E;  // 左右邊框
+    else if (i &lt; px)         buf[i] = 0x7E;  // 已填滿：實心
+    else                     buf[i] = 0x42;  // 未填滿：只有上下框線
+  }
+  u8x8.drawTile(0, row, 16, buf);
+}
+
+// 繪製趨勢箭頭；動畫進行中 (dsp != tgt) 會閃爍
+void drawArrow(uint8_t row, int8_t trend, bool animating, int8_t &amp;lastSt) {
+  int8_t st = trend;
+  if (animating &amp;&amp; ((frameCount / 5) % 2)) st = 0;   // 閃爍：每 5 格切換
+  if (st == lastSt) return;
+  lastSt = st;
+  if (st &gt; 0)      u8x8.drawTile(15, row, 1, upTile);
+  else if (st &lt; 0) u8x8.drawTile(15, row, 1, downTile);
+  else             u8x8.drawTile(15, row, 1, blankTile);
+}
+
+// 標題右側旋轉指示器 | / - \ .
+void drawSpinner() {
+  static const char spin[] = &quot;|/-\\&quot;;
+  if (frameCount % 4) return;                 // 每 4 格轉一次
+  char c[2] = { spin[(frameCount / 4) % 4], 0 };
+  u8x8.setInverseFont(1);
+  u8x8.drawString(15, 0, c);
+  u8x8.drawString(15, 4, c);
+  u8x8.setInverseFont(0);
+}
+
+// 畫出固定的標題與單位符號
+void drawLayout() {
+  u8x8.clear();
+  u8x8.setFont(u8x8_font_chroma48medium8_r);
+
+  u8x8.setInverseFont(1);
+  u8x8.drawString(0, 0, &quot;  TEMPERATURE   &quot;);
+  u8x8.drawString(0, 4, &quot;    HUMIDITY    &quot;);
+  u8x8.setInverseFont(0);
+
+  u8x8.drawTile(11, 2, 1, degreeTile);   // °
+  u8x8.draw2x2String(12, 2, &quot;C&quot;);
+  u8x8.draw2x2String(12, 6, &quot;%&quot;);
+}
+
+// 讀取 DHT11，更新目標值與趨勢
+void readSensor() {
+  sensors_event_t event;
+
+  dht.temperature().getEvent(&amp;event);
+  okT = !isnan(event.temperature);
+  if (okT) {
+    float t = event.temperature;
+    if (!firstRead) trendT = (t &gt; tgtT + 0.05) ? 1 : (t &lt; tgtT - 0.05) ? -1 : 0;
+    tgtT = t;
+    Serial.print(F(&quot;Temperature: &quot;));
+    Serial.print(t);
+    Serial.println(F(&quot; C&quot;));
+  } else {
+    Serial.println(F(&quot;Error reading temperature!&quot;));
+  }
+
+  dht.humidity().getEvent(&amp;event);
+  okH = !isnan(event.relative_humidity);
+  if (okH) {
+    float h = event.relative_humidity;
+    if (!firstRead) trendH = (h &gt; tgtH + 0.05) ? 1 : (h &lt; tgtH - 0.05) ? -1 : 0;
+    tgtH = h;
+    Serial.print(F(&quot;Humidity: &quot;));
+    Serial.print(h);
+    Serial.println(F(&quot;%&quot;));
+  } else {
+    Serial.println(F(&quot;Error reading humidity!&quot;));
+  }
+
+  if (okT &amp;&amp; okH) firstRead = false;
+}
+
+void setup() {
+  Serial.begin(9600);
+  dht.begin();
+
+  u8x8.begin();
+  u8x8.setPowerSave(0);
+  u8x8.setFont(u8x8_font_chroma48medium8_r);
+  u8x8.drawString(0, 3, &quot; DHT11 Starting &quot;);
+
+  // 依感測器規格設定讀取間隔
+  sensor_t sensor;
+  dht.humidity().getSensor(&amp;sensor);
+  delayMS = sensor.min_delay / 1000;
+  if (delayMS &lt; 2000) delayMS = 2000;   // DHT11 建議至少間隔 1~2 秒
+
+  delay(1000);
+  drawLayout();
+  lastRead = millis() - delayMS;        // 讓 loop 一開始就立即讀取
+}
+
+void loop() {
+  unsigned long now = millis();
+
+  // ---- 1. 定時讀取感測器 (非阻塞) ----
+  if (now - lastRead &gt;= delayMS) {
+    lastRead = now;
+    readSensor();
+  }
+
+  // ---- 2. 動畫更新 ----
+  if (now - lastFrame &gt;= FRAME_MS) {
+    lastFrame = now;
+    frameCount++;
+
+    // 顯示值逐步接近目標值
+    if (okT) dspT = approach(dspT, tgtT);
+    if (okH) dspH = approach(dspH, tgtH);
+
+    u8x8.setFont(u8x8_font_chroma48medium8_r);
+
+    // 溫度區
+    drawBar(1, dspT, TEMP_MAX, okT, barPxT);
+    drawValue(2, dspT, okT, shownT);
+    drawArrow(2, trendT, dspT != tgtT, arrowStT);
+
+    // 濕度區
+    drawBar(5, dspH, HUMI_MAX, okH, barPxH);
+    drawValue(6, dspH, okH, shownH);
+    drawArrow(6, trendH, dspH != tgtH, arrowStH);
+
+    drawSpinner();
+  }
+}
+</code></pre></div>
+<h3 id="55">5.5 數值範例：數字滾動軌跡</h3>
+<p>假設開機時 <code>dspT = 0</code>，讀到 <code>tgtT = 26.0</code>，每格 40 ms：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>格數</th>
+<th>差距 d</th>
+<th>步伐 d/6</th>
+<th>新顯示值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>26.00</td>
+<td>4.33</td>
+<td>4.3</td>
+</tr>
+<tr>
+<td>2</td>
+<td>21.67</td>
+<td>3.61</td>
+<td>7.9</td>
+</tr>
+<tr>
+<td>3</td>
+<td>18.06</td>
+<td>3.01</td>
+<td>10.9</td>
+</tr>
+<tr>
+<td>5</td>
+<td>12.54</td>
+<td>2.09</td>
+<td>15.5</td>
+</tr>
+<tr>
+<td>10</td>
+<td>5.04</td>
+<td>0.84</td>
+<td>21.8</td>
+</tr>
+<tr>
+<td>20</td>
+<td>0.81</td>
+<td>0.135</td>
+<td>25.3</td>
+</tr>
+<tr>
+<td>25</td>
+<td>0.27</td>
+<td>0.045 → 最小 0.1</td>
+<td>25.8</td>
+</tr>
+<tr>
+<td>28</td>
+<td>-0.03</td>
+<td>差距 &lt; 0.05，直接到位</td>
+<td>26.0</td>
+</tr>
+</tbody>
+</table></div>
+<p>約 28 格 ≈ <strong>1.1 秒</strong>完成開機動畫；之後 DHT11 每次變化通常只有 ±1，約 10 格（0.4 秒）就到位。</p>
+<h3 id="56">5.6 長條圖圖塊編碼</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>狀態</th>
+<th>byte 值</th>
+<th>點亮的 bit（像素列）</th>
+<th>外觀</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>實心 / 邊框</td>
+<td><code>0x7E</code></td>
+<td>bit1 ~ bit6</td>
+<td>■ 一條 6 像素高的直線</td>
+</tr>
+<tr>
+<td>空白</td>
+<td><code>0x42</code></td>
+<td>bit1、bit6</td>
+<td>只剩上下兩點 → 連成空心外框</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="6-extensions-advanced-topics">🚀 6. 延伸思考與進階主題 (Extensions &amp; Advanced Topics)</h2>
+<h3 id="61-lcd1602-vs-ssd1306-u8x8">6.1 LCD1602 vs SSD1306 (U8x8) 比較</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>LCD1602 I2C</th>
+<th>SSD1306 OLED + U8x8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>解析度</td>
+<td>16 字 x 2 行（5x8 點陣字）</td>
+<td>128x64 像素 = 16x8 格</td>
+</tr>
+<tr>
+<td>放大字</td>
+<td>不支援</td>
+<td><code>draw2x2String</code>、<code>draw1x2String</code></td>
+</tr>
+<tr>
+<td>自訂圖案</td>
+<td>最多 8 個 CGRAM 字元</td>
+<td><code>drawTile</code> 無數量限制</td>
+</tr>
+<tr>
+<td>背光 / 對比</td>
+<td>需背光，可調電位器</td>
+<td>自發光、高對比、可視角大</td>
+</tr>
+<tr>
+<td>RAM 使用</td>
+<td>極少</td>
+<td>U8x8 極少（無緩衝區）</td>
+</tr>
+<tr>
+<td>常見 I2C 位址</td>
+<td>0x27 / 0x3F</td>
+<td>0x3C / 0x3D</td>
+</tr>
+<tr>
+<td>缺點</td>
+<td>字型固定、無圖形</td>
+<td>長時間靜態畫面可能燒屏</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="62-u8x8-vs-u8g2-page-full-buffer">6.2 U8x8 vs U8g2 (Page / Full Buffer) 做動畫的取捨</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>RAM</th>
+<th>動畫能力</th>
+<th>本專題適用性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>U8x8</td>
+<td>~0 B 緩衝</td>
+<td>只能以 8x8 格為單位更新</td>
+<td>✅ 文字 + 長條圖剛好以格為單位</td>
+</tr>
+<tr>
+<td>U8g2 Page <code>_1</code></td>
+<td>128 B</td>
+<td>像素級，但每幀需重畫整頁</td>
+<td>可做平滑曲線圖，速度較慢</td>
+</tr>
+<tr>
+<td>U8g2 Full <code>_F</code></td>
+<td>1024 B</td>
+<td>像素級，最流暢</td>
+<td>Uno 只剩約 1 KB，DHT + Serial 後吃緊</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>延伸閱讀：同資料夾的 <a href="./u8g2_display_modes_comparison.html">U8g2 顯示模式比較</a>、<a href="./u8g2_display_modes_memory_guide.html">U8g2 Page／Full 圖解</a>。</p>
+</blockquote>
+<h3 id="63">6.3 邊界條件與注意事項</h3>
+<ul>
+<li><strong>負溫度 / DHT22</strong>：DHT22 可量 -40 °C，<code>dtostrf(-10.5, 4, 1)</code> 會變成 5 字 <code>-10.5</code>，超出欄 2~9，會壓到單位。改 DHT22 時應把寬度改為 5、數字起始欄改為 0。</li>
+<li><strong>長條圖滿格值</strong>：<code>TEMP_MAX</code> 若量測環境多在 20~35 °C，可改成顯示 <code>(val - 15) / 25</code> 的區間，長條變化更明顯。</li>
+<li><strong>堆疊用量</strong>：<code>drawBar()</code> 內的 <code>uint8_t buf[128]</code> 位於堆疊，Uno 2 KB RAM 仍足夠；若再加其他大型陣列，可改成 <code>static</code> 或分 16 次畫單格。</li>
+<li><strong>DHT 讀取的阻塞</strong>：Adafruit DHT 讀取時會關閉中斷約 4~5 ms 並等待，動畫可能偶爾頓一下，屬正常現象。</li>
+<li><strong>OLED 燒屏</strong>：標題列固定不動，長時間運作可定時 <code>setPowerSave(1)</code>，或每隔數分鐘把版面上下移一列。</li>
+<li><strong>I2C 位址</strong>：LCD 背光亮但無字 → 試 <code>0x3F</code>；OLED 不亮 → 用 I2C Scanner 確認 <code>0x3C</code> / <code>0x3D</code>。</li>
+</ul>
+<h3 id="64">6.4 進階發展方向</h3>
+<ol>
+<li><strong>歷史曲線</strong>：改用 U8g2 Page Buffer，記錄最近 60 筆資料畫成折線圖。</li>
+<li><strong>警示效果</strong>：溫度超過門檻時用 <code>setInverseFont(1)</code> 讓數字反白閃爍，或加蜂鳴器。</li>
+<li><strong>體感溫度 / 露點</strong>：Adafruit DHT 函式庫提供 <code>computeHeatIndex()</code>，可加第三個畫面輪播。</li>
+<li><strong>按鈕切換頁面</strong>：配合 <code>millis()</code> 架構可輕鬆加入按鍵掃描，不會卡住動畫。</li>
+<li><strong>升級感測器</strong>：SHT31 / BME280（I2C，可與 OLED 共用 A4/A5），精度與速度皆優於 DHT11。</li>
+</ol>
+<hr />
+<h2 id="7">🛠️ 7. 疑難排解</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>現象</th>
+<th>可能原因</th>
+<th>處理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>編譯錯誤 <code>redefinition of 'void setup()'</code></td>
+<td>兩段範例直接貼上</td>
+<td>依第 1.1 節合併成一組 setup / loop</td>
+</tr>
+<tr>
+<td>LCD 顯示 <code>25.0Â°C</code> 亂碼</td>
+<td>用了 UTF-8 的 <code>°</code></td>
+<td>改 <code>lcd.print((char)223)</code></td>
+</tr>
+<tr>
+<td>OLED 全黑</td>
+<td>建構子不符 / 位址錯 / 接線</td>
+<td>確認 SSD1306 vs SH1106，試 <code>SW_I2C</code></td>
+</tr>
+<tr>
+<td>OLED 每隔一行缺漏</td>
+<td>模組變種</td>
+<td>改用 <code>U8X8_SSD1306_128X64_ALT0_HW_I2C</code></td>
+</tr>
+<tr>
+<td>一直顯示 <code>----</code> / Error</td>
+<td>DHT 腳位錯、讀取太快</td>
+<td>確認 D8、間隔 ≥ 2 秒、模組是否需上拉電阻</td>
+</tr>
+<tr>
+<td>動畫卡頓</td>
+<td>用 <code>SW_I2C</code></td>
+<td>改 <code>HW_I2C</code>，或把 <code>FRAME_MS</code> 調大</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="prompt-archive">📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+<h3 id="2026-10-29-152000-claude-opus-55-medium-antigravity-1029-dht11-lcd1602-oled-u8x8">🔹 [2026-10-29 15:20:00] [Claude Opus 5.5 (Medium) / Antigravity] 建立 1029 DHT11 + LCD1602 / OLED U8x8 動態顯示筆記</h3>
+<ul>
+<li><strong>模型/Agent</strong>: Claude Opus 5.5 (Medium) / Antigravity</li>
+<li><strong>Prompt 原文</strong>:</li>
+</ul>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">C:\Users\User\Desktop\onclass\1029.txt 整合這個arduino uno的程式 第一行顯示溫度 第二行顯示濕度 將程式存為1029.ino
+</code></pre></div>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">C:\Users\User\Desktop\onclass\1029-u8x8.txt 將這個arduino程式整合 安排適當的大小 顯示溫度跟濕度還有符號 另存為 1029-u8x8.ino
+</code></pre></div>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">將溫溼度顯示的數值 加上一點動態效果
+</code></pre></div>
+<div class="code-container"><button class="copy-btn" onclick="copyCode(this)">📋 複製</button><pre class="language-text"><code class="language-text">有把以上的討論與程式整理成筆記嗎
+</code></pre></div>
+<ul>
+<li><strong>變更摘要</strong>: 新增本筆記（MD / HTML），整理三階段實作：A. DHT 範例 + LiquidCrystal_I2C 範例合併為 <code>1029.ino</code>（LCD1602 兩行顯示、<code>(char)223</code> 度數符號）；B. U8x8 HelloWorld 整合為 OLED 靜態版（16x8 格版面規劃、2x2 大字、自訂 <code>°</code> 圖塊、<code>dtostrf</code>）；C. 動態效果版 <code>1029-u8x8.ino</code>（緩動數字滾動、長條圖、趨勢箭頭、旋轉指示器、<code>millis()</code> 非阻塞排程、變化才重畫）。附核心概念、流程圖、完整註解程式碼、數值範例、LCD/OLED 與 U8x8/U8g2 比較、邊界條件與疑難排解；並將 <code>1029.ino</code>、<code>1029-u8x8.ino</code> 複製至 <code>ec/</code>。</li>
+</ul>
+</main>
+<footer><p>📘 CLASS_NOTE 電子電路與單晶片專題 • 相關：<a href="arduino_dht11_ssd1306_u8g2_guide.html">DHT11 + SSD1306 U8g2 作法</a> ・ <a href="u8g2_display_modes_comparison.html">U8g2 顯示模式比較</a></p></footer>
+</div>
+<script>
+function copyCode(btn){
+  const code = btn.nextElementSibling.querySelector('code').innerText;
+  navigator.clipboard.writeText(code).then(()=>{
+    const t = btn.innerText; btn.innerText = '✅ 已複製！';
+    setTimeout(()=>{ btn.innerText = t; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
