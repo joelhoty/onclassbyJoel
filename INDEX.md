@@ -1,8 +1,8 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-10-30 09:50:00 (UTC+8)
-> **使用模型**: Gemini 3.8 Flash
-> **執行 Agent**: Antigravity Assistant
+> **最後更新時間**: 2026-10-30 16:55:22 (UTC+8)
+> **使用模型**: Claude Opus 5.5
+> **執行 Agent**: Claude Code
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 
 ---
@@ -660,3 +660,11 @@ go
   擬人化6-DOF關節臂這個題目，撰寫研究動機 研究問題 文獻探討 研究方法 結果與討論 儲存ARM.md
   ```
 - **變更摘要**: 撰寫擬人化 6-DOF 關節臂之完整專題研究報告（含動機、研究問題與假設、文獻探討、研究方法、結果與討論、MicroPython 解耦 IK 程式碼與重力補償量化分析），儲存為 `ev3/ARM.md`、`ev3/ARM.html` 與 `ARM.md`，並更新 INDEX。
+
+### 🔹 [2026-10-30 16:55:22] [Claude Opus 5.5 / Claude Code] 移除根目錄重複的 ARM.md
+- **模型/Agent**: Claude Opus 5.5 / Claude Code
+- **Prompt 原文**:
+  ```text
+  刪除根目錄 ARM.md 並同步
+  ```
+- **變更摘要**: 刪除根目錄 `ARM.md`（與 `ev3/ARM.md` 僅第 6 行 metadata 不同，且無任何連結指向），`ev3/ARM.md` 與 `ev3/ARM.html` 為唯一版本；更新 INDEX.md 與 index.html 的 metadata 與變更記錄。
