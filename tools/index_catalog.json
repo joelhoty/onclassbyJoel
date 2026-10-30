@@ -1,0 +1,1330 @@
+{
+ "ignore": [
+  ".gitignore",
+  "I2C_simulation.html",
+  "skills-lock.json",
+  "INDEX.md",
+  "index.html",
+  "changelog.html",
+  "tools/changelog_legacy.html",
+  "tools/index_catalog.json",
+  "CHANGELOG.md"
+ ],
+ "categories": [
+  {
+   "id": "AI",
+   "dir": "AI",
+   "title": "🤖 AI / 機器學習與深度學習",
+   "groups": []
+  },
+  {
+   "id": "ec",
+   "dir": "ec",
+   "title": "⚡ 電子電路與硬體實驗",
+   "groups": [
+    {
+     "id": "i2c",
+     "title": "🔗 I2C 通訊原理",
+     "match": "^ec/I2C_"
+    },
+    {
+     "id": "sim",
+     "title": "🧪 動態模擬",
+     "match": "simulation"
+    },
+    {
+     "id": "relay",
+     "title": "🔌 繼電器與 PIR",
+     "match": "relay|pir"
+    },
+    {
+     "id": "flow",
+     "title": "🛠️ 開發流程與環境",
+     "match": "workflow|arduino_ide_|helloworld"
+    },
+    {
+     "id": "display",
+     "title": "🌡️ DHT11／LCD／OLED 顯示",
+     "match": "dht11|lcd1602|u8g2|ssd1306|oled"
+    },
+    {
+     "id": "basic",
+     "title": "💡 LED 與基礎電路",
+     "match": "ec_1|ohm|led|ee_0910|S1_AI|紅色"
+    },
+    {
+     "id": "other",
+     "title": "📻 其他主題",
+     "match": null
+    }
+   ]
+  },
+  {
+   "id": "ev3",
+   "dir": "ev3",
+   "title": "🤖 樂高機器人 EV3 / SPIKE",
+   "groups": []
+  },
+  {
+   "id": "math",
+   "dir": "math",
+   "title": "📐 數學與機率統計",
+   "groups": []
+  },
+  {
+   "id": "temple",
+   "dir": "temple",
+   "title": "🏯 廟宇文化與 GIS 地圖",
+   "groups": []
+  },
+  {
+   "id": "dance",
+   "dir": "dance",
+   "title": "💃 舞蹈美學與藝術研究",
+   "groups": []
+  },
+  {
+   "id": "yolo",
+   "dir": "yolo",
+   "title": "🎯 YOLO 物體偵測專題",
+   "groups": []
+  },
+  {
+   "id": "design",
+   "dir": "design",
+   "title": "🎨 平面設計與 CorelDRAW",
+   "groups": []
+  },
+  {
+   "id": "keynote",
+   "dir": "keynote",
+   "title": "🎤 Keynote／課程簡報",
+   "groups": []
+  },
+  {
+   "id": "guide",
+   "dir": "",
+   "title": "📋 工作區指引與核心規範",
+   "groups": []
+  }
+ ],
+ "notes": [
+  {
+   "title": "Agent 與 VS Code 操作驗收與小論文大綱作業",
+   "category": "AI",
+   "files": [
+    "AI/1106_classwork.md"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "Fooocus 影像生成課堂作業指引：Juggernaut XL 與 Voronoi LoRA 幾何細胞肖像實作",
+   "category": "AI",
+   "files": [
+    "AI/fooocus_voronoi_juggernaut_assignment.html",
+    "AI/fooocus_voronoi_juggernaut_assignment.md"
+   ],
+   "attachments": [
+    {
+     "path": "AI/civitai_145848150.jpeg",
+     "title": "Civitai 145848150 Voronoi 戰士課堂範例參考圖"
+    }
+   ]
+  },
+  {
+   "title": "Agent 分層模型：LLM、Context、Harness 與 Workflow ↔ Agent 光譜",
+   "category": "AI",
+   "files": [
+    "AI/ai_agent_harness_workflow.html",
+    "AI/ai_agent_harness_workflow.md"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "Colab 下載 Civitai 模型腳本除錯：wget 401/403 與 SafeTensor 驗證修正",
+   "category": "AI",
+   "files": [
+    "AI/fooocus_civitai_download_fix.html",
+    "AI/fooocus_civitai_download_fix.md"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "新莊土壤液化與地質心理學 10 頁 Marp 簡報 (Tech Style)",
+   "category": "AI",
+   "files": [
+    "AI/soil_liquefaction_tech_slides.html"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "新莊土壤液化與地質心理學 10 頁 Marp 簡報 (Tech Style)",
+   "category": "AI",
+   "files": [
+    "AI/soil_liquefaction_tech_slides.marp.md"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "AI 課程筆記 (09-10)",
+   "category": "AI",
+   "files": [
+    "AI/ai_0910.html"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "CNN 卷積神經網路解析",
+   "category": "AI",
+   "files": [
+    "AI/ai_cnn.html"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "AI 課程筆記 (09-02)",
+   "category": "AI",
+   "files": [
+    "AI/ai_class_0902.html"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "AI 基礎單元 1",
+   "category": "AI",
+   "files": [
+    "AI/ai_1.html"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "AI 基礎單元 2",
+   "category": "AI",
+   "files": [
+    "AI/ai_2.html",
+    "AI/ai_2.htm"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "Attention-First 學習計畫",
+   "category": "AI",
+   "files": [
+    "AI/learning_plan_attention_first.html"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "從文件摘要到 10 頁簡報大綱：AI 提示詞工程轉譯與全流程製作指南",
+   "category": "AI",
+   "files": [
+    "AI/prompt_doc_summary_to_presentation.html",
+    "AI/prompt_doc_summary_to_presentation.md"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "AI 協同科研與小論文發想：提示詞工程實戰",
+   "category": "AI",
+   "files": [
+    "AI/prompt_academic_research_flow.html",
+    "AI/prompt_academic_research_flow.md"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "小葉欖仁落體自主定向機制小論文",
+   "category": "AI",
+   "files": [
+    "AI/prompt_research_proposal_self_alignment.html",
+    "AI/prompt_research_proposal_self_alignment.md"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "Antigravity CLI b06 手冊",
+   "category": "AI",
+   "files": [
+    "AI/Antigravity_cli_b06.html",
+    "AI/Antigravity_cli_b06.md"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "AI 課程筆記 (09-09)",
+   "category": "AI",
+   "files": [
+    "AI/AI_0909.HTML"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "AI 研究提案計畫書 (b02)",
+   "category": "AI",
+   "files": [
+    "AI/research_proposal_b02.md"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "Arduino Uno + DHT11：LCD1602 → SSD1306 OLED (U8x8) 溫濕度顯示與動態效果實作 1029",
+   "category": "ec",
+   "files": [
+    "ec/arduino_dht11_lcd1602_oled_u8x8_animation_1029.html",
+    "ec/arduino_dht11_lcd1602_oled_u8x8_animation_1029.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/1029-u8x8.ino",
+     "title": "Arduino Uno DHT11(D8) + SSD1306 OLED U8x8 動態效果版 1029-u8x8"
+    },
+    {
+     "path": "ec/1029.ino",
+     "title": "Arduino Uno DHT11(D8) + I2C LCD1602 第一行溫度第二行濕度 1029"
+    }
+   ],
+   "group": "display"
+  },
+  {
+   "title": "U8g2 顯示模式、Page／Full 圖解、開發板 RAM 與多語言字型教學",
+   "category": "ec",
+   "files": [
+    "ec/u8g2_display_modes_memory_guide.html",
+    "ec/u8g2_display_modes_memory_guide.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/assets/u8g2_buffer_comparison.svg",
+     "title": "U8g2 圖一：_1／_2／_F 的 RAM 與逐輪傳送比較圖"
+    },
+    {
+     "path": "ec/assets/u8g2_constructor_anatomy.svg",
+     "title": "U8g2 建構式名稱與參數解剖圖"
+    },
+    {
+     "path": "ec/assets/u8g2_constructor_chain.svg",
+     "title": "U8g2 建構式呼叫鏈與記憶體去向圖"
+    },
+    {
+     "path": "ec/assets/u8g2_constructor_decision.svg",
+     "title": "U8g2 SSD1306 建構式選擇決策圖（硬體規格 vs 需求）"
+    },
+    {
+     "path": "ec/assets/u8g2_example_full_bands.svg",
+     "title": "U8g2 範例 D：Full _F_ 實際像素圖"
+    },
+    {
+     "path": "ec/assets/u8g2_example_page1_bands.svg",
+     "title": "U8g2 範例 B：Page _1_ 實際像素與 8 輪分頁圖"
+    },
+    {
+     "path": "ec/assets/u8g2_example_page2_bands.svg",
+     "title": "U8g2 範例 C：Page _2_ 實際像素與 4 輪分頁圖"
+    },
+    {
+     "path": "ec/assets/u8g2_font_pipeline.svg",
+     "title": "U8g2 UTF-8、Unicode 與字型流程圖"
+    },
+    {
+     "path": "ec/assets/u8g2_page_loop.svg",
+     "title": "U8g2 分頁繪製與資料快照圖"
+    },
+    {
+     "path": "ec/assets/u8g2_tile_window.svg",
+     "title": "U8g2 _1／_2／_F 工作區窗口與 byte 排列圖"
+    }
+   ],
+   "group": "display"
+  },
+  {
+   "title": "U8g2 螢幕顯示模式深度解析：U8x8、Page Buffer 與 Full Buffer 比較及開發板記憶體適配指南",
+   "category": "ec",
+   "files": [
+    "ec/u8g2_display_modes_comparison.html",
+    "ec/u8g2_display_modes_comparison.md"
+   ],
+   "attachments": [],
+   "group": "display"
+  },
+  {
+   "title": "Arduino Uno + DHT11 + SSD1306 OLED（U8g2 / I2C）作法、程式庫比較與 Page Buffer 優缺點",
+   "category": "ec",
+   "files": [
+    "ec/arduino_dht11_ssd1306_u8g2_guide.html",
+    "ec/arduino_dht11_ssd1306_u8g2_guide.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/1022-ssd1306.ino",
+     "title": "Arduino Uno DHT11(D8) + SSD1306 OLED (U8g2) 範例程式碼 1022-ssd1306"
+    }
+   ],
+   "group": "display"
+  },
+  {
+   "title": "Arduino Uno + DHT11（Pin 8）+ I2C LCD 1602 接線指引與程式庫下載手冊",
+   "category": "ec",
+   "files": [
+    "ec/arduino_dht11_pin8_lcd1602_i2c_wiring_library_guide.html",
+    "ec/arduino_dht11_pin8_lcd1602_i2c_wiring_library_guide.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/2026-10-22-140028.jpg",
+     "title": "Arduino Uno + DHT11 + I2C LCD 1602 實際接線照片"
+    },
+    {
+     "path": "ec/arduino_dht11_pin8_lcd1602_i2c_example_1029.ino",
+     "title": "Arduino Uno DHT11(D8) + I2C LCD 1602 範例程式碼 example_1029"
+    }
+   ],
+   "group": "display"
+  },
+  {
+   "title": "Arduino 專案開發模式與實務標準流程 (SOP) 手冊",
+   "category": "ec",
+   "files": [
+    "ec/arduino_development_workflow_methodology.html",
+    "ec/arduino_development_workflow_methodology.md"
+   ],
+   "attachments": [],
+   "group": "flow"
+  },
+  {
+   "title": "Arduino Uno 整合 I2C LCD 1602 與 DHT11 溫濕度即時顯示系統實作手冊",
+   "category": "ec",
+   "files": [
+    "ec/arduino_i2c_lcd1602_dht11_unified_display.html",
+    "ec/arduino_i2c_lcd1602_dht11_unified_display.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/2026-10-20-153902.jpg",
+     "title": "Arduino Uno 整合 DHT11 與 LCD 1602 實體接線圖 (含條紋雜訊診斷)"
+    },
+    {
+     "path": "ec/arduino_i2c_lcd1602_dht11_unified.ino",
+     "title": "Arduino Uno I2C LCD 1602 + DHT11 溫濕度整合程式碼"
+    },
+    {
+     "path": "ec/sketch_oct20b.ino",
+     "title": "Arduino Uno 課堂整合草稿程式碼 (sketch_oct20b.ino)"
+    }
+   ],
+   "group": "display"
+  },
+  {
+   "title": "Arduino Uno 連接 DHT11 溫濕度感測器：接線確認與 Adafruit Unified Sensor 範例實測",
+   "category": "ec",
+   "files": [
+    "ec/arduino_dht11_wiring_test_guide.html",
+    "ec/arduino_dht11_wiring_test_guide.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/2026-10-20-153116.jpg",
+     "title": "Arduino Uno DHT11 實體接線測試圖"
+    },
+    {
+     "path": "ec/2026-10-20-153131_ide_dht11.jpg",
+     "title": "Arduino IDE DHT_Unified_Sensor.ino 範例截圖"
+    },
+    {
+     "path": "ec/arduino_dht11_unified_test.ino",
+     "title": "Arduino Uno DHT11 Unified Sensor 單元測試程式"
+    }
+   ],
+   "group": "display"
+  },
+  {
+   "title": "Arduino Uno 整合 I2C LCD 1602 與 DHT11 溫濕度監測系統實作筆記",
+   "category": "ec",
+   "files": [
+    "ec/arduino_i2c_lcd1602_dht11.html",
+    "ec/arduino_i2c_lcd1602_dht11.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/1015-dht11.ino",
+     "title": "Arduino Uno + DHT11 (Pin 8) + I2C LCD 1602 實體驗證整合程式"
+    },
+    {
+     "path": "ec/1015.txt",
+     "title": "Arduino DHT11 與 LCD 1602 獨立單元測試來源碼"
+    },
+    {
+     "path": "ec/2026-10-15-135909.jpg",
+     "title": "Arduino Uno 整合 I2C LCD 1602 與 DHT11 實體接線圖"
+    },
+    {
+     "path": "ec/2026-10-15-143912.jpg",
+     "title": "Arduino Uno + DHT11 + I2C LCD 1602 實體驗證完成成果圖"
+    }
+   ],
+   "group": "display"
+  },
+  {
+   "title": "Arduino IDE 開發環境與 I2C LCD 1602 實體接線指南",
+   "category": "ec",
+   "files": [
+    "ec/arduino_ide_i2c_lcd1602_guide.html",
+    "ec/arduino_ide_i2c_lcd1602_guide.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/2026-10-01-145140.jpg",
+     "title": "Arduino Uno PIR Pin 8 繼電器 Pin 4 實體接線照片"
+    },
+    {
+     "path": "ec/i2c_lcd1602.ino",
+     "title": "I2C LCD 1602 實體驗證測試程式"
+    }
+   ],
+   "group": "flow"
+  },
+  {
+   "title": "Arduino Uno PIR (Pin 8) 繼電器 (Pin 4) I2C LCD1602 (0x20) 狀態監控",
+   "category": "ec",
+   "files": [
+    "ec/arduino_uno_pir8_relay4_lcd1602_i2c.html",
+    "ec/arduino_uno_pir8_relay4_lcd1602_i2c.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/20261001.jpg",
+     "title": "Arduino Uno PIR Pin 8 繼電器 Pin 4 Tinkercad 實驗接線圖"
+    }
+   ],
+   "group": "relay"
+  },
+  {
+   "title": "I2C 通訊協定生活實例入門解說版",
+   "category": "ec",
+   "files": [
+    "ec/I2C_simulation_life_analogy.html",
+    "ec/I2C_simulation_life_analogy.md"
+   ],
+   "attachments": [],
+   "group": "i2c"
+  },
+  {
+   "title": "I2C 通訊協定雙裝置動態模擬器 (Master + 0x27 LCD / 0x68 RTC)",
+   "category": "ec",
+   "files": [
+    "ec/I2C_simulation.html",
+    "ec/I2C_simulation.md"
+   ],
+   "attachments": [],
+   "group": "i2c"
+  },
+  {
+   "title": "Arduino Uno PIR (Pin 7) 繼電器 (Pin 4) I2C LCD1602 狀態監控",
+   "category": "ec",
+   "files": [
+    "ec/arduino_uno_pir7_relay4_lcd1602_i2c.html",
+    "ec/arduino_uno_pir7_relay4_lcd1602_i2c.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/0929-2.jpg",
+     "title": "Arduino Uno PIR Pin 7 繼電器 Pin 4 LCD1602 實驗接線圖"
+    }
+   ],
+   "group": "relay"
+  },
+  {
+   "title": "Arduino Uno PIR (Pin 7) 繼電器 (Pin 4) NC切換NO延遲5秒",
+   "category": "ec",
+   "files": [
+    "ec/arduino_uno_pir7_relay4_delay5s.html",
+    "ec/arduino_uno_pir7_relay4_delay5s.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/0929-1.jpg",
+     "title": "Arduino Uno PIR Pin 7 繼電器 Pin 4 實驗接線圖"
+    }
+   ],
+   "group": "relay"
+  },
+  {
+   "title": "車用收音機事件廣播 14 頁 Marp 簡報 (Tech Theme)",
+   "category": "ec",
+   "files": [
+    "ec/car_radio_traffic_broadcast_rds_ta_tunnel_slides.html",
+    "ec/car_radio_traffic_broadcast_rds_ta_tunnel.marp.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/marp-theme-tech.css",
+     "title": "marp-theme-tech.css"
+    }
+   ],
+   "group": "other"
+  },
+  {
+   "title": "Arduino PIR (Pin 4) 繼電器 (Pin 2) 延遲 5 秒照明",
+   "category": "ec",
+   "files": [
+    "ec/arduino_pir_relay_delay.html",
+    "ec/arduino_pir_relay_delay.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/pir0924.jpg",
+     "title": "Arduino PIR 與繼電器實驗相片"
+    }
+   ],
+   "group": "relay"
+  },
+  {
+   "title": "Arduino 數位控制繼電器電路與進階應用解析",
+   "category": "ec",
+   "files": [
+    "ec/arduino_relay.html",
+    "ec/arduino_relay.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/arduino_relay.jpg",
+     "title": "Arduino 數位控制繼電器電路相片"
+    }
+   ],
+   "group": "relay"
+  },
+  {
+   "title": "Arduino 紅外線感應繼電器電燈控制",
+   "category": "ec",
+   "files": [
+    "ec/arduino_pir_relay_light_control.html",
+    "ec/arduino_pir_relay_light_control.md"
+   ],
+   "attachments": [],
+   "group": "relay"
+  },
+  {
+   "title": "電磁線圈電鈴動態模擬與音效合成系統",
+   "category": "ec",
+   "files": [
+    "ec/electric_bell_coil_simulation.html",
+    "ec/electric_bell_coil_simulation.md"
+   ],
+   "attachments": [],
+   "group": "sim"
+  },
+  {
+   "title": "繼電器控制電路與原理解析",
+   "category": "ec",
+   "files": [
+    "ec/relay_control_circuits.html",
+    "ec/relay_control_circuits.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/arduino.jpg",
+     "title": "Arduino 繼電器控制設計相片"
+    },
+    {
+     "path": "ec/relay_circuits_0917.jpg",
+     "title": "繼電器雙電路實驗相片"
+    }
+   ],
+   "group": "relay"
+  },
+  {
+   "title": "電磁繼電器 SPDT 控制電路",
+   "category": "ec",
+   "files": [
+    "ec/relay_spdt_circuit_analysis.html",
+    "ec/relay_spdt_circuit_analysis.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/relay1.jpg",
+     "title": "繼電器控制電路設計相片"
+    }
+   ],
+   "group": "relay"
+  },
+  {
+   "title": "2路磁簧繼電器動態模擬",
+   "category": "ec",
+   "files": [
+    "ec/reed_relay_2ch_simulation.html",
+    "ec/reed_relay_2ch_simulation.md"
+   ],
+   "attachments": [],
+   "group": "sim"
+  },
+  {
+   "title": "基礎電路實驗 1",
+   "category": "ec",
+   "files": [
+    "ec/ec_1.html"
+   ],
+   "attachments": [
+    {
+     "path": "ec/20260908.jpg",
+     "title": "電路實驗相片 1"
+    }
+   ],
+   "group": "basic"
+  },
+  {
+   "title": "歐姆定律計算與工具",
+   "category": "ec",
+   "files": [
+    "ec/ohm.html"
+   ],
+   "attachments": [],
+   "group": "basic"
+  },
+  {
+   "title": "LED 限流電阻原理與實驗",
+   "category": "ec",
+   "files": [
+    "ec/led.html"
+   ],
+   "attachments": [
+    {
+     "path": "ec/LED.jpg",
+     "title": "LED 電路接線圖"
+    }
+   ],
+   "group": "basic"
+  },
+  {
+   "title": "車用收音機路況／事件廣播：隧道插播、RDS-TA 與相關技術",
+   "category": "ec",
+   "files": [
+    "ec/car_radio_traffic_broadcast_rds_ta_tunnel.html",
+    "ec/car_radio_traffic_broadcast_rds_ta_tunnel.md"
+   ],
+   "attachments": [],
+   "group": "other"
+  },
+  {
+   "title": "電機電子實驗 (09-10)",
+   "category": "ec",
+   "files": [
+    "ec/ee_0910.html"
+   ],
+   "attachments": [],
+   "group": "basic"
+  },
+  {
+   "title": "LED LaTeX 技術手冊",
+   "category": "ec",
+   "files": [
+    "ec/LED LaTeX EE-0910.pdf"
+   ],
+   "attachments": [],
+   "group": "basic"
+  },
+  {
+   "title": "S1 AI 電路內容講義",
+   "category": "ec",
+   "files": [
+    "ec/S1_AI_Content_b06.pdf"
+   ],
+   "attachments": [],
+   "group": "basic"
+  },
+  {
+   "title": "紅色 LED 限流手冊",
+   "category": "ec",
+   "files": [
+    "ec/紅色 LED 限流電阻工程手冊與計算工具.pdf"
+   ],
+   "attachments": [],
+   "group": "basic"
+  },
+  {
+   "title": "LEGO SPIKE 6-DOF 擬人化機械臂研究論文",
+   "category": "ev3",
+   "files": [
+    "ev3/ARM.html",
+    "ev3/ARM.md"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "LEGO SPIKE 仿生機械手臂研究指南：六馬達配置與五大研究題目解析",
+   "category": "ev3",
+   "files": [
+    "ev3/spike_bionic_arm_research_topics.html",
+    "ev3/spike_bionic_arm_research_topics.md"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "EV3 跟車程式設計筆記：從四區間 Switch、變數分離到單一公式減速與 ACC",
+   "category": "ev3",
+   "files": [
+    "ev3/ev3_car_following_design_notes.html",
+    "ev3/ev3_car_following_design_notes.md"
+   ],
+   "attachments": [
+    {
+     "path": "ev3/1019-1.jpg",
+     "title": "EV3 跟車程式截圖"
+    },
+    {
+     "path": "ev3/1019-2.jpg",
+     "title": "EV3 跟車第二寫法截圖"
+    },
+    {
+     "path": "ev3/1019-3.jpg",
+     "title": "EV3 跟車第三寫法截圖"
+    },
+    {
+     "path": "ev3/1019-4.jpg",
+     "title": "EV3 跟車第四寫法截圖"
+    },
+    {
+     "path": "ev3/car_following_sim.py",
+     "title": "跟車模擬程式"
+    },
+    {
+     "path": "ev3/car_following_sim_compare.py",
+     "title": "跟車模擬比較"
+    },
+    {
+     "path": "ev3/clamp_blocks.svg",
+     "title": "clamp 限幅的 EV3 基本積木排列圖"
+    },
+    {
+     "path": "ev3/distance_power_compare.svg",
+     "title": "距離與功率函數圖：各寫法對照"
+    },
+    {
+     "path": "ev3/final_blocks.svg",
+     "title": "跟車建議最終設計積木圖"
+    },
+    {
+     "path": "ev3/final_formula_blocks.svg",
+     "title": "建議最終公式的 EV3 基本積木排列圖"
+    },
+    {
+     "path": "ev3/line_clamp_steps.svg",
+     "title": "一條直線 + clamp 三步圖解"
+    },
+    {
+     "path": "ev3/zone_blocks.svg",
+     "title": "各區間公式的 EV3 積木排列圖"
+    }
+   ]
+  },
+  {
+   "title": "雙感測器邏輯",
+   "category": "ev3",
+   "files": [
+    "ev3/nested_switch_distance_logic.html",
+    "ev3/nested_switch_distance_logic.md"
+   ],
+   "attachments": [
+    {
+     "path": "ev3/2swtcih.jpg",
+     "title": "2swtcih.jpg"
+    },
+    {
+     "path": "ev3/2swtcih.png",
+     "title": "雙 Switch 邏輯流程圖"
+    },
+    {
+     "path": "ev3/cm2hz.jpg",
+     "title": "距離轉換音頻曲線圖"
+    }
+   ]
+  },
+  {
+   "title": "距離音訊回饋研究提案",
+   "category": "ev3",
+   "files": [
+    "ev3/distance_audio_feedback_research.md"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "樂高專題紀錄 (09-07)",
+   "category": "ev3",
+   "files": [
+    "ev3/lego_0907.html"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "樂高基礎控制單元 1",
+   "category": "ev3",
+   "files": [
+    "ev3/lego_1.html"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "馬達控制：Move Steering vs Move Tank 完整教學",
+   "category": "ev3",
+   "files": [
+    "ev3/lego_motor_control.html",
+    "ev3/lego_motor_control.md"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "樂高機器人專題筆記首頁",
+   "category": "ev3",
+   "files": [
+    "ev3/index.html"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "數學與機率分布筆記 01",
+   "category": "math",
+   "files": [
+    "math/math_01.html"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "嘉義市歷史廟宇 GIS 地圖",
+   "category": "temple",
+   "files": [
+    "temple/temple_map.html"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "廟宇統計報告 (09-04)",
+   "category": "temple",
+   "files": [
+    "temple/嘉義市歷史廟宇統計報告_2026-09-04.pdf"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "廟宇統計報告 (09-03)",
+   "category": "temple",
+   "files": [
+    "temple/嘉義市歷史廟宇統計報告_2026-09-03.pdf"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "舞蹈美學與動作分析筆記",
+   "category": "dance",
+   "files": [
+    "dance/cd.html"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "YOLO 手勢偵測說明文檔",
+   "category": "yolo",
+   "files": [
+    "yolo/README.md"
+   ],
+   "attachments": [
+    {
+     "path": "yolo/gesture_detector.py",
+     "title": "手勢偵測模組 gesture_detector.py"
+    },
+    {
+     "path": "yolo/main.py",
+     "title": "YOLO 主程式 main.py"
+    },
+    {
+     "path": "yolo/requirements.txt",
+     "title": "環境套件需求表"
+    },
+    {
+     "path": "yolo/train_gesture.py",
+     "title": "模型訓練指令腳本 train_gesture.py"
+    }
+   ]
+  },
+  {
+   "title": "CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計實務教學",
+   "category": "design",
+   "files": [
+    "design/coreldraw_keychain_design.html",
+    "design/coreldraw_keychain_design.md"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "Arduino 實作與設計流程：18 頁核心簡報",
+   "category": "keynote",
+   "files": [
+    "keynote/Arduino_WorkFLow_core_slides_b01.html"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "根目錄 AI 課程總覽",
+   "category": "guide",
+   "files": [
+    "ai_0910.html"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "Multi-Agent 工作區規範",
+   "category": "guide",
+   "files": [
+    "AGENTS.md"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "筆記生成與更新標準指引",
+   "category": "guide",
+   "files": [
+    "NOTE_GENERATION_GUIDE.md"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "Antigravity Note Rules",
+   "category": "guide",
+   "files": [
+    "GEMINI.md"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "Arduino Uno 連接 I2C LCD 1602：HelloWorld 範例與 LiquidCrystal_I2C 物件方法全解析",
+   "category": "ec",
+   "files": [
+    "ec/arduino_i2c_lcd1602_helloworld_guide.html",
+    "ec/arduino_i2c_lcd1602_helloworld_guide.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/2026-10-20-142320.jpg",
+     "title": "LCD 1602 背部 PCF8574 轉接板元件圖"
+    },
+    {
+     "path": "ec/2026-10-20-143026.jpg",
+     "title": "Arduino Uno 與 LCD 1602 I2C 實體接線圖"
+    },
+    {
+     "path": "ec/2026-10-20-150654_ide_helloworld.jpg",
+     "title": "Arduino IDE HelloWorld.ino 範例截圖"
+    },
+    {
+     "path": "ec/arduino_i2c_lcd1602_helloworld.ino",
+     "title": "Arduino Uno I2C LCD 1602 HelloWorld 功能測試與方法應用程式"
+    }
+   ],
+   "group": "flow"
+  },
+  {
+   "title": "SPIKE 尋跡控制程式",
+   "category": "ev3",
+   "files": [
+    "ev3/lego_spike_line_follower.py"
+   ],
+   "attachments": []
+  },
+  {
+   "title": "索引產生腳本 (build_index.py)",
+   "category": "guide",
+   "files": [
+    "tools/build_index.py"
+   ],
+   "attachments": []
+  }
+ ],
+ "date_overrides": {
+  "AI/fooocus_civitai_download_fix.html": {
+   "git": "2026-10-15",
+   "date": "2026-10-07"
+  },
+  "AI/fooocus_civitai_download_fix.md": {
+   "git": "2026-10-15",
+   "date": "2026-10-07"
+  },
+  "AI/AI_0909.HTML": {
+   "git": "2026-09-14",
+   "date": "2026-09-09"
+  },
+  "AI/ai_2.htm": {
+   "git": "2026-09-14",
+   "date": "2026-09-02"
+  },
+  "AI/research_proposal_b02.md": {
+   "git": "2026-09-14",
+   "date": "2026-09-01"
+  },
+  "ec/arduino_dht11_lcd1602_oled_u8x8_animation_1029.html": {
+   "git": "2026-10-30",
+   "date": "2026-10-29"
+  },
+  "ec/arduino_dht11_lcd1602_oled_u8x8_animation_1029.md": {
+   "git": "2026-10-30",
+   "date": "2026-10-29"
+  },
+  "ec/ee_0910.html": {
+   "git": "2026-09-14",
+   "date": "2026-09-10"
+  },
+  "ec/LED LaTeX EE-0910.pdf": {
+   "git": "2026-09-14",
+   "date": "2026-09-10"
+  },
+  "ec/S1_AI_Content_b06.pdf": {
+   "git": "2026-09-14",
+   "date": "2026-09-09"
+  },
+  "ec/紅色 LED 限流電阻工程手冊與計算工具.pdf": {
+   "git": "2026-09-14",
+   "date": "2026-09-08"
+  },
+  "ev3/index.html": {
+   "git": "2026-10-19",
+   "date": "2026-09-14"
+  },
+  "math/math_01.html": {
+   "git": "2026-09-14",
+   "date": "2026-09-03"
+  },
+  "temple/嘉義市歷史廟宇統計報告_2026-09-04.pdf": {
+   "git": "2026-09-14",
+   "date": "2026-09-04"
+  },
+  "temple/嘉義市歷史廟宇統計報告_2026-09-03.pdf": {
+   "git": "2026-09-14",
+   "date": "2026-09-03"
+  },
+  "NOTE_GENERATION_GUIDE.md": {
+   "git": "2026-09-14",
+   "date": "2026-09-10"
+  },
+  "GEMINI.md": {
+   "git": "2026-09-14",
+   "date": "2026-09-10"
+  }
+ },
+ "correction_log": {
+  "note": "2026-09-26 全站概念與敘述正確性審查，共修正 36 個檔案；各檔修正內容詳見該檔最下方的「提示詞歷史與變更記錄」。",
+  "rows": [
+   [
+    "ai_0910.html",
+    "根目錄 AI 課程總覽",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "AI/ai_0910.html",
+    "AI 課程筆記 (09-10)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "AI/ai_1.html",
+    "AI 基礎單元 1",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "AI/ai_2.html",
+    "AI 基礎單元 2 (HTML)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "AI/ai_class_0902.html",
+    "AI 課程筆記 (09-02)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "AI/ai_cnn.html",
+    "CNN 卷積神經網路解析",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "AI/learning_plan_attention_first.html",
+    "Attention-First 學習計畫",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "AI/soil_liquefaction_tech_slides.html",
+    "新莊土壤液化與地質心理學 10 頁 Marp 簡報 (Tech Style) (HTML)",
+    "2026-09-26 23:01:14",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "AI/soil_liquefaction_tech_slides.marp.md",
+    "新莊土壤液化與地質心理學 10 頁 Marp 簡報 (Tech Style) (MD)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "dance/cd.html",
+    "舞蹈美學與動作分析筆記",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "design/coreldraw_keychain_design.html",
+    "CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "design/coreldraw_keychain_design.md",
+    "CorelDRAW 點陣圖轉向量與鑰匙圈吊飾設計 (MD)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ec/arduino_pir_relay_delay.html",
+    "Arduino PIR (Pin 4) 繼電器 (Pin 2) 延遲 5 秒照明 (HTML)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ec/arduino_pir_relay_delay.md",
+    "Arduino PIR (Pin 4) 繼電器 (Pin 2) 延遲 5 秒照明 (MD)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ec/arduino_pir_relay_light_control.html",
+    "Arduino 紅外線感應繼電器電燈控制 (HTML)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ec/arduino_pir_relay_light_control.md",
+    "Arduino 紅外線感應繼電器電燈控制 (MD)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ec/arduino_relay.html",
+    "Arduino 數位控制繼電器電路與進階應用解析 (HTML)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ec/arduino_relay.md",
+    "Arduino 數位控制繼電器電路與進階應用解析 (MD)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ec/car_radio_traffic_broadcast_rds_ta_tunnel.marp.md",
+    "車用收音機事件廣播 14 頁 Marp 簡報 (Tech Theme) (MD)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ec/car_radio_traffic_broadcast_rds_ta_tunnel_slides.html",
+    "車用收音機事件廣播 14 頁 Marp 簡報 (Tech Theme) (HTML)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ec/ec_1.html",
+    "基礎電路實驗 1",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ec/electric_bell_coil_simulation.html",
+    "電磁線圈電鈴動態模擬與音效合成系統 (HTML)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ec/electric_bell_coil_simulation.md",
+    "電磁線圈電鈴原理解析與數值模型 (MD)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ec/led.html",
+    "LED 限流電阻原理與實驗",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ec/ohm.html",
+    "歐姆定律計算與工具",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ec/reed_relay_2ch_simulation.html",
+    "2路磁簧繼電器動態模擬 (HTML)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ec/reed_relay_2ch_simulation.md",
+    "2路磁簧繼電器原理剖析 (MD)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ec/relay_control_circuits.html",
+    "繼電器控制電路與原理解析 (HTML)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ec/relay_control_circuits.md",
+    "繼電器控制電路與原理解析 (MD)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ec/relay_spdt_circuit_analysis.md",
+    "電磁繼電器 SPDT 控制電路 (MD)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ev3/distance_audio_feedback_research.md",
+    "距離音訊回饋研究提案",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ev3/lego_0907.html",
+    "樂高專題紀錄 (09-07)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ev3/lego_1.html",
+    "樂高基礎控制單元 1",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "ev3/nested_switch_distance_logic.md",
+    "雙感測器邏輯解析 (MD)",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "temple/temple_map.html",
+    "嘉義市歷史廟宇 GIS 地圖",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ],
+   [
+    "yolo/README.md",
+    "YOLO 手勢偵測說明文檔",
+    "2026-09-26 23:01:05",
+    "Claude Opus 5.5 (claude-opus-5-5) / Claude Code"
+   ]
+  ]
+ }
+}

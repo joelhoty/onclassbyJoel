@@ -1,7 +1,7 @@
 # 🤖 AGENTS.md — Multi-Agent Workspace Rule & Note Generation Guidelines
 
 > **適用對象**: 所有在此工作區 (`D:\CLASS_NOTE`) 運作的 AI Agent / Subagent  
-> **最後更新時間**: 2026-09-22 15:12:00 (UTC+8)  
+> **最後更新時間**: 2026-10-30 17:03:55 (UTC+8)  
 > **規範目標**: 建立跨 Agent 統一的筆記生成、更新與提示詞追蹤標準
 
 ---
@@ -35,6 +35,7 @@
 
 * **不得覆蓋**先前 Agent 所記錄的歷史資訊，必須使用**增補（Append）**方式新增紀錄。
 * 提示詞原文必須完整記錄於 `text` 程式碼區塊內。
+* **索引檔例外**：`INDEX.md`、`index.html` 由腳本產生，不含此區塊；索引與全站層級的變更，改增補至根目錄 `CHANGELOG.md` 最底部。各篇筆記仍須維護自己的區塊。
 
 ```markdown
 ---
@@ -64,8 +65,10 @@
 ---
 
 ### 6.index.md與index.html 自動更新
-- 在git commit 之前先進行index檔案索引更新
-- git commit 與 git push 後檢查檔案索引是否正確
+- `INDEX.md`、`index.html`、`changelog.html` 由 `tools/build_index.py` 產生，**不得手動修改**，否則下次產生時會被覆蓋
+- 在git commit 之前：先在 `CHANGELOG.md` 最底部增補紀錄，再執行 `python3 tools/build_index.py`（Windows 用 `python`）
+- 腳本會自動收錄新檔案；標題、分類、子主題與附件歸屬需要調整時，修改 `tools/index_catalog.json` 後重新執行
+- git commit 與 git push 後執行 `python3 tools/build_index.py --check`，確認索引正確且連結全部有效
 ---
 
 ## 📁 跨 Agent 目錄分類原則 (Subject Categorization)

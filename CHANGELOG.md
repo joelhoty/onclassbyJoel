@@ -1,0 +1,443 @@
+# 📝 onclassbyJoel - 全站提示詞歷史與變更記錄 (CHANGELOG)
+
+> **最後更新時間**: 2026-10-30 17:03:55 (UTC+8)
+> **使用模型**: Claude Opus 5.5
+> **執行 Agent**: Claude Code
+
+---
+
+## 📝 提示詞歷史與變更記錄 (Prompt Archive)
+
+### 🔹 [2026-09-14 16:01:00] [Gemini 3.6 Flash / GitHub Pages Index Generator]
+- **模型/Agent**: Gemini 3.6 Flash / GitHub Pages Index Generator
+- **Prompt 原文**:
+  ```text
+  update default page, with files date
+  ```
+- **變更摘要**: 於 `index.html` 與 `INDEX.md` 為全區域所有檔案補全修改日期標籤 (`YYYY-MM-DD`)，讓搜尋與瀏覽更容易。
+
+### 🔹 [2026-09-15 09:36:37] [Gemini 3.6 Flash / Antigravity Documentation Specialist]
+- **模型/Agent**: Gemini 3.6 Flash / Antigravity Documentation Specialist
+- **Prompt 原文**:
+  ```text
+  應該要歸在什麼類別? 並更新首頁的檔案索引
+  ```
+- **變更摘要**: 將 `Antigravity_cli_b06` 正確歸類移至 `AI/` 資料夾中，將 `coreldraw_keychain_design` 歸類於 `design/` 資料夾中，並同步全面更新 `INDEX.md` 與 `index.html` 之全站主題卡片索引與檔案計數。
+
+### 🔹 [2026-09-15 11:25:16] [Gemini 3.6 Flash / Antigravity Documentation Specialist]
+- **模型/Agent**: Gemini 3.6 Flash / Antigravity Documentation Specialist
+- **Prompt 原文**:
+  ```text
+  index的檔案日期依照新舊排列
+  ```
+- **變更摘要**: 重構 `INDEX.md` 與 `index.html` 全站各類別下所有檔案之排列順序，全面改為依日期由新至舊 (Newest to Oldest) 降序排列。
+
+### 🔹 [2026-09-15 15:06:42] [Gemini 3.7 Flash / Antigravity Documentation Specialist]
+- **模型/Agent**: Gemini 3.7 Flash / Antigravity Documentation Specialist
+- **Prompt 原文**:
+  ```text
+  更新index索引
+  ```
+- **變更摘要**: 同步將最新完成的繼電器控制電路與 2路磁簧繼電器系列 5 份新檔案 (`relay_spdt_circuit_analysis.html/md`, `relay1.jpg`, `reed_relay_2ch_simulation.html/md`) 納入電子電路 (`ec/`) 索引清單，更新檔案數量統計並維持依日期由新至舊降序排列。
+
+### 🔹 [2026-09-16 09:46:22] [Gemini 3.7 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.7 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  C:\Users\User\Desktop\ttt.txt 這是我在學習prompt跟AI討論小論文的內容，幫我整理成詳細的筆記
+  ```
+- **變更摘要**: 整理小葉欖仁落體自主定向機制小論文筆記 (`prompt_research_proposal_self_alignment.html/md`) 並同步更新 AI 分類清單。
+
+### 🔹 [2026-09-16 09:49:04] [Gemini 3.7 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.7 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  加強對prompt使用的討論
+  ```
+- **變更摘要**: 深度擴充小論文共創之 Prompt 工程方法論，新增「四大核心心法」、「新手 vs 專家對照表」、「五階段實戰 Prompt 模板庫」及「人機協同科研閉環工作流」，同步更新 md 與 html 檔案。
+
+### 🔹 [2026-09-16 09:58:48] [專題研究者 (去識別化) ➔ Gemini / Antigravity]
+- **研究者 / 提問者**: 專題研究者 / 科研學習者 (去識別化)
+- **模型/Agent**: Gemini 3.7 Flash / Antigravity
+- **Prompt 原文 (5 輪歷程)**:
+  ```text
+  1. 你是科學老師，我想進行關於小葉欖仁的種子落下的相關研究 ， 提供五個可行的研究問題讓我參考 (08:43)
+  2. 我要選擇研究問題四：初始釋放姿態對動態穩定性與軌跡的影響... (09:11)
+  3. 把文獻探討寫得更詳細更多面向，可以利用網路搜尋找相關的研究納入 (09:14)
+  4. 根據這些文獻探討，我的研究目的跟研究方法可以怎麼修改 (09:16)
+  5. 根據目前選定的研究問題，統整以上討論，重新撰寫一份完整的研究大綱,要包含之前討論的內容與面向 完整的研究內容 (09:18~09:19)
+  ```
+- **變更摘要**: 完整登錄專題研究者五輪真實 Prompt 歷程，並更新筆記中英文作者標籤與元資料。
+
+### 🔹 [2026-09-16 10:11:01] [Gemini 3.7 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.7 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  檢查是否有重複內容
+  go
+  ```
+- **變更摘要**: 執行全域冗餘檢查與結構精簡。消除 5 輪基礎提示詞在四處重複列出的冗餘，移除重複心法總結，重構為五大清晰層次的小節架構。
+
+### 🔹 [2026-09-17 14:22:50] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  將原始的電路設計加入檔案，並利用繪圖進行動態模擬繼電器的運作，另外再設計繼電器磁簧開關與接點的動態展示，最後再增加繼電器的相關應用
+  ```
+- **變更摘要**: 將原始電路圖像嵌入筆記，製作四組包含電路動態、接點機械動作與磁簧開關磁吸之動態互動模擬，並擴充工業、車載與電力系統應用實例。
+
+### 🔹 [2026-09-17 14:36:27] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  C:\Users\User\Desktop\arduino.jpg 加入這一個設計圖與程式解說
+  ```
+- **變更摘要**: 嵌入 Arduino 繼電器控制設計圖 (arduino.jpg)，詳解 C++ 程式碼與 3秒綠燈/1秒紅燈控制邏輯，新增 Arduino 自動化即時動態模擬，並深度解析單晶片直驅線圈之反向電動勢 (Back-EMF) 與電流超載危害，提出電晶體與飛輪二極體工業級保護方案。
+
+### 🔹 [2026-09-21 15:20:00] [Claude Sonnet 5 / Claude Code]
+- **模型/Agent**: Claude Sonnet 5 / Claude Code
+- **Prompt 原文**:
+  ```text
+  整合 LEGO Mindstorm EV3 馬達控制 PDF（Move Steering vs Move Tank、四個實作應用），並新增走正方形的幾何計算與誤差來源詳解章節
+  ```
+- **變更摘要**: 新增 `lego_motor_control.html`，完整整理馬達控制核心參數、Move Steering 差速轉向原理、Move Tank 獨立雙馬達控制、兩者比較決策流程圖、四個對照實作應用（時間/距離/角度/正方形控制），並深入擴充「走正方形」的幾何推導與六大誤差來源（輪胎周長誤差、輪距誤差、轉彎打滑、開迴路無回饋、電池電壓不對稱、累積誤差）與開迴路/閉迴路對策比較，同步更新 EV3 分類索引。
+
+### 🔹 [2026-09-22 14:26:00] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  利用電子線圈設計一個電鈴的動態模擬跟聲音
+  ```
+- **變更摘要**: 新增電磁線圈電鈴動態物理模擬器與音效合成系統 (`electric_bell_coil_simulation.html` 與 `.md`)，包含雙線圈磁場流動、機械自激斷續器、接點電弧微火花、鈴碗非諧波聲學與 Web Audio API 金屬敲擊聲合成，並更新全站索引。
+
+### 🔹 [2026-09-22 14:52:00] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  寫一個arduino程式，pin 7接紅外線感應器，pin 8 接繼電器控制電燈，當感應器有人經過就開燈，人離開範圍後延遲5秒關燈
+  ```
+- **變更摘要**: 新增 Arduino 紅外線感測 (PIR Pin 7) 與繼電器 (Relay Pin 8) 控制電燈之完整設計教學 (`arduino_pir_relay_light_control.html` 與 `.md`)，包含非阻塞式 `millis()` 狀態機實作、線上動態模擬器、維恩位移定律、光耦隔離、反馳反電動勢防護與 CDS 晝夜延伸電路設計，同步更新全站索引。
+
+### 🔹 [2026-09-22 15:12:00] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  git psuh
+  ```
+- **變更摘要**: 配合工作區規範第 6 條，於 git commit / push 流程中自動執行索引同步，更新 `AGENTS.md` 規範與修改日期（2026-09-22），並推播至 GitHub 遠端儲存庫。
+
+### 🔹 [2026-09-23 11:42:51] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  C:\Users\User\Desktop\0923-11.txt 這是我利用提示詞將文件進行摘要與簡報大綱轉換的練習，整理成筆記 並提供建議跟修改方向，以及後續如何完成簡報的方法
+  ```
+- **變更摘要**: 新增提示詞工程實戰筆記 (`prompt_doc_summary_to_presentation.html` 與 `.md`)，深入剖析文件摘要與 10 頁簡報大綱轉譯架構、認知負荷理論、18字法則、主張式標題法與雙碼理論；提供升級版二階段提示詞模版、Marp 自動轉換腳本（含 Mermaid 邏輯流程圖與複製按鈕）、AI 生圖風格一致性方案與 15 分鐘演講節奏分配表，並更新全站索引。
+
+### 🔹 [2026-09-23 11:46:00] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  git commit and push
+  ```
+- **變更摘要**: 依工作區規範第 6 條執行 Git 提交與推播同步程序，確認檔案索引完整並記錄提示詞歷程，將最新進度推播至 GitHub 遠端儲存庫。
+
+### 🔹 [2026-09-23 11:58:06] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  /marp-slide C:\Users\User\Desktop\111999.md tech style
+  ```
+- **變更摘要**: 調用 `marp-slide` Skill，將 `111999.md`（新莊土壤液化與地質心理學課堂大綱）轉換為 10 頁具備 GitHub 深色終端機科技風格的 Marp 簡報 (`soil_liquefaction_tech_slides.marp.md` 及 `soil_liquefaction_tech_slides.html`，同步輸出至桌面)，包含主張式標題、高亮狀態卡片、每頁口說演講備忘錄與 AI 生圖 Prompt。
+
+### 🔹 [2026-09-23 12:00:54] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  將marp cli相關的討論整理到0923筆記
+  ```
+- **變更摘要**: 將 Marp 開源生態系（awesome-marp、marp-community-themes、dracula/marp 等）、Marp CLI 自訂主題掛載與無對話編譯指令、五大進階排版技巧（圖文切割、局部樣式、雙欄卡片、Presenter Notes）及 marp-slide 技能實戰成果完整整合至 0923 筆記 (`prompt_doc_summary_to_presentation.md` 與 `.html`)，同步更新全站索引。
+
+### 🔹 [2026-09-24 13:58:22] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  C:\Users\User\Desktop\20260924-1.jpg 這是我的第一個數位控制繼電器電路，幫我整理成筆記 arduino_relay，並延伸這個基本電路的應用想法
+  ```
+- **變更摘要**: 整理使用者的第一個數位控制繼電器模擬電路 (`arduino_relay.html` 與 `.md`)，診斷 Tinkercad 晶片驚嘆號原因（過電流與反電動勢），詳解 NPN 電晶體與光耦標準驅動架構，提供基礎阻塞與進階非阻塞程式碼，展開 5 大實用延伸應用與強電安全守則，並同步更新全站檔案索引與首頁導覽。
+
+### 🔹 [2026-09-24 14:05:18] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  正規工程設計絕不以 MCU 引腳直推線圈，而是使用 NPN 電晶體（如 2N2222、SS8050） 作為低側開關，並於線圈兩端反向並聯 續流二極體（Flyback Diode，如 1N4007、1N4148）：  加入這個的說明跟接線模擬圖
+  ```
+- **變更摘要**: 深度擴充 `arduino_relay.md` 與 `arduino_relay.html` 的工程驅動模組，詳解低側開關工作機制、NPN 深度飽和條件與基極限流/下拉電阻推導、續流二極體消弧物理過程與 1N4007/1N4148 選型對比；增補 ASCII/SVG 實體接線模擬拓撲圖與腳位清單對照表，並同步升級互動模擬器之反電動勢高壓瞬態偵測。
+
+### 🔹 [2026-09-24 14:13:32] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  補充說明 NPN 電晶體低側開關與續流二極體保護 的功能與工作原理
+  ```
+- **變更摘要**: 深入剖析 NPN 低側開關三大功能（電流緩衝放大、共地參考驅動、零功耗開關）與雙接面載子傳輸機制（截止 vs 深度飽和 Hard Saturation），詳解電感線圈楞次定律極性翻轉、反電動勢消弧與一階 RL 指數放電方程式，並擴充二極體選型指南（1N4148、1N4007、1N5819 肖特基）。
+
+### 🔹 [2026-09-24 14:25:34] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  C:\Users\User\Desktop\pir0924.jpg 寫一個arudino的程式， 人體紅外線感應器 pin 4, 繼電器 pin2, 人體紅外線感應器偵測到移動，繼電器開啟電燈，離開後延遲5秒
+  ```
+- **變更摘要**: 依據使用者最新電路接線圖（PIR 接 Pin 4，繼電器接 Pin 2），建立專題筆記 `arduino_pir_relay_delay.md` 與 `arduino_pir_relay_delay.html`，設計具備持續活動刷新、離去 5 秒精確延遲與防閃爍回跳機制的非阻塞式 `millis()` 程式碼，繪製系統邏輯流程圖與實體接線對照表，並同步更新全站檔案索引與首頁導覽。
+
+### 🔹 [2026-09-24 14:36:35] [Gemini 3.8 Flash / Antigravity]
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  流程圖的走線盡量不要交叉
+  ```
+- **變更摘要**: 重構 PIR 繼電器延遲照明筆記（`ec/arduino_pir_relay_delay.md` 與 `ec/arduino_pir_relay_delay.html`）中的 Mermaid 流程圖，採用平行左右雙分支與單一底部收斂節點（delay 20ms），使各分支由上而下無交叉匯入，徹底消除線條糾纏與交錯，大幅提升流程圖可讀性。
+
+### 🔹 [2026-09-24 22:52:00] [Cursor Grok 4.6] 變更紀錄
+- **模型/Agent**: Cursor Grok 4.6
+- **Prompt 原文**:
+  ```text
+  同步git
+  go
+  ```
+- **變更摘要**: 拉取遠端 27 筆提交後，將根目錄草稿 `20260924-car-radio-traffic-broadcast-rds-ta-tunnel.md` 歸檔為 `ec/car_radio_traffic_broadcast_rds_ta_tunnel.md` 與對應 HTML，補齊 Metadata／Prompt Archive／匯出 PDF 按鈕，並更新全站索引後提交推送。
+
+### 🔹 [2026-09-24 22:55:00] [Cursor Grok 4.6] 變更紀錄
+- **模型/Agent**: Cursor Grok 4.6
+- **Prompt 原文**:
+  ```text
+  利用marp cli將 @20260924-car-radio-traffic-broadcast-rds-ta-tunnel.md 轉換成html
+  ```
+- **變更摘要**: 以 Marp CLI 產出 14 頁簡報 `ec/car_radio_traffic_broadcast_rds_ta_tunnel.marp.md` 與 `_slides.html`。
+
+### 🔹 [2026-09-24 23:00:00] [Cursor Grok 4.6] 變更紀錄
+- **模型/Agent**: Cursor Grok 4.6
+- **Prompt 原文**:
+  ```text
+  可以改為 tech theme嗎？
+  ```
+- **變更摘要**: 簡報改掛 marp-slide 正式 tech 主題並重新編譯 HTML，同步更新全站電子電路索引。
+
+### 🔹 [2026-09-24 23:03:00] [Cursor Grok 4.6] 變更紀錄
+- **模型/Agent**: Cursor Grok 4.6
+- **Prompt 原文**:
+  ```text
+  git commit and push
+  ```
+- **變更摘要**: 提交車用收音機事件廣播 Marp 簡報（Tech Theme）、主題 CSS 與索引更新，並推播至 GitHub。
+
+### 🔹 [2026-09-26 23:10:00] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 全站內容正確性審查與勘誤
+- **模型/Agent**: Claude Opus 5.5 (claude-opus-5-5) / Claude Code
+- **Prompt 原文**:
+  ```text
+  檢視所有檔案內容中的敘述與說明，確認概念與敘述的正確性
+  修正後，將修改內容，附加在每個檔案的最下方區塊並標誌時間戳記與模型代號
+  確認概念與解釋說明都是正確的
+  go
+  ```
+- **變更摘要**: 全站概念與敘述正確性審查：修正 23 份筆記（36 個 md/html 檔）的技術錯誤（繼電器接線圖短路錯誤、P 控制器正負號、廟宇年代分級門檻、電鈴吸力公式、光耦隔離與反電動勢觀念、AI 模型架構敘述、舞蹈劇名等），各檔最下方追加變更紀錄；索引同步更新修改日期與排序後提交推送。
+
+### 🔹 [2026-09-26 23:53:02] [Claude Opus 5.5 (claude-opus-5-5) / Claude Code] 新增修正檔案紀錄表
+- **模型/Agent**: Claude Opus 5.5 (claude-opus-5-5) / Claude Code
+- **Prompt 原文**:
+  ```text
+  在index.html下方加入修正檔案紀錄（檔案路徑/名稱/日期/修正之模型代號)
+  ```
+- **變更摘要**: 於索引下方新增「修正檔案紀錄」表格，列出 2026-09-26 內容審查所修正的 36 個檔案之路徑、名稱、修正日期與修正之模型代號（index.html 與 INDEX.md 同步）。
+
+### 🔹 [2026-09-29 15:35:11] [Gemini 3.8 Flash / Antigravity] 全站主題索引目錄更新與 Git 同步推送
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  git commit and push
+  ```
+- **變更摘要**: 更新全站主題索引目錄（新增 2026-09-29 之 PIR Pin 7 繼電器延遲照明與 LCD 1602 相關筆記與模擬器連結），完成索引目錄同步驗證並推播至遠端 GitHub 儲存庫。
+
+### 🔹 [2026-10-01 15:31:00] [Gemini 3.8 Flash / Antigravity] 全站主題索引目錄更新與 Git 同步推送
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  git commit and push
+  ```
+- **變更摘要**: 更新全站主題索引目錄（新增 2026-10-01 之 I2C 生活實例入門版、PIR Pin 8 繼電器 LCD 智慧控制、Arduino IDE 開發環境與實體接線指南，以及 i2c_lcd1602.ino 實體驗證測試程式連結），完成索引目錄同步驗證並推播至遠端 GitHub 儲存庫。
+
+### 🔹 [2026-10-15 14:00:57] [Gemini 3.8 Flash / Antigravity] 變更紀錄
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  C:\Users\User\Desktop\2026-10-15-135909.jpg  這是今天arduino接上lcd 1602 I2c與 dht11的線路圖，先記錄成筆記
+  ```
+- **變更摘要**: 於電子電路分類 (`ec/`) 新增 Arduino Uno 整合 I2C LCD 1602 與 DHT11 溫濕度監測系統實作筆記 (`arduino_i2c_lcd1602_dht11.md`, `arduino_i2c_lcd1602_dht11.html`) 與實體電路接線圖 (`2026-10-15-135909.jpg`)，更新全站索引目錄。
+
+### 🔹 [2026-10-15 14:22:06] [Gemini 3.8 Flash / Antigravity] 變更紀錄
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  我的實作步驟是 1.先根據硬體只是接線 2.尋找安裝程式庫 3.開啟範例進行基礎測試(硬體與通訊 基礎語法認識)4.分別依照上述方法測試螢幕與溫濕度 5.將測試成功的基礎範例讓AI協助我整合
+  ```
+- **變更摘要**: 導入使用者提出的標準五步驟工程實作法（1.硬體指示接線 ➔ 2.搜尋安裝程式庫 ➔ 3.基礎範例與通訊語法認識 ➔ 4.分別獨立單元測試螢幕與溫濕度 ➔ 5.由 AI 協助整合單元模組），新增 Arduino IDE 程式庫安裝指引、LCD 1602 獨立單元測試碼與基礎語法解析、DHT11 獨立單元測試碼與基礎語法解析、AI 協同整合提示詞設計範本與流程圖，同步更新全站索引目錄。
+
+### 🔹 [2026-10-15 14:41:22] [Gemini 3.8 Flash / Antigravity] 變更紀錄
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  C:\Users\User\Desktop\1015-dht11\1015-dht11.ino C:\Users\User\Desktop\1015.txt 這是我的測試程式與AI整合的程式碼
+  ```
+- **變更摘要**: 讀入使用者提供的實體單元測試來源程式碼（`1015.txt`：包含 YWROBOT LCD1602 測試程式與 Adafruit Unified Sensor DHT11 測試程式）及最終經 AI 整合驗證之完整 Arduino 程式碼（`1015-dht11.ino`）。修正引腳配置對照表（確認 DATA 引腳連接至 Pin 8），歸檔原始程式檔至 `ec/` 目錄，深入剖析程式碼中的核心工程技術（`Adafruit_Sensor.h` / `DHT_U.h` 抽象架構、`sensor.min_delay` 動態延遲判定保護、HD44780 內建度數符號 `(char)223` 與尾部防字元殘留技巧），同步更新全站目錄索引。
+
+### 🔹 [2026-10-15 14:45:34] [Gemini 3.8 Flash / Antigravity] 變更紀錄
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  C:\Users\User\Desktop\2026-10-15-143912.jpg 完成圖
+  ```
+- **變更摘要**: 納入使用者實體電路通電運作之完整成果圖（`2026-10-15-143912.jpg`），記錄 LCD 實測即時顯示數據（`Temp: 28.9°C` / `Humd: 41.0%`），驗證字元對齊與度數符號顯示效果，並將 HTML 互動模擬器預設數值同步更新為實測值，更新全站索引目錄。
+
+### 🔹 [2026-10-15 14:49:32] [Gemini 3.8 Flash / Antigravity] 變更紀錄
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  加入dht感應器的運作原理
+  ```
+- **變更摘要**: 於核心概念剖析中深入擴充 DHT 感測器之完整底層物理運作機制：包含高分子電阻式濕敏元件水分子吸附解離導電機制（Grotthuss 質子傳遞）、NTC 負溫度係數熱敏電阻半導體載子激發原理與 Steinhart-Hart / $\beta$ 參數數學模型、內部 8-Bit 微控制器訊號調理與 OTP 出廠校準係數溫度補償、單匯流排 40-Bit 脈衝寬度調變時序，以及內部焦耳熱自我發熱（Self-Heating）與熱平衡取樣延遲限制之熱力學深度剖析。
+
+### 🔹 [2026-10-15 14:53:06] [Gemini 3.8 Flash / Antigravity] 變更紀錄
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  git commit and push
+  ```
+- **變更摘要**: 配合工作區規範第 6 條執行 Git 提交與推播同步程序。將 Arduino Uno 整合 I2C LCD 1602 與 DHT11 溫濕度監測系統實作筆記、實測程式碼 (1015-dht11.ino / 1015.txt)、實體驗證成果照片、AI 分類新增檔案與全站目錄索引推播至遠端 GitHub 儲存庫。
+
+
+
+
+
+
+
+
+
+
+
+### 🔹 [2026-10-04 19:04:06] [GPT-6 / Codex] Keynote 簡報索引更新
+- **模型/Agent**: GPT-6 / Codex /root
+- **Prompt 原文**:
+  ```text
+  keynote 加入index索引後提交並推送
+  ```
+- **變更摘要**: 新增 Keynote／課程簡報分類，收錄 Arduino 實作與設計流程 18 頁核心簡報；同步更新 INDEX.md 與 index.html，將現有簡報 HTML 納入 Git 版本管理。
+
+### 🔹 [2026-10-27 15:27:18] [Gemini 4 Argon (Medium) / Antigravity] 新增 U8g2 顯示模式比較與開發板記憶體適配指南
+- **模型/Agent**: Gemini 4 Argon (Medium) / Antigravity
+- **Prompt 原文**:
+  ```text
+  u8g2有許多種不同的螢幕顯示方式  u8x8, page_buffer,full_buffer等，分別針對這些顯示方法進行詳細比較與範例說明，並配合適用在那些開發版(記憶體限制考量)
+  ```
+- **變更摘要**: 於 `ec/` 新增 `u8g2_display_modes_comparison.md` 與 `u8g2_display_modes_comparison.html`，比較 U8x8、Page Buffer (`_1`/`_2`) 與 Full Buffer (`_F`)，並同步更新 `index.md` 與 `index.html`。
+
+
+### 🔹 [2026-10-27 15:49:12] [GPT-6 / Codex /root] U8g2 顯示與字型教學索引
+
+- **模型/Agent**: GPT-6 / Codex /root
+- **Prompt 原文**:
+
+```text
+針對u8g2程式庫完整的說明，包含u8g2有許多種不同的螢幕顯示方式  u8x8, page_buffer,full_buffer等，分別針對這些顯示方法進行詳細比較與範例說明，並配合適用在那些開發版(記憶體限制考量)
+```
+
+```text
+加入nodemcu32s這個開發版
+```
+
+```text
+page_buffer, full_buffer的比較與詳細說明範例(圖解釋)
+```
+
+```text
+增加u8g2 font與符號 多語言的顯示說明
+```
+
+- **變更摘要**: 新增 U8g2 Markdown／HTML 與三張 SVG 圖解索引，保留既有歷史。
+
+
+### 🔹 [2026-10-27 16:00:49] [GPT-6 / Codex /root] U8g2 查核整合
+
+- **模型/Agent**: GPT-6 / Codex /root
+- **Prompt 原文**:
+
+```text
+file:///D:/CLASS_NOTE/ec/u8g2_display_modes_comparison.md 參考這一份檔案，將你沒有考慮到的資訊 增加進來‘‘並確認資訊與敘述正確
+```
+
+- **變更摘要**: 參照指定筆記，補充硬體與字型資訊並同步校訂兩份筆記的 MD／HTML。
+
+
+### 🔹 [2026-10-27 16:13:32] [GPT-6 / Codex /root] 提交前索引核對
+
+- **模型/Agent**: GPT-6 / Codex /root
+- **Prompt 原文**:
+
+```text
+git commit all, git push
+```
+
+- **變更摘要**: 核對兩份 U8g2 筆記及三張 SVG 的索引，準備提交工作區所有變更並推送 main。
+
+
+### 🔹 [2026-10-27 18:10:00] [Claude Opus 5.5 / Claude Code] U8g2 建構式圖解索引與提交
+
+- **模型/Agent**: Claude Opus 5.5 / Claude Code
+- **Prompt 原文**:
+
+```text
+go
+```
+
+- **變更摘要**: 新增 7 張 U8g2 建構式與分頁圖解 SVG 索引、更新圖一名稱；對應 u8g2_display_modes_memory_guide（補充 _1／_2 建構式說明、建構式選擇、重繪圖一）與 u8g2_display_modes_comparison（逐項查核修正）兩份筆記，準備提交並推送 main。
+### 🔹 [2026-10-29 15:21:00] [Claude Opus 5.5 (Medium) / Antigravity] 1029 DHT11 LCD1602／OLED U8x8 筆記索引
+
+- **模型/Agent**: Claude Opus 5.5 (Medium) / Antigravity
+- **Prompt 原文**:
+
+```text
+有把以上的討論與程式整理成筆記嗎
+```
+
+- **變更摘要**: 於 `ec/` 新增 `arduino_dht11_lcd1602_oled_u8x8_animation_1029.md` / `.html`（LCD1602 兩行顯示、OLED U8x8 大字與符號、數字滾動／長條圖／趨勢箭頭動態效果），並加入 `1029.ino`、`1029-u8x8.ino`，同步更新 index.md 與 index.html。
+
+### 🔹 [2026-10-30 09:42:00] [Gemini 3.8 Flash / Antigravity Assistant] LEGO SPIKE 仿生手臂研究指南索引更新
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity Assistant
+- **Prompt 原文**:
+  ```text
+  你是一個生活科技老師，我想要做一個仿生機械手臂的研究，目前我有6個 lego spike的馬達，提供給我五個研究題目參考
+  ```
+- **變更摘要**: 於 `ev3/` 新增 `spike_bionic_arm_research_topics.md` 與 `spike_bionic_arm_research_topics.html`，提供六馬達配置策略、五大研究題目詳解、MicroPython 自適應負載控制範例與專題推展規劃，並同步更新 INDEX.md 與 index.html。
+
+### 🔹 [2026-10-30 09:48:00] [Gemini 3.8 Flash / Antigravity Assistant] 擬人化 6-DOF 關節臂專題論文建檔 (ARM.md)
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity Assistant
+- **Prompt 原文**:
+  ```text
+  擬人化6-DOF關節臂這個題目，撰寫研究動機 研究問題 文獻探討 研究方法 結果與討論 儲存ARM.md
+  ```
+- **變更摘要**: 撰寫擬人化 6-DOF 關節臂之完整專題研究報告（含動機、研究問題與假設、文獻探討、研究方法、結果與討論、MicroPython 解耦 IK 程式碼與重力補償量化分析），儲存為 `ev3/ARM.md`、`ev3/ARM.html` 與 `ARM.md`，並更新 INDEX。
+
+### 🔹 [2026-10-30 16:55:22] [Claude Opus 5.5 / Claude Code] 移除根目錄重複的 ARM.md
+- **模型/Agent**: Claude Opus 5.5 / Claude Code
+- **Prompt 原文**:
+  ```text
+  刪除根目錄 ARM.md 並同步
+  ```
+- **變更摘要**: 刪除根目錄 `ARM.md`（與 `ev3/ARM.md` 僅第 6 行 metadata 不同，且無任何連結指向），`ev3/ARM.md` 與 `ev3/ARM.html` 為唯一版本；更新 INDEX.md 與 index.html 的 metadata 與變更記錄。
+
+### 🔹 [2026-10-30 17:03:55] [Claude Opus 5.5 / Claude Code] 索引改由腳本產生並精簡首頁
+- **模型/Agent**: Claude Opus 5.5 / Claude Code
+- **Prompt 原文**:
+  ```text
+  照建議實作第 1 到 5 項並同步
+  ```
+- **變更摘要**: 新增 `tools/build_index.py` 與 `tools/index_catalog.json`，由單一目錄產生 `INDEX.md`、`index.html` 與 `changelog.html`；md／html 合併為一篇一列，附件收合到所屬筆記下，`ec/` 分為 7 個子主題，分類卡片預設收合並新增最近更新 10 篇；Prompt Archive 搬移至 `CHANGELOG.md`／`changelog.html`，舊紀錄原文保留；修正 `index.html` 失效的紅色 LED 手冊連結，補列原本只在單一索引或未列入的檔案；更新 AGENTS.md 第 3、6 條。
