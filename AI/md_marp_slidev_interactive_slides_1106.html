@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown → Marp / Slidev：多格式轉換與互動式簡報網頁實作（1106 課堂）</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'neutral' });</script>
+  <style>
+    :root {
+      --primary-color: #1e3a8a;
+      --secondary-color: #2563eb;
+      --accent-color: #0d9488;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --code-bg: #0f172a;
+      --highlight-bg: #eff6ff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.8;
+      color: var(--text-main);
+      background-color: var(--bg-color);
+      padding: 2.5rem 1.5rem;
+    }
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 3rem;
+      border-radius: 14px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border-color);
+    }
+    .header-section {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .title-group h1 {
+      font-size: 1.85rem;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+      line-height: 1.35;
+      font-weight: 800;
+    }
+    .metadata-card {
+      background: var(--highlight-bg);
+      border-left: 4px solid var(--secondary-color);
+      padding: 0.85rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+    }
+    .metadata-card p { margin: 0.25rem 0; }
+    .metadata-card strong { color: #1e40af; }
+    .btn-export {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #ffffff;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+    .btn-export:hover {
+      background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(239, 68, 68, 0.5);
+    }
+    h2 {
+      font-size: 1.55rem;
+      color: var(--primary-color);
+      margin: 3rem 0 1.2rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 2px solid #e0e7ff;
+    }
+    h3 { font-size: 1.25rem; color: #1e40af; margin: 2rem 0 0.9rem; }
+    h4 { font-size: 1.1rem; color: #0f766e; margin: 1.3rem 0 0.5rem; }
+    p { margin-bottom: 1.1rem; }
+    ul, ol { margin-left: 1.5rem; margin-bottom: 1.25rem; }
+    li { margin-bottom: 0.4rem; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+      background: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      border: 1px solid var(--border-color);
+    }
+    th, td {
+      padding: 0.9rem 1.1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+    }
+    th { background: #f1f5f9; color: #0f172a; font-weight: 700; }
+    tr:hover { background: #f8fafc; }
+    .code-container {
+      position: relative;
+      margin: 1.5rem 0;
+      background: var(--code-bg);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    }
+    .code-header {
+      background: #1e293b;
+      padding: 0.5rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      font-family: monospace;
+      border-bottom: 1px solid #334155;
+    }
+    .btn-copy {
+      background: #334155;
+      color: #f8fafc;
+      border: 1px solid #475569;
+      padding: 0.3rem 0.75rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s ease;
+    }
+    .btn-copy:hover { background: #475569; color: #ffffff; }
+    .btn-copy.copied { background: #16a34a; border-color: #16a34a; color: white; }
+    pre {
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: "Consolas", "Courier New", monospace;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+      background: transparent;
+      margin: 0;
+    }
+    .mermaid {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border-color);
+      display: flex;
+      justify-content: center;
+      overflow-x: auto;
+    }
+    .flow-caption {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin: 0.25rem 0 0.5rem;
+    }
+    .highlight-box {
+      background: #f0fdf4;
+      border-left: 4px solid #16a34a;
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.25rem 0;
+    }
+    .archive-item {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border-left: 5px solid #6366f1;
+    }
+    blockquote {
+      border-left: 4px solid var(--accent-color);
+      background: var(--highlight-bg);
+      padding: 0.75rem 1.25rem;
+      margin: 1rem 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .checklist { list-style: none; margin-left: 0; }
+    .checklist li::before { content: "☐ "; color: var(--secondary-color); font-weight: 700; }
+    @media print {
+      body { background: white; padding: 0; }
+      .container { box-shadow: none; border: none; padding: 0; max-width: 100%; }
+      .btn-export, .btn-copy, .no-print { display: none !important; }
+      .code-container { break-inside: avoid; }
+      pre { white-space: pre-wrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="no-print" style="text-align:right;margin-bottom:1rem">
+      <button class="btn-export" onclick="window.print()">🖨️ 匯出成 PDF / 列印</button>
+    </div>
+
+    <div class="header-section">
+      <div class="title-group">
+        <h1>📑 Markdown → Marp / Slidev：多格式轉換與互動式簡報網頁實作（1106 課堂）</h1>
+        <div class="metadata-card">
+          <p><strong>最後更新時間:</strong> 2026-11-06 09:58:00 (UTC+8)</p>
+          <p><strong>使用模型:</strong> Composer</p>
+          <p><strong>執行 Agent:</strong> Auto (Cursor Agent Router)</p>
+          <p><strong>筆記分類:</strong> 生成式 AI / 簡報工程 / Marp / Slidev / Markdown / SVG / 檔案格式</p>
+        </div>
+      </div>
+    </div>
+
+    <h2>📖 導言與概覽</h2>
+    <p>今日課堂核心是：<strong>以 Markdown 為單一真相來源（Single Source of Truth）</strong>，再透過不同工具鏈轉換成多種交付格式。</p>
+
+    <table>
+      <thead>
+        <tr><th>格式</th><th>副檔名</th><th>角色</th><th>典型用途</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Markdown</td><td><code>.md</code></td><td>純文字內容稿</td><td>版本控管、AI 協作、筆記原稿</td></tr>
+        <tr><td>Marp</td><td><code>.md</code> / <code>.marp.md</code></td><td>簡報語意 Markdown</td><td>投影片分隔、主題、marp-cli 轉檔</td></tr>
+        <tr><td>HTML</td><td><code>.html</code> / <code>.htm</code></td><td>瀏覽器可渲染文件</td><td>筆記頁、靜態／互動簡報網頁</td></tr>
+        <tr><td>SVG</td><td><code>.svg</code></td><td>向量圖形（XML 文字）</td><td>流程圖、架構圖、可縮放插圖</td></tr>
+        <tr><td>PDF / PPTX</td><td><code>.pdf</code> / <code>.pptx</code></td><td>交付產物</td><td>繳交、離線播放</td></tr>
+      </tbody>
+    </table>
+
+    <p>兩條主要工具鏈：</p>
+    <ol>
+      <li><strong>Marp CLI（<code>@marp-team/marp-cli</code>）</strong>：把 Marpit Markdown 轉成靜態 HTML／PDF／PPTX。</li>
+      <li><strong>Slidev</strong>：把 Markdown 變成 Vite + Vue 驅動的<strong>互動式簡報網頁</strong>。</li>
+    </ol>
+
+    <p class="flow-caption">整體轉換架構：</p>
+    <div class="mermaid">
+flowchart LR
+    MD["Markdown 原稿"] --> MarpMD["Marp 簡報稿"]
+    MD --> SlidevMD["Slidev slides.md"]
+    MarpMD --> MarpCLI["marp-cli"]
+    MarpCLI --> HTML1["靜態 HTML"]
+    MarpCLI --> PDF["PDF"]
+    MarpCLI --> PPTX["PPTX"]
+    SlidevMD --> Dev["npm run dev"]
+    SlidevMD --> Build["slidev build"]
+    SlidevMD --> Export["slidev export"]
+    </div>
+
+    <h2>🧠 一、核心概念剖析 (Core Concepts)</h2>
+
+    <h3>1. 為什麼要「先寫 MD，再轉格式」？</h3>
+    <ul>
+      <li><strong>內容與版面分離</strong>：Markdown 管「說什麼」，主題／CSS／Vue 管「怎麼呈現」。</li>
+      <li><strong>可重現</strong>：同一份 <code>.md</code> 可再產出 HTML、PDF、PPTX。</li>
+      <li><strong>適合 AI／Git</strong>：純文字 diff 清楚，Agent 也好改標題與要點。</li>
+    </ul>
+
+    <h3>2. Marp / Marpit 的底層模型</h3>
+    <ul>
+      <li><strong>Marpit</strong>：以 Markdown 為基礎；<code>---</code> 分隔頁面，YAML frontmatter 設定主題。</li>
+      <li><strong>Marp Core</strong>：加上預設主題、數學式、emoji 等。</li>
+      <li><strong>Marp CLI</strong>：預設輸出 HTML；<code>--pdf</code>／<code>--pptx</code> 透過本機瀏覽器渲染。</li>
+    </ul>
+    <p>概念式關係：簡報產物 = Markdown 內容 + 主題 CSS + 渲染引擎（瀏覽器／Vite）。</p>
+
+    <h3>3. Slidev 的底層模型</h3>
+    <ul>
+      <li><strong>Markdown + Vue</strong>：可嵌入互動元件。</li>
+      <li><strong>Vite 開發伺服器</strong>：儲存即熱更新。</li>
+      <li><strong>互動式網頁</strong>：可執行程式碼、Presenter Mode、畫筆註記。</li>
+      <li><strong>建置輸出</strong>：<code>slidev build</code> 產生可部署靜態站。</li>
+    </ul>
+
+    <h3>4. 格式對照：筆記 HTML vs 簡報 HTML</h3>
+    <table>
+      <thead>
+        <tr><th>類型</th><th>例子</th><th>導覽方式</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>課堂筆記 HTML</td><td>本頁</td><td>長頁捲動、複製程式碼、列印 PDF</td></tr>
+        <tr><td>Marp 靜態簡報 HTML</td><td><code>marp slides.md -o out.html</code></td><td>全螢幕頁面切換</td></tr>
+        <tr><td>Slidev 互動簡報</td><td><code>npm run dev</code> / <code>dist/</code></td><td>SPA、Presenter、元件互動</td></tr>
+      </tbody>
+    </table>
+
+    <h3>5. 檔案格式詳解：MD、Marp、HTML、SVG</h3>
+    <p>這四種都常以<strong>純文字</strong>儲存，可用記事本／VS Code 開啟，也適合放進 Git；差異在「語意層級」與「誰來負責呈現」。</p>
+
+    <p class="flow-caption">四種格式關係：</p>
+    <div class="mermaid">
+flowchart TB
+    subgraph Text["純文字友好（可 Git diff）"]
+        MD[".md 結構化內容"]
+        MARP[".marp.md MD + 投影片語意"]
+        HTML[".html DOM 文件"]
+        SVG[".svg 向量圖 XML"]
+    end
+    MD -->|"加 frontmatter / ---"| MARP
+    MD -->|"轉譯器 / 手寫"| HTML
+    MARP -->|"marp-cli"| HTML
+    SVG -->|"img / 內嵌"| HTML
+    MD -->|"引用或 Mermaid"| SVG
+    </div>
+
+    <h4>5.1 Markdown（.md）</h4>
+    <table>
+      <thead><tr><th>面向</th><th>說明</th></tr></thead>
+      <tbody>
+        <tr><td>是什麼</td><td>輕量標記語言：用 <code>#</code>、<code>-</code> 等描述結構，<strong>本身不是版面</strong>。</td></tr>
+        <tr><td>本質</td><td>UTF-8 純文字；需轉譯器才有最終外觀。</td></tr>
+        <tr><td>優點</td><td>好寫、好 diff、AI 友善、與工具鏈解耦。</td></tr>
+        <tr><td>限制</td><td>原生幾乎沒有版面控制；複雜互動靠下游。</td></tr>
+      </tbody>
+    </table>
+    <p>常用語法：<code># 標題</code>、<code>**粗體**</code>、行內碼、程式碼區塊、<code>![圖](path)</code>、<code>[連結](url)</code>。</p>
+
+    <h4>5.2 Marp（仍是 Markdown，但帶簡報契約）</h4>
+    <table>
+      <thead><tr><th>面向</th><th>說明</th></tr></thead>
+      <tbody>
+        <tr><td>是什麼</td><td>Markdown + YAML frontmatter（<code>marp: true</code>）+ <code>---</code> 分頁。</td></tr>
+        <tr><td>副檔名</td><td>常見 <code>.md</code>；本工作區也用 <code>.marp.md</code> 標示簡報稿。</td></tr>
+        <tr><td>本質</td><td>仍是文字檔；投影片感來自主題 CSS 與 CLI 輸出。</td></tr>
+        <tr><td>優點</td><td>一份稿可轉 HTML／PDF／PPTX。</td></tr>
+        <tr><td>限制</td><td>互動弱於 Slidev；不是自由排版軟體。</td></tr>
+      </tbody>
+    </table>
+    <p>概念式：<strong>Marp 檔 = Markdown + 投影片 frontmatter + 頁分隔（---）</strong>。</p>
+
+    <h4>5.3 HTML（.html）</h4>
+    <table>
+      <thead><tr><th>面向</th><th>說明</th></tr></thead>
+      <tbody>
+        <tr><td>是什麼</td><td>用標籤描述文件結構的 HyperText Markup Language。</td></tr>
+        <tr><td>本質</td><td>瀏覽器直接解析的 DOM；可掛 CSS 與 JS。</td></tr>
+        <tr><td>本課角色</td><td>(1) 長頁筆記網頁；(2) Marp／Slidev 產出的簡報網頁。</td></tr>
+        <tr><td>優點</td><td>跨平台、可互動、可列印 PDF、可部署 Pages。</td></tr>
+        <tr><td>限制</td><td>手寫成本高；原始碼比 MD 難讀／難 diff。</td></tr>
+      </tbody>
+    </table>
+    <p>對照：<code>.md</code> 是作者友善的中介格式；<code>.html</code> 是瀏覽器友善的交付格式。</p>
+
+    <h4>5.4 SVG（.svg）</h4>
+    <table>
+      <thead><tr><th>面向</th><th>說明</th></tr></thead>
+      <tbody>
+        <tr><td>是什麼</td><td>用 XML 描述點、線、路徑、文字的<strong>向量圖</strong>。</td></tr>
+        <tr><td>本質</td><td>圖形也是文字；縮放不像素化。</td></tr>
+        <tr><td>與點陣差</td><td>PNG／JPG 是像素；SVG 是幾何指令。</td></tr>
+        <tr><td>優點</td><td>無限縮放清晰、可內嵌 HTML、可被 CSS／JS 操控。</td></tr>
+        <tr><td>限制</td><td>不適合照片；過度複雜難維護；部分 Office 支援不一。</td></tr>
+      </tbody>
+    </table>
+    <p>典型用法：匯出 SVG → <code>![說明](./assets/xxx.svg)</code> 嵌進 MD，或 <code>&lt;img src="...svg"&gt;</code>／內嵌進 HTML。</p>
+
+    <h4>5.5 四種格式怎麼分工？</h4>
+    <table>
+      <thead><tr><th>你想做的事</th><th>優先格式</th></tr></thead>
+      <tbody>
+        <tr><td>寫內容、改稿、給 AI</td><td><code>.md</code></td></tr>
+        <tr><td>做投影片、交 PDF</td><td>Marp → CLI</td></tr>
+        <tr><td>用瀏覽器讀筆記／簡報</td><td><code>.html</code></td></tr>
+        <tr><td>可縮放示意圖、架構圖</td><td><code>.svg</code>（或 Mermaid → SVG）</td></tr>
+      </tbody>
+    </table>
+
+    <h2>🛠️ 二、實作與應用範例 (Practical Examples)</h2>
+
+    <p class="flow-caption">課堂常用決策流程：</p>
+    <div class="mermaid">
+flowchart TD
+    A["寫 Markdown"] --> B{"目標？"}
+    B -->|"快速投影 / 繳交 PDF"| C["加 Marp frontmatter"]
+    B -->|"互動演示 / 現場跑碼"| D["建立 Slidev 專案"]
+    C --> E["marp-cli"]
+    E --> F["HTML / PDF / PPTX"]
+    D --> H["編輯 slides.md"]
+    H --> I["dev / build / export"]
+    </div>
+
+    <h3>範例 A：最小 Marp Markdown</h3>
+    <p class="flow-caption">流程：宣告 Marp → 設定主題 → <code>---</code> 切頁 → CLI 轉 HTML。</p>
+    <div class="code-container">
+      <div class="code-header"><span>markdown</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div>
+      <pre><code>---
+marp: true
+theme: default
+paginate: true
+---
+
+# 1106 課堂簡報
+## Markdown → 互動網頁
+
+---
+
+## 今天學什麼？
+
+- Markdown 當單一來源
+- marp-cli 轉 HTML / PDF / PPTX
+- Slidev 做互動簡報站
+
+---
+
+## 下一步
+
+把內容寫進 Git，再用 CLI 重複匯出</code></pre>
+    </div>
+
+    <h3>範例 B：使用 marp-cli 轉換</h3>
+    <p class="flow-caption">流程：選擇輸出格式 → 執行 npx／marp → 開啟產物驗證。</p>
+    <div class="code-container">
+      <div class="code-header"><span>bash</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div>
+      <pre><code># 一次性轉換（不永久安裝）：輸出與輸入同目錄的 .html
+npx @marp-team/marp-cli@latest slides.md
+
+# 指定輸出 HTML 檔名
+npx @marp-team/marp-cli@latest slides.md -o slides.html
+
+# 匯出 PDF（需本機有 Chrome / Edge / Firefox）
+npx @marp-team/marp-cli@latest slides.md --pdf -o slides.pdf
+
+# 匯出 PowerPoint
+npx @marp-team/marp-cli@latest slides.md --pptx -o slides.pptx
+
+# 監視檔案變更，存檔即重新轉檔
+npx @marp-team/marp-cli@latest -w slides.md
+
+# 伺服器模式：把整個資料夾當簡報站
+npx @marp-team/marp-cli@latest -s ./slides
+
+# 專案內安裝後使用
+npm install --save-dev @marp-team/marp-cli
+npx marp slides.md -o dist/slides.html</code></pre>
+    </div>
+
+    <h3>範例 C：建立 Slidev 互動簡報專案</h3>
+    <p class="flow-caption">流程：scaffold → 編輯 slides.md → dev 預覽 → build 靜態站。</p>
+    <div class="code-container">
+      <div class="code-header"><span>bash</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div>
+      <pre><code># 建議：Node.js &gt;= 22.12
+pnpm create slidev
+# 或：npm init slidev@latest
+
+cd my-slidev-project
+npm run dev      # 本地互動預覽（Vite）
+npm run build    # 建置靜態網站到 dist/
+npm run export   # 匯出 PDF / PPTX / PNG</code></pre>
+    </div>
+
+    <h3>範例 D：Slidev slides.md 概念示例</h3>
+    <p class="flow-caption">流程：frontmatter → 分頁 → 嵌入互動元件概念。</p>
+    <div class="code-container">
+      <div class="code-header"><span>markdown</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div>
+      <pre><code>---
+theme: default
+title: 1106 Slidev 互動簡報
+---
+
+# Markdown 也能互動
+
+用 Slidev 把投影片變成網頁 App
+
+---
+
+# 開發者友善功能
+
+- 程式碼高亮 / Monaco 即時編輯
+- Presenter Mode
+- Mermaid 圖、LaTeX 公式
+- slidev build 部署成靜態站</code></pre>
+    </div>
+    <blockquote>實際專案中的 Vue 元件與 <code>{monaco}</code> 等標記，請依 <a href="https://sli.dev/guide/" target="_blank" rel="noopener">Slidev 官方語法</a> 調整。</blockquote>
+
+    <h3>範例 E：多格式交付檢查清單</h3>
+    <ul class="checklist">
+      <li>先有一份內容正確的 <code>.md</code>（或 <code>.marp.md</code> / <code>slides.md</code>）</li>
+      <li>用 Marp CLI 產出 HTML（預覽）+ PDF（繳交）</li>
+      <li>若需現場 demo，另建 Slidev 並 <code>build</code></li>
+      <li>筆記說明頁同步維護 MD + HTML</li>
+      <li>示意圖優先用 SVG（或 Mermaid），再嵌回 MD／HTML</li>
+    </ul>
+
+    <h3>範例 F：四種格式的最小可讀樣本</h3>
+    <p class="flow-caption">流程：MD 寫內容 → Marp 分頁 → HTML 承載 → SVG 當插圖。</p>
+
+    <h4>F1. Markdown（.md）</h4>
+    <div class="code-container">
+      <div class="code-header"><span>markdown</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div>
+      <pre><code># 電路概念
+
+- **電壓**：推動電荷的「壓力」
+- 詳見示意圖：![歐姆定律示意](./assets/ohm.svg)</code></pre>
+    </div>
+
+    <h4>F2. Marp</h4>
+    <div class="code-container">
+      <div class="code-header"><span>markdown</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div>
+      <pre><code>---
+marp: true
+theme: default
+---
+
+# 電路概念
+
+![bg right:40%](./assets/ohm.svg)
+
+- 電壓像水壓</code></pre>
+    </div>
+
+    <h4>F3. HTML</h4>
+    <div class="code-container">
+      <div class="code-header"><span>html</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div>
+      <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-TW"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;電路概念&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;電路概念&lt;/h1&gt;
+  &lt;!-- 嵌入向量圖：可無限縮放 --&gt;
+  &lt;img src="./assets/ohm.svg" alt="歐姆定律示意" width="320"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;strong&gt;電壓&lt;/strong&gt;：推動電荷的「壓力」&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+    </div>
+
+    <h4>F4. SVG</h4>
+    <div class="code-container">
+      <div class="code-header"><span>xml / svg</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div>
+      <pre><code>&lt;svg xmlns="http://www.w3.org/2000/svg" width="320" height="120" viewBox="0 0 320 120"&gt;
+  &lt;rect width="320" height="120" fill="#f8fafc"/&gt;
+  &lt;text x="24" y="48" font-size="22" font-family="Segoe UI, sans-serif" fill="#1e3a8a"&gt;
+    V = I × R
+  &lt;/text&gt;
+  &lt;text x="24" y="88" font-size="14" font-family="Segoe UI, sans-serif" fill="#64748b"&gt;
+    電壓 = 電流 × 電阻（示意）
+  &lt;/text&gt;
+&lt;/svg&gt;</code></pre>
+    </div>
+    <blockquote>本工作區實例：<code>ec/assets/</code> 下多份 U8g2 教學圖即為 <code>.svg</code>，同時被 MD 與 HTML 引用。</blockquote>
+
+    <h2>🚀 三、延伸思考與進階主題 (Extensions &amp; Advanced Topics)</h2>
+
+    <h3>1. Marp vs Slidev：怎麼選？</h3>
+    <table>
+      <thead>
+        <tr><th>維度</th><th>Marp CLI</th><th>Slidev</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>學習曲線</td><td>低</td><td>中（需一點前端／Node）</td></tr>
+        <tr><td>互動性</td><td>低（靜態頁切換）</td><td>高（Vue、即時碼）</td></tr>
+        <tr><td>輸出穩定度</td><td>HTML／PDF／PPTX 成熟</td><td>網頁優先，匯出也強</td></tr>
+        <tr><td>適合場景</td><td>課堂報告、文件型簡報</td><td>Demo、技術分享、工作坊</td></tr>
+        <tr><td>部署</td><td>單檔 HTML 即可</td><td><code>build</code> 後的靜態站</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight-box">
+      <strong>實務建議：</strong>內容定稿與繳交用 Marp；要「現場跑碼、互動演示」用 Slidev。兩者可共用同一份大綱，再分別加上 frontmatter。
+    </div>
+
+    <h3>2. 常見坑與邊界條件</h3>
+    <ul>
+      <li><strong>PDF／PPTX 失敗</strong>：找不到瀏覽器引擎；確認 Chrome／Edge／Firefox。</li>
+      <li><strong>本機圖片</strong>：轉 PDF 可能需 <code>--allow-local-files</code>（僅用於可信本機檔）。</li>
+      <li><strong>PPTX 不可編輯</strong>：預設多為預渲染圖；可編輯需實驗性 <code>--pptx-editable</code>。</li>
+      <li><strong>Slidev Node 版本</strong>：官方要求較新 Node，過舊會失敗。</li>
+      <li><strong>主題溢出</strong>：先用 16:9 全螢幕實測投影機解析度。</li>
+    </ul>
+
+    <h3>3. 性能與工作流權衡</h3>
+    <ul>
+      <li>單一巨型 MD 方便但合併衝突多；可拆「大綱 → marp／slidev」。</li>
+      <li>演示前先 <code>build</code> 或預先開好預覽，避免現場裝套件。</li>
+      <li>通常只提交來源 <code>.md</code> 與必要 theme CSS；大型 PDF／<code>node_modules</code> 不進版控。</li>
+    </ul>
+
+    <h3>4. 未來延伸</h3>
+    <ul>
+      <li>CI 在 push 時自動 <code>marp --pdf</code> 或 <code>slidev build</code> 發佈 Pages。</li>
+      <li>與既有「文件摘要 → 10 頁大綱」流程串接落地。</li>
+      <li>參考本 repo 的 <code>ec/marp-theme-tech.css</code> 自訂主題。</li>
+    </ul>
+
+    <h3>5. MD／Marp／HTML／SVG 的進階比較與坑</h3>
+    <table>
+      <thead>
+        <tr><th>議題</th><th>MD</th><th>Marp</th><th>HTML</th><th>SVG</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>人類可讀性</td><td>最高</td><td>高</td><td>中</td><td>中（路徑多時難讀）</td></tr>
+        <tr><td>瀏覽器直接開</td><td>通常否</td><td>否（需轉檔）</td><td>是</td><td>是</td></tr>
+        <tr><td>適合照片</td><td>否（只引用）</td><td>引用點陣圖</td><td>可嵌點陣／向量</td><td>不適合</td></tr>
+        <tr><td>互動</td><td>無</td><td>弱</td><td>強（+JS）</td><td>可（+CSS／JS）</td></tr>
+        <tr><td>Git 友好</td><td>極佳</td><td>極佳</td><td>佳</td><td>佳（簡單圖）</td></tr>
+      </tbody>
+    </table>
+    <ul>
+      <li><strong>Marp ≠ 二進位格式</strong>：不是像 <code>.pptx</code> 的專有容器，而是約定好的 Markdown。</li>
+      <li><strong>HTML 可能很大</strong>：Marp／Slidev 產出常內嵌 CSS／JS。</li>
+      <li><strong>SVG 安全性</strong>：不明來源可能含 script；公開站宜當靜態圖引用。</li>
+      <li><strong>相對路徑</strong>：引用 <code>./assets/x.svg</code> 時以開啟檔所在目錄為準，轉 PDF 易斷圖。</li>
+    </ul>
+    <p><strong>性能權衡：</strong>示意圖用 SVG；照片用壓縮 JPG／WebP；投影優先簡單靜態 SVG。</p>
+
+    <h2>✅ 今日課堂重點速記</h2>
+    <ol>
+      <li><strong>MD 是源頭</strong>；HTML／PDF／PPTX／互動站都是衍生結果。</li>
+      <li><strong>Marp</strong>＝Markdown＋投影片契約（frontmatter、<code>---</code>）；不是神秘二進位格式。</li>
+      <li><strong>HTML</strong>＝瀏覽器可直接渲染的文件；筆記長頁與簡報網頁都屬此類。</li>
+      <li><strong>SVG</strong>＝可縮放向量圖（XML 文字），適合流程／架構示意，可嵌進 MD／HTML。</li>
+      <li><strong>marp-cli</strong>：<code>npx @marp-team/marp-cli@latest file.md [-o out.html|--pdf|--pptx]</code>。</li>
+      <li><strong>Slidev</strong>：交件穩選 Marp，互動選 Slidev。</li>
+    </ol>
+
+    <h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+    <div class="archive-item">
+      <h3>🔹 [2026-11-06 09:50:00] [Composer / Auto] 變更紀錄</h3>
+      <p><strong>模型/Agent:</strong> Composer / Auto (Cursor Agent Router)</p>
+      <p><strong>Prompt 原文:</strong></p>
+      <div class="code-container">
+        <div class="code-header"><span>text</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div>
+        <pre><code>今天上課使用了md marp html等不同格式的轉換 並利用marp-cli , slidev 將檔案轉換成互動式簡報網頁</code></pre>
+      </div>
+      <p><strong>變更摘要:</strong> 新建 1106 課堂筆記，涵蓋 Markdown／Marp／HTML 多格式轉換概念、marp-cli 與 Slidev 實作指令、流程圖、比較表與進階坑點；同步產出 MD 與 HTML，並更新 index 索引。</p>
+    </div>
+    <div class="archive-item">
+      <h3>🔹 [2026-11-06 09:58:00] [Composer / Auto] 變更紀錄</h3>
+      <p><strong>模型/Agent:</strong> Composer / Auto (Cursor Agent Router)</p>
+      <p><strong>Prompt 原文:</strong></p>
+      <div class="code-container">
+        <div class="code-header"><span>text</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div>
+        <pre><code>補充說明  md, marp, html  以及 svg檔的格式</code></pre>
+      </div>
+      <p><strong>變更摘要:</strong> 增補 MD／Marp／HTML／SVG 格式本質、比較表、關係流程圖、最小樣本（範例 F）與進階坑點；同步更新 HTML 與索引時間戳。</p>
+    </div>
+  </div>
+
+  <script>
+    function copyCode(btn) {
+      const code = btn.closest('.code-container').querySelector('code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const original = btn.textContent;
+        btn.textContent = '✅ 已複製';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 1600);
+      });
+    }
+  </script>
+</body>
+</html>

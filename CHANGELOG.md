@@ -1,8 +1,8 @@
 # 📝 onclassbyJoel - 全站提示詞歷史與變更記錄 (CHANGELOG)
 
-> **最後更新時間**: 2026-10-30 17:03:55 (UTC+8)
-> **使用模型**: Claude Opus 5.5
-> **執行 Agent**: Claude Code
+> **最後更新時間**: 2026-11-06 09:58:00 (UTC+8)
+> **使用模型**: Composer
+> **執行 Agent**: Auto
 
 ---
 
@@ -441,3 +441,19 @@ go
   照建議實作第 1 到 5 項並同步
   ```
 - **變更摘要**: 新增 `tools/build_index.py` 與 `tools/index_catalog.json`，由單一目錄產生 `INDEX.md`、`index.html` 與 `changelog.html`；md／html 合併為一篇一列，附件收合到所屬筆記下，`ec/` 分為 7 個子主題，分類卡片預設收合並新增最近更新 10 篇；Prompt Archive 搬移至 `CHANGELOG.md`／`changelog.html`，舊紀錄原文保留；修正 `index.html` 失效的紅色 LED 手冊連結，補列原本只在單一索引或未列入的檔案；更新 AGENTS.md 第 3、6 條。
+
+### 🔹 [2026-11-06 09:50:00] [Composer / Auto] Marp／Slidev 課堂筆記
+- **模型/Agent**: Composer / Auto (Cursor Agent Router)
+- **Prompt 原文**:
+  ```text
+  今天上課使用了md marp html等不同格式的轉換 並利用marp-cli , slidev 將檔案轉換成互動式簡報網頁
+  ```
+- **變更摘要**: 於 `AI/` 新增 `md_marp_slidev_interactive_slides_1106.md` 與對應 HTML，說明 Markdown／Marp／HTML 轉換與 marp-cli、Slidev 工作流；以 `tools/build_index.py` 更新全站索引。
+
+### 🔹 [2026-11-06 09:58:00] [Composer / Auto] 補充 MD／Marp／HTML／SVG 格式說明
+- **模型/Agent**: Composer / Auto (Cursor Agent Router)
+- **Prompt 原文**:
+  ```text
+  補充說明  md, marp, html  以及 svg檔的格式
+  ```
+- **變更摘要**: 於 1106 筆記增補四種檔案格式本質、分工表、最小樣本與進階比較；同步 MD／HTML 後重建索引。

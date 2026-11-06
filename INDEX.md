@@ -1,8 +1,8 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-10-30 17:03:55 (UTC+8)
-> **使用模型**: Claude Opus 5.5
-> **執行 Agent**: Claude Code
+> **最後更新時間**: 2026-11-06 09:58:00 (UTC+8)
+> **使用模型**: Composer
+> **執行 Agent**: Auto
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 > **變更記錄**: [CHANGELOG.md](./CHANGELOG.md)
 > **注意**: 本檔由 `tools/build_index.py` 產生，請勿手動修改。
@@ -11,6 +11,7 @@
 
 ## 🆕 最近更新 (10 篇)
 
+* `2026-11-06` | [Markdown → Marp / Slidev：多格式轉換與互動式簡報網頁實作（1106 課堂）](./AI/md_marp_slidev_interactive_slides_1106.html) · [MD](./AI/md_marp_slidev_interactive_slides_1106.md)
 * `2026-10-30` | [Agent 與 VS Code 操作驗收與小論文大綱作業](./AI/1106_classwork.md)
 * `2026-10-30` | [LEGO SPIKE 6-DOF 擬人化機械臂研究論文](./ev3/ARM.html) · [MD](./ev3/ARM.md)
 * `2026-10-30` | [LEGO SPIKE 仿生機械手臂研究指南：六馬達配置與五大研究題目解析](./ev3/spike_bionic_arm_research_topics.html) · [MD](./ev3/spike_bionic_arm_research_topics.md)
@@ -20,13 +21,13 @@
 * `2026-10-22` | [Arduino Uno + DHT11 + SSD1306 OLED（U8g2 / I2C）作法、程式庫比較與 Page Buffer 優缺點](./ec/arduino_dht11_ssd1306_u8g2_guide.html) · [MD](./ec/arduino_dht11_ssd1306_u8g2_guide.md) · 📎 [1022-ssd1306.ino](./ec/1022-ssd1306.ino)
 * `2026-10-22` | [Arduino Uno + DHT11（Pin 8）+ I2C LCD 1602 接線指引與程式庫下載手冊](./ec/arduino_dht11_pin8_lcd1602_i2c_wiring_library_guide.html) · [MD](./ec/arduino_dht11_pin8_lcd1602_i2c_wiring_library_guide.md) · 📎 [2026-10-22-140028.jpg](./ec/2026-10-22-140028.jpg)、[arduino_dht11_pin8_lcd1602_i2c_example_1029.ino](./ec/arduino_dht11_pin8_lcd1602_i2c_example_1029.ino)
 * `2026-10-21` | [Fooocus 影像生成課堂作業指引：Juggernaut XL 與 Voronoi LoRA 幾何細胞肖像實作](./AI/fooocus_voronoi_juggernaut_assignment.html) · [MD](./AI/fooocus_voronoi_juggernaut_assignment.md) · 📎 [civitai_145848150.jpeg](./AI/civitai_145848150.jpeg)
-* `2026-10-20` | [Arduino 專案開發模式與實務標準流程 (SOP) 手冊](./ec/arduino_development_workflow_methodology.html) · [MD](./ec/arduino_development_workflow_methodology.md)
 
 ---
 
 ## 🎯 工作區主題檔案分類與最後修改日期 (依日期由新至舊排列)
 
 ### 1. 🤖 AI / 機器學習與深度學習 (`AI/`)
+* `2026-11-06` | [Markdown → Marp / Slidev：多格式轉換與互動式簡報網頁實作（1106 課堂）](./AI/md_marp_slidev_interactive_slides_1106.html) · [MD](./AI/md_marp_slidev_interactive_slides_1106.md)
 * `2026-10-30` | [Agent 與 VS Code 操作驗收與小論文大綱作業](./AI/1106_classwork.md)
 * `2026-10-21` | [Fooocus 影像生成課堂作業指引：Juggernaut XL 與 Voronoi LoRA 幾何細胞肖像實作](./AI/fooocus_voronoi_juggernaut_assignment.html) · [MD](./AI/fooocus_voronoi_juggernaut_assignment.md) · 📎 [civitai_145848150.jpeg](./AI/civitai_145848150.jpeg)
 * `2026-10-16` | [Agent 分層模型：LLM、Context、Harness 與 Workflow ↔ Agent 光譜](./AI/ai_agent_harness_workflow.html) · [MD](./AI/ai_agent_harness_workflow.md)

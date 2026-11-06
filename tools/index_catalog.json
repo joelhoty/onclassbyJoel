@@ -1034,6 +1034,15 @@
     "tools/build_index.py"
    ],
    "attachments": []
+  },
+  {
+   "title": "Markdown → Marp / Slidev：多格式轉換與互動式簡報網頁實作（1106 課堂）",
+   "files": [
+    "AI/md_marp_slidev_interactive_slides_1106.html",
+    "AI/md_marp_slidev_interactive_slides_1106.md"
+   ],
+   "attachments": [],
+   "category": "AI"
   }
  ],
  "date_overrides": {
