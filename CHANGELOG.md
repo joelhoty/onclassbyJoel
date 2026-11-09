@@ -1,6 +1,6 @@
 # 📝 onclassbyJoel - 全站提示詞歷史與變更記錄 (CHANGELOG)
 
-> **最後更新時間**: 2026-11-09 15:45:00 (UTC+8)
+> **最後更新時間**: 2026-11-09 16:10:00 (UTC+8)
 > **使用模型**: Claude Sonnet 5.5
 > **執行 Agent**: Claude Sonnet 5.5
 
@@ -516,3 +516,12 @@ go
   更新提交推送
   ```
 - **變更摘要**: 修正 `ev3/ev3_color_sensor_principles.md` 與 `.html`：統一範例程式與章節、P 控制補限幅、未公開內部細節改標示意模型、修正 SPIKE 比較與參考資料描述；重建全站索引。
+
+### 🔹 [2026-11-09 16:10:00] [Claude Sonnet 5.5] 查證 SPIKE 規格並改為 EV3 為主、SPIKE 補充
+- **模型/Agent**: Claude Sonnet 5.5 / Claude Code
+- **Prompt 原文**:
+  ```text
+  查證 SPIKE 感應器規格並更新筆記
+  這個部分先討論lego ev3,spike的規格以補充方式加入
+  ```
+- **變更摘要**: `ev3/ev3_color_sensor_principles.md` 與 `.html` 第 3.4 節依 LEGO Tech Fact Sheet 與 Pybricks 文件更新 SPIKE 45605 規格（3 顆 4000K 白光 LED、100 Hz），並改為以 EV3 為主、SPIKE 為補充對照。

@@ -1,6 +1,6 @@
 # 🔍 LEGO MINDSTORMS EV3 顏色感應器：光反射強度與色彩辨識原理全解析
 
-> **最後更新時間**: 2026-11-09 15:40:00 (UTC+8)  
+> **最後更新時間**: 2026-11-09 16:05:00 (UTC+8)  
 > **使用模型**: Claude Sonnet 5.5（本次審閱修訂）／ Gemini 4 Argon (Medium)（原稿）  
 > **執行 Agent**: Claude Code（修訂）／ Gemini 4 Argon (Medium) / Antigravity（原稿）  
 
@@ -20,7 +20,7 @@
    - [3.1 鏡面反射 (Specular) vs. 漫反射 (Diffuse) 的光學陷阱](#31-鏡面反射-specular-vs-漫反射-diffuse-的光學陷阱)
    - [3.2 為何採用「RGB 時序分光」而非「白光 LED + 濾色片」？](#32-為何採用rgb-時序分光而非白光-led--濾色片)
    - [3.3 機器人機構幾何最佳化 (安裝高度、傾角與遮光罩)](#33-機器人機構幾何最佳化-安裝高度傾角與遮光罩)
-   - [3.4 EV3 (45506) 與 SPIKE Prime (45605) 顏色感應器橫向比較](#34-ev3-45506-與-spike-prime-45605-顏色感應器橫向比較)
+   - [3.4 EV3 顏色感應器規格摘要（補充：SPIKE 對照）](#34-ev3-顏色感應器規格摘要補充spike-對照)
 4. [📚 參考資料與技術文獻 (References)](#4--參考資料與技術文獻-references)
 5. [📝 提示詞歷史與變更記錄 (Prompt Archive)](#5--提示詞歷史與變更記錄-prompt-archive)
 
@@ -550,7 +550,9 @@ graph LR
 
 ---
 
-### 3.4 EV3 (45506) 與 SPIKE Prime (45605) 顏色感應器橫向比較
+### 3.4 EV3 顏色感應器規格摘要（補充：SPIKE 對照）
+
+本節以 **EV3 (45506)** 為主；SPIKE 規格僅作為補充對照。
 
 ```mermaid
 classDiagram
@@ -561,16 +563,12 @@ classDiagram
         +官方辨識色數: 8 色
         +線材: 6 芯 EV3 專用接頭 外形類似 RJ12 但卡榫不同
     }
-    class SPIKE_ColorSensor_45605 {
-        +發光源: 多顆 LED 數量與配置請查官方規格
-        +模式: 反射光 環境光 色彩
-        +通訊: LPF2 6 針接頭 UART 序列通訊
-        +官方辨識色數: 與 EV3 不同 以官方文件為準
-        +線材: LPF2 接頭 與 Powered Up 系列相同
-    }
 ```
 
-> ⚠️ 註：SPIKE 感應器的 LED 數量、色數與取樣細節本文未逐項查證，請以 LEGO Education 官方規格為準；兩者確定的差異是接頭規格（EV3 專用 6 芯接頭 vs. LPF2 6 針接頭）與所屬平台。
+#### 補充：SPIKE (45605) 規格對照
+
+> 已查證 LEGO Tech Fact Sheet 與 Pybricks 文件：SPIKE 色彩感應器 45605 內建 **3 顆 4000K 白光 LED**，可個別調整 0~100% 輸出，但在色彩／光感測模式下無法手動控制；取樣率官方為 **100 Hz**（零售商頁面的 1 kHz 並非官方數字），最佳讀取距離約 16 mm。辨識色數各來源不同：LEGO 社群文章稱 8 色，Pybricks 預設只辨識紅、黃、綠、藍、白與無色（可用 `detectable_colors()` 自訂）。兩者色數不宜直接比較。通訊方面，SPIKE 為 LPF2 6 針接頭（與 Powered Up 相同），EV3 為專用 6 芯接頭。
+> 來源：[LEGO Tech Fact Sheet 45605](https://cdn.shopify.com/s/files/1/0539/2056/3365/files/SPIKE_Essential_Tech_fact_sheet_Color_Sensor_45605.pdf)、[Pybricks Color Sensor](https://docs.pybricks.com/en/latest/pupdevices/colorsensor.html)。
 
 ---
 
@@ -645,3 +643,12 @@ classDiagram
 更新提交推送
   ```
 - **變更摘要**: 依審閱結果修正並同步 MD 與 HTML：(1) 統一兩邊範例程式（KP=1.2、beep 100 ms、2.2 色彩中心點與門檻 30.0）；(2) P 控制程式補上 MAX_SPEED 限幅以符合流程圖；(3) 將 CDS、8 色距離判定、ADC 位元數、電壓值等官方未公開之內部細節改標為「示意模型/推測」；(4) 修正 3.4 SPIKE 比較（LPF2 為 6 針等不實描述）與 EV3 UART 鮑率；(5) 修正光子激發電子-電洞對為「至多 1 對」、移除未經證實的紅外線衰減與 lms2012 描述、8~16 mm 與 5°~8° 等標註為經驗值；(6) HTML 補齊環境光消減、距離判定模型、為何採時序分光、遮光罩與 SPIKE 比較章節並對齊章節編號。
+
+### 🔹 [2026-11-09 16:05:00] [Claude Sonnet 5.5] 查證 SPIKE 感應器規格
+- **模型/Agent**: Claude Sonnet 5.5 / Claude Code
+- **Prompt 原文**:
+  ```text
+  查證 SPIKE 感應器規格並更新筆記
+  ```
+- **變更摘要**: 查證 LEGO 官方 Tech Fact Sheet 與 Pybricks 文件後更新 3.4：SPIKE 色彩感應器 45605 為 3 顆可獨立控制的 4000K 白光 LED（色彩/光模式下不可手動控制）、取樣率 100 Hz、最佳讀取距離 16 mm、辨識色數各來源不一，並附來源連結。
+- **補充（同次對話）**: 使用者指示本節先以 LEGO EV3 為主、SPIKE 規格以補充方式加入，已將 3.4 改為「EV3 規格摘要（補充：SPIKE 對照）」。原文: `這個部分先討論lego ev3,spike的規格以補充方式加入`

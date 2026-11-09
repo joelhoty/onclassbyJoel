@@ -447,7 +447,7 @@
         <h1>🔍 LEGO EV3 顏色感應器：光反射強度與色彩辨識原理全解析</h1>
         <p>深入剖析單像素矽光電二極體如何透過<strong>「單色紅光朗伯漫反射」</strong>與<strong>「時序三色光脈衝掃描 (Sequential RGB Strobe)」</strong>實現精密的光強度與 8 色色彩辨識。</p>
         <div class="meta-box">
-            <div class="meta-item">📅 <strong>最後更新時間:</strong> 2026-11-09 15:40:00 (UTC+8)</div>
+            <div class="meta-item">📅 <strong>最後更新時間:</strong> 2026-11-09 16:05:00 (UTC+8)</div>
             <div class="meta-item">🧠 <strong>使用模型:</strong> Claude Sonnet 5.5（審閱修訂）／ Gemini 4 Argon (Medium)（原稿）</div>
             <div class="meta-item">⚙️ <strong>執行 Agent:</strong> Claude Code（修訂）／ Gemini 4 Argon (Medium) / Antigravity（原稿）</div>
         </div>
@@ -1213,17 +1213,18 @@ while True:
 
         <hr style="border: none; border-top: 1px solid var(--card-border); margin: 24px 0;">
 
-        <h3>3.4 EV3 (45506) 與 SPIKE Prime (45605) 顏色感應器比較</h3>
+        <h3>3.4 EV3 顏色感應器規格摘要（補充：SPIKE 對照）</h3>
+        <p>本節以 <strong>EV3 (45506)</strong> 為主；SPIKE 規格僅作為補充對照。</p>
         <table>
-            <thead><tr><th>項目</th><th>EV3 (45506)</th><th>SPIKE Prime (45605)</th></tr></thead>
+            <thead><tr><th>項目</th><th>EV3 (45506)</th><th>補充：SPIKE (45605)</th></tr></thead>
             <tbody>
-                <tr><td>取樣方式</td><td>時序三色脈衝</td><td>反射光／環境光／色彩模式（細節以官方規格為準）</td></tr>
+                <tr><td>取樣方式</td><td>時序三色脈衝</td><td>3 顆 4000K 白光 LED（可獨立控制 0~100%，色彩／光模式下不可手動控制），取樣率約 100 Hz</td></tr>
                 <tr><td>通訊</td><td>UART 序列通訊，鮑率由主機協商</td><td>LPF2 6 針接頭，UART 序列通訊</td></tr>
-                <tr><td>官方辨識色數</td><td>8 色</td><td>與 EV3 不同，以官方文件為準</td></tr>
+                <tr><td>官方辨識色數</td><td>8 色</td><td>各來源不一：LEGO 社群稱 8 色；Pybricks 預設為紅、黃、綠、藍、白、無色（可自訂）</td></tr>
                 <tr><td>接頭</td><td>6 芯 EV3 專用接頭（外形類似 RJ12，卡榫不同）</td><td>LPF2（與 Powered Up 相同）</td></tr>
             </tbody>
         </table>
-        <p style="font-size: 0.85rem; color: var(--text-muted);">* SPIKE 感應器的 LED 數量與取樣細節未逐項查證，請以 LEGO Education 官方規格為準。</p>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">* 已查證 LEGO Tech Fact Sheet 與 Pybricks 文件；零售商頁面的 1 kHz 並非官方數字。來源：<a href="https://cdn.shopify.com/s/files/1/0539/2056/3365/files/SPIKE_Essential_Tech_fact_sheet_Color_Sensor_45605.pdf" target="_blank" style="color:var(--primary);">LEGO Tech Fact Sheet 45605</a>、<a href="https://docs.pybricks.com/en/latest/pupdevices/colorsensor.html" target="_blank" style="color:var(--primary);">Pybricks Color Sensor</a>。</p>
     </div>
 
     <!-- SECTION 4: REFERENCES -->
@@ -1335,6 +1336,19 @@ rgh的光源是發射幾個設定好的固定顏色?</code></pre>
             <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">
                 <strong>變更摘要:</strong> 依審閱結果修正並同步 MD 與 HTML：(1) 統一兩邊範例程式（KP=1.2、beep 100 ms、2.2 色彩中心點與門檻 30.0）；(2) P 控制程式補上 MAX_SPEED 限幅以符合流程圖；(3) 將 CDS、8 色距離判定、ADC 位元數、電壓值等官方未公開之內部細節改標為「示意模型/推測」；(4) 修正 3.4 SPIKE 比較（LPF2 為 6 針等不實描述）與 EV3 UART 鮑率；(5) 修正光子激發電子-電洞對為「至多 1 對」、移除未經證實的紅外線衰減與 lms2012 描述、8~16 mm 與 5°~8° 等標註為經驗值；(6) HTML 補齊環境光消減、距離判定模型、為何採時序分光、遮光罩與 SPIKE 比較章節並對齊章節編號。
             </p>
+        </div>
+        <div style="background: var(--code-bg); padding: 16px; border-radius: 8px; border: 1px solid var(--card-border); margin-top: 14px;">
+            <h3 style="margin-top: 0; color: #38bdf8;">🔹 [2026-11-09 16:05:00] [Claude Sonnet 5.5] 查證 SPIKE 感應器規格</h3>
+            <ul style="font-size: 0.9rem;">
+                <li><strong>模型/Agent:</strong> Claude Sonnet 5.5 / Claude Code</li>
+                <li><strong>Prompt 原文:</strong></li>
+            </ul>
+            <div class="code-container" style="margin: 8px 0;">
+                <pre><code>查證 SPIKE 感應器規格並更新筆記</code></pre>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">
+                <strong>變更摘要:</strong> 查證 LEGO 官方 Tech Fact Sheet 與 Pybricks 文件後更新 3.4：SPIKE 色彩感應器 45605 為 3 顆可獨立控制的 4000K 白光 LED（色彩/光模式下不可手動控制）、取樣率 100 Hz、最佳讀取距離 16 mm、辨識色數各來源不一，並附來源連結。
+            <br><strong>補充（同次對話）:</strong> 使用者指示本節先以 EV3 為主、SPIKE 規格以補充方式加入，已將 3.4 改為「EV3 規格摘要（補充：SPIKE 對照）」。原文：<code>這個部分先討論lego ev3,spike的規格以補充方式加入</code></p>
         </div>
     </div>
 </div>
