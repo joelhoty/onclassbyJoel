@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEGO EV3 顏色感應器：光反射強度與色彩辨識原理動態解說</title>
+    <!-- Mermaid CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'dark',
+                themeVariables: {
+                    primaryColor: '#38bdf8',
+                    primaryTextColor: '#f8fafc',
+                    primaryBorderColor: '#0284c7',
+                    lineColor: '#94a3b8',
+                    secondaryColor: '#1e293b',
+                    tertiaryColor: '#0f172a'
+                }
+            });
+        });
+    </script>
+    <style>
+        :root {
+            --primary: #38bdf8;
+            --primary-dark: #0284c7;
+            --accent: #f59e0b;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --bg-color: #0b0f19;
+            --card-bg: #161c28;
+            --card-border: #2a3447;
+            --text-color: #cbd5e1;
+            --text-heading: #f8fafc;
+            --text-muted: #94a3b8;
+            --code-bg: #0f172a;
+            --tag-bg: rgba(56, 189, 248, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            padding: 24px 16px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* Top Action Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .btn-pdf {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-pdf:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.45);
+        }
+
+        /* Header Card */
+        .header-card {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ef4444, #10b981, #38bdf8, #f59e0b);
+        }
+
+        h1 {
+            color: var(--text-heading);
+            font-size: 2rem;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .meta-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 14px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding-top: 14px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge {
+            background: var(--tag-bg);
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        /* Content Sections */
+        .section-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 1.45rem;
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            color: var(--text-heading);
+            font-size: 1.2rem;
+            margin: 22px 0 12px 0;
+        }
+
+        p, li {
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+
+        ul, ol {
+            padding-left: 24px;
+            margin-bottom: 14px;
+        }
+
+        /* Interactive Animation Stages */
+        .interactive-box {
+            background: #0d131f;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
+        }
+
+        .interactive-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .interactive-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .controls-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+            background: rgba(30, 41, 59, 0.7);
+            padding: 12px 16px;
+            border-radius: 8px;
+        }
+
+        .controls-row label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input[type="range"] {
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 320px;
+            background: #090d16;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Readout Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .dashboard-card {
+            background: #1e293b;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            text-align: center;
+        }
+
+        .dashboard-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dashboard-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            margin-top: 4px;
+            font-family: "Courier New", Courier, monospace;
+        }
+
+        /* Color Palette Picker */
+        .color-palette {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+
+        .color-chip {
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .color-chip.active {
+            border-color: #ffffff;
+            transform: scale(1.08);
+            box-shadow: 0 0 12px rgba(255,255,255,0.4);
+        }
+
+        /* Code Blocks */
+        .code-container {
+            position: relative;
+            margin: 16px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1e293b;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-family: monospace;
+        }
+
+        .btn-copy {
+            background: rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-copy:hover {
+            background: var(--primary);
+            color: #000000;
+        }
+
+        pre code {
+            display: block;
+            background: var(--code-bg);
+            padding: 16px;
+            overflow-x: auto;
+            color: #e2e8f0;
+            font-family: "Fira Code", Consolas, Monaco, monospace;
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 18px 0;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 12px 14px;
+            border: 1px solid var(--card-border);
+            text-align: left;
+        }
+
+        th {
+            background-color: #1e293b;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(30, 41, 59, 0.35);
+        }
+
+        /* Math formula display */
+        .formula-card {
+            background: #101726;
+            border-left: 4px solid var(--accent);
+            padding: 14px 18px;
+            border-radius: 0 8px 8px 0;
+            margin: 14px 0;
+            font-family: "Courier New", monospace;
+            color: #f1f5f9;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-card {
+                padding: 20px;
+            }
+            .section-card {
+                padding: 18px;
+            }
+            .canvas-container {
+                height: 260px;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: #ffffff;
+                color: #000000;
+            }
+            .btn-pdf, .controls-row, .btn-copy, .color-palette {
+                display: none !important;
+            }
+            .header-card, .section-card, .interactive-box {
+                background: #ffffff !important;
+                border: 1px solid #cccccc !important;
+                color: #000000 !important;
+                box-shadow: none !important;
+            }
+            h1, h2, h3, .dashboard-value {
+                color: #000000 !important;
+            }
+            pre code {
+                background: #f8fafc !important;
+                color: #000000 !important;
+                border: 1px solid #e2e8f0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Top Action Bar -->
+    <div class="top-bar">
+        <div><span class="badge">🤖 LEGO MINDSTORMS EV3 光學技術解密</span></div>
+        <button class="btn-pdf" onclick="window.print()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                <path d="M6 14h12v8H6z"/>
+            </svg>
+            匯出成 PDF
+        </button>
+    </div>
+
+    <!-- Header Card -->
+    <div class="header-card">
+        <h1>🔍 LEGO EV3 顏色感應器：光反射強度與色彩辨識原理全解析</h1>
+        <p>深入剖析單像素矽光電二極體如何透過<strong>「單色紅光朗伯漫反射」</strong>與<strong>「時序三色光脈衝掃描 (Sequential RGB Strobe)」</strong>實現精密的光強度與 8 色色彩辨識。</p>
+        <div class="meta-box">
+            <div class="meta-item">📅 <strong>最後更新時間:</strong> 2026-11-09 14:00:35 (UTC+8)</div>
+            <div class="meta-item">🧠 <strong>使用模型:</strong> Gemini 4 Argon</div>
+            <div class="meta-item">⚙️ <strong>執行 Agent:</strong> Antigravity</div>
+        </div>
+    </div>
+
+    <!-- SECTION 1: CORE CONCEPTS -->
+    <div class="section-card">
+        <h2>1. 核心概念剖析 (Core Concepts)</h2>
+        <p>EV3 顏色感應器（LEGO Part #45506）並非影像感光相機，而是由<strong>一顆單像素矽光電二極體 (Photodiode)</strong>、<strong>RGB 三色發光二極體 (LED)</strong> 及專屬微控制器 (MCU + 10-bit ADC) 組成。它藉由調控照明時序，成功在毫秒級瞬間完成光強與色彩判定。</p>
+
+        <h3>1.1 感應器內部光學與硬體架構</h3>
+        <p>光學結構最關鍵的設計在於「發光腔」與「受光腔」之間的<strong>物理遮光壁 (Optical Isolation Baffle)</strong>，防止發出的光線在塑膠殼內部直接折射至受光器（光學串擾 Crosstalk）。</p>
+
+        <div class="mermaid">
+        graph TD
+            subgraph Sensor_Internal["EV3 顏色感應器內部硬體"]
+                LED["💡 RGB 三色 LED 陣列<br>(Red 660nm / Green 520nm / Blue 465nm)"]
+                Baffle["🛡️ 光學隔離遮光壁 (Baffle)<br>(阻絕內部直接漏光)"]
+                PD["👁️ 矽光電二極體 (Photodiode)<br>(光子轉微安培光電流)"]
+                TIA["⚡ 跨阻放大器 (TIA)<br>(I-V 轉換放大類比訊號)"]
+                ADC["📊 10-bit 高速類比數位轉換器 (ADC)"]
+                MCU["🧠 內部微控制器 (MCU)<br>(時序控制與色彩距離分類)"]
+            end
+            Target["📄 待測表面 (黑線 / 白紙 / 色彩積木)"]
+
+            LED -->|"入射光錐"| Target
+            Target -->|"朗伯漫反射"| PD
+            PD --> TIA --> ADC --> MCU
+            MCU -.->|"循序驅動信號"| LED
+            MCU -->|"UART 數位數據封包"| Brick["🧱 EV3 主機 (P-Brick)"]
+        </div>
+
+        <div class="formula-card" style="border-left-color: #10b981;">
+            <strong>🔬 深度剖析：接收感應端有「彩色濾鏡」嗎？它是靠什麼原理判斷光反應的？</strong><br>
+            <strong>結論：接收端「完全沒有 RGB 彩色濾光片 (No Color Filter)」！</strong>它純粹靠一顆<strong>「色盲（全光譜黑白）的矽光電二極體／光電晶體」</strong>，透過半導體<strong>「內光電效應」</strong>測量總光量，再配合微控制器 (MCU) 的<strong>「發射-接收時間同步」</strong>來分辨顏色。
+        </div>
+
+        <div class="mermaid">
+        flowchart LR
+            subgraph Layer1["第一層：物理光電轉換 (半導體內光電效應)"]
+                P1["🌟 反射光子入射<br>能量 E = hc/λ &gt; 矽能隙 1.12eV"] --> P2["⚛️ 撞擊矽 PN 接面空乏區<br>激發「電子-電洞對」"]
+                P2 --> P3["⚡ 內建電場分離載子<br>產生正比於光子數的光電流 I_ph"]
+                P3 --> P4["📈 跨阻放大器 (TIA)<br>V_out = I_ph × R_f"]
+            end
+
+            subgraph Layer2["第二層：無濾鏡辨色 (MCU 時序同步鎖定)"]
+                P4 --> M1["🧠 10-bit ADC 數位取樣"]
+                M1 --> M2{"⏱️ MCU 核對當下點亮哪顆 LED？"}
+                M2 -- "當下只亮紅燈 (t1)" --> R_Val["記錄為紅光反應 R"]
+                M2 -- "當下只亮綠燈 (t2)" --> G_Val["記錄為綠光反應 G"]
+                M2 -- "當下只亮藍燈 (t3)" --> B_Val["記錄為藍光反應 B"]
+            end
+        </div>
+
+        <ul>
+            <li><strong>1. 如何判斷「光反應強弱」？（靠半導體「內光電效應」）：</strong>當反射光子進入矽光電二極體（Silicon Photodiode），只要光子能量大於矽能隙（1.12 eV，涵蓋 400~1050 nm 可見光），每 1 顆光子就會在 PN 接面空乏區激發出 1 對「自由電子-電洞對」。在內建電場分離下形成正比於光子數量的微安培級光電流 <code>I_ph = R(λ) · P_optical</code>，再經跨阻放大器 (TIA) 轉為電壓送給 ADC。</li>
+            <li><strong>2. 到底有沒有「濾鏡」？：</strong><strong>沒有 RGB 彩色分色濾鏡！</strong>外層僅有聚集光線的透明環氧樹脂凸透鏡與抑制環境熱干擾的基礎近紅外線衰減配方，對紅、綠、藍可見光無差別全通接收。</li>
+            <li><strong>3. 既然接收端是「色盲」且無濾鏡，怎麼分辨顏色？：</strong>靠<strong>「時間同步取樣 (Time-Synchronized Sampling)」</strong>！雖然光電二極體只會回報「現在有多亮」，但主控 MCU 同時控制 LED 與 ADC——當 MCU 在第 1 微秒下令<strong>「只開紅燈」</strong>，此時二極體測到的亮度就 100% 代表紅光反射率；下一微秒<strong>「關紅燈、只開綠燈」</strong>，測到的亮度就代表綠光反射率。此外，針對矽晶片天生對紅光較敏感、對藍光較遲鈍的特性，韌體內建白平衡權重 <code>(w_R, w_G, w_B)</code> 自動校正。</li>
+        </ul>
+
+        <hr style="border: none; border-top: 1px solid var(--card-border); margin: 24px 0;">
+
+        <h3>1.2 動畫一：反射光強度 (Reflected Light Intensity) 原理動態模擬</h3>
+        <p>在反射光強度模式下，感應器只開啟<strong>紅色 LED</strong>（紅光對黑色碳墨與白色紙張具有最佳吸收與反射對比度）。光子經表面漫反射後部分進入受光孔，光電二極體將光子激發的電子-電洞對轉換為光電流。</p>
+
+        <!-- INTERACTIVE ANIMATION 1 -->
+        <div class="interactive-box">
+            <div class="interactive-header">
+                <span class="interactive-title">🎮 互動實驗：表面反射率與光電感應模擬</span>
+                <span style="font-size: 0.85rem; color: #94a3b8;">拖曳拉桿調整反射率或環境光</span>
+            </div>
+
+            <div class="controls-row">
+                <label>
+                    表面反射率:
+                    <input type="range" id="reflectivitySlider" min="0" max="100" value="85" style="width: 160px;">
+                    <span id="reflValText" style="color: #38bdf8; font-weight: bold;">85%</span>
+                </label>
+                <label>
+                    <input type="checkbox" id="ambientCheck">
+                    模擬環境雜散光 (Ambient Noise)
+                </label>
+                <button class="btn-copy" onclick="presetSurface(8, '黑線 (吸光)');">黑線 (8%)</button>
+                <button class="btn-copy" onclick="presetSurface(48, '黑白交界 (50%)');">黑白交界 (48%)</button>
+                <button class="btn-copy" onclick="presetSurface(92, '白紙 (全反射)');">白紙 (92%)</button>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="canvasReflect"></canvas>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="dashboard-label">發射光束</div>
+                    <div class="dashboard-value" style="color: #ef4444;">RED 660nm</div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-label">受光光電流</div>
+                    <div class="dashboard-value" id="currentDisp">8.5 µA</div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-label">ADC 讀取電壓</div>
+                    <div class="dashboard-value" id="voltDisp">2.72 V</div>
+                </div>
+                <div class="dashboard-card" style="border-left-color: #10b981;">
+                    <div class="dashboard-label">EV3 讀數 (0-100%)</div>
+                    <div class="dashboard-value" id="ev3ReadingDisp" style="color: #10b981;">85%</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-card">
+            <strong>歸一化計算公式：</strong><br>
+            EV3 反射光強度(%) = clamp( (V_raw - V_black) / (V_white - V_black) * 100%, 0%, 100% )
+        </div>
+
+        <hr style="border: none; border-top: 1px solid var(--card-border); margin: 24px 0;">
+
+        <h3>1.3 色彩辨識核心機制：時序三色光脈衝掃描 (Sequential RGB Strobe)</h3>
+        <p>受光的光電二極體是「色盲」，它無法直接知道入射光是紅是綠。EV3 的專利智慧在於<strong>「時間分割多工照明 (Time-Division Multiplexed Lighting)」</strong>：</p>
+        <ol>
+            <li><strong>t1 (紅光脈衝)</strong>：僅點亮紅燈，測量此時物體反射的紅光能量 $R$。</li>
+            <li><strong>t2 (綠光脈衝)</strong>：僅點亮綠燈，測量此時物體反射的綠光能量 $G$。</li>
+            <li><strong>t3 (藍光脈衝)</strong>：僅點亮藍燈，測量此時物體反射的藍光能量 $B$。</li>
+            <li><strong>t4 (環境基底)</strong>：熄滅全部 LED，測量純環境光底噪 $V_{amb}$，並自 $R, G, B$ 中即時扣除。</li>
+        </ol>
+
+        <!-- INTERACTIVE ANIMATION 2 -->
+        <div class="interactive-box">
+            <div class="interactive-header">
+                <span class="interactive-title">⏱️ 互動動畫：時序微秒級閃爍與示波器波形</span>
+                <div>
+                    <button class="btn-copy" id="btnToggleStrobe" onclick="toggleStrobeAnimation();">⏸️ 暫停/繼續</button>
+                    <button class="btn-copy" onclick="stepStrobePhase();">⏭️ 單步執行</button>
+                </div>
+            </div>
+
+            <div class="controls-row">
+                <label>
+                    播放速度:
+                    <input type="range" id="strobeSpeedSlider" min="0.5" max="3" step="0.5" value="1" style="width: 120px;">
+                    <span id="strobeSpeedText">慢動作 (1.0x)</span>
+                </label>
+                <div style="font-size: 0.85rem; color: #94a3b8;">
+                    當前時序階段：<span id="currentPhaseBadge" class="badge" style="background:#ef4444; color:#fff;">Phase 1: RED LED ON</span>
+                </div>
+            </div>
+
+            <div class="canvas-container" style="height: 280px;">
+                <canvas id="canvasStrobe"></canvas>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">
+                * 註：真實 EV3 感應器內部時序掃描循環每秒可進行約 1,000 次 (1 kHz)，肉眼看似發出連續白光，但高速攝影機或光電晶體下可見明顯的 R-G-B 交替閃爍。
+            </p>
+        </div>
+
+        <div class="formula-card" style="border-left-color: #38bdf8;">
+            <strong>💡 關鍵釋疑：RGB 光源到底發射幾個設定好的固定顏色？</strong><br>
+            答案是：硬體光源只發射<strong>「3 種」設定好的固定單色光波長</strong>（紅光 ~660nm、綠光 ~520nm、藍光 ~465nm）！感應器內部封裝了 3 顆獨立的單色 LED 晶粒，<strong>不會</strong>直接發出黃光、棕光或紫光。
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>發光晶粒代號</th>
+                    <th>固定發射顏色</th>
+                    <th>中心峰值波長 (λp)</th>
+                    <th>半導體材質</th>
+                    <th>在不同感測模式下的點亮行為</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong style="color:#ef4444;">1. R (Red)</strong></td>
+                    <td>純紅光</td>
+                    <td>約 640 ~ 660 nm</td>
+                    <td>磷化鋁鎵銦 (AlGaInP)</td>
+                    <td>• <strong>反射光模式</strong>：恆亮紅光<br>• <strong>色彩辨識模式</strong>：時段 1 脈衝點亮</td>
+                </tr>
+                <tr>
+                    <td><strong style="color:#10b981;">2. G (Green)</strong></td>
+                    <td>純綠光</td>
+                    <td>約 520 ~ 530 nm</td>
+                    <td>氮化銦鎵 (InGaN)</td>
+                    <td>• <strong>色彩辨識模式</strong>：時段 2 脈衝點亮</td>
+                </tr>
+                <tr>
+                    <td><strong style="color:#38bdf8;">3. B (Blue)</strong></td>
+                    <td>純藍光</td>
+                    <td>約 465 ~ 470 nm</td>
+                    <td>氮化鎵 (GaN / InGaN)</td>
+                    <td>• <strong>色彩辨識模式</strong>：時段 3 脈衝點亮<br>• <strong>環境光模式</strong>：微亮作為狀態指示燈</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>為什麼只發射 3 種固定顏色，卻能辨識出 8 種顏色？</h3>
+        <p>感應器不需要發射「黃光」去測黃色積木。任何顏色的表面對<strong>紅、綠、藍 3 種固定色光</strong>都有獨特的「吸收與反射比例指紋」：</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>官方辨識顏色 (Color ID)</th>
+                    <th>固定紅光 (R) 反射率</th>
+                    <th>固定綠光 (G) 反射率</th>
+                    <th>固定藍光 (B) 反射率</th>
+                    <th>物理光學成因與特徵指紋</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>0: 無色 (None)</strong></td>
+                    <td>極低 (~0%)</td>
+                    <td>極低 (~0%)</td>
+                    <td>極低 (~0%)</td>
+                    <td>距離過遠，3 種固定光散射後皆無法回到受光孔</td>
+                </tr>
+                <tr>
+                    <td><strong>1: 黑色 (Black)</strong></td>
+                    <td>低 (&lt;10%)</td>
+                    <td>低 (&lt;10%)</td>
+                    <td>低 (&lt;10%)</td>
+                    <td>黑色顏料同時強烈吸收紅、綠、藍 3 種固定光</td>
+                </tr>
+                <tr>
+                    <td><strong style="color:#38bdf8;">2: 藍色 (Blue)</strong></td>
+                    <td>低 (~10%)</td>
+                    <td>中低 (~25%)</td>
+                    <td><strong>高 (~80%)</strong></td>
+                    <td>藍色表面只反射固定藍光，吸收紅光與大部分綠光</td>
+                </tr>
+                <tr>
+                    <td><strong style="color:#10b981;">3: 綠色 (Green)</strong></td>
+                    <td>低 (~15%)</td>
+                    <td><strong>高 (~70%)</strong></td>
+                    <td>低 (~20%)</td>
+                    <td>綠色表面強烈反射固定綠光，吸收紅光與藍光</td>
+                </tr>
+                <tr>
+                    <td><strong style="color:#eab308;">4: 黃色 (Yellow)</strong></td>
+                    <td><strong>高 (~85%)</strong></td>
+                    <td><strong>高 (~80%)</strong></td>
+                    <td>低 (~15%)</td>
+                    <td>黃色表面<strong>同時反射固定紅光與固定綠光</strong>，但吸收藍光</td>
+                </tr>
+                <tr>
+                    <td><strong style="color:#ef4444;">5: 紅色 (Red)</strong></td>
+                    <td><strong>高 (~80%)</strong></td>
+                    <td>低 (~12%)</td>
+                    <td>低 (~12%)</td>
+                    <td>紅色表面強烈反射固定紅光，吸收綠光與藍光</td>
+                </tr>
+                <tr>
+                    <td><strong>6: 白色 (White)</strong></td>
+                    <td><strong>高 (~90%)</strong></td>
+                    <td><strong>高 (~90%)</strong></td>
+                    <td><strong>高 (~90%)</strong></td>
+                    <td>白色表面對紅、綠、藍 3 種固定光皆無差別高反射</td>
+                </tr>
+                <tr>
+                    <td><strong style="color:#d97706;">7: 棕色 (Brown)</strong></td>
+                    <td><strong>中低 (~35%)</strong></td>
+                    <td>低 (~18%)</td>
+                    <td>極低 (~8%)</td>
+                    <td>暗橘紅/咖啡色系，對固定紅光有部分反射，綠光次之，藍光最低</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr style="border: none; border-top: 1px solid var(--card-border); margin: 24px 0;">
+
+        <h3>1.4 動畫三：EV3 八大官方色彩辨識實驗室 (8-Color Classification Sandbox)</h3>
+        <p>點選下方色塊或自訂顏色，觀察三色光譜反射量如何合成 3D 向量，並透過<strong>歐氏距離 (Euclidean Distance)</strong> 判定官方色彩代號：</p>
+
+        <!-- INTERACTIVE ANIMATION 3 -->
+        <div class="interactive-box">
+            <div class="interactive-header">
+                <span class="interactive-title">🎨 色彩辨識聚類試驗台</span>
+                <span style="font-size: 0.85rem; color: #94a3b8;">點選色塊觸發色彩採樣</span>
+            </div>
+
+            <div class="color-palette" id="colorPalette">
+                <!-- Dynamically generated or manual chips -->
+                <div class="color-chip active" style="background: #ef4444; color: #fff;" onclick="selectTestColor('Red', 230, 30, 30)">5: 紅色 (Red)</div>
+                <div class="color-chip" style="background: #10b981; color: #fff;" onclick="selectTestColor('Green', 30, 180, 50)">3: 綠色 (Green)</div>
+                <div class="color-chip" style="background: #2563eb; color: #fff;" onclick="selectTestColor('Blue', 30, 80, 220)">2: 藍色 (Blue)</div>
+                <div class="color-chip" style="background: #eab308; color: #000;" onclick="selectTestColor('Yellow', 240, 210, 40)">4: 黃色 (Yellow)</div>
+                <div class="color-chip" style="background: #ffffff; color: #000;" onclick="selectTestColor('White', 245, 245, 245)">6: 白色 (White)</div>
+                <div class="color-chip" style="background: #1e293b; color: #fff; border: 1px solid #475569;" onclick="selectTestColor('Black', 20, 20, 20)">1: 黑色 (Black)</div>
+                <div class="color-chip" style="background: #78350f; color: #fff;" onclick="selectTestColor('Brown', 120, 55, 20)">7: 棕色 (Brown)</div>
+                <div class="color-chip" style="background: #475569; color: #fff;" onclick="selectTestColor('None', 0, 0, 0)">0: 無顏色/太遠</div>
+            </div>
+
+            <div class="controls-row">
+                <label>
+                    自訂色彩調色盤:
+                    <input type="color" id="customColorPicker" value="#ef4444" onchange="onCustomColorPick(this.value)">
+                </label>
+                <div id="targetColorPreview" style="display:inline-block; width: 30px; height: 30px; border-radius: 6px; background: #ef4444; border: 2px solid #fff;"></div>
+            </div>
+
+            <div class="canvas-container" style="height: 240px;">
+                <canvas id="canvasColorSpace"></canvas>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="dashboard-label">紅光反射分量 (R)</div>
+                    <div class="dashboard-value" id="rDisp" style="color: #ef4444;">88%</div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-label">綠光反射分量 (G)</div>
+                    <div class="dashboard-value" id="gDisp" style="color: #10b981;">12%</div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-label">藍光反射分量 (B)</div>
+                    <div class="dashboard-value" id="bDisp" style="color: #38bdf8;">14%</div>
+                </div>
+                <div class="dashboard-card" style="border-left-color: #f59e0b;">
+                    <div class="dashboard-label">EV3 判定結果</div>
+                    <div class="dashboard-value" id="detectedColorDisp" style="color: #f59e0b;">5 (RED)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 2: PRACTICAL EXAMPLES -->
+    <div class="section-card">
+        <h2>2. 實作與應用範例 (Practical Examples)</h2>
+
+        <h3>2.1 循線機器人比例控制器 (P-Line Follower)</h3>
+        <p>利用反射光強度對黑白交界的連續漸變特性，以偏差量乘上比例增益 $K_p$ 即時修正轉向速度，消弭傳統二值化 (On-Off) 產生的劇烈左右擺動：</p>
+
+        <div class="mermaid">
+        flowchart TD
+            Start(["🚀 程式啟動"]) --> ReadSensor["📡 讀取感應器反射光強度 reflection()"]
+            ReadSensor --> CalcErr["➗ 計算偏差量 error = 50 - current_light"]
+            CalcErr --> CalcTurn["✖️ 計算轉向量 turn = Kp * error"]
+            CalcTurn --> CalcSpeed["⚙️ 計算左右馬達: Left = Base + turn, Right = Base - turn"]
+            CalcSpeed --> SafetyClamp{"⚠️ 是否超出安全功率範圍?"}
+            SafetyClamp -- 是 --> Clamp["🔒 限制速度於 [-100, 100]"]
+            SafetyClamp -- 否 --> RunMotors["🏎️ 驅動馬達前進"]
+            Clamp --> RunMotors
+            RunMotors --> WaitTick["⏱️ 循環等待 10ms"]
+            WaitTick --> ReadSensor
+        </div>
+
+        <div class="code-container">
+            <div class="code-header">
+                <span>ev3_p_line_follower.py (Pybricks / MicroPython)</span>
+                <button class="btn-copy" onclick="copyCode(this)">📋 複製程式碼</button>
+            </div>
+            <pre><code>#!/usr/bin/env pybricks-micropython
+# =======================================================
+# LEGO EV3 比例循線控制器 (P-Controller)
+# 原理：以黑線邊界反射強度 50% 為目標基準點進行閉迴路動態校正
+# =======================================================
+
+from pybricks.hubs import EV3Brick
+from pybricks.ev3devices import Motor, ColorSensor
+from pybricks.parameters import Port, Stop
+from pybricks.tools import wait
+
+# 1. 硬體初始化
+ev3 = EV3Brick()
+left_motor = Motor(Port.B)          # 左輪驅動馬達
+right_motor = Motor(Port.C)         # 右輪驅動馬達
+color_sensor = ColorSensor(Port.S3) # 顏色感應器安裝於 Port 3
+
+# 2. 控制參數設定
+TARGET_LIGHT = 50.0  # 目標反射率：黑線(10%)與白底(90%)的中間過渡值
+KP = 1.3             # 比例控制增益係數 (依車重與輪徑調諧)
+BASE_SPEED = 220     # 直線巡航基準轉速 (deg/s)
+
+ev3.speaker.beep(frequency=1000, duration=150)
+print("P-Line Follower Initialized. Tracking Edge...")
+
+try:
+    while True:
+        # 讀取當前反射光百分比 (0-100)
+        current_light = color_sensor.reflection()
+        
+        # 計算誤差 (Error)
+        # 若 current > 50 (偏向白底) -> error < 0 -> turn < 0
+        error = TARGET_LIGHT - current_light
+        
+        # 比例修正量
+        turn = KP * error
+        
+        # 左右輪差速輸出
+        speed_left = BASE_SPEED + turn
+        speed_right = BASE_SPEED - turn
+        
+        left_motor.run(speed_left)
+        right_motor.run(speed_right)
+        
+        wait(10) # 100Hz 穩定更新率
+
+except KeyboardInterrupt:
+    left_motor.stop(Stop.BRAKE)
+    right_motor.stop(Stop.BRAKE)
+    print("Program Terminated.")</code></pre>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid var(--card-border); margin: 24px 0;">
+
+        <h3>2.2 自訂 RGB 原始數值色彩判別器 (Custom Euclidean Classifier)</h3>
+        <p>為避免賽場不同墨水印刷材質造成的原廠代號誤判，透過讀取 raw RGB 數值與現場校準之基準中心點計算歐氏距離：</p>
+
+        <div class="mermaid">
+        flowchart TD
+            In["📡 讀取原始 rgb() 三維向量"] --> Dict["📚 讀取比賽場地校準色彩庫"]
+            Dict --> Dist["📐 逐一計算歐氏距離 dist = sqrt(ΔR² + ΔG² + ΔB²)"]
+            Dist --> FindMin["🔍 取得距離最小之顏色候選"]
+            FindMin --> CheckThresh{"❓ min_distance < 30.0?"}
+            CheckThresh -- 是 --> Match["🎯 輸出該顏色判定，執行對應指令"]
+            CheckThresh -- 否 --> Unknown["⚪ 判定為未知色彩 (Unknown)"]
+        </div>
+
+        <div class="code-container">
+            <div class="code-header">
+                <span>custom_rgb_classifier.py</span>
+                <button class="btn-copy" onclick="copyCode(this)">📋 複製程式碼</button>
+            </div>
+            <pre><code>import math
+from pybricks.ev3devices import ColorSensor
+from pybricks.parameters import Port
+from pybricks.tools import wait
+
+color_sensor = ColorSensor(Port.S3)
+
+# 現場實測校準之標準色中心點 (R, G, B)
+CALIBRATED_COLORS = {
+    "Black":  (4, 5, 4),
+    "White":  (85, 89, 93),
+    "Red":    (82, 14, 12),
+    "Green":  (15, 68, 22),
+    "Blue":   (11, 32, 85),
+    "Yellow": (86, 75, 14)
+}
+
+DISTANCE_THRESHOLD = 28.0
+
+def classify_color(rgb_sample):
+    r, g, b = rgb_sample
+    best_color = "Unknown"
+    min_dist = float("inf")
+    
+    for name, (cr, cg, cb) in CALIBRATED_COLORS.items():
+        # 計算三維歐氏距離
+        dist = math.sqrt((r - cr)**2 + (g - cg)**2 + (b - cb)**2)
+        if dist < min_dist:
+            min_dist = dist
+            best_color = name
+            
+    if min_dist > DISTANCE_THRESHOLD:
+        return "Unknown", min_dist
+    return best_color, min_dist
+
+while True:
+    rgb = color_sensor.rgb()
+    name, dist = classify_color(rgb)
+    print("RGB: {} -> Result: {} (Dist: {:.1f})".format(rgb, name, dist))
+    wait(200)</code></pre>
+        </div>
+    </div>
+
+    <!-- SECTION 3: EXTENSIONS & ADVANCED TOPICS -->
+    <div class="section-card">
+        <h2>3. 延伸思考與進階主題 (Extensions & Advanced Topics)</h2>
+
+        <h3>3.1 動畫四：感測器高度與傾角光學幾何模擬</h3>
+        <p>感測器的物理安裝位置決定了反射光斑與受光二極體的視野交疊區。若高度過低會產生盲區，過高則因平方反比定律造成訊號衰減：</p>
+
+        <!-- INTERACTIVE ANIMATION 4 -->
+        <div class="interactive-box">
+            <div class="interactive-header">
+                <span class="interactive-title">📐 機構幾何：安裝高度 (8~16mm) 與傾斜角度優化</span>
+            </div>
+
+            <div class="controls-row">
+                <label>
+                    離地高度:
+                    <input type="range" id="heightSlider" min="2" max="30" value="12" style="width: 140px;">
+                    <span id="heightValText" style="color: #38bdf8; font-weight: bold;">12 mm</span>
+                </label>
+                <label>
+                    感應器傾角:
+                    <input type="range" id="angleSlider" min="-25" max="25" value="0" style="width: 140px;">
+                    <span id="angleValText" style="color: #38bdf8; font-weight: bold;">0° (垂直)</span>
+                </label>
+            </div>
+
+            <div class="canvas-container" style="height: 260px;">
+                <canvas id="canvasGeometry"></canvas>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="dashboard-label">光錐重疊效率</div>
+                    <div class="dashboard-value" id="overlapDisp">96%</div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-label">光訊噪比 (SNR)</div>
+                    <div class="dashboard-value" id="snrDisp" style="color: #10b981;">優良</div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-label">安裝評語</div>
+                    <div class="dashboard-value" id="geomStatusDisp" style="color: #38bdf8; font-size: 1.1rem; line-height: 2rem;">最佳工藝高度</div>
+                </div>
+            </div>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid var(--card-border); margin: 24px 0;">
+
+        <h3>3.2 鏡面反射 (Specular) vs. 漫反射 (Diffuse) 的光學陷阱</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>光學現象</th>
+                    <th>表面特徵</th>
+                    <th>對 EV3 顏色感應器的影響</th>
+                    <th>工程對策與解法</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>朗伯漫反射 (Diffuse)</strong></td>
+                    <td>消光啞光紙張、粗糙地墊</td>
+                    <td>光線呈半球均勻均向散射，各角度讀數穩定可靠。</td>
+                    <td>常態工作環境，無需特殊修正。</td>
+                </tr>
+                <tr>
+                    <td><strong>鏡面反射 (Specular Flare)</strong></td>
+                    <td>光滑 PVC 亮面黑膠帶、壓克力板</td>
+                    <td>入射角等於反射角。若感應器嚴格垂直，光束直接強烈彈回，黑色被誤測為亮白色！</td>
+                    <td><strong>將感應器微幅傾斜 5°~8°</strong>，讓鏡面直射光偏離受光孔，僅接收內層漫射光。</td>
+                </tr>
+                <tr>
+                    <td><strong>環境光飽和 (Saturation)</strong></td>
+                    <td>舞台聚光燈、室外強烈陽光</td>
+                    <td>環境光子數遠超 LED 發射強度，造成 ADC 電平直接拉滿 100% 飽和截波。</td>
+                    <td>加裝深色樂高積木護罩（Shroud）阻隔斜射光。</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SECTION 4: REFERENCES -->
+    <div class="section-card">
+        <h2>4. 📚 參考資料與技術文獻 (References)</h2>
+
+        <h3>4.1 LEGO 官方硬體規範與韌體原始碼</h3>
+        <ol>
+            <li><strong>LEGO Group (2013)</strong>. <em>LEGO MINDSTORMS EV3 Hardware Developer Kit (HDK)</em> — 包含 EV3 Color Sensor (Part #45506 / 95650) 硬體電路圖、RJ12 6P6C 腳位定義與 UART 感測器通訊協定。</li>
+            <li><strong>LEGO Education</strong>. <em>LEGO MINDSTORMS Education EV3 Color Sensor User Guide &amp; Technical Specifications</em> — 官方光學量測規格（1 kHz 取樣頻率、8~16 mm 最佳工作距離、反射光／環境光／8 色辨識模式說明）。</li>
+            <li><strong>LEGO Group / <code>lms2012</code> Open Source Firmware</strong> (<code>mindstorms/ev3sources</code>, GitHub) — EV3 主機與感應器底層 C 語言韌體原始碼（包含三色 LED 時序脈衝控制、ADC 暗電流扣除與 8 色分類查表演算法）。</li>
+        </ol>
+
+        <h3>4.2 開源機器人軟體框架與驅動文件</h3>
+        <ol start="4">
+            <li><strong>Pybricks Documentation</strong>. <em><code>pybricks.ev3devices.ColorSensor</code> API Reference</em> — MicroPython 針對 EV3 顏色感應器之 <code>reflection()</code>、<code>ambient()</code>、<code>color()</code> 與 <code>rgb()</code> 函式實作與校準說明（<a href="https://docs.pybricks.com/" target="_blank" style="color:var(--primary);">https://docs.pybricks.com/</a>）。</li>
+            <li><strong>ev3dev.org Linux Kernel Drivers</strong>. <em>LEGO EV3 Color Sensor (<code>lego-ev3-color</code>) Driver Specification</em> — 詳載 <code>COL-REFLECT</code>、<code>COL-AMBIENT</code>、<code>COL-COLOR</code>、<code>REF-RAW</code> 與 <code>RGB-RAW</code>（10-bit 原始未校準三通道數值）暫存器結構（<a href="https://docs.ev3dev.org/" target="_blank" style="color:var(--primary);">https://docs.ev3dev.org/</a>）。</li>
+            <li><strong>Hurbain, Philippe (Philo)</strong>. <em>LEGO MINDSTORMS EV3 &amp; NXT Sensors Internals and Optical Characteristics Analysis</em> — 樂高光學與色彩感應器硬體拆解、光譜響應實測與距離線性度分析（<a href="https://www.philohome.com/" target="_blank" style="color:var(--primary);">https://www.philohome.com/</a>）。</li>
+        </ol>
+
+        <h3>4.3 光電半導體物理與訊號處理文獻</h3>
+        <ol start="7">
+            <li><strong>Sze, S. M., &amp; Ng, K. K. (2006)</strong>. <em>Physics of Semiconductor Devices</em> (3rd ed.). Wiley-Interscience. — 第 13 章（Photodetectors）：詳述矽 PN 接面內光電效應、能隙躍遷（E<sub>g</sub> ≈ 1.12 eV）、量子效率與波長光譜響應度 R(λ)。</li>
+            <li><strong>Graeme, J. G. (1995)</strong>. <em>Photodiode Amplifiers: OP AMP Solutions</em>. McGraw-Hill. — 光電二極體前端跨阻放大器（Transimpedance Amplifier, TIA）之電流轉電壓（I-V）增益設計與環境雜訊抑制。</li>
+            <li><strong>Vishay Semiconductors</strong>. <em>Silicon PIN Photodiode &amp; Ambient Light Sensor Application Notes</em> — 矽基光電感測元件對 465 nm（藍）、525 nm（綠）、650 nm（紅）三波段之相對光譜靈敏度與透明環氧樹脂封裝光學特性。</li>
+        </ol>
+    </div>
+
+    <!-- PROMPT ARCHIVE -->
+    <div class="section-card">
+        <h2>5. 📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+        <div style="background: var(--code-bg); padding: 16px; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 14px;">
+            <h3 style="margin-top: 0; color: #38bdf8;">🔹 [2026-11-09 13:40:15] [Gemini 3.8 Flash] 筆記與互動動畫初版建立</h3>
+            <ul style="font-size: 0.9rem;">
+                <li><strong>模型/Agent:</strong> Gemini 3.8 Flash / Antigravity</li>
+                <li><strong>Prompt 原文:</strong></li>
+            </ul>
+            <div class="code-container" style="margin: 8px 0;">
+                <pre><code>lego ev3的顏色感應器 是如何偵測到光的反射強度，以及色彩辨識的原理 設計詳細的解說動畫HTML檔</code></pre>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">
+                <strong>變更摘要:</strong> 建立 EV3 顏色感應器光反射與色彩辨識原理動態解說 HTML 檔案，包含單色紅光反射率互動模擬器、時序三色光脈衝掃描 (Sequential RGB Strobe) 示波器動畫、8 色分類特徵空間沙盒，以及安裝高度與幾何傾角動態模擬，並整合完整的 MicroPython 比例循線與自訂分類程式碼。
+            </p>
+        </div>
+        <div style="background: var(--code-bg); padding: 16px; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 14px;">
+            <h3 style="margin-top: 0; color: #38bdf8;">🔹 [2026-11-09 13:53:16] [Gemini 4 Argon] 補充 RGB 光源固定發射顏色數量與 8 色反射率對照表</h3>
+            <ul style="font-size: 0.9rem;">
+                <li><strong>模型/Agent:</strong> Gemini 4 Argon / Antigravity</li>
+                <li><strong>Prompt 原文:</strong></li>
+            </ul>
+            <div class="code-container" style="margin: 8px 0;">
+                <pre><code>rgh的光源是發射固定顏色
+rgh的光源是發射幾個設定好的固定顏色?</code></pre>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">
+                <strong>變更摘要:</strong> 增補說明 EV3 顏色感應器內部 RGB LED 僅發射「3 種」固定波長單色光（紅 660nm、綠 520nm、藍 465nm），詳解視覺暫留混光現象，並新增 3 種固定色光如何透過反射率指紋辨識出樂高 8 種標準顏色的完整物理對照表；同步更新 Markdown 與 HTML 檔案。
+            </p>
+        </div>
+        <div style="background: var(--code-bg); padding: 16px; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 14px;">
+            <h3 style="margin-top: 0; color: #38bdf8;">🔹 [2026-11-09 13:57:14] [Gemini 4 Argon] 深入剖析接收感應端光電轉換原理與無濾鏡辨色機制</h3>
+            <ul style="font-size: 0.9rem;">
+                <li><strong>模型/Agent:</strong> Gemini 4 Argon / Antigravity</li>
+                <li><strong>Prompt 原文:</strong></li>
+            </ul>
+            <div class="code-container" style="margin: 8px 0;">
+                <pre><code>接收感應端是透過什麼原理判斷光反應的?有濾鏡或是靠感應器?</code></pre>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">
+                <strong>變更摘要:</strong> 於 1.1 節增補接收感應端（Silicon Photodiode）的物理光電轉換機制（光子激發 PN 接面電子-電洞對、內光電效應、TIA 跨阻放大與矽光譜響應曲線），闡明接收端「無 RGB 彩色濾光片」，而是靠全光譜感應器搭配 MCU 發射-接收時間同步（Time-Synchronized Sampling）與白平衡補償來判斷各色光反應。
+            </p>
+        </div>
+        <div style="background: var(--code-bg); padding: 16px; border-radius: 8px; border: 1px solid var(--card-border);">
+            <h3 style="margin-top: 0; color: #38bdf8;">🔹 [2026-11-09 14:00:35] [Gemini 4 Argon] 新增參考資料與技術文獻區塊</h3>
+            <ul style="font-size: 0.9rem;">
+                <li><strong>模型/Agent:</strong> Gemini 4 Argon / Antigravity</li>
+                <li><strong>Prompt 原文:</strong></li>
+            </ul>
+            <div class="code-container" style="margin: 8px 0;">
+                <pre><code>將參考資料加到筆記最下方</code></pre>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">
+                <strong>變更摘要:</strong> 於筆記最下方新增「參考資料與技術文獻 (References)」專章，收錄 LEGO EV3 官方硬體開發文件 (HDK)、<code>lms2012</code> 開源韌體、Pybricks / ev3dev 驅動規格及光電半導體物理文獻，並同步更新 HTML 檔案與全站索引。
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- JAVASCRIPT ANIMATIONS & LOGIC -->
+<script>
+// ==========================================
+// 1. COPY CODE HELPER
+// ==========================================
+function copyCode(button) {
+    const pre = button.parentElement.nextElementSibling;
+    const code = pre.querySelector('code').innerText;
+    navigator.clipboard.writeText(code).then(() => {
+        const originalText = button.innerText;
+        button.innerText = '✅ 已複製！';
+        button.style.backgroundColor = '#10b981';
+        button.style.color = '#fff';
+        setTimeout(() => {
+            button.innerText = originalText;
+            button.style.backgroundColor = '';
+            button.style.color = '';
+        }, 2000);
+    });
+}
+
+// ==========================================
+// 2. ANIMATION 1: REFLECTED LIGHT SIMULATION
+// ==========================================
+const canvasReflect = document.getElementById('canvasReflect');
+const ctxReflect = canvasReflect.getContext('2d');
+const reflSlider = document.getElementById('reflectivitySlider');
+const reflValText = document.getElementById('reflValText');
+const ambientCheck = document.getElementById('ambientCheck');
+
+const currentDisp = document.getElementById('currentDisp');
+const voltDisp = document.getElementById('voltDisp');
+const ev3ReadingDisp = document.getElementById('ev3ReadingDisp');
+
+let particles = [];
+let animReflectId;
+
+function resizeCanvas(c) {
+    c.width = c.clientWidth * window.devicePixelRatio;
+    c.height = c.clientHeight * window.devicePixelRatio;
+}
+
+function initReflectCanvas() {
+    resizeCanvas(canvasReflect);
+    particles = [];
+    for (let i = 0; i < 40; i++) {
+        resetParticle(i);
+    }
+}
+
+function resetParticle(i) {
+    // Emitted from Left Red LED
+    particles[i] = {
+        x: canvasReflect.width * 0.38 + (Math.random() - 0.5) * 16,
+        y: canvasReflect.height * 0.28,
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: 2.2 + Math.random() * 1.5,
+        bounced: false,
+        alive: true,
+        progress: 0,
+        alpha: 0.9
+    };
+}
+
+function presetSurface(val, desc) {
+    reflSlider.value = val;
+    updateReflectDisplay();
+}
+
+function updateReflectDisplay() {
+    const refl = parseFloat(reflSlider.value);
+    reflValText.innerText = refl + "%";
+
+    const hasAmbient = ambientCheck.checked;
+    const ambVal = hasAmbient ? 12 : 0;
+    
+    // Theoretical calculations
+    const finalReading = Math.min(100, Math.round(refl + (hasAmbient ? 8 : 0)));
+    const current = (0.1 + (finalReading / 100) * 9.8).toFixed(1);
+    const volt = (0.15 + (finalReading / 100) * 3.05).toFixed(2);
+
+    currentDisp.innerText = current + " µA";
+    voltDisp.innerText = volt + " V";
+    ev3ReadingDisp.innerText = finalReading + "%";
+}
+
+reflSlider.addEventListener('input', updateReflectDisplay);
+ambientCheck.addEventListener('change', updateReflectDisplay);
+
+function renderReflectAnim() {
+    const w = canvasReflect.width;
+    const h = canvasReflect.height;
+    ctxReflect.clearRect(0, 0, w, h);
+
+    const refl = parseFloat(reflSlider.value) / 100;
+    const surfaceY = h * 0.82;
+
+    // 1. Draw Target Surface
+    const surfR = Math.round(20 + refl * 220);
+    const surfG = Math.round(20 + refl * 220);
+    const surfB = Math.round(20 + refl * 220);
+    ctxReflect.fillStyle = `rgb(${surfR}, ${surfG}, ${surfB})`;
+    ctxReflect.fillRect(w * 0.1, surfaceY, w * 0.8, h * 0.15);
+    ctxReflect.strokeStyle = '#475569';
+    ctxReflect.lineWidth = 2;
+    ctxReflect.strokeRect(w * 0.1, surfaceY, w * 0.8, h * 0.15);
+
+    // Label for surface
+    ctxReflect.fillStyle = refl > 0.5 ? '#0f172a' : '#cbd5e1';
+    ctxReflect.font = `${Math.round(14 * window.devicePixelRatio)}px sans-serif`;
+    ctxReflect.textAlign = 'center';
+    ctxReflect.fillText(`待測物表面 (反射率: ${Math.round(refl * 100)}%)`, w * 0.5, surfaceY + h * 0.08);
+
+    // 2. Draw EV3 Sensor Body Housing (Cross Section)
+    const sensorX = w * 0.28;
+    const sensorY = h * 0.08;
+    const sensorW = w * 0.44;
+    const sensorH = h * 0.35;
+
+    ctxReflect.fillStyle = '#334155';
+    ctxReflect.fillRect(sensorX, sensorY, sensorW, sensorH);
+    ctxReflect.strokeStyle = '#64748b';
+    ctxReflect.lineWidth = 3;
+    ctxReflect.strokeRect(sensorX, sensorY, sensorW, sensorH);
+
+    // Optical Center Baffle (遮光牆)
+    const baffleX = w * 0.5;
+    ctxReflect.fillStyle = '#0f172a';
+    ctxReflect.fillRect(baffleX - 4, sensorY, 8, sensorH + 12);
+
+    // Red LED Emitter (Left)
+    const ledX = w * 0.39;
+    const ledY = sensorY + sensorH * 0.65;
+    ctxReflect.fillStyle = '#ef4444';
+    ctxReflect.beginPath();
+    ctxReflect.arc(ledX, ledY, 12, 0, Math.PI * 2);
+    ctxReflect.fill();
+    ctxReflect.strokeStyle = '#fca5a5';
+    ctxReflect.stroke();
+
+    // Photodiode Receiver (Right)
+    const pdX = w * 0.61;
+    const pdY = sensorY + sensorH * 0.65;
+    ctxReflect.fillStyle = '#1e3a8a';
+    ctxReflect.fillRect(pdX - 10, pdY - 10, 20, 20);
+    ctxReflect.strokeStyle = '#60a5fa';
+    ctxReflect.strokeRect(pdX - 10, pdY - 10, 20, 20);
+
+    // Housing Labels
+    ctxReflect.fillStyle = '#f8fafc';
+    ctxReflect.font = `${Math.round(11 * window.devicePixelRatio)}px sans-serif`;
+    ctxReflect.textAlign = 'center';
+    ctxReflect.fillText('🔴 紅色 LED 發光腔', ledX, sensorY + 22);
+    ctxReflect.fillText('👁️ 矽光敏受光腔', pdX, sensorY + 22);
+    ctxReflect.fillText('🛡️ 隔板', baffleX, sensorY + sensorH + 24);
+
+    // 3. Photon particles animation
+    for (let i = 0; i < particles.length; i++) {
+        let p = particles[i];
+        if (!p.bounced) {
+            // Moving down from LED towards surface
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.y >= surfaceY) {
+                p.bounced = true;
+                // Chance of scattering into photodiode depends on surface reflectivity
+                const willReflect = Math.random() < refl;
+                if (willReflect) {
+                    // Lambertian scatter towards receiver
+                    const targetAngle = -Math.PI / 2 + (Math.random() - 0.2) * 1.0;
+                    const speed = 2.0 + Math.random() * 1.5;
+                    p.vx = Math.cos(targetAngle) * speed + 1.2;
+                    p.vy = Math.sin(targetAngle) * speed;
+                } else {
+                    // Absorbed by black material!
+                    p.alpha = 0.15;
+                    p.vy = 0;
+                    p.vx = 0;
+                }
+            }
+        } else {
+            // Moving upwards
+            p.x += p.vx;
+            p.y += p.vy;
+            // If hits photodiode
+            if (p.x > pdX - 16 && p.x < pdX + 16 && p.y < pdY + 16 && p.y > pdY - 16) {
+                p.alive = false;
+            }
+            if (p.y < sensorY || p.x < 0 || p.x > w || !p.alive) {
+                resetParticle(i);
+            }
+        }
+
+        // Draw particle
+        ctxReflect.fillStyle = `rgba(239, 68, 68, ${p.alpha})`;
+        ctxReflect.beginPath();
+        ctxReflect.arc(p.x, p.y, 3.5, 0, Math.PI * 2);
+        ctxReflect.fill();
+    }
+
+    // Ambient light noise visualization
+    if (ambientCheck.checked) {
+        ctxReflect.fillStyle = 'rgba(251, 191, 36, 0.08)';
+        ctxReflect.fillRect(0, 0, w, h);
+    }
+
+    animReflectId = requestAnimationFrame(renderReflectAnim);
+}
+
+// ==========================================
+// 3. ANIMATION 2: SEQUENTIAL RGB STROBE
+// ==========================================
+const canvasStrobe = document.getElementById('canvasStrobe');
+const ctxStrobe = canvasStrobe.getContext('2d');
+const strobeSpeedSlider = document.getElementById('strobeSpeedSlider');
+const strobeSpeedText = document.getElementById('strobeSpeedText');
+const currentPhaseBadge = document.getElementById('currentPhaseBadge');
+
+let strobePlaying = true;
+let strobePhase = 0; // 0: Red, 1: Green, 2: Blue, 3: Ambient
+let strobeTime = 0;
+let waveHistory = [];
+
+const phases = [
+    { name: "Phase 1: RED LED ON (660nm)", color: "#ef4444", channel: "R" },
+    { name: "Phase 2: GREEN LED ON (520nm)", color: "#10b981", channel: "G" },
+    { name: "Phase 3: BLUE LED ON (465nm)", color: "#38bdf8", channel: "B" },
+    { name: "Phase 4: ALL OFF (Ambient Ref)", color: "#64748b", channel: "Amb" }
+];
+
+function toggleStrobeAnimation() {
+    strobePlaying = !strobePlaying;
+    document.getElementById('btnToggleStrobe').innerText = strobePlaying ? '⏸️ 暫停' : '▶️ 繼續';
+}
+
+function stepStrobePhase() {
+    strobePhase = (strobePhase + 1) % 4;
+    updatePhaseBadge();
+}
+
+function updatePhaseBadge() {
+    const cur = phases[strobePhase];
+    currentPhaseBadge.innerText = cur.name;
+    currentPhaseBadge.style.backgroundColor = cur.color;
+    currentPhaseBadge.style.color = strobePhase === 3 ? '#cbd5e1' : '#ffffff';
+}
+
+strobeSpeedSlider.addEventListener('input', () => {
+    strobeSpeedText.innerText = `速度 (${parseFloat(strobeSpeedSlider.value).toFixed(1)}x)`;
+});
+
+function renderStrobeAnim() {
+    const w = canvasStrobe.width;
+    const h = canvasStrobe.height;
+    ctxStrobe.clearRect(0, 0, w, h);
+
+    const speed = parseFloat(strobeSpeedSlider.value);
+
+    if (strobePlaying) {
+        strobeTime += 0.03 * speed;
+        if (strobeTime >= 1.0) {
+            strobeTime = 0;
+            strobePhase = (strobePhase + 1) % 4;
+            updatePhaseBadge();
+        }
+    }
+
+    // Top: Sensor LED Indicator Lamp
+    const lampX = w * 0.18;
+    const lampY = h * 0.35;
+    const curPhase = phases[strobePhase];
+
+    // Background circle glow
+    ctxStrobe.save();
+    ctxStrobe.fillStyle = curPhase.color;
+    ctxStrobe.shadowColor = curPhase.color;
+    ctxStrobe.shadowBlur = strobePhase === 3 ? 0 : 30;
+    ctxStrobe.beginPath();
+    ctxStrobe.arc(lampX, lampY, 32, 0, Math.PI * 2);
+    ctxStrobe.fill();
+    ctxStrobe.restore();
+
+    ctxStrobe.fillStyle = '#ffffff';
+    ctxStrobe.font = `bold ${Math.round(14 * window.devicePixelRatio)}px sans-serif`;
+    ctxStrobe.textAlign = 'center';
+    ctxStrobe.fillText(curPhase.channel, lampX, lampY + 5);
+
+    ctxStrobe.fillStyle = '#cbd5e1';
+    ctxStrobe.font = `${Math.round(11 * window.devicePixelRatio)}px sans-serif`;
+    ctxStrobe.fillText('LED 發光源', lampX, lampY + 50);
+
+    // Right: Oscilloscope Waveforms (R, G, B, Voltage)
+    const oscX = w * 0.38;
+    const oscW = w * 0.58;
+    const oscH = h * 0.8;
+    const oscY = h * 0.1;
+
+    // Grid
+    ctxStrobe.fillStyle = '#080d18';
+    ctxStrobe.fillRect(oscX, oscY, oscW, oscH);
+    ctxStrobe.strokeStyle = '#1e293b';
+    ctxStrobe.lineWidth = 1;
+    for (let gy = oscY; gy <= oscY + oscH; gy += oscH / 4) {
+        ctxStrobe.beginPath();
+        ctxStrobe.moveTo(oscX, gy);
+        ctxStrobe.lineTo(oscX + oscW, gy);
+        ctxStrobe.stroke();
+    }
+
+    // Record wave point
+    // Assuming target is RED color object (High R, Low G, Low B)
+    let currentVolts = 0.2;
+    if (strobePhase === 0) currentVolts = 2.8; // R is high
+    else if (strobePhase === 1) currentVolts = 0.5; // G low
+    else if (strobePhase === 2) currentVolts = 0.6; // B low
+    else if (strobePhase === 3) currentVolts = 0.2; // Ambient
+
+    if (strobePlaying) {
+        waveHistory.push({ phase: strobePhase, volts: currentVolts });
+        if (waveHistory.length > oscW) {
+            waveHistory.shift();
+        }
+    }
+
+    // Render waveform line
+    ctxStrobe.lineWidth = 2.5;
+    ctxStrobe.beginPath();
+    for (let x = 0; x < waveHistory.length; x++) {
+        const item = waveHistory[x];
+        const screenX = oscX + oscW - (waveHistory.length - x);
+        const screenY = oscY + oscH - (item.volts / 3.3) * (oscH * 0.85) - 10;
+        if (x === 0) ctxStrobe.moveTo(screenX, screenY);
+        else ctxStrobe.lineTo(screenX, screenY);
+    }
+    ctxStrobe.strokeStyle = '#38bdf8';
+    ctxStrobe.stroke();
+
+    // Axis labels
+    ctxStrobe.fillStyle = '#94a3b8';
+    ctxStrobe.font = `${Math.round(11 * window.devicePixelRatio)}px monospace`;
+    ctxStrobe.textAlign = 'left';
+    ctxStrobe.fillText('示波器訊號: 矽光敏元件電壓 (V_out)', oscX + 10, oscY + 18);
+    ctxStrobe.fillText('3.3V', oscX + 10, oscY + 36);
+    ctxStrobe.fillText('0.0V', oscX + 10, oscY + oscH - 8);
+
+    requestAnimationFrame(renderStrobeAnim);
+}
+
+// ==========================================
+// 4. ANIMATION 3: COLOR CLASSIFIER LAB
+// ==========================================
+const canvasColor = document.getElementById('canvasColorSpace');
+const ctxColor = canvasColor.getContext('2d');
+let targetRGB = [230, 30, 30]; // Default Red
+let targetName = "Red";
+
+const legoCentroids = [
+    { id: 0, name: "None", r: 10, g: 10, b: 10, color: "#475569" },
+    { id: 1, name: "Black", r: 25, g: 25, b: 25, color: "#0f172a" },
+    { id: 2, name: "Blue", r: 30, g: 75, b: 215, color: "#2563eb" },
+    { id: 3, name: "Green", r: 35, g: 175, b: 55, color: "#10b981" },
+    { id: 4, name: "Yellow", r: 235, g: 205, b: 35, color: "#eab308" },
+    { id: 5, name: "Red", r: 220, g: 30, b: 30, color: "#ef4444" },
+    { id: 6, name: "White", r: 240, g: 240, b: 240, color: "#ffffff" },
+    { id: 7, name: "Brown", r: 125, g: 58, b: 25, color: "#78350f" }
+];
+
+function selectTestColor(name, r, g, b) {
+    targetName = name;
+    targetRGB = [r, g, b];
+    document.querySelectorAll('.color-chip').forEach(c => c.classList.remove('active'));
+    if (event && event.currentTarget) event.currentTarget.classList.add('active');
+    document.getElementById('targetColorPreview').style.backgroundColor = `rgb(${r},${g},${b})`;
+    updateClassifier();
+}
+
+function onCustomColorPick(hex) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    targetRGB = [r, g, b];
+    targetName = "Custom";
+    document.getElementById('targetColorPreview').style.backgroundColor = hex;
+    document.querySelectorAll('.color-chip').forEach(c => c.classList.remove('active'));
+    updateClassifier();
+}
+
+function updateClassifier() {
+    const [r, g, b] = targetRGB;
+
+    // Simulate sensor reflection percentage (0-100)
+    const normR = Math.round((r / 255) * 100);
+    const normG = Math.round((g / 255) * 100);
+    const normB = Math.round((b / 255) * 100);
+
+    document.getElementById('rDisp').innerText = normR + "%";
+    document.getElementById('gDisp').innerText = normG + "%";
+    document.getElementById('bDisp').innerText = normB + "%";
+
+    // Compute Euclidean Distance to each centroid
+    let minD = Infinity;
+    let matched = legoCentroids[0];
+
+    // If total reflection is very low -> None
+    if (r + g + b < 30) {
+        matched = legoCentroids[0];
+    } else {
+        legoCentroids.forEach(c => {
+            if (c.id === 0) return;
+            const dist = Math.sqrt((r - c.r)**2 + (g - c.g)**2 + (b - c.b)**2);
+            if (dist < minD) {
+                minD = dist;
+                matched = c;
+            }
+        });
+    }
+
+    const disp = document.getElementById('detectedColorDisp');
+    disp.innerText = `${matched.id} (${matched.name.toUpperCase()})`;
+    disp.style.color = matched.color === '#ffffff' ? '#e2e8f0' : matched.color;
+
+    renderColorBars(normR, normG, normB);
+}
+
+function renderColorBars(r, g, b) {
+    const w = canvasColor.width;
+    const h = canvasColor.height;
+    ctxColor.clearRect(0, 0, w, h);
+
+    const channels = [
+        { label: "紅光 (R 反射)", val: r, color: "#ef4444" },
+        { label: "綠光 (G 反射)", val: g, color: "#10b981" },
+        { label: "藍光 (B 反射)", val: b, color: "#38bdf8" }
+    ];
+
+    const barHeight = 34 * window.devicePixelRatio;
+    const startY = 30 * window.devicePixelRatio;
+    const maxBarW = w * 0.65;
+
+    channels.forEach((ch, idx) => {
+        const y = startY + idx * (barHeight + 20);
+
+        // Label
+        ctxColor.fillStyle = '#cbd5e1';
+        ctxColor.font = `${Math.round(12 * window.devicePixelRatio)}px sans-serif`;
+        ctxColor.textAlign = 'left';
+        ctxColor.fillText(ch.label, 20, y + barHeight * 0.65);
+
+        // Track background
+        const barX = w * 0.25;
+        ctxColor.fillStyle = '#1e293b';
+        ctxColor.fillRect(barX, y, maxBarW, barHeight);
+
+        // Value Bar
+        ctxColor.fillStyle = ch.color;
+        const currentW = (ch.val / 100) * maxBarW;
+        ctxColor.fillRect(barX, y, currentW, barHeight);
+
+        // Value text
+        ctxColor.fillStyle = '#ffffff';
+        ctxColor.font = `bold ${Math.round(13 * window.devicePixelRatio)}px monospace`;
+        ctxColor.textAlign = 'left';
+        ctxColor.fillText(`${ch.val}%`, barX + currentW + 10, y + barHeight * 0.65);
+    });
+}
+
+// ==========================================
+// 5. ANIMATION 4: GEOMETRY & ANGLE
+// ==========================================
+const canvasGeom = document.getElementById('canvasGeometry');
+const ctxGeom = canvasGeom.getContext('2d');
+const heightSlider = document.getElementById('heightSlider');
+const angleSlider = document.getElementById('angleSlider');
+const heightValText = document.getElementById('heightValText');
+const angleValText = document.getElementById('angleValText');
+
+const overlapDisp = document.getElementById('overlapDisp');
+const snrDisp = document.getElementById('snrDisp');
+const geomStatusDisp = document.getElementById('geomStatusDisp');
+
+function updateGeometry() {
+    const hVal = parseInt(heightSlider.value);
+    const aVal = parseInt(angleSlider.value);
+
+    heightValText.innerText = `${hVal} mm`;
+    angleValText.innerText = `${aVal}°`;
+
+    // Calculations
+    let efficiency = 100;
+    let snr = "優良";
+    let msg = "最佳工作高度 (8~16mm)";
+
+    if (hVal < 6) {
+        efficiency = Math.round(hVal * 12);
+        snr = "差 (光學盲區)";
+        msg = "⚠️ 太近！發光與受光光錐無法交疊";
+    } else if (hVal > 18) {
+        efficiency = Math.max(10, Math.round(100 - (hVal - 18) * 6));
+        snr = "弱 (光衰顯著)";
+        msg = "⚠️ 太遠！光強度隨平方反比衰減";
+    }
+
+    if (Math.abs(aVal) > 15) {
+        efficiency = Math.round(efficiency * 0.7);
+        msg = "⚠️ 傾角過大，散射收集率不足";
+    } else if (aVal === 0 && hVal >= 8 && hVal <= 16) {
+        msg = "✅ 垂直工藝最佳配置";
+    }
+
+    overlapDisp.innerText = `${efficiency}%`;
+    snrDisp.innerText = snr;
+    snrDisp.style.color = snr.includes("優") ? "#10b981" : (snr.includes("弱") ? "#f59e0b" : "#ef4444");
+    geomStatusDisp.innerText = msg;
+
+    renderGeometryCanvas(hVal, aVal);
+}
+
+function renderGeometryCanvas(heightMm, angleDeg) {
+    const w = canvasGeom.width;
+    const h = canvasGeom.height;
+    ctxGeom.clearRect(0, 0, w, h);
+
+    const groundY = h * 0.85;
+
+    // Ground line
+    ctxGeom.strokeStyle = '#475569';
+    ctxGeom.lineWidth = 4;
+    ctxGeom.beginPath();
+    ctxGeom.moveTo(20, groundY);
+    ctxGeom.lineTo(w - 20, groundY);
+    ctxGeom.stroke();
+
+    ctxGeom.fillStyle = '#94a3b8';
+    ctxGeom.font = `${Math.round(12 * window.devicePixelRatio)}px sans-serif`;
+    ctxGeom.textAlign = 'right';
+    ctxGeom.fillText('比賽場地地墊 (Ground Plane)', w - 30, groundY - 10);
+
+    // Sensor box
+    ctxGeom.save();
+    const sensorPivotX = w * 0.5;
+    // Map mm (2 ~ 30) to pixel offset
+    const sensorBaseY = groundY - (heightMm / 30) * (h * 0.6);
+
+    ctxGeom.translate(sensorPivotX, sensorBaseY);
+    ctxGeom.rotate((angleDeg * Math.PI) / 180);
+
+    const boxW = 80 * window.devicePixelRatio;
+    const boxH = 45 * window.devicePixelRatio;
+
+    // Sensor Body
+    ctxGeom.fillStyle = '#334155';
+    ctxGeom.fillRect(-boxW / 2, -boxH, boxW, boxH);
+    ctxGeom.strokeStyle = '#38bdf8';
+    ctxGeom.lineWidth = 2;
+    ctxGeom.strokeRect(-boxW / 2, -boxH, boxW, boxH);
+
+    // Emitter & Receiver spots
+    ctxGeom.fillStyle = '#ef4444';
+    ctxGeom.beginPath();
+    ctxGeom.arc(-boxW * 0.25, 0, 6, 0, Math.PI * 2);
+    ctxGeom.fill();
+
+    ctxGeom.fillStyle = '#38bdf8';
+    ctxGeom.beginPath();
+    ctxGeom.arc(boxW * 0.25, 0, 6, 0, Math.PI * 2);
+    ctxGeom.fill();
+
+    // Light Cones
+    ctxGeom.restore();
+
+    // Draw Light Cones to ground
+    const rad = (angleDeg * Math.PI) / 180;
+    const emitterX = sensorPivotX - (boxW * 0.25) * Math.cos(rad);
+    const emitterY = sensorBaseY - (boxW * 0.25) * Math.sin(rad);
+
+    const receiverX = sensorPivotX + (boxW * 0.25) * Math.cos(rad);
+    const receiverY = sensorBaseY + (boxW * 0.25) * Math.sin(rad);
+
+    // Emitter light cone (Red)
+    ctxGeom.fillStyle = 'rgba(239, 68, 68, 0.25)';
+    ctxGeom.beginPath();
+    ctxGeom.moveTo(emitterX, emitterY);
+    ctxGeom.lineTo(sensorPivotX - 50, groundY);
+    ctxGeom.lineTo(sensorPivotX + 10, groundY);
+    ctxGeom.closePath();
+    ctxGeom.fill();
+
+    // Receiver FOV cone (Cyan)
+    ctxGeom.fillStyle = 'rgba(56, 189, 248, 0.25)';
+    ctxGeom.beginPath();
+    ctxGeom.moveTo(receiverX, receiverY);
+    ctxGeom.lineTo(sensorPivotX - 10, groundY);
+    ctxGeom.lineTo(sensorPivotX + 50, groundY);
+    ctxGeom.closePath();
+    ctxGeom.fill();
+}
+
+heightSlider.addEventListener('input', updateGeometry);
+angleSlider.addEventListener('input', updateGeometry);
+
+// ==========================================
+// WINDOW ONLOAD INITIALIZATIONS
+// ==========================================
+window.addEventListener('load', () => {
+    initReflectCanvas();
+    resizeCanvas(canvasStrobe);
+    resizeCanvas(canvasColor);
+    resizeCanvas(canvasGeom);
+
+    updateReflectDisplay();
+    renderReflectAnim();
+
+    updatePhaseBadge();
+    renderStrobeAnim();
+
+    updateClassifier();
+    updateGeometry();
+});
+
+window.addEventListener('resize', () => {
+    initReflectCanvas();
+    resizeCanvas(canvasStrobe);
+    resizeCanvas(canvasColor);
+    resizeCanvas(canvasGeom);
+    updateGeometry();
+    updateClassifier();
+});
+</script>
+
+</body>
+</html>

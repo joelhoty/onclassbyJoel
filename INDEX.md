@@ -1,8 +1,8 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-11-06 09:58:00 (UTC+8)
-> **使用模型**: Composer
-> **執行 Agent**: Auto
+> **最後更新時間**: 2026-11-09 14:10:43 (UTC+8)
+> **使用模型**: Gemini 4 Argon (Medium)
+> **執行 Agent**: Antigravity
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 > **變更記錄**: [CHANGELOG.md](./CHANGELOG.md)
 > **注意**: 本檔由 `tools/build_index.py` 產生，請勿手動修改。
@@ -11,6 +11,7 @@
 
 ## 🆕 最近更新 (10 篇)
 
+* `2026-11-09` | [LEGO EV3 顏色感應器：光反射強度與色彩辨識原理動態解說](./ev3/ev3_color_sensor_principles.html) · [MD](./ev3/ev3_color_sensor_principles.md)
 * `2026-11-06` | [Markdown → Marp / Slidev：多格式轉換與互動式簡報網頁實作（1106 課堂）](./AI/md_marp_slidev_interactive_slides_1106.html) · [MD](./AI/md_marp_slidev_interactive_slides_1106.md)
 * `2026-10-30` | [Agent 與 VS Code 操作驗收與小論文大綱作業](./AI/1106_classwork.md)
 * `2026-10-30` | [LEGO SPIKE 6-DOF 擬人化機械臂研究論文](./ev3/ARM.html) · [MD](./ev3/ARM.md)
@@ -20,7 +21,6 @@
 * `2026-10-27` | [U8g2 螢幕顯示模式深度解析：U8x8、Page Buffer 與 Full Buffer 比較及開發板記憶體適配指南](./ec/u8g2_display_modes_comparison.html) · [MD](./ec/u8g2_display_modes_comparison.md)
 * `2026-10-22` | [Arduino Uno + DHT11 + SSD1306 OLED（U8g2 / I2C）作法、程式庫比較與 Page Buffer 優缺點](./ec/arduino_dht11_ssd1306_u8g2_guide.html) · [MD](./ec/arduino_dht11_ssd1306_u8g2_guide.md) · 📎 [1022-ssd1306.ino](./ec/1022-ssd1306.ino)
 * `2026-10-22` | [Arduino Uno + DHT11（Pin 8）+ I2C LCD 1602 接線指引與程式庫下載手冊](./ec/arduino_dht11_pin8_lcd1602_i2c_wiring_library_guide.html) · [MD](./ec/arduino_dht11_pin8_lcd1602_i2c_wiring_library_guide.md) · 📎 [2026-10-22-140028.jpg](./ec/2026-10-22-140028.jpg)、[arduino_dht11_pin8_lcd1602_i2c_example_1029.ino](./ec/arduino_dht11_pin8_lcd1602_i2c_example_1029.ino)
-* `2026-10-21` | [Fooocus 影像生成課堂作業指引：Juggernaut XL 與 Voronoi LoRA 幾何細胞肖像實作](./AI/fooocus_voronoi_juggernaut_assignment.html) · [MD](./AI/fooocus_voronoi_juggernaut_assignment.md) · 📎 [civitai_145848150.jpeg](./AI/civitai_145848150.jpeg)
 
 ---
 
@@ -96,6 +96,7 @@
 * `2026-09-24` | [車用收音機路況／事件廣播：隧道插播、RDS-TA 與相關技術](./ec/car_radio_traffic_broadcast_rds_ta_tunnel.html) · [MD](./ec/car_radio_traffic_broadcast_rds_ta_tunnel.md)
 
 ### 3. 🤖 樂高機器人 EV3 / SPIKE (`ev3/`)
+* `2026-11-09` | [LEGO EV3 顏色感應器：光反射強度與色彩辨識原理動態解說](./ev3/ev3_color_sensor_principles.html) · [MD](./ev3/ev3_color_sensor_principles.md)
 * `2026-10-30` | [LEGO SPIKE 6-DOF 擬人化機械臂研究論文](./ev3/ARM.html) · [MD](./ev3/ARM.md)
 * `2026-10-30` | [LEGO SPIKE 仿生機械手臂研究指南：六馬達配置與五大研究題目解析](./ev3/spike_bionic_arm_research_topics.html) · [MD](./ev3/spike_bionic_arm_research_topics.md)
 * `2026-10-19` | [EV3 跟車程式設計筆記：從四區間 Switch、變數分離到單一公式減速與 ACC](./ev3/ev3_car_following_design_notes.html) · [MD](./ev3/ev3_car_following_design_notes.md) · 📎 [1019-1.jpg](./ev3/1019-1.jpg)、[1019-2.jpg](./ev3/1019-2.jpg)、[1019-3.jpg](./ev3/1019-3.jpg)、[1019-4.jpg](./ev3/1019-4.jpg)、[car_following_sim.py](./ev3/car_following_sim.py)、[car_following_sim_compare.py](./ev3/car_following_sim_compare.py)、[clamp_blocks.svg](./ev3/clamp_blocks.svg)、[distance_power_compare.svg](./ev3/distance_power_compare.svg)、[final_blocks.svg](./ev3/final_blocks.svg)、[final_formula_blocks.svg](./ev3/final_formula_blocks.svg)、[line_clamp_steps.svg](./ev3/line_clamp_steps.svg)、[zone_blocks.svg](./ev3/zone_blocks.svg)

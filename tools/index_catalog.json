@@ -1043,6 +1043,15 @@
    ],
    "attachments": [],
    "category": "AI"
+  },
+  {
+   "title": "LEGO EV3 顏色感應器：光反射強度與色彩辨識原理動態解說",
+   "files": [
+    "ev3/ev3_color_sensor_principles.html",
+    "ev3/ev3_color_sensor_principles.md"
+   ],
+   "attachments": [],
+   "category": "ev3"
   }
  ],
  "date_overrides": {

@@ -1,8 +1,8 @@
 # 📝 onclassbyJoel - 全站提示詞歷史與變更記錄 (CHANGELOG)
 
-> **最後更新時間**: 2026-11-06 09:58:00 (UTC+8)
-> **使用模型**: Composer
-> **執行 Agent**: Auto
+> **最後更新時間**: 2026-11-09 14:10:43 (UTC+8)
+> **使用模型**: Gemini 4 Argon (Medium)
+> **執行 Agent**: Antigravity
 
 ---
 
@@ -457,3 +457,44 @@ go
   補充說明  md, marp, html  以及 svg檔的格式
   ```
 - **變更摘要**: 於 1106 筆記增補四種檔案格式本質、分工表、最小樣本與進階比較；同步 MD／HTML 後重建索引。
+
+### 🔹 [2026-11-09 13:40:15] [Gemini 3.8 Flash] LEGO EV3 顏色感應器光反射與色彩辨識原理動態解說
+- **模型/Agent**: Gemini 3.8 Flash / Antigravity
+- **Prompt 原文**:
+  ```text
+  lego ev3的顏色感應器 是如何偵測到光的反射強度，以及色彩辨識的原理 設計詳細的解說動畫HTML檔
+  ```
+- **變更摘要**: 於 `ev3/` 新增 `ev3_color_sensor_principles.md` 與 `ev3_color_sensor_principles.html`。詳解單像素矽光敏二極體、單色紅光朗伯漫反射、時序三色光脈衝掃描 (Sequential RGB Strobe)、相關雙重取樣 (CDS) 環境光抵銷原理；實作 P 控制循線演算法與自訂 RGB 歐氏距離分類器；HTML 內建 4 大互動模擬動畫（光電反射率、微秒時序示波器波形、8 色辨識特徵空間沙盒、安裝高度與傾角光學幾何模擬），並提供 PDF 匯出與程式碼一鍵複製功能。以 `tools/build_index.py` 重建全站索引。
+
+### 🔹 [2026-11-09 13:53:16] [Gemini 4 Argon] 補充 EV3 RGB 光源固定發射顏色數量與 8 色反射率對照表
+- **模型/Agent**: Gemini 4 Argon / Antigravity
+- **Prompt 原文**:
+  ```text
+  rgh的光源是發射固定顏色
+  rgh的光源是發射幾個設定好的固定顏色?
+  ```
+- **變更摘要**: 於 `ev3/ev3_color_sensor_principles.md` 與 `ev3/ev3_color_sensor_principles.html` 增補說明感應器內部 RGB LED 僅發射「3 種」固定單色光波長（紅 660nm、綠 520nm、藍 465nm），解析視覺暫留現象，並建立 3 種固定色光對應樂高 8 種標準顏色的反射率特徵指紋對照表；以 `tools/build_index.py` 更新全站索引。
+
+### 🔹 [2026-11-09 13:57:14] [Gemini 4 Argon] 剖析 EV3 顏色感應器接收端光電轉換原理與無濾鏡辨色機制
+- **模型/Agent**: Gemini 4 Argon / Antigravity
+- **Prompt 原文**:
+  ```text
+  接收感應端是透過什麼原理判斷光反應的?有濾鏡或是靠感應器?
+  ```
+- **變更摘要**: 於 `ev3/ev3_color_sensor_principles.md` 與 `ev3/ev3_color_sensor_principles.html` 第 1.1 節增補接收感應端（Silicon Photodiode）的半導體內光電效應（光子激發 PN 接面電子-電洞對、TIA 跨阻放大與矽光譜響應曲線），說明接收端「無 RGB 彩色濾光片」，純靠全光譜感應器搭配 MCU 發射-接收時間同步（Time-Synchronized Sampling）與白平衡補償來判斷光反應；重建全站索引。
+
+### 🔹 [2026-11-09 14:00:35] [Gemini 4 Argon] 新增 EV3 顏色感應器參考資料與技術文獻區塊
+- **模型/Agent**: Gemini 4 Argon / Antigravity
+- **Prompt 原文**:
+  ```text
+  將參考資料加到筆記最下方
+  ```
+- **變更摘要**: 於 `ev3/ev3_color_sensor_principles.md` 與 `ev3/ev3_color_sensor_principles.html` 下方新增「4. 📚 參考資料與技術文獻 (References)」專章，涵蓋 LEGO EV3 HDK 官方硬體規範、lms2012 開源韌體原始碼、Pybricks / ev3dev 驅動技術文件與光電半導體物理文獻；重建全站索引。
+
+### 🔹 [2026-11-09 14:10:43] [Gemini 4 Argon (Medium) / Antigravity] 全站索引重建、提交與遠端同步推播
+- **模型/Agent**: Gemini 4 Argon (Medium) / Antigravity
+- **Prompt 原文**:
+  ```text
+  git commit  and push
+  ```
+- **變更摘要**: 依工作區規範第 6 條執行 `python tools/build_index.py` 重建 `INDEX.md`、`index.html` 與 `changelog.html`，將新增之 EV3 顏色感應器原理解說筆記（`ev3/ev3_color_sensor_principles.md` / `.html`）及索引變更提交（git commit）並推播（git push）至遠端 GitHub 儲存庫。
