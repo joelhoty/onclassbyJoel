@@ -90,11 +90,11 @@
     <header>
         <div class="header-content">
             <h1>📝 onclassbyJoel - 全站提示詞歷史與變更記錄</h1>
-            <p class="subtitle">共 56 筆紀錄 (依時間由舊至新排列)</p>
+            <p class="subtitle">共 58 筆紀錄 (依時間由舊至新排列)</p>
             <div class="metadata-box">
-                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-11-09 14:10:43 (UTC+8)</div>
-                <div class="metadata-item"><strong>使用模型:</strong> Gemini 4 Argon (Medium)</div>
-                <div class="metadata-item"><strong>執行 Agent:</strong> Antigravity</div>
+                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-11-09 15:45:00 (UTC+8)</div>
+                <div class="metadata-item"><strong>使用模型:</strong> Claude Sonnet 5.5</div>
+                <div class="metadata-item"><strong>執行 Agent:</strong> Claude Sonnet 5.5</div>
                 <div class="metadata-item"><strong>GitHub Repo:</strong> <a href="https://github.com/joelhoty/onclassbyJoel" style="color:#38bdf8;" target="_blank">joelhoty/onclassbyJoel</a></div>
             </div>
             <div class="actions"><button class="btn" onclick="exportPdf()">🖨️ 匯出成 PDF / 列印此頁</button><a class="btn btn-secondary" href="./index.html">📚 回到索引</a><a class="btn btn-secondary" href="./CHANGELOG.md">📄 Markdown 版本</a></div>
@@ -378,6 +378,10 @@ rgh的光源是發射幾個設定好的固定顏色?</pre><p><strong>變更摘�
 <div class="prompt-archive"><h4>🔹 [2026-11-09 13:57:14] [Gemini 4 Argon] 剖析 EV3 顏色感應器接收端光電轉換原理與無濾鏡辨色機制</h4><p><strong>模型/Agent:</strong> Gemini 4 Argon / Antigravity</p><p><strong>Prompt 原文:</strong></p><pre>接收感應端是透過什麼原理判斷光反應的?有濾鏡或是靠感應器?</pre><p><strong>變更摘要:</strong> 於 `ev3/ev3_color_sensor_principles.md` 與 `ev3/ev3_color_sensor_principles.html` 第 1.1 節增補接收感應端（Silicon Photodiode）的半導體內光電效應（光子激發 PN 接面電子-電洞對、TIA 跨阻放大與矽光譜響應曲線），說明接收端「無 RGB 彩色濾光片」，純靠全光譜感應器搭配 MCU 發射-接收時間同步（Time-Synchronized Sampling）與白平衡補償來判斷光反應；重建全站索引。</p></div>
 <div class="prompt-archive"><h4>🔹 [2026-11-09 14:00:35] [Gemini 4 Argon] 新增 EV3 顏色感應器參考資料與技術文獻區塊</h4><p><strong>模型/Agent:</strong> Gemini 4 Argon / Antigravity</p><p><strong>Prompt 原文:</strong></p><pre>將參考資料加到筆記最下方</pre><p><strong>變更摘要:</strong> 於 `ev3/ev3_color_sensor_principles.md` 與 `ev3/ev3_color_sensor_principles.html` 下方新增「4. 📚 參考資料與技術文獻 (References)」專章，涵蓋 LEGO EV3 HDK 官方硬體規範、lms2012 開源韌體原始碼、Pybricks / ev3dev 驅動技術文件與光電半導體物理文獻；重建全站索引。</p></div>
 <div class="prompt-archive"><h4>🔹 [2026-11-09 14:10:43] [Gemini 4 Argon (Medium) / Antigravity] 全站索引重建、提交與遠端同步推播</h4><p><strong>模型/Agent:</strong> Gemini 4 Argon (Medium) / Antigravity</p><p><strong>Prompt 原文:</strong></p><pre>git commit  and push</pre><p><strong>變更摘要:</strong> 依工作區規範第 6 條執行 `python tools/build_index.py` 重建 `INDEX.md`、`index.html` 與 `changelog.html`，將新增之 EV3 顏色感應器原理解說筆記（`ev3/ev3_color_sensor_principles.md` / `.html`）及索引變更提交（git commit）並推播（git push）至遠端 GitHub 儲存庫。</p></div>
+<div class="prompt-archive"><h4>🔹 [2026-11-09 14:38:48] [Gemini 4 Argon (Medium) / Antigravity] 新增 EV3 黑色軌道左右前進動態判斷解說與互動模擬動畫</h4><p><strong>模型/Agent:</strong> Gemini 4 Argon (Medium) / Antigravity</p><p><strong>Prompt 原文:</strong></p><pre>設計一個動畫模擬lego ev3 在黑色軌道左右前進的動態判斷</pre><p><strong>變更摘要:</strong> 於 `ev3/ev3_color_sensor_principles.md` 與 `ev3/ev3_color_sensor_principles.html` 第 2.1 節深度擴充「黑色軌道左右前進動態判斷」原理與互動模擬器（涵蓋單感應器追蹤黑線左/右邊緣之幾何必然性、讀數-誤差-馬達差速對照表、二值化 Zig-Zag 擺動 vs. 三區間 vs. P-Control 演算法與流程圖，以及包含俯視軌道差速車體、感應器光斑橫切面放大鏡、即時決策矩陣高亮與反射率波形圖的雙視窗互動模擬動畫）；以 `tools/build_index.py` 更新全站索引。</p></div>
+<div class="prompt-archive"><h4>🔹 [2026-11-09 15:45:00] [Claude Sonnet 5.5] EV3 顏色感應器筆記內容審閱更正、提交與推送</h4><p><strong>模型/Agent:</strong> Claude Sonnet 5.5 / Claude Code</p><p><strong>Prompt 原文:</strong></p><pre>review file:///D:/CLASS_NOTE/ev3/ev3_color_sensor_principles.html 內容是否需要更正(md與HTML檔)
+直接修，MD 與 HTML 同步更新
+更新提交推送</pre><p><strong>變更摘要:</strong> 修正 `ev3/ev3_color_sensor_principles.md` 與 `.html`：統一範例程式與章節、P 控制補限幅、未公開內部細節改標示意模型、修正 SPIKE 比較與參考資料描述；重建全站索引。</p></div>
     </main>
     <script>
         let closedBeforePrint = [];

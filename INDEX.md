@@ -1,8 +1,8 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-11-09 14:10:43 (UTC+8)
-> **使用模型**: Gemini 4 Argon (Medium)
-> **執行 Agent**: Antigravity
+> **最後更新時間**: 2026-11-09 15:45:00 (UTC+8)
+> **使用模型**: Claude Sonnet 5.5
+> **執行 Agent**: Claude Sonnet 5.5
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 > **變更記錄**: [CHANGELOG.md](./CHANGELOG.md)
 > **注意**: 本檔由 `tools/build_index.py` 產生，請勿手動修改。

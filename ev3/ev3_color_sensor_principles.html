@@ -447,16 +447,16 @@
         <h1>🔍 LEGO EV3 顏色感應器：光反射強度與色彩辨識原理全解析</h1>
         <p>深入剖析單像素矽光電二極體如何透過<strong>「單色紅光朗伯漫反射」</strong>與<strong>「時序三色光脈衝掃描 (Sequential RGB Strobe)」</strong>實現精密的光強度與 8 色色彩辨識。</p>
         <div class="meta-box">
-            <div class="meta-item">📅 <strong>最後更新時間:</strong> 2026-11-09 14:00:35 (UTC+8)</div>
-            <div class="meta-item">🧠 <strong>使用模型:</strong> Gemini 4 Argon</div>
-            <div class="meta-item">⚙️ <strong>執行 Agent:</strong> Antigravity</div>
+            <div class="meta-item">📅 <strong>最後更新時間:</strong> 2026-11-09 15:40:00 (UTC+8)</div>
+            <div class="meta-item">🧠 <strong>使用模型:</strong> Claude Sonnet 5.5（審閱修訂）／ Gemini 4 Argon (Medium)（原稿）</div>
+            <div class="meta-item">⚙️ <strong>執行 Agent:</strong> Claude Code（修訂）／ Gemini 4 Argon (Medium) / Antigravity（原稿）</div>
         </div>
     </div>
 
     <!-- SECTION 1: CORE CONCEPTS -->
     <div class="section-card">
         <h2>1. 核心概念剖析 (Core Concepts)</h2>
-        <p>EV3 顏色感應器（LEGO Part #45506）並非影像感光相機，而是由<strong>一顆單像素矽光電二極體 (Photodiode)</strong>、<strong>RGB 三色發光二極體 (LED)</strong> 及專屬微控制器 (MCU + 10-bit ADC) 組成。它藉由調控照明時序，成功在毫秒級瞬間完成光強與色彩判定。</p>
+        <p>EV3 顏色感應器（LEGO Part #45506）並非影像感光相機，而是由<strong>一顆單像素矽光電二極體 (Photodiode)</strong>、<strong>RGB 三色發光二極體 (LED)</strong> 及專屬微控制器 (MCU + ADC) 組成。它藉由調控照明時序，成功在毫秒級瞬間完成光強與色彩判定。</p>
 
         <h3>1.1 感應器內部光學與硬體架構</h3>
         <p>光學結構最關鍵的設計在於「發光腔」與「受光腔」之間的<strong>物理遮光壁 (Optical Isolation Baffle)</strong>，防止發出的光線在塑膠殼內部直接折射至受光器（光學串擾 Crosstalk）。</p>
@@ -468,8 +468,8 @@
                 Baffle["🛡️ 光學隔離遮光壁 (Baffle)<br>(阻絕內部直接漏光)"]
                 PD["👁️ 矽光電二極體 (Photodiode)<br>(光子轉微安培光電流)"]
                 TIA["⚡ 跨阻放大器 (TIA)<br>(I-V 轉換放大類比訊號)"]
-                ADC["📊 10-bit 高速類比數位轉換器 (ADC)"]
-                MCU["🧠 內部微控制器 (MCU)<br>(時序控制與色彩距離分類)"]
+                ADC["📊 類比數位轉換器 (ADC)"]
+                MCU["🧠 內部微控制器 (MCU)<br>(時序控制與色彩判定)"]
             end
             Target["📄 待測表面 (黑線 / 白紙 / 色彩積木)"]
 
@@ -494,7 +494,7 @@
             end
 
             subgraph Layer2["第二層：無濾鏡辨色 (MCU 時序同步鎖定)"]
-                P4 --> M1["🧠 10-bit ADC 數位取樣"]
+                P4 --> M1["🧠 ADC 數位取樣"]
                 M1 --> M2{"⏱️ MCU 核對當下點亮哪顆 LED？"}
                 M2 -- "當下只亮紅燈 (t1)" --> R_Val["記錄為紅光反應 R"]
                 M2 -- "當下只亮綠燈 (t2)" --> G_Val["記錄為綠光反應 G"]
@@ -503,8 +503,8 @@
         </div>
 
         <ul>
-            <li><strong>1. 如何判斷「光反應強弱」？（靠半導體「內光電效應」）：</strong>當反射光子進入矽光電二極體（Silicon Photodiode），只要光子能量大於矽能隙（1.12 eV，涵蓋 400~1050 nm 可見光），每 1 顆光子就會在 PN 接面空乏區激發出 1 對「自由電子-電洞對」。在內建電場分離下形成正比於光子數量的微安培級光電流 <code>I_ph = R(λ) · P_optical</code>，再經跨阻放大器 (TIA) 轉為電壓送給 ADC。</li>
-            <li><strong>2. 到底有沒有「濾鏡」？：</strong><strong>沒有 RGB 彩色分色濾鏡！</strong>外層僅有聚集光線的透明環氧樹脂凸透鏡與抑制環境熱干擾的基礎近紅外線衰減配方，對紅、綠、藍可見光無差別全通接收。</li>
+            <li><strong>1. 如何判斷「光反應強弱」？（靠半導體「內光電效應」）：</strong>當反射光子進入矽光電二極體（Silicon Photodiode），只要光子能量大於矽能隙（1.12 eV，涵蓋 400~1050 nm 可見光），每顆被吸收的光子最多會在 PN 接面空乏區激發出 1 對「自由電子-電洞對」（量子效率 ≤ 1）。在內建電場分離下形成正比於光子數量的微安培級光電流 <code>I_ph = R(λ) · P_optical</code>，再經跨阻放大器 (TIA) 轉為電壓送給 ADC。</li>
+            <li><strong>2. 到底有沒有「濾鏡」？：</strong><strong>沒有 RGB 彩色分色濾鏡！</strong>外層僅有聚集光線的透明環氧樹脂凸透鏡（是否另有近紅外線衰減處理，官方未公開），對紅、綠、藍可見光無差別全通接收。</li>
             <li><strong>3. 既然接收端是「色盲」且無濾鏡，怎麼分辨顏色？：</strong>靠<strong>「時間同步取樣 (Time-Synchronized Sampling)」</strong>！雖然光電二極體只會回報「現在有多亮」，但主控 MCU 同時控制 LED 與 ADC——當 MCU 在第 1 微秒下令<strong>「只開紅燈」</strong>，此時二極體測到的亮度就 100% 代表紅光反射率；下一微秒<strong>「關紅燈、只開綠燈」</strong>，測到的亮度就代表綠光反射率。此外，針對矽晶片天生對紅光較敏感、對藍光較遲鈍的特性，韌體內建白平衡權重 <code>(w_R, w_G, w_B)</code> 自動校正。</li>
         </ul>
 
@@ -716,9 +716,17 @@
             </tbody>
         </table>
 
+        <p style="font-size: 0.85rem; color: var(--text-muted);">* 註：上表反射率為說明用「示意值」，非實測數據；紅光波長本文以 660 nm 為代表值（實際晶粒約 640~660 nm）。</p>
+
         <hr style="border: none; border-top: 1px solid var(--card-border); margin: 24px 0;">
 
-        <h3>1.4 動畫三：EV3 八大官方色彩辨識實驗室 (8-Color Classification Sandbox)</h3>
+        <h3>1.4 環境光消減（概念說明）</h3>
+        <p>常見做法是在 LED 熄滅時取樣背景光，再從 R、G、B 讀值中扣除，概念上類似<strong>相關雙重取樣 (CDS)</strong>：<code>R' = max(0, V_R − V_amb)</code>，G、B 同理。EV3 感應器內部是否如此實作官方未公開，此處與 1.3 的「時段 4」皆為<strong>示意模型</strong>。</p>
+
+        <hr style="border: none; border-top: 1px solid var(--card-border); margin: 24px 0;">
+
+        <h3>1.5 動畫三：EV3 八大官方色彩辨識實驗室與顏色分類（簡化示意模型）</h3>
+        <p>官方未公開 8 色判定的內部演算法。下方實驗室採用「與各標準色中心點的加權歐氏距離取最小，超過門檻則為 None」的簡化模型 <code>D_k = √(w_r(R−R_k)² + w_g(G−G_k)² + w_b(B−B_k)²)</code>，<strong>並非官方實作</strong>。</p>
         <p>點選下方色塊或自訂顏色，觀察三色光譜反射量如何合成 3D 向量，並透過<strong>歐氏距離 (Euclidean Distance)</strong> 判定官方色彩代號：</p>
 
         <!-- INTERACTIVE ANIMATION 3 -->
@@ -777,7 +785,190 @@
     <div class="section-card">
         <h2>2. 實作與應用範例 (Practical Examples)</h2>
 
-        <h3>2.1 循線機器人比例控制器 (P-Line Follower)</h3>
+        <h3>2.1 動畫四：循線機器人——黑色軌道左右前進動態判斷模擬 (Dynamic Line-Following Simulation)</h3>
+        <div class="formula-card" style="border-left-color: #f59e0b;">
+            <strong>💡 核心關鍵：為什麼單一顏色感應器必須追蹤「黑線邊緣 (Line Edge)」而非「黑線正中央」？</strong><br>
+            單顆顏色感應器只有一個光斑視野。如果直接追蹤「黑線正中央 (10%)」，當車子偏離黑線讀到白色 (85%) 時，因為黑線左右兩邊都是白底，<strong>機器人根本無法分辨自己是「偏左」還是「偏右」</strong>！<br>
+            因此，標準循線必將目標設在<strong>「黑白交界邊緣 (反射率 ≈ 50%)」</strong>。以<strong>追蹤黑線左側邊緣（左白、右黑）</strong>為例：<br>
+            • 讀數<strong>變亮 (&gt; 50%)</strong> ＝ 感應器偏到左方白紙 ➔ <strong>左輪加速、右輪減速（向右轉 ↗ 切回黑線）</strong><br>
+            • 讀數<strong>變暗 (&lt; 50%)</strong> ＝ 感應器壓入右方黑線 ➔ <strong>右輪加速、左輪減速（向左轉 ↖ 退回邊緣）</strong>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>感應器光斑空間位置</th>
+                    <th>反射光強度 I<sub>ref</sub></th>
+                    <th>誤差 e = 50 - I<sub>ref</sub></th>
+                    <th>車頭偏移判斷</th>
+                    <th>左輪馬達 (Port B)</th>
+                    <th>右輪馬達 (Port C)</th>
+                    <th>車體動態修正動作 (追蹤左邊緣)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong style="color:#38bdf8;">⚪ 偏向左側白底</strong></td>
+                    <td><strong>高 (65% ~ 95%)</strong></td>
+                    <td>負值 (e &lt; 0)</td>
+                    <td>車頭太靠左 (脫離黑線)</td>
+                    <td><strong style="color:#10b981;">加速 ⬆️ (快)</strong></td>
+                    <td><strong style="color:#f59e0b;">減速 ⬇️ (慢)</strong></td>
+                    <td><strong style="color:#38bdf8;">↗ 向右轉 (Turn Right) 切回黑線</strong></td>
+                </tr>
+                <tr>
+                    <td><strong style="color:#10b981;">🌗 壓在黑白交界</strong></td>
+                    <td><strong>中 (45% ~ 55%)</strong></td>
+                    <td>近乎零 (e ≈ 0)</td>
+                    <td>完美鎖定左邊緣</td>
+                    <td><strong>基準速度 ➡️</strong></td>
+                    <td><strong>基準速度 ➡️</strong></td>
+                    <td><strong style="color:#10b981;">⬆️ 直線前進 (Go Straight)</strong></td>
+                </tr>
+                <tr>
+                    <td><strong style="color:#f59e0b;">⚫ 偏入右側黑線</strong></td>
+                    <td><strong>低 (5% ~ 35%)</strong></td>
+                    <td>正值 (e &gt; 0)</td>
+                    <td>車頭太靠右 (壓入黑線)</td>
+                    <td><strong style="color:#f59e0b;">減速 ⬇️ (慢)</strong></td>
+                    <td><strong style="color:#10b981;">加速 ⬆️ (快)</strong></td>
+                    <td><strong style="color:#f59e0b;">↖ 向左轉 (Turn Left) 退回邊緣</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- INTERACTIVE ANIMATION: LINE FOLLOWER DYNAMIC JUDGMENT -->
+        <div class="interactive-box">
+            <div class="interactive-header">
+                <span class="interactive-title">🏎️ 互動模擬器：EV3 黑色軌道左右前進與即時動態判斷</span>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <button class="btn-copy" id="btnToggleLineSim" onclick="toggleLineSim()">⏸️ 暫停</button>
+                    <button class="btn-copy" onclick="nudgeLineRobot('white')" title="模擬車頭被推向白底">💥 推向白底 (偏左)</button>
+                    <button class="btn-copy" onclick="nudgeLineRobot('black')" title="模擬車頭被推入黑線">💥 推入黑線 (偏右)</button>
+                    <button class="btn-copy" onclick="resetLineRobot()">🔄 重置位置</button>
+                </div>
+            </div>
+
+            <div class="controls-row" style="justify-content: space-between;">
+                <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                    <label>
+                        控制演算法:
+                        <select id="lineModeSelect" onchange="onLineConfigChange()" style="background:#0f172a; color:#f8fafc; border:1px solid #334155; border-radius:6px; padding:4px 8px;">
+                            <option value="zigzag">1. 二值擺動 (Switch 二分法 - 鋸齒搖擺)</option>
+                            <option value="three_zone">2. 三區間判斷 (3-Zone 含直行死區)</option>
+                            <option value="p_control" selected>3. 比例連續控制 (P-Controller 平滑追蹤)</option>
+                        </select>
+                    </label>
+                    <label>
+                        循線邊緣:
+                        <select id="lineEdgeSelect" onchange="onLineEdgeChange()" style="background:#0f172a; color:#f8fafc; border:1px solid #334155; border-radius:6px; padding:4px 8px;">
+                            <option value="left" selected>⬅️ 黑線左邊緣 (外圈：左白右黑)</option>
+                            <option value="right">➡️ 黑線右邊緣 (內圈：左黑右白)</option>
+                        </select>
+                    </label>
+                    <label>
+                        軌道地形:
+                        <select id="lineTrackSelect" onchange="resetLineRobot()" style="background:#0f172a; color:#f8fafc; border:1px solid #334155; border-radius:6px; padding:4px 8px;">
+                            <option value="oval" selected>🏟️ 橢圓環形賽道 (直道+彎道)</option>
+                            <option value="wavy">🐍 蜿蜒連續 S 彎道</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+
+            <div class="controls-row">
+                <label>
+                    基準車速 (Base Speed):
+                    <input type="range" id="lineBaseSpeedSlider" min="80" max="240" value="150" style="width: 130px;">
+                    <span id="lineBaseSpeedText" style="color:#38bdf8; font-weight:bold;">150 deg/s</span>
+                </label>
+                <label>
+                    轉向修正強度 (Kp / 差速比):
+                    <input type="range" id="lineKpSlider" min="0.5" max="2.8" step="0.1" value="1.3" style="width: 130px;">
+                    <span id="lineKpText" style="color:#10b981; font-weight:bold;">1.3</span>
+                </label>
+                <span style="font-size:0.8rem; color:#94a3b8;">💡 提示：點擊左側賽道或上方「💥 推向白底 / 黑線」按鈕可即時測試動態修正！</span>
+            </div>
+
+            <div class="canvas-container" style="height: 440px;">
+                <canvas id="canvasLineFollower"></canvas>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-card" style="border-left-color: #ef4444;">
+                    <div class="dashboard-label">感應器反射光讀數</div>
+                    <div class="dashboard-value" id="lfReflDisp" style="color: #ef4444;">50%</div>
+                </div>
+                <div class="dashboard-card" style="border-left-color: #f59e0b;">
+                    <div class="dashboard-label">即時空間判斷與決策</div>
+                    <div class="dashboard-value" id="lfStateDisp" style="color: #10b981; font-size: 1.05rem; line-height: 2rem;">⬆️ 居中直行</div>
+                </div>
+                <div class="dashboard-card" style="border-left-color: #38bdf8;">
+                    <div class="dashboard-label">左輪馬達 (Port B)</div>
+                    <div class="dashboard-value" id="lfLeftMotorDisp" style="color: #38bdf8;">150 deg/s</div>
+                </div>
+                <div class="dashboard-card" style="border-left-color: #10b981;">
+                    <div class="dashboard-label">右輪馬達 (Port C)</div>
+                    <div class="dashboard-value" id="lfRightMotorDisp" style="color: #10b981;">150 deg/s</div>
+                </div>
+            </div>
+        </div>
+
+        <h4>演算法一：二值化開關循線（Two-State / Bang-Bang Zig-Zag，「Z 字形搖擺前進」）</h4>
+        <p>最基礎的 Switch 分支判斷法：以 50% 作為分界，非左即右，左右輪交替推進，車頭在黑線邊緣呈現明顯的鋸齒狀左右擺動：</p>
+
+        <div class="mermaid">
+        flowchart TD
+            Start(["🚀 啟動二值化循線 (追蹤黑線左邊緣)"]) --> Read["📡 讀取反射光強度 reflection()"]
+            Read --> Judge{"🔍 反射光 < 50% ?<br>(是否壓進黑線?)"}
+            Judge -- "是 (< 50% 偏黑)<br>車頭偏右壓入黑線" --> TurnLeft["↖️ 向左轉退回白區<br>左輪慢 (30) / 右輪快 (180)"]
+            Judge -- "否 (>= 50% 偏白)<br>車頭偏左跑出白底" --> TurnRight["↗️ 向右轉切回黑線<br>左輪快 (180) / 右輪慢 (30)"]
+            TurnLeft --> Wait["⏱️ 週期等待 10ms"]
+            TurnRight --> Wait
+            Wait --> Read
+        </div>
+
+        <div class="code-container">
+            <div class="code-header">
+                <span>ev3_zigzag_line_follower.py (二值化左右搖擺循線)</span>
+                <button class="btn-copy" onclick="copyCode(this)">📋 複製程式碼</button>
+            </div>
+            <pre><code>#!/usr/bin/env pybricks-micropython
+# =======================================================
+# LEGO EV3 二值化開關循線 (Two-State / Zig-Zag Line Follower)
+# 原理：以 50% 為門檻進行「非左即右」切換，沿黑線左邊緣鋸齒狀前進
+# =======================================================
+
+from pybricks.hubs import EV3Brick
+from pybricks.ev3devices import Motor, ColorSensor
+from pybricks.parameters import Port
+from pybricks.tools import wait
+
+ev3 = EV3Brick()
+left_motor = Motor(Port.B)          # 左輪驅動馬達
+right_motor = Motor(Port.C)         # 右輪驅動馬達
+color_sensor = ColorSensor(Port.S3) # 顏色感應器
+
+THRESHOLD = 50       # 黑白交界門檻值 (%)
+FAST_SPEED = 180     # 外側推進輪高速 (deg/s)
+SLOW_SPEED = 30      # 內側支點輪低速 (deg/s)
+
+while True:
+    reflection = color_sensor.reflection()
+    
+    if reflection < THRESHOLD:
+        # 偵測偏黑 (<50%)：車頭偏右壓入黑線 -> 左輪慢、右輪快 -> 向左轉出黑線
+        left_motor.run(SLOW_SPEED)
+        right_motor.run(FAST_SPEED)
+    else:
+        # 偵測偏白 (>=50%)：車頭偏左離開黑線 -> 左輪快、右輪慢 -> 向右轉回黑線
+        left_motor.run(FAST_SPEED)
+        right_motor.run(SLOW_SPEED)
+        
+    wait(10)</code></pre>
+        </div>
+
+        <h4>演算法二：比例連續控制器（Proportional P-Controller Line Follower）</h4>
         <p>利用反射光強度對黑白交界的連續漸變特性，以偏差量乘上比例增益 $K_p$ 即時修正轉向速度，消弭傳統二值化 (On-Off) 產生的劇烈左右擺動：</p>
 
         <div class="mermaid">
@@ -785,10 +976,10 @@
             Start(["🚀 程式啟動"]) --> ReadSensor["📡 讀取感應器反射光強度 reflection()"]
             ReadSensor --> CalcErr["➗ 計算偏差量 error = 50 - current_light"]
             CalcErr --> CalcTurn["✖️ 計算轉向量 turn = Kp * error"]
-            CalcTurn --> CalcSpeed["⚙️ 計算左右馬達: Left = Base + turn, Right = Base - turn"]
-            CalcSpeed --> SafetyClamp{"⚠️ 是否超出安全功率範圍?"}
-            SafetyClamp -- 是 --> Clamp["🔒 限制速度於 [-100, 100]"]
-            SafetyClamp -- 否 --> RunMotors["🏎️ 驅動馬達前進"]
+            CalcTurn --> CalcSpeed["⚙️ 計算左右馬達 (追蹤黑線左邊緣: 左白右黑)<br>Left = Base - turn, Right = Base + turn"]
+            CalcSpeed --> SafetyClamp{"⚠️ 是否超出安全轉速範圍?"}
+            SafetyClamp -- 是 --> Clamp["🔒 限制速度於安全區間"]
+            SafetyClamp -- 否 --> RunMotors["🏎️ 驅動左右馬達差速前進"]
             Clamp --> RunMotors
             RunMotors --> WaitTick["⏱️ 循環等待 10ms"]
             WaitTick --> ReadSensor
@@ -802,7 +993,7 @@
             <pre><code>#!/usr/bin/env pybricks-micropython
 # =======================================================
 # LEGO EV3 比例循線控制器 (P-Controller)
-# 原理：以黑線邊界反射強度 50% 為目標基準點進行閉迴路動態校正
+# 原理：以黑線左邊緣 (左白右黑) 反射強度 50% 為目標基準點進行閉迴路動態校正
 # =======================================================
 
 from pybricks.hubs import EV3Brick
@@ -818,11 +1009,12 @@ color_sensor = ColorSensor(Port.S3) # 顏色感應器安裝於 Port 3
 
 # 2. 控制參數設定
 TARGET_LIGHT = 50.0  # 目標反射率：黑線(10%)與白底(90%)的中間過渡值
-KP = 1.3             # 比例控制增益係數 (依車重與輪徑調諧)
-BASE_SPEED = 220     # 直線巡航基準轉速 (deg/s)
+KP = 1.2             # 比例控制增益係數 (依車重與輪徑調諧)
+BASE_SPEED = 200     # 直線巡航基準轉速 (deg/s)
+MAX_SPEED = 400      # 馬達轉速安全上限 (deg/s)，對應流程圖的限幅步驟
 
-ev3.speaker.beep(frequency=1000, duration=150)
-print("P-Line Follower Initialized. Tracking Edge...")
+ev3.speaker.beep(frequency=1000, duration=100)
+print("P-Line Follower Initialized. Tracking Left Edge...")
 
 try:
     while True:
@@ -830,15 +1022,21 @@ try:
         current_light = color_sensor.reflection()
         
         # 計算誤差 (Error)
-        # 若 current > 50 (偏向白底) -> error < 0 -> turn < 0
+        # 偏白底(current > 50) -> error < 0；偏黑線(current < 50) -> error > 0
         error = TARGET_LIGHT - current_light
         
         # 比例修正量
         turn = KP * error
         
-        # 左右輪差速輸出
-        speed_left = BASE_SPEED + turn
-        speed_right = BASE_SPEED - turn
+        # 左右輪差速輸出 (追蹤黑線左邊緣：左白右黑)
+        # 1. 偏向左方白底 (error < 0, turn < 0) -> 左輪加速(-turn)、右輪減速(+turn) -> 向右切回黑線
+        # 2. 偏入右方黑線 (error > 0, turn > 0) -> 左輪減速(-turn)、右輪加速(+turn) -> 向左退回邊緣
+        speed_left = BASE_SPEED - turn
+        speed_right = BASE_SPEED + turn
+        
+        # 限制轉速於安全範圍 (-MAX_SPEED ~ +MAX_SPEED)
+        speed_left = max(-MAX_SPEED, min(MAX_SPEED, speed_left))
+        speed_right = max(-MAX_SPEED, min(MAX_SPEED, speed_right))
         
         left_motor.run(speed_left)
         right_motor.run(speed_right)
@@ -871,7 +1069,13 @@ except KeyboardInterrupt:
                 <span>custom_rgb_classifier.py</span>
                 <button class="btn-copy" onclick="copyCode(this)">📋 複製程式碼</button>
             </div>
-            <pre><code>import math
+            <pre><code>#!/usr/bin/env pybricks-micropython
+"""
+自訂 RGB 歐氏距離色彩分類演算法
+說明：讀取原始 (R, G, B) 反射數值，計算與校準樣本點的幾何距離，避免原廠 8 色誤判。
+"""
+
+import math
 from pybricks.ev3devices import ColorSensor
 from pybricks.parameters import Port
 from pybricks.tools import wait
@@ -879,23 +1083,23 @@ from pybricks.tools import wait
 color_sensor = ColorSensor(Port.S3)
 
 # 現場實測校準之標準色中心點 (R, G, B)
-CALIBRATED_COLORS = {
-    "Black":  (4, 5, 4),
-    "White":  (85, 89, 93),
-    "Red":    (82, 14, 12),
-    "Green":  (15, 68, 22),
-    "Blue":   (11, 32, 85),
-    "Yellow": (86, 75, 14)
+COLOR_CENTROIDS = {
+    "Black":  (3, 4, 3),
+    "White":  (88, 92, 95),
+    "Red":    (78, 12, 11),
+    "Green":  (14, 65, 18),
+    "Blue":   (9, 28, 82),
+    "Yellow": (85, 78, 15)
 }
 
-DISTANCE_THRESHOLD = 28.0
+DISTANCE_THRESHOLD = 30.0  # 超過此距離則視為未知物體
 
 def classify_color(rgb_sample):
     r, g, b = rgb_sample
     best_color = "Unknown"
     min_dist = float("inf")
     
-    for name, (cr, cg, cb) in CALIBRATED_COLORS.items():
+    for name, (cr, cg, cb) in COLOR_CENTROIDS.items():
         # 計算三維歐氏距離
         dist = math.sqrt((r - cr)**2 + (g - cg)**2 + (b - cb)**2)
         if dist < min_dist:
@@ -918,13 +1122,60 @@ while True:
     <div class="section-card">
         <h2>3. 延伸思考與進階主題 (Extensions & Advanced Topics)</h2>
 
-        <h3>3.1 動畫四：感測器高度與傾角光學幾何模擬</h3>
+        <h3>3.1 鏡面反射 (Specular) vs. 漫反射 (Diffuse) 的光學陷阱</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>光學現象</th>
+                    <th>表面特徵</th>
+                    <th>對 EV3 顏色感應器的影響</th>
+                    <th>工程對策與解法</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>朗伯漫反射 (Diffuse)</strong></td>
+                    <td>消光啞光紙張、粗糙地墊</td>
+                    <td>光線呈半球均勻均向散射，各角度讀數穩定可靠。</td>
+                    <td>常態工作環境，無需特殊修正。</td>
+                </tr>
+                <tr>
+                    <td><strong>鏡面反射 (Specular Flare)</strong></td>
+                    <td>光滑 PVC 亮面黑膠帶、壓克力板</td>
+                    <td>入射角等於反射角。若感應器嚴格垂直，光束直接強烈彈回，黑色被誤測為亮白色！</td>
+                    <td><strong>將感應器微幅傾斜約 5°~8°（經驗值，請實測調整）</strong>，讓鏡面直射光偏離受光孔，僅接收內層漫射光。</td>
+                </tr>
+                <tr>
+                    <td><strong>環境光飽和 (Saturation)</strong></td>
+                    <td>舞台聚光燈、室外強烈陽光</td>
+                    <td>環境光子數遠超 LED 發射強度，造成 ADC 電平直接拉滿 100% 飽和截波。</td>
+                    <td>加裝深色樂高積木護罩（Shroud）阻隔斜射光。</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr style="border: none; border-top: 1px solid var(--card-border); margin: 24px 0;">
+
+        <h3>3.2 為何採用「RGB 時序分光」而非「白光 LED + 濾色片」？</h3>
+        <table>
+            <thead><tr><th>比較維度</th><th>白光 LED + 拜爾濾色片</th><th>EV3 RGB 時序脈衝掃描</th></tr></thead>
+            <tbody>
+                <tr><td>受光單元</td><td>需多像素感光陣列</td><td>僅需 1 顆矽光電二極體</td></tr>
+                <tr><td>硬體成本</td><td>較高（微透鏡 + 彩色濾光膜）</td><td>較低（標準光電元件 + 3 色 LED）</td></tr>
+                <tr><td>反應頻率</td><td>受限於影像讀出（約 30~60 FPS）</td><td>可達約 1 kHz 的時序切換</td></tr>
+                <tr><td>光衰校準</td><td>白光螢光粉老化導致色溫漂移</td><td>可分別調整 R、G、B 驅動電流</td></tr>
+            </tbody>
+        </table>
+
+        <hr style="border: none; border-top: 1px solid var(--card-border); margin: 24px 0;">
+
+        <h3>3.3 動畫五：感測器高度與傾角光學幾何模擬 / 遮光罩</h3>
         <p>感測器的物理安裝位置決定了反射光斑與受光二極體的視野交疊區。若高度過低會產生盲區，過高則因平方反比定律造成訊號衰減：</p>
 
         <!-- INTERACTIVE ANIMATION 4 -->
         <div class="interactive-box">
             <div class="interactive-header">
-                <span class="interactive-title">📐 機構幾何：安裝高度 (8~16mm) 與傾斜角度優化</span>
+                <span class="interactive-title">📐 機構幾何：安裝高度 (8~16mm，經驗值) 與傾斜角度優化</span>
             </div>
 
             <div class="controls-row">
@@ -962,37 +1213,17 @@ while True:
 
         <hr style="border: none; border-top: 1px solid var(--card-border); margin: 24px 0;">
 
-        <h3>3.2 鏡面反射 (Specular) vs. 漫反射 (Diffuse) 的光學陷阱</h3>
+        <h3>3.4 EV3 (45506) 與 SPIKE Prime (45605) 顏色感應器比較</h3>
         <table>
-            <thead>
-                <tr>
-                    <th>光學現象</th>
-                    <th>表面特徵</th>
-                    <th>對 EV3 顏色感應器的影響</th>
-                    <th>工程對策與解法</th>
-                </tr>
-            </thead>
+            <thead><tr><th>項目</th><th>EV3 (45506)</th><th>SPIKE Prime (45605)</th></tr></thead>
             <tbody>
-                <tr>
-                    <td><strong>朗伯漫反射 (Diffuse)</strong></td>
-                    <td>消光啞光紙張、粗糙地墊</td>
-                    <td>光線呈半球均勻均向散射，各角度讀數穩定可靠。</td>
-                    <td>常態工作環境，無需特殊修正。</td>
-                </tr>
-                <tr>
-                    <td><strong>鏡面反射 (Specular Flare)</strong></td>
-                    <td>光滑 PVC 亮面黑膠帶、壓克力板</td>
-                    <td>入射角等於反射角。若感應器嚴格垂直，光束直接強烈彈回，黑色被誤測為亮白色！</td>
-                    <td><strong>將感應器微幅傾斜 5°~8°</strong>，讓鏡面直射光偏離受光孔，僅接收內層漫射光。</td>
-                </tr>
-                <tr>
-                    <td><strong>環境光飽和 (Saturation)</strong></td>
-                    <td>舞台聚光燈、室外強烈陽光</td>
-                    <td>環境光子數遠超 LED 發射強度，造成 ADC 電平直接拉滿 100% 飽和截波。</td>
-                    <td>加裝深色樂高積木護罩（Shroud）阻隔斜射光。</td>
-                </tr>
+                <tr><td>取樣方式</td><td>時序三色脈衝</td><td>反射光／環境光／色彩模式（細節以官方規格為準）</td></tr>
+                <tr><td>通訊</td><td>UART 序列通訊，鮑率由主機協商</td><td>LPF2 6 針接頭，UART 序列通訊</td></tr>
+                <tr><td>官方辨識色數</td><td>8 色</td><td>與 EV3 不同，以官方文件為準</td></tr>
+                <tr><td>接頭</td><td>6 芯 EV3 專用接頭（外形類似 RJ12，卡榫不同）</td><td>LPF2（與 Powered Up 相同）</td></tr>
             </tbody>
         </table>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">* SPIKE 感應器的 LED 數量與取樣細節未逐項查證，請以 LEGO Education 官方規格為準。</p>
     </div>
 
     <!-- SECTION 4: REFERENCES -->
@@ -1002,14 +1233,14 @@ while True:
         <h3>4.1 LEGO 官方硬體規範與韌體原始碼</h3>
         <ol>
             <li><strong>LEGO Group (2013)</strong>. <em>LEGO MINDSTORMS EV3 Hardware Developer Kit (HDK)</em> — 包含 EV3 Color Sensor (Part #45506 / 95650) 硬體電路圖、RJ12 6P6C 腳位定義與 UART 感測器通訊協定。</li>
-            <li><strong>LEGO Education</strong>. <em>LEGO MINDSTORMS Education EV3 Color Sensor User Guide &amp; Technical Specifications</em> — 官方光學量測規格（1 kHz 取樣頻率、8~16 mm 最佳工作距離、反射光／環境光／8 色辨識模式說明）。</li>
-            <li><strong>LEGO Group / <code>lms2012</code> Open Source Firmware</strong> (<code>mindstorms/ev3sources</code>, GitHub) — EV3 主機與感應器底層 C 語言韌體原始碼（包含三色 LED 時序脈衝控制、ADC 暗電流扣除與 8 色分類查表演算法）。</li>
+            <li><strong>LEGO Education</strong>. <em>LEGO MINDSTORMS Education EV3 Color Sensor User Guide &amp; Technical Specifications</em> — 官方規格（約 1 kHz 取樣頻率、反射光／環境光／8 色辨識模式說明；工作距離建議請以實測為準）。</li>
+            <li><strong>LEGO Group / <code>lms2012</code> Open Source Firmware</strong> (<code>mindstorms/ev3sources</code>, GitHub) — EV3 主機與感應器底層 C 語言韌體原始碼（主機端韌體，含感應器驅動介面與 UART 通訊；感應器內部 MCU 的韌體與色彩判定細節官方未公開）。</li>
         </ol>
 
         <h3>4.2 開源機器人軟體框架與驅動文件</h3>
         <ol start="4">
             <li><strong>Pybricks Documentation</strong>. <em><code>pybricks.ev3devices.ColorSensor</code> API Reference</em> — MicroPython 針對 EV3 顏色感應器之 <code>reflection()</code>、<code>ambient()</code>、<code>color()</code> 與 <code>rgb()</code> 函式實作與校準說明（<a href="https://docs.pybricks.com/" target="_blank" style="color:var(--primary);">https://docs.pybricks.com/</a>）。</li>
-            <li><strong>ev3dev.org Linux Kernel Drivers</strong>. <em>LEGO EV3 Color Sensor (<code>lego-ev3-color</code>) Driver Specification</em> — 詳載 <code>COL-REFLECT</code>、<code>COL-AMBIENT</code>、<code>COL-COLOR</code>、<code>REF-RAW</code> 與 <code>RGB-RAW</code>（10-bit 原始未校準三通道數值）暫存器結構（<a href="https://docs.ev3dev.org/" target="_blank" style="color:var(--primary);">https://docs.ev3dev.org/</a>）。</li>
+            <li><strong>ev3dev.org Linux Kernel Drivers</strong>. <em>LEGO EV3 Color Sensor (<code>lego-ev3-color</code>) Driver Specification</em> — 詳載 <code>COL-REFLECT</code>、<code>COL-AMBIENT</code>、<code>COL-COLOR</code>、<code>REF-RAW</code> 與 <code>RGB-RAW</code>（原始未校準三通道數值）暫存器結構（<a href="https://docs.ev3dev.org/" target="_blank" style="color:var(--primary);">https://docs.ev3dev.org/</a>）。</li>
             <li><strong>Hurbain, Philippe (Philo)</strong>. <em>LEGO MINDSTORMS EV3 &amp; NXT Sensors Internals and Optical Characteristics Analysis</em> — 樂高光學與色彩感應器硬體拆解、光譜響應實測與距離線性度分析（<a href="https://www.philohome.com/" target="_blank" style="color:var(--primary);">https://www.philohome.com/</a>）。</li>
         </ol>
 
@@ -1064,7 +1295,7 @@ rgh的光源是發射幾個設定好的固定顏色?</code></pre>
                 <strong>變更摘要:</strong> 於 1.1 節增補接收感應端（Silicon Photodiode）的物理光電轉換機制（光子激發 PN 接面電子-電洞對、內光電效應、TIA 跨阻放大與矽光譜響應曲線），闡明接收端「無 RGB 彩色濾光片」，而是靠全光譜感應器搭配 MCU 發射-接收時間同步（Time-Synchronized Sampling）與白平衡補償來判斷各色光反應。
             </p>
         </div>
-        <div style="background: var(--code-bg); padding: 16px; border-radius: 8px; border: 1px solid var(--card-border);">
+        <div style="background: var(--code-bg); padding: 16px; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 14px;">
             <h3 style="margin-top: 0; color: #38bdf8;">🔹 [2026-11-09 14:00:35] [Gemini 4 Argon] 新增參考資料與技術文獻區塊</h3>
             <ul style="font-size: 0.9rem;">
                 <li><strong>模型/Agent:</strong> Gemini 4 Argon / Antigravity</li>
@@ -1075,6 +1306,34 @@ rgh的光源是發射幾個設定好的固定顏色?</code></pre>
             </div>
             <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">
                 <strong>變更摘要:</strong> 於筆記最下方新增「參考資料與技術文獻 (References)」專章，收錄 LEGO EV3 官方硬體開發文件 (HDK)、<code>lms2012</code> 開源韌體、Pybricks / ev3dev 驅動規格及光電半導體物理文獻，並同步更新 HTML 檔案與全站索引。
+            </p>
+        </div>
+        <div style="background: var(--code-bg); padding: 16px; border-radius: 8px; border: 1px solid var(--card-border);">
+            <h3 style="margin-top: 0; color: #38bdf8;">🔹 [2026-11-09 14:38:48] [Gemini 4 Argon (Medium) / Antigravity] 新增 EV3 黑色軌道左右前進動態判斷解說與互動模擬動畫</h3>
+            <ul style="font-size: 0.9rem;">
+                <li><strong>模型/Agent:</strong> Gemini 4 Argon (Medium) / Antigravity</li>
+                <li><strong>Prompt 原文:</strong></li>
+            </ul>
+            <div class="code-container" style="margin: 8px 0;">
+                <pre><code>設計一個動畫模擬lego ev3 在黑色軌道左右前進的動態判斷</code></pre>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">
+                <strong>變更摘要:</strong> 於第 2.1 節深度擴充「黑色軌道左右前進動態判斷」原理（單感應器追蹤黑線左/右邊緣之幾何原理、讀數-誤差-馬達差速對照表、二值化 Zig-Zag 擺動 vs. 三區間 vs. P-Control 演算法與流程圖）；新增「互動模擬器：EV3 黑色軌道左右前進與即時動態判斷」，整合俯視賽道差速車體動畫、感應器光斑橫切面放大鏡、即時決策分支高亮與反射率波形圖，支援切換控制模式、循線邊緣、軌道地形與手動推偏干擾測試。
+            </p>
+        </div>
+        <div style="background: var(--code-bg); padding: 16px; border-radius: 8px; border: 1px solid var(--card-border); margin-top: 14px;">
+            <h3 style="margin-top: 0; color: #38bdf8;">🔹 [2026-11-09 15:40:00] [Claude Sonnet 5.5] 內容審閱與更正（MD/HTML 同步）</h3>
+            <ul style="font-size: 0.9rem;">
+                <li><strong>模型/Agent:</strong> Claude Sonnet 5.5 / Claude Code</li>
+                <li><strong>Prompt 原文:</strong></li>
+            </ul>
+            <div class="code-container" style="margin: 8px 0;">
+                <pre><code>review file:///D:/CLASS_NOTE/ev3/ev3_color_sensor_principles.html 內容是否需要更正(md與HTML檔)
+直接修，MD 與 HTML 同步更新
+更新提交推送</code></pre>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">
+                <strong>變更摘要:</strong> 依審閱結果修正並同步 MD 與 HTML：(1) 統一兩邊範例程式（KP=1.2、beep 100 ms、2.2 色彩中心點與門檻 30.0）；(2) P 控制程式補上 MAX_SPEED 限幅以符合流程圖；(3) 將 CDS、8 色距離判定、ADC 位元數、電壓值等官方未公開之內部細節改標為「示意模型/推測」；(4) 修正 3.4 SPIKE 比較（LPF2 為 6 針等不實描述）與 EV3 UART 鮑率；(5) 修正光子激發電子-電洞對為「至多 1 對」、移除未經證實的紅外線衰減與 lms2012 描述、8~16 mm 與 5°~8° 等標註為經驗值；(6) HTML 補齊環境光消減、距離判定模型、為何採時序分光、遮光罩與 SPIKE 比較章節並對齊章節編號。
             </p>
         </div>
     </div>
@@ -1681,6 +1940,770 @@ heightSlider.addEventListener('input', updateGeometry);
 angleSlider.addEventListener('input', updateGeometry);
 
 // ==========================================
+// 6. ANIMATION: LINE FOLLOWER DYNAMIC JUDGMENT
+// ==========================================
+const canvasLF = document.getElementById('canvasLineFollower');
+const ctxLF = canvasLF.getContext('2d');
+const lineModeSelect = document.getElementById('lineModeSelect');
+const lineEdgeSelect = document.getElementById('lineEdgeSelect');
+const lineTrackSelect = document.getElementById('lineTrackSelect');
+const lineBaseSpeedSlider = document.getElementById('lineBaseSpeedSlider');
+const lineKpSlider = document.getElementById('lineKpSlider');
+const lineBaseSpeedText = document.getElementById('lineBaseSpeedText');
+const lineKpText = document.getElementById('lineKpText');
+
+const lfReflDisp = document.getElementById('lfReflDisp');
+const lfStateDisp = document.getElementById('lfStateDisp');
+const lfLeftMotorDisp = document.getElementById('lfLeftMotorDisp');
+const lfRightMotorDisp = document.getElementById('lfRightMotorDisp');
+
+let lfPlaying = true;
+let lfRobot = {
+    x: 0,
+    y: 0,
+    heading: 0,
+    leftSpeed: 150,
+    rightSpeed: 150,
+    wheelPhaseL: 0,
+    wheelPhaseR: 0,
+    currentRefl: 50,
+    signedEdgeErr: 0,
+    decisionState: 'straight', // 'turn_left', 'turn_right', 'straight'
+    decisionLabel: '⬆️ 直行前進',
+    trail: [],
+    reflHistory: []
+};
+
+function getTrackParams() {
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvasLF.width;
+    const h = canvasLF.height;
+    const trackW = w * 0.55;
+    const cx = trackW * 0.50;
+    const cy = h * 0.54;
+    const trackType = lineTrackSelect ? lineTrackSelect.value : 'oval';
+    const L = trackType === 'oval' ? trackW * 0.15 : trackW * 0.11;
+    const R0 = Math.min(trackW * 0.255, h * 0.295);
+    const lineHalfW = 14 * dpr;
+    const spotR = 7.5 * dpr;
+    const sensorDist = 24 * dpr;
+    const wheelBase = 28 * dpr;
+    return { dpr, w, h, trackW, cx, cy, trackType, L, R0, lineHalfW, spotR, sensorDist, wheelBase };
+}
+
+function computeTrackSignedOffset(px, py, tp) {
+    const qx = Math.max(tp.cx - tp.L, Math.min(tp.cx + tp.L, px));
+    const dx = px - qx;
+    const dy = py - tp.cy;
+    const dist = Math.hypot(dx, dy);
+    const ang = Math.atan2(dy, dx);
+    let targetR = tp.R0;
+    if (tp.trackType === 'wavy') {
+        targetR = tp.R0 * (1 + 0.14 * Math.sin(3 * ang) + 0.07 * Math.cos(2 * ang));
+    }
+    // signedOffset > 0: outside loop (left of robot when clockwise)
+    // signedOffset < 0: inside loop (right of robot when clockwise)
+    return dist - targetR;
+}
+
+function computeSensorReflection(px, py, tp) {
+    const signedOffset = computeTrackSignedOffset(px, py, tp);
+    const edgeMode = lineEdgeSelect ? lineEdgeSelect.value : 'left';
+    // Target edge: +lineHalfW for 'left' (outer), -lineHalfW for 'right' (inner)
+    const targetOffset = edgeMode === 'left' ? tp.lineHalfW : -tp.lineHalfW;
+    // Monotonic edge coordinate relative to target edge so robot never gets confused on the far edge
+    let distFromTargetEdge;
+    if (edgeMode === 'left') {
+        // Positive when further outside (white), negative when further inside (black)
+        distFromTargetEdge = signedOffset - targetOffset;
+    } else {
+        // For right (inner) edge: inside is white (to the right of robot), outside is black (to the left of robot)
+        distFromTargetEdge = targetOffset - signedOffset;
+    }
+    const norm = Math.max(-1, Math.min(1, distFromTargetEdge / tp.spotR));
+    // Smooth cosine curve mapping [-1, 1] -> [8%, 92%], with 0 -> 50%
+    const s = 0.5 + 0.5 * Math.sin(norm * (Math.PI / 2));
+    const refl = Math.round(8 + s * 84);
+    return { refl, signedOffset, distFromTargetEdge };
+}
+
+function resetLineRobot() {
+    if (!canvasLF.width) resizeCanvas(canvasLF);
+    const tp = getTrackParams();
+    const edgeMode = lineEdgeSelect ? lineEdgeSelect.value : 'left';
+    const mode = lineModeSelect ? lineModeSelect.value : 'p_control';
+    const targetOffset = edgeMode === 'left' ? tp.lineHalfW : -tp.lineHalfW;
+
+    // Place robot near top-left of straightaway heading right (clockwise = 0 rad)
+    const startX = tp.cx - tp.L * 0.45;
+    const startSensorY = tp.cy - tp.R0 - targetOffset;
+    const initHeading = mode === 'zigzag' ? 0.14 : 0.04;
+
+    lfRobot.heading = initHeading;
+    lfRobot.x = startX - Math.cos(initHeading) * tp.sensorDist;
+    lfRobot.y = startSensorY - Math.sin(initHeading) * tp.sensorDist;
+    lfRobot.trail = [];
+    lfRobot.reflHistory = [];
+}
+
+function onLineConfigChange() {
+    const mode = lineModeSelect.value;
+    if (mode === 'zigzag') {
+        lineKpSlider.value = 1.4;
+    } else if (mode === 'three_zone') {
+        lineKpSlider.value = 1.3;
+    } else {
+        lineKpSlider.value = 1.3;
+    }
+    lineKpText.innerText = parseFloat(lineKpSlider.value).toFixed(1);
+}
+
+function onLineEdgeChange() {
+    resetLineRobot();
+}
+
+function toggleLineSim() {
+    lfPlaying = !lfPlaying;
+    document.getElementById('btnToggleLineSim').innerText = lfPlaying ? '⏸️ 暫停' : '▶️ 繼續';
+}
+
+function nudgeLineRobot(targetZone) {
+    const tp = getTrackParams();
+    const edgeMode = lineEdgeSelect.value;
+    // Left normal vector of robot: (sin(h), -cos(h)) points to robot's left (outside)
+    const leftNx = Math.sin(lfRobot.heading);
+    const leftNy = -Math.cos(lfRobot.heading);
+    let shift = 0;
+    if (edgeMode === 'left') {
+        // Left is white, Right is black
+        shift = (targetZone === 'white' ? 1 : -1) * (tp.spotR * 0.85);
+    } else {
+        // Left is black, Right is white
+        shift = (targetZone === 'black' ? 1 : -1) * (tp.spotR * 0.85);
+    }
+    lfRobot.x += leftNx * shift;
+    lfRobot.y += leftNy * shift;
+}
+
+lineBaseSpeedSlider.addEventListener('input', () => {
+    lineBaseSpeedText.innerText = `${lineBaseSpeedSlider.value} deg/s`;
+});
+lineKpSlider.addEventListener('input', () => {
+    lineKpText.innerText = parseFloat(lineKpSlider.value).toFixed(1);
+});
+
+canvasLF.addEventListener('click', (e) => {
+    const rect = canvasLF.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    const clickX = (e.clientX - rect.left) * dpr;
+    if (clickX < canvasLF.width * 0.55) {
+        // Alternate nudge to let user test recovery interactively
+        nudgeLineRobot(lfRobot.currentRefl >= 50 ? 'black' : 'white');
+    }
+});
+
+function stepLineFollowerPhysics() {
+    const tp = getTrackParams();
+    const mode = lineModeSelect.value;
+    const edgeMode = lineEdgeSelect.value;
+    const baseSpeed = parseFloat(lineBaseSpeedSlider.value);
+    const kp = parseFloat(lineKpSlider.value);
+
+    // Sensor world coordinates
+    const sensorX = lfRobot.x + Math.cos(lfRobot.heading) * tp.sensorDist;
+    const sensorY = lfRobot.y + Math.sin(lfRobot.heading) * tp.sensorDist;
+
+    const { refl, distFromTargetEdge } = computeSensorReflection(sensorX, sensorY, tp);
+    lfRobot.currentRefl = refl;
+    lfRobot.signedEdgeErr = distFromTargetEdge / tp.spotR; // [-1, 1]
+
+    // Error = 50 - refl
+    const error = 50 - refl;
+    // Edge sign: +1 for Left Edge (Left=White, Right=Black), -1 for Right Edge (Left=Black, Right=White)
+    const edgeSign = edgeMode === 'left' ? 1 : -1;
+
+    let speedL = baseSpeed;
+    let speedR = baseSpeed;
+
+    if (mode === 'zigzag') {
+        // Two-State Bang-Bang control
+        const diff = 68 * kp;
+        if (refl < 50) {
+            // On Black: if left_edge -> turn left (L slow, R fast); if right_edge -> turn right (L fast, R slow)
+            speedL = baseSpeed - edgeSign * diff;
+            speedR = baseSpeed + edgeSign * diff;
+            lfRobot.decisionState = edgeSign === 1 ? 'turn_left' : 'turn_right';
+            lfRobot.decisionLabel = edgeSign === 1 ? '⚫ 偏黑 (<50%) ➔ ↖ 左轉出線' : '⚫ 偏黑 (<50%) ➔ ↗ 右轉出線';
+        } else {
+            // On White: if left_edge -> turn right (L fast, R slow); if right_edge -> turn left (L slow, R fast)
+            speedL = baseSpeed + edgeSign * diff;
+            speedR = baseSpeed - edgeSign * diff;
+            lfRobot.decisionState = edgeSign === 1 ? 'turn_right' : 'turn_left';
+            lfRobot.decisionLabel = edgeSign === 1 ? '⚪ 偏白 (≥50%) ➔ ↗ 右轉入線' : '⚪ 偏白 (≥50%) ➔ ↖ 左轉入線';
+        }
+    } else if (mode === 'three_zone') {
+        // Three-State with [40%, 60%] straight deadband
+        const diff = 65 * kp;
+        if (refl < 40) {
+            speedL = baseSpeed - edgeSign * diff;
+            speedR = baseSpeed + edgeSign * diff;
+            lfRobot.decisionState = edgeSign === 1 ? 'turn_left' : 'turn_right';
+            lfRobot.decisionLabel = edgeSign === 1 ? '⚫ 偏黑 (<40%) ➔ ↖ 左轉修正' : '⚫ 偏黑 (<40%) ➔ ↗ 右轉修正';
+        } else if (refl > 60) {
+            speedL = baseSpeed + edgeSign * diff;
+            speedR = baseSpeed - edgeSign * diff;
+            lfRobot.decisionState = edgeSign === 1 ? 'turn_right' : 'turn_left';
+            lfRobot.decisionLabel = edgeSign === 1 ? '⚪ 偏白 (>60%) ➔ ↗ 右轉修正' : '⚪ 偏白 (>60%) ➔ ↖ 左轉修正';
+        } else {
+            speedL = baseSpeed;
+            speedR = baseSpeed;
+            lfRobot.decisionState = 'straight';
+            lfRobot.decisionLabel = '🌗 灰階死區 (40~60%) ➔ ⬆️ 直行';
+        }
+    } else {
+        // Proportional P-Controller
+        const turn = kp * error * 1.45;
+        speedL = baseSpeed - edgeSign * turn;
+        speedR = baseSpeed + edgeSign * turn;
+        if (refl < 43) {
+            lfRobot.decisionState = edgeSign === 1 ? 'turn_left' : 'turn_right';
+            lfRobot.decisionLabel = edgeSign === 1 ? `⚫ 偏黑 (${refl}%) ➔ ↖ 比例左轉` : `⚫ 偏黑 (${refl}%) ➔ ↗ 比例右轉`;
+        } else if (refl > 57) {
+            lfRobot.decisionState = edgeSign === 1 ? 'turn_right' : 'turn_left';
+            lfRobot.decisionLabel = edgeSign === 1 ? `⚪ 偏白 (${refl}%) ➔ ↗ 比例右轉` : `⚪ 偏白 (${refl}%) ➔ ↖ 比例左轉`;
+        } else {
+            lfRobot.decisionState = 'straight';
+            lfRobot.decisionLabel = `🌗 鎖定邊緣 (${refl}%) ➔ ⬆️ 微調直行`;
+        }
+    }
+
+    // Clamp speeds
+    speedL = Math.max(-120, Math.min(320, Math.round(speedL)));
+    speedR = Math.max(-120, Math.min(320, Math.round(speedR)));
+    lfRobot.leftSpeed = speedL;
+    lfRobot.rightSpeed = speedR;
+
+    // Differential drive kinematics step
+    const scaleV = 0.0095 * tp.dpr;
+    const vL = speedL * scaleV;
+    const vR = speedR * scaleV;
+    const vCenter = (vL + vR) * 0.5;
+    const omega = (vL - vR) / (tp.wheelBase * 1.15);
+
+    lfRobot.x += Math.cos(lfRobot.heading) * vCenter;
+    lfRobot.y += Math.sin(lfRobot.heading) * vCenter;
+    lfRobot.heading += omega;
+
+    // Keep robot softly bounded near the track if extreme parameters cause overshoot
+    const newSensorX = lfRobot.x + Math.cos(lfRobot.heading) * tp.sensorDist;
+    const newSensorY = lfRobot.y + Math.sin(lfRobot.heading) * tp.sensorDist;
+    const newSigned = computeTrackSignedOffset(newSensorX, newSensorY, tp);
+    const targetOff = edgeMode === 'left' ? tp.lineHalfW : -tp.lineHalfW;
+    const maxDrift = tp.spotR * 1.45;
+    if (Math.abs(newSigned - targetOff) > maxDrift) {
+        const qx = Math.max(tp.cx - tp.L, Math.min(tp.cx + tp.L, newSensorX));
+        const ang = Math.atan2(newSensorY - tp.cy, newSensorX - qx);
+        const pull = (newSigned - targetOff > 0 ? 1 : -1) * (Math.abs(newSigned - targetOff) - maxDrift) * 0.35;
+        lfRobot.x -= Math.cos(ang) * pull;
+        lfRobot.y -= Math.sin(ang) * pull;
+    }
+
+    lfRobot.wheelPhaseL = (lfRobot.wheelPhaseL + vL * 0.35) % 12;
+    lfRobot.wheelPhaseR = (lfRobot.wheelPhaseR + vR * 0.35) % 12;
+
+    // Record trail & waveform history
+    lfRobot.trail.push({
+        x: sensorX,
+        y: sensorY,
+        state: lfRobot.decisionState
+    });
+    if (lfRobot.trail.length > 220) lfRobot.trail.shift();
+
+    lfRobot.reflHistory.push(refl);
+    if (lfRobot.reflHistory.length > 150) lfRobot.reflHistory.shift();
+
+    // Update HTML telemetry cards
+    lfReflDisp.innerText = `${refl}%`;
+    lfReflDisp.style.color = refl < 43 ? '#f59e0b' : (refl > 57 ? '#38bdf8' : '#10b981');
+    lfStateDisp.innerText = lfRobot.decisionLabel;
+    lfStateDisp.style.color = lfRobot.decisionState === 'straight' ? '#10b981' : (lfRobot.decisionState === 'turn_left' ? '#f59e0b' : '#38bdf8');
+    lfLeftMotorDisp.innerText = `${speedL} deg/s`;
+    lfRightMotorDisp.innerText = `${speedR} deg/s`;
+}
+
+function drawTrackLoopPath(ctx, tp, radiusOffset) {
+    const steps = 160;
+    ctx.beginPath();
+    for (let i = 0; i <= steps; i++) {
+        const t = (i / steps) * Math.PI * 2;
+        let baseR = tp.R0;
+        if (tp.trackType === 'wavy') {
+            baseR = tp.R0 * (1 + 0.14 * Math.sin(3 * t) + 0.07 * Math.cos(2 * t));
+        }
+        const r = baseR + radiusOffset;
+        // Parameterize stadium centerline + offset
+        let cxShift = 0;
+        if (Math.cos(t) > 0.01) cxShift = tp.L;
+        else if (Math.cos(t) < -0.01) cxShift = -tp.L;
+        const px = tp.cx + cxShift + r * Math.cos(t);
+        const py = tp.cy + r * Math.sin(t);
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+}
+
+function drawStadiumTrack(ctx, tp) {
+    // Draw White Competition Mat
+    const pad = 14 * tp.dpr;
+    ctx.fillStyle = '#f1f5f9';
+    ctx.beginPath();
+    ctx.roundRect(pad, pad, tp.trackW - pad * 2, tp.h - pad * 2, 12 * tp.dpr);
+    ctx.fill();
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 2 * tp.dpr;
+    ctx.stroke();
+
+    // Mat header title
+    ctx.fillStyle = '#334155';
+    ctx.font = `bold ${Math.round(12 * tp.dpr)}px sans-serif`;
+    ctx.textAlign = 'left';
+    ctx.fillText('🗺️ 俯視賽道：EV3 左右差速動態循線 (點擊賽道可施加偏移干擾)', pad + 12 * tp.dpr, pad + 20 * tp.dpr);
+
+    if (tp.trackType === 'oval') {
+        // Gray outer halo for realistic gradient transition
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = (tp.lineHalfW * 2 + tp.spotR * 1.2);
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.arc(tp.cx + tp.L, tp.cy, tp.R0, -Math.PI / 2, Math.PI / 2, false);
+        ctx.arc(tp.cx - tp.L, tp.cy, tp.R0, Math.PI / 2, -Math.PI / 2, false);
+        ctx.closePath();
+        ctx.stroke();
+
+        // Core Black Tape
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = tp.lineHalfW * 2;
+        ctx.stroke();
+
+        // Target Edge Dashed Highlight Line
+        const edgeMode = lineEdgeSelect ? lineEdgeSelect.value : 'left';
+        const edgeR = tp.R0 + (edgeMode === 'left' ? tp.lineHalfW : -tp.lineHalfW);
+        ctx.save();
+        ctx.setLineDash([6 * tp.dpr, 5 * tp.dpr]);
+        ctx.strokeStyle = 'rgba(16, 185, 129, 0.85)';
+        ctx.lineWidth = 2 * tp.dpr;
+        ctx.beginPath();
+        ctx.arc(tp.cx + tp.L, tp.cy, edgeR, -Math.PI / 2, Math.PI / 2, false);
+        ctx.arc(tp.cx - tp.L, tp.cy, edgeR, Math.PI / 2, -Math.PI / 2, false);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+    } else {
+        // Wavy track via high-res angular sampling around stadium
+        const samplePoint = (idx, total, radialOff) => {
+            const u = (idx / total) * (2 * Math.PI * tp.R0 + 4 * tp.L);
+            const straightLen = 2 * tp.L;
+            const arcLen = Math.PI * tp.R0;
+            let qx = tp.cx, ang = 0;
+            if (u < straightLen) {
+                qx = tp.cx - tp.L + u;
+                ang = -Math.PI / 2;
+            } else if (u < straightLen + arcLen) {
+                qx = tp.cx + tp.L;
+                ang = -Math.PI / 2 + (u - straightLen) / tp.R0;
+            } else if (u < 2 * straightLen + arcLen) {
+                qx = tp.cx + tp.L - (u - straightLen - arcLen);
+                ang = Math.PI / 2;
+            } else {
+                qx = tp.cx - tp.L;
+                ang = Math.PI / 2 + (u - 2 * straightLen - arcLen) / tp.R0;
+            }
+            const baseR = tp.R0 * (1 + 0.14 * Math.sin(3 * ang) + 0.07 * Math.cos(2 * ang)) + radialOff;
+            return {
+                x: qx + baseR * Math.cos(ang),
+                y: tp.cy + baseR * Math.sin(ang)
+            };
+        };
+
+        const N = 220;
+        ctx.beginPath();
+        for (let i = 0; i <= N; i++) {
+            const p = samplePoint(i, N, 0);
+            if (i === 0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = tp.lineHalfW * 2 + tp.spotR * 1.2;
+        ctx.stroke();
+
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = tp.lineHalfW * 2;
+        ctx.stroke();
+
+        // Target edge dashed curve
+        const edgeMode = lineEdgeSelect ? lineEdgeSelect.value : 'left';
+        const edgeOff = edgeMode === 'left' ? tp.lineHalfW : -tp.lineHalfW;
+        ctx.save();
+        ctx.setLineDash([6 * tp.dpr, 5 * tp.dpr]);
+        ctx.strokeStyle = 'rgba(16, 185, 129, 0.85)';
+        ctx.lineWidth = 2 * tp.dpr;
+        ctx.beginPath();
+        for (let i = 0; i <= N; i++) {
+            const p = samplePoint(i, N, edgeOff);
+            if (i === 0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+        }
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    // Legend at bottom of track
+    ctx.font = `${Math.round(11 * tp.dpr)}px sans-serif`;
+    ctx.fillStyle = '#0f172a';
+    ctx.fillText('━━ 黑色軌道 (8%)    ╌╌ 綠色虛線：50% 目標循線邊緣', pad + 14 * tp.dpr, tp.h - pad - 10 * tp.dpr);
+}
+
+function drawEV3RobotTopDown(ctx, tp) {
+    // 1. Draw sensor trajectory trail
+    for (let i = 1; i < lfRobot.trail.length; i++) {
+        const p0 = lfRobot.trail[i - 1];
+        const p1 = lfRobot.trail[i];
+        ctx.beginPath();
+        ctx.moveTo(p0.x, p0.y);
+        ctx.lineTo(p1.x, p1.y);
+        ctx.lineWidth = 2.5 * tp.dpr;
+        ctx.strokeStyle = p1.state === 'straight' ? 'rgba(16, 185, 129, 0.85)' :
+                          (p1.state === 'turn_left' ? 'rgba(245, 158, 11, 0.85)' : 'rgba(56, 189, 248, 0.85)');
+        ctx.stroke();
+    }
+
+    // 2. Draw EV3 Robot Chassis & Wheels
+    ctx.save();
+    ctx.translate(lfRobot.x, lfRobot.y);
+    ctx.rotate(lfRobot.heading);
+
+    const dpr = tp.dpr;
+    const bodyL = 32 * dpr;
+    const bodyW = 26 * dpr;
+    const wheelL = 22 * dpr;
+    const wheelW = 7 * dpr;
+    const halfWB = tp.wheelBase * 0.55;
+
+    // Left Wheel (Port B, y = -halfWB) & Right Wheel (Port C, y = +halfWB)
+    const drawWheel = (wy, speed, label) => {
+        ctx.fillStyle = '#1e293b';
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = 1.5 * dpr;
+        ctx.beginPath();
+        ctx.roundRect(-wheelL / 2, wy - wheelW / 2, wheelL, wheelW, 2 * dpr);
+        ctx.fill();
+        ctx.stroke();
+
+        // Speed vector arrow next to wheel
+        const arrowLen = Math.max(6 * dpr, (Math.abs(speed) / 260) * 28 * dpr) * (speed >= 0 ? 1 : -1);
+        const arrowY = wy + (wy < 0 ? -8 * dpr : 8 * dpr);
+        const isFast = (wy < 0 && lfRobot.leftSpeed > lfRobot.rightSpeed + 8) ||
+                       (wy > 0 && lfRobot.rightSpeed > lfRobot.leftSpeed + 8);
+        ctx.strokeStyle = isFast ? '#10b981' : '#f59e0b';
+        ctx.fillStyle = isFast ? '#10b981' : '#f59e0b';
+        ctx.lineWidth = 2.5 * dpr;
+        ctx.beginPath();
+        ctx.moveTo(-4 * dpr, arrowY);
+        ctx.lineTo(arrowLen, arrowY);
+        ctx.stroke();
+
+        // Arrowhead
+        ctx.beginPath();
+        ctx.moveTo(arrowLen + 5 * dpr, arrowY);
+        ctx.lineTo(arrowLen - 2 * dpr, arrowY - 3.5 * dpr);
+        ctx.lineTo(arrowLen - 2 * dpr, arrowY + 3.5 * dpr);
+        ctx.closePath();
+        ctx.fill();
+    };
+
+    drawWheel(-halfWB, lfRobot.leftSpeed, 'B');
+    drawWheel(halfWB, lfRobot.rightSpeed, 'C');
+
+    // EV3 Brick Chassis
+    ctx.fillStyle = '#e2e8f0';
+    ctx.strokeStyle = '#dc2626';
+    ctx.lineWidth = 2 * dpr;
+    ctx.beginPath();
+    ctx.roundRect(-bodyL / 2, -bodyW / 2, bodyL, bodyW, 5 * dpr);
+    ctx.fill();
+    ctx.stroke();
+
+    // EV3 Screen
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(-bodyL * 0.25, -bodyW * 0.3, bodyL * 0.45, bodyW * 0.6);
+
+    // Front Color Sensor Arm & Head
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(bodyL / 2, -4 * dpr, tp.sensorDist - bodyL / 2, 8 * dpr);
+
+    // Glowing Red Sensor Spot at (tp.sensorDist, 0)
+    ctx.save();
+    ctx.fillStyle = 'rgba(239, 68, 68, 0.35)';
+    ctx.beginPath();
+    ctx.arc(tp.sensorDist, 0, tp.spotR, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#ef4444';
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.5 * dpr;
+    ctx.beginPath();
+    ctx.arc(tp.sensorDist, 0, 4.5 * dpr, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.restore();
+
+    // 3. Floating Live Decision Callout above robot
+    const badgeY = Math.max(38 * dpr, lfRobot.y - 36 * dpr);
+    ctx.save();
+    ctx.font = `bold ${Math.round(11 * dpr)}px sans-serif`;
+    const textW = ctx.measureText(lfRobot.decisionLabel).width + 16 * dpr;
+    const badgeX = Math.max(20 * dpr + textW / 2, Math.min(tp.trackW - 20 * dpr - textW / 2, lfRobot.x));
+
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+    ctx.strokeStyle = lfRobot.decisionState === 'straight' ? '#10b981' :
+                      (lfRobot.decisionState === 'turn_left' ? '#f59e0b' : '#38bdf8');
+    ctx.lineWidth = 2 * dpr;
+    ctx.beginPath();
+    ctx.roundRect(badgeX - textW / 2, badgeY - 12 * dpr, textW, 22 * dpr, 6 * dpr);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#f8fafc';
+    ctx.textAlign = 'center';
+    ctx.fillText(lfRobot.decisionLabel, badgeX, badgeY + 3 * dpr);
+    ctx.restore();
+}
+
+function drawRightDiagnosticPanels(ctx, tp) {
+    const dpr = tp.dpr;
+    const rx = tp.trackW + 6 * dpr;
+    const rw = tp.w - rx - 12 * dpr;
+    const padY = 14 * dpr;
+
+    // ====================================================
+    // PANEL 1: SENSOR SPOT CROSS-SECTION ZOOM (Top 31%)
+    // ====================================================
+    const p1Y = padY;
+    const p1H = (tp.h - padY * 2) * 0.30;
+    ctx.fillStyle = '#0f172a';
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = 1.5 * dpr;
+    ctx.beginPath();
+    ctx.roundRect(rx, p1Y, rw, p1H, 8 * dpr);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = `bold ${Math.round(11.5 * dpr)}px sans-serif`;
+    ctx.textAlign = 'left';
+    const edgeMode = lineEdgeSelect ? lineEdgeSelect.value : 'left';
+    ctx.fillText(`🔬 感應器光斑橫切面 (${edgeMode === 'left' ? '左白底 / 右黑線' : '左黑線 / 右白底'})`, rx + 10 * dpr, p1Y + 18 * dpr);
+
+    // Draw zoomed cross-section ground strip
+    const stripX = rx + 16 * dpr;
+    const stripW = rw - 32 * dpr;
+    const stripY = p1Y + p1H * 0.62;
+    const stripH = p1H * 0.26;
+
+    const grad = ctx.createLinearGradient(stripX, 0, stripX + stripW, 0);
+    if (edgeMode === 'left') {
+        grad.addColorStop(0.0, '#f8fafc');
+        grad.addColorStop(0.42, '#f8fafc');
+        grad.addColorStop(0.58, '#020617');
+        grad.addColorStop(1.0, '#020617');
+    } else {
+        grad.addColorStop(0.0, '#020617');
+        grad.addColorStop(0.42, '#020617');
+        grad.addColorStop(0.58, '#f8fafc');
+        grad.addColorStop(1.0, '#f8fafc');
+    }
+    ctx.fillStyle = grad;
+    ctx.fillRect(stripX, stripY, stripW, stripH);
+    ctx.strokeStyle = '#64748b';
+    ctx.strokeRect(stripX, stripY, stripW, stripH);
+
+    // Labels on strip
+    ctx.font = `bold ${Math.round(10 * dpr)}px sans-serif`;
+    ctx.textAlign = 'left';
+    ctx.fillStyle = edgeMode === 'left' ? '#0f172a' : '#f8fafc';
+    ctx.fillText(edgeMode === 'left' ? '⬅️ 左側白底 (92%)' : '⬅️ 左側黑線 (8%)', stripX + 6 * dpr, stripY + stripH * 0.68);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = edgeMode === 'left' ? '#f8fafc' : '#0f172a';
+    ctx.fillText(edgeMode === 'left' ? '右側黑線 (8%) ➡️' : '右側白底 (92%) ➡️', stripX + stripW - 6 * dpr, stripY + stripH * 0.68);
+
+    // Center 50% Edge Marker
+    const midX = stripX + stripW * 0.5;
+    ctx.strokeStyle = '#10b981';
+    ctx.setLineDash([3 * dpr, 3 * dpr]);
+    ctx.beginPath();
+    ctx.moveTo(midX, stripY - 18 * dpr);
+    ctx.lineTo(midX, stripY + stripH + 4 * dpr);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Moving Red Optical Spot along the cross-section
+    // For left_edge:refl > 50 means shifted left (white); refl < 50 means shifted right (black)
+    const normShift = ((50 - lfRobot.currentRefl) / 42) * (edgeMode === 'left' ? 1 : -1);
+    const spotX = midX + normShift * (stripW * 0.34);
+
+    // Light cone from sensor to spot
+    ctx.fillStyle = 'rgba(239, 68, 68, 0.28)';
+    ctx.beginPath();
+    ctx.moveTo(spotX - 8 * dpr, p1Y + 28 * dpr);
+    ctx.lineTo(spotX + 8 * dpr, p1Y + 28 * dpr);
+    ctx.lineTo(spotX + 20 * dpr, stripY);
+    ctx.lineTo(spotX - 20 * dpr, stripY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Sensor head box
+    ctx.fillStyle = '#334155';
+    ctx.strokeStyle = '#f8fafc';
+    ctx.fillRect(spotX - 16 * dpr, p1Y + 22 * dpr, 32 * dpr, 12 * dpr);
+    ctx.strokeRect(spotX - 16 * dpr, p1Y + 22 * dpr, 32 * dpr, 12 * dpr);
+
+    // Glowing spot circle on strip
+    ctx.fillStyle = 'rgba(239, 68, 68, 0.75)';
+    ctx.beginPath();
+    ctx.arc(spotX, stripY, 10 * dpr, 0, Math.PI * 2);
+    ctx.fill();
+
+    // ====================================================
+    // PANEL 2: LIVE DECISION LOGIC MATRIX (Middle 35%)
+    // ====================================================
+    const p2Y = p1Y + p1H + 8 * dpr;
+    const p2H = (tp.h - padY * 2) * 0.35;
+    ctx.fillStyle = '#0f172a';
+    ctx.strokeStyle = '#334155';
+    ctx.beginPath();
+    ctx.roundRect(rx, p2Y, rw, p2H, 8 * dpr);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = `bold ${Math.round(11.5 * dpr)}px sans-serif`;
+    ctx.textAlign = 'left';
+    ctx.fillText('🧠 即時左右動態判斷決策分支 (Live Decision Matrix)', rx + 10 * dpr, p2Y + 18 * dpr);
+
+    const rows = edgeMode === 'left' ? [
+        { key: 'turn_right', cond: '讀數 > 50% (偏左白底)', action: '↗ 向右轉回黑線', motors: `左輪快 (${lfRobot.leftSpeed}) > 右輪慢 (${lfRobot.rightSpeed})`, color: '#38bdf8' },
+        { key: 'straight',   cond: '讀數 ≈ 50% (壓交界線)', action: '⬆️ 直線穩定前進', motors: `雙輪等速 (${lfRobot.leftSpeed} / ${lfRobot.rightSpeed})`, color: '#10b981' },
+        { key: 'turn_left',  cond: '讀數 < 50% (偏右黑線)', action: '↖ 向左轉出黑線', motors: `右輪快 (${lfRobot.rightSpeed}) > 左輪慢 (${lfRobot.leftSpeed})`, color: '#f59e0b' }
+    ] : [
+        { key: 'turn_left',  cond: '讀數 > 50% (偏右白底)', action: '↖ 向左轉回黑線', motors: `右輪快 (${lfRobot.rightSpeed}) > 左輪慢 (${lfRobot.leftSpeed})`, color: '#38bdf8' },
+        { key: 'straight',   cond: '讀數 ≈ 50% (壓交界線)', action: '⬆️ 直線穩定前進', motors: `雙輪等速 (${lfRobot.leftSpeed} / ${lfRobot.rightSpeed})`, color: '#10b981' },
+        { key: 'turn_right', cond: '讀數 < 50% (偏左黑線)', action: '↗ 向右轉出黑線', motors: `左輪快 (${lfRobot.leftSpeed}) > 右輪慢 (${lfRobot.rightSpeed})`, color: '#f59e0b' }
+    ];
+
+    const rowH = (p2H - 30 * dpr) / 3 - 4 * dpr;
+    rows.forEach((r, idx) => {
+        const ry = p2Y + 25 * dpr + idx * (rowH + 4 * dpr);
+        const isActive = lfRobot.decisionState === r.key;
+
+        ctx.fillStyle = isActive ? 'rgba(30, 41, 59, 0.98)' : 'rgba(15, 23, 42, 0.5)';
+        ctx.strokeStyle = isActive ? r.color : '#1e293b';
+        ctx.lineWidth = isActive ? 2 * dpr : 1 * dpr;
+        ctx.beginPath();
+        ctx.roundRect(rx + 10 * dpr, ry, rw - 20 * dpr, rowH, 5 * dpr);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.font = `${isActive ? 'bold ' : ''}${Math.round(10.5 * dpr)}px sans-serif`;
+        ctx.fillStyle = isActive ? r.color : '#64748b';
+        ctx.textAlign = 'left';
+        ctx.fillText(`${isActive ? '▶ ' : '   '}${r.cond}`, rx + 16 * dpr, ry + rowH * 0.62);
+
+        ctx.textAlign = 'right';
+        ctx.fillStyle = isActive ? '#f8fafc' : '#475569';
+        ctx.fillText(`${r.action}`, rx + rw - 16 * dpr, ry + rowH * 0.62);
+    });
+
+    // ====================================================
+    // PANEL 3: REAL-TIME REFLECTION WAVEFORM (Bottom 31%)
+    // ====================================================
+    const p3Y = p2Y + p2H + 8 * dpr;
+    const p3H = tp.h - padY - p3Y;
+    ctx.fillStyle = '#0f172a';
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = 1.5 * dpr;
+    ctx.beginPath();
+    ctx.roundRect(rx, p3Y, rw, p3H, 8 * dpr);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = `bold ${Math.round(11 * dpr)}px sans-serif`;
+    ctx.textAlign = 'left';
+    ctx.fillText('📈 反射光強度即時搖擺曲線 (Reflected % vs. 50% 目標線)', rx + 10 * dpr, p3Y + 17 * dpr);
+
+    const chartX = rx + 32 * dpr;
+    const chartW = rw - 44 * dpr;
+    const chartY = p3Y + 24 * dpr;
+    const chartH = p3H - 32 * dpr;
+
+    // 50% Target Dashed Line
+    const y50 = chartY + chartH * 0.5;
+    ctx.strokeStyle = 'rgba(16, 185, 129, 0.6)';
+    ctx.setLineDash([4 * dpr, 4 * dpr]);
+    ctx.beginPath();
+    ctx.moveTo(chartX, y50);
+    ctx.lineTo(chartX + chartW, y50);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = `${Math.round(9.5 * dpr)}px monospace`;
+    ctx.textAlign = 'right';
+    ctx.fillText('100%', chartX - 4 * dpr, chartY + 8 * dpr);
+    ctx.fillStyle = '#10b981';
+    ctx.fillText('50%', chartX - 4 * dpr, y50 + 3 * dpr);
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText('0%', chartX - 4 * dpr, chartY + chartH);
+
+    // Waveform polyline
+    if (lfRobot.reflHistory.length > 1) {
+        ctx.beginPath();
+        for (let i = 0; i < lfRobot.reflHistory.length; i++) {
+            const val = lfRobot.reflHistory[i];
+            const px = chartX + (i / 150) * chartW;
+            const py = chartY + chartH - (val / 100) * chartH;
+            if (i === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+        }
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 2 * dpr;
+        ctx.stroke();
+    }
+}
+
+function renderLineFollowerAnim() {
+    if (!canvasLF.width) resizeCanvas(canvasLF);
+    const tp = getTrackParams();
+    ctxLF.clearRect(0, 0, tp.w, tp.h);
+
+    if (lfPlaying) {
+        stepLineFollowerPhysics();
+    }
+
+    drawStadiumTrack(ctxLF, tp);
+    drawEV3RobotTopDown(ctxLF, tp);
+    drawRightDiagnosticPanels(ctxLF, tp);
+
+    requestAnimationFrame(renderLineFollowerAnim);
+}
+
+// ==========================================
 // WINDOW ONLOAD INITIALIZATIONS
 // ==========================================
 window.addEventListener('load', () => {
@@ -1688,6 +2711,7 @@ window.addEventListener('load', () => {
     resizeCanvas(canvasStrobe);
     resizeCanvas(canvasColor);
     resizeCanvas(canvasGeom);
+    resizeCanvas(canvasLF);
 
     updateReflectDisplay();
     renderReflectAnim();
@@ -1697,6 +2721,9 @@ window.addEventListener('load', () => {
 
     updateClassifier();
     updateGeometry();
+
+    resetLineRobot();
+    renderLineFollowerAnim();
 });
 
 window.addEventListener('resize', () => {
@@ -1704,6 +2731,8 @@ window.addEventListener('resize', () => {
     resizeCanvas(canvasStrobe);
     resizeCanvas(canvasColor);
     resizeCanvas(canvasGeom);
+    resizeCanvas(canvasLF);
+    resetLineRobot();
     updateGeometry();
     updateClassifier();
 });

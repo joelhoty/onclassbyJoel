@@ -1,8 +1,8 @@
 # 📝 onclassbyJoel - 全站提示詞歷史與變更記錄 (CHANGELOG)
 
-> **最後更新時間**: 2026-11-09 14:10:43 (UTC+8)
-> **使用模型**: Gemini 4 Argon (Medium)
-> **執行 Agent**: Antigravity
+> **最後更新時間**: 2026-11-09 15:45:00 (UTC+8)
+> **使用模型**: Claude Sonnet 5.5
+> **執行 Agent**: Claude Sonnet 5.5
 
 ---
 
@@ -498,3 +498,21 @@ go
   git commit  and push
   ```
 - **變更摘要**: 依工作區規範第 6 條執行 `python tools/build_index.py` 重建 `INDEX.md`、`index.html` 與 `changelog.html`，將新增之 EV3 顏色感應器原理解說筆記（`ev3/ev3_color_sensor_principles.md` / `.html`）及索引變更提交（git commit）並推播（git push）至遠端 GitHub 儲存庫。
+
+### 🔹 [2026-11-09 14:38:48] [Gemini 4 Argon (Medium) / Antigravity] 新增 EV3 黑色軌道左右前進動態判斷解說與互動模擬動畫
+- **模型/Agent**: Gemini 4 Argon (Medium) / Antigravity
+- **Prompt 原文**:
+  ```text
+  設計一個動畫模擬lego ev3 在黑色軌道左右前進的動態判斷
+  ```
+- **變更摘要**: 於 `ev3/ev3_color_sensor_principles.md` 與 `ev3/ev3_color_sensor_principles.html` 第 2.1 節深度擴充「黑色軌道左右前進動態判斷」原理與互動模擬器（涵蓋單感應器追蹤黑線左/右邊緣之幾何必然性、讀數-誤差-馬達差速對照表、二值化 Zig-Zag 擺動 vs. 三區間 vs. P-Control 演算法與流程圖，以及包含俯視軌道差速車體、感應器光斑橫切面放大鏡、即時決策矩陣高亮與反射率波形圖的雙視窗互動模擬動畫）；以 `tools/build_index.py` 更新全站索引。
+
+### 🔹 [2026-11-09 15:45:00] [Claude Sonnet 5.5] EV3 顏色感應器筆記內容審閱更正、提交與推送
+- **模型/Agent**: Claude Sonnet 5.5 / Claude Code
+- **Prompt 原文**:
+  ```text
+  review file:///D:/CLASS_NOTE/ev3/ev3_color_sensor_principles.html 內容是否需要更正(md與HTML檔)
+  直接修，MD 與 HTML 同步更新
+  更新提交推送
+  ```
+- **變更摘要**: 修正 `ev3/ev3_color_sensor_principles.md` 與 `.html`：統一範例程式與章節、P 控制補限幅、未公開內部細節改標示意模型、修正 SPIKE 比較與參考資料描述；重建全站索引。
