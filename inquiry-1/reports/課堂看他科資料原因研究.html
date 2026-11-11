@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>學生把低價值課堂改做他科 — 課堂看他科資料原因研究</title>
+  <style>
+    :root {
+      --primary-color: #1e3a8a;
+      --secondary-color: #2563eb;
+      --accent-color: #0d9488;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --highlight-bg: #eff6ff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Noto Sans TC", "Microsoft JhengHei", "Segoe UI", sans-serif;
+      line-height: 1.8;
+      color: var(--text-main);
+      background-color: var(--bg-color);
+      padding: 2.5rem 1.5rem;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 3rem;
+      border-radius: 14px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border-color);
+    }
+    .header-section {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .title-group { flex: 1; min-width: 260px; }
+    .title-group h1 {
+      font-size: 1.85rem;
+      color: var(--primary-color);
+      margin-bottom: 0.75rem;
+      line-height: 1.35;
+      font-weight: 800;
+    }
+    .metadata-card {
+      background: var(--highlight-bg);
+      border-left: 4px solid var(--secondary-color);
+      padding: 0.85rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+    .metadata-card p { margin: 0.25rem 0; }
+    .metadata-card strong { color: #1e40af; }
+    .btn-export {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #ffffff;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+    }
+    .btn-export:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45);
+    }
+    h2 {
+      font-size: 1.4rem;
+      color: var(--primary-color);
+      margin: 2.4rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #dbeafe;
+    }
+    h3 {
+      font-size: 1.15rem;
+      color: #0f766e;
+      margin: 1.6rem 0 0.8rem;
+    }
+    p { margin-bottom: 1rem; }
+    strong { color: #0f172a; }
+    a { color: var(--secondary-color); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .bluf {
+      background: #f0fdf4;
+      border-left: 5px solid #16a34a;
+      padding: 1.1rem 1.35rem;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 1.5rem;
+    }
+    .table-wrapper {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    th, td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #f1f5f9;
+      color: var(--primary-color);
+      font-weight: 700;
+    }
+    tr:nth-child(even) td { background: #f8fafc; }
+    ol.refs { margin: 0.6rem 0 1.2rem 1.5rem; }
+    ol.refs li { margin-bottom: 0.45rem; }
+    .archive {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-top: 1rem;
+    }
+    .archive pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      font-size: 0.85rem;
+      margin-top: 0.75rem;
+    }
+    @media print {
+      body { background: white; padding: 0; }
+      .btn-export, .no-print { display: none !important; }
+      .container { box-shadow: none; border: none; padding: 0; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="report">
+    <div class="header-section">
+      <div class="title-group">
+        <h1>學生把低價值課堂改做他科</h1>
+        <div class="metadata-card">
+          <p><strong>最後更新時間</strong>: 2026-11-11 11:00:18 (UTC+8)</p>
+          <p><strong>使用模型</strong>: Composer (Cursor Agent)</p>
+          <p><strong>執行 Agent</strong>: deep-research report writer / Auto</p>
+          <p><strong>主題</strong>: 課堂看他科資料原因研究</p>
+        </div>
+      </div>
+      <button class="btn-export no-print" type="button" onclick="window.print()" title="匯出成 PDF（選擇「另存為 PDF」）">
+        📄 匯出成 PDF
+      </button>
+    </div>
+
+    <div class="bluf">
+      <p>學生會在課堂上看其他課程的講義、課本與測驗卷，主要不是單純偷懶，而是把當堂課判斷為<strong>低興趣、低重要性或低工具價值</strong>後，刻意把注意力改配置到<strong>更緊急、更有報酬的他科學習任務</strong>；學術文獻已將此行為命名為 <strong>learning-related yet off-task</strong>（或 <strong>off-task yet learning-related</strong>）multitasking，並在香港／中國、印尼與美國樣本中反覆記述。（<a href="https://doi.org/10.1080/87567555.2021.1973947">Deng et al., 2022, College Teaching</a>）中國三所大學混合研究顯示，超過 <strong>80%</strong> 受試者曾從事含「完成他科作業」在內的學習相關多工，平均約 45 分鐘課堂有 <strong>12.8</strong> 分鐘偏離當堂；印尼大型問卷則有約 <strong>三分之一</strong> 學生勾選瀏覽他科網站或討論他科作業。（<a href="https://link.springer.com/article/10.1007/s10639-024-12786-w">Deng, Zhou, &amp; Broadbent, 2024</a>）（<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9642801/">Simanjuntak et al., 2022</a>）對當堂課而言，這種「學術但非本課」的次任務在認知分類與實驗效應上接近無關多工：模擬他科長答任務會顯著降低注意力與事實／概念保留；學生主觀的「不浪費時間」策略尚無淨提升總 GPA 的因果證據。（<a href="https://repository.library.washu.edu/art_sci_etds/3633/">Mahama, 2025</a>）因此，相關研究確實存在，且結論相當一致：這是可預期的任務價值與時間挪用決策，對被放棄的那堂課仍有學習成本。</p>
+    </div>
+
+    <h2>文獻把「看他科」標成學習相關卻偏離當堂</h2>
+    <p>研究者並不把「課堂看他科講義／寫他科作業」當成單一流行術語，但最貼切的專名來自 Deng 團隊：<strong>learning-related yet off-task</strong> multitasking——次要任務仍屬學習，卻與當堂目標無關。（<a href="https://doi.org/10.1080/87567555.2021.1973947">Deng et al., 2022</a>）Deng, Zhou 與 Broadbent（2024）以 <strong>distractive multitasking</strong> 為上位概念，問卷中四類次要任務之一即為 learning-related tasks，舉例就是完成其他科目的作業；Zhou 與 Deng（2024）進一步把手機活動三分為 on-task、off-task，以及 <strong>off-task yet learning-related</strong>（完成他科作業、搜尋／複習他科內容），並指出此子類型在文獻中仍最被低估。（<a href="https://doi.org/10.1007/s10639-024-12786-w">Deng et al., 2024</a>）（<a href="https://doi.org/10.14742/ajet.8941">Zhou &amp; Deng, 2024</a>）較廣的 academic cyberslacking／cyberloafing、off-task electronic multitasking（OTEM）也常把「瀏覽他科網站、討論他科作業」算進與當堂無關的網路行為，即使語意上偏「偷懶」，實務上仍捕捉到同一現象。（<a href="https://doi.org/10.2147/PRBM.S374745">Simanjuntak et al., 2022</a>）（<a href="https://scholarworks.iu.edu/journals/index.php/josotl/article/view/20682">Qian &amp; Li, 2017</a>）</p>
+    <p>盛行率因題幹不同而不可直接互比，但跨樣本重現度很高。Deng 等（2024）在中國北方、東方與東南三所綜合大學（問卷 <em>n</em> = 385、訪談 <em>n</em> = 15）發現超過 <strong>80%</strong> 學生報告從事過社交、資訊尋求與學習相關多工；Zhou 與 Deng（2024）若改問「最常做的」course-unrelated yet learning-related，則僅約 <strong>16%</strong> 勾選，顯示此行為明確存在卻通常不如即時通訊／社群常見。（<a href="https://link.springer.com/article/10.1007/s10639-024-12786-w">Deng et al., 2024</a>）（<a href="https://doi.org/10.14742/ajet.8941">Zhou &amp; Deng, 2024</a>）Simanjuntak 等（2022）對印尼曾有 academic cyberslacking 經驗的大學生（<em>n</em> = 1485）報告：瀏覽他科相關網站 <strong>34.61%</strong>、與朋友通訊討論他科作業 <strong>32.18%</strong>。（<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9642801/">Simanjuntak et al., 2022</a>）更早的美國 UNC 筆電調查亦顯示，回答該組題的學生中有 <strong>49.4%</strong> 在課堂用筆電做其他課的 coursework。（<a href="https://ils.unc.edu/MSpapers/3470.pdf">Borbone, 2009</a>）換言之，這不是單一文化趣聞，而是跨東亞、東南亞與北美高等教育現場都能獨立記述的行為；細分「看講義／考古題／教科書」相對「寫作業」的證據仍偏少，多數研究合稱 learning-related。</p>
+
+    <h2>低任務價值與截止壓力把注意力推向他科</h2>
+    <p>最一致的機制是<strong>任務價值比較</strong>：當堂課被感知為不重要、無趣或與己無關時，學生會把注意力改配置到更緊急的他科學習。Deng 等（2024）訪談顯示，學生依「重要且有興趣／重要無興趣／兩者皆無」大幅改變行為；對既不重要也不有趣的課，常整堂做其他事，並刻意做他科作業以求「not to waste time」。量化上，自我調節學習（SRL）與 distractive multitasking 呈負相關（<strong>r = −0.311</strong>, <em>p</em> &lt; .01），但訪談同時揭示：低價值課上學生常覺得「沒必要」啟動 SRL，高利害課才會強迫自己專心。（<a href="https://link.springer.com/article/10.1007/s10639-024-12786-w">Deng et al., 2024</a>）Qian（2017）以 MODE 模型與規範解釋課堂 off-task multitasking：任務價值每提高 1 單位，off-task 時間百分比約降 <strong>6.27%</strong>，最終模型解釋約 <strong>40.8%</strong> 變異；感知校園同儕 multitasking 則提高自身行為。（<a href="https://etd.ohiolink.edu/acprod/odb_etd/ws/send_file/send?accession=osu1503297396117411&amp;disposition=inline">Qian, 2017</a>）SOTEMP 量表的四因子——Lack of Class Relating、Technology Dependence、Class Easiness、Overwhelmed feeling——也指向「課無關連、太簡單、不堪負荷」會把注意力推向其他事務。（<a href="https://scholarworks.iu.edu/journals/index.php/josotl/article/view/20682">Qian &amp; Li, 2017</a>）</p>
+    <p>內部觸發常與認知—情緒狀態疊加：無聊、卡住、聽不懂、約 20 分鐘後的心智疲勞、焦慮與壓力，皆會誘發切換；這與「任務過難或過易皆易離開 flow」的觀點一致。（<a href="https://link.springer.com/article/10.1007/s10639-024-12786-w">Deng et al., 2024</a>）Kornhauser 等（2016）雖主測非學術科技使用，仍提供無聊驅動基線：最常見理由是 <strong>boredom（52.9%）</strong>。（<a href="https://scholarworks.iu.edu/journals/index.php/jotlt/article/view/13781">Kornhauser et al., 2016</a>）外部機會結構同樣關鍵：Zhou 與 Deng（2024）問卷中 <strong>99.4%</strong> 帶手機上課、約 <strong>65%</strong> 把手機放桌面、<strong>98%</strong> 觀察到同儕手機 multitasking；講師靠近、提問、點名可把注意力拉回，低價值課上學生則較不啟動「手機放遠」等策略。（<a href="https://doi.org/10.14742/ajet.8941">Zhou &amp; Deng, 2024</a>）（<a href="https://link.springer.com/article/10.1007/s10639-024-12786-w">Deng et al., 2024</a>）Han 等（2025）進一步指出，感知課堂不正義會透過中立化技術抬高 cyberloafing 意圖，尤其是 <strong>condemning the condemners</strong>（責怪老師無聊／不公）與 <strong>appealing to higher loyalties</strong>（主張線上活動比聽課更重要）——後者可直接遷移到「趕他科 deadline 比聽這堂更重要」的說詞。（<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12426119/">Han, Yang, &amp; Huang, 2025</a>）</p>
+    <p>學生的自我辯護常是雙層結構：先貶低當堂價值，再抬高他科緊急性。訪談中反覆出現「不浪費時間」「教室有學習氛圍適合趕工」「留一隻耳朵聽重點」「事先計畫要帶哪份作業」；相較之下，滑社群多為臨時起意。（<a href="https://link.springer.com/article/10.1007/s10639-024-12786-w">Deng et al., 2024</a>）骨醫學生調查更把考試時程推到前台：典型 50 分鐘講課中 <strong>74%</strong> 會讀他科、平均約 <strong>23</strong> 分鐘，影響因素以考試時程（<strong>91%</strong>）與講者（<strong>90%</strong>）最高；臨考前一天突击小考平均分明顯低於考後隔天（<strong>60%</strong> vs <strong>75%</strong>）。（<a href="https://www.degruyterbrill.com/document/doi/10.7556/jaoa.2014.130/html">JAOA, 2014</a>）因此，「我是在讀書不是在玩」成為關鍵道德緩衝：同樣占用課堂注意力，他科作業比社群更容易通過自我與同儕的正當性檢驗，也讓研究者不應把它簡化成自制失敗——在低價值課上，改做他科本身常被學生視為合理的目標管理。（<a href="https://link.springer.com/article/10.1007/s10639-024-12786-w">Deng et al., 2024</a>）</p>
+
+    <h2>學術但非本課仍傷害當堂注意力與保留</h2>
+    <p>多數實驗與追蹤研究以「是否服務<strong>當下這堂課</strong>」而非「是否學業性質」來劃分相關／無關；因此他科作業在分類上通常落入 lecture-irrelevant／distractive／off-task。（<a href="https://repository.library.washu.edu/art_sci_etds/3633/">Mahama, 2025</a>）（<a href="https://jise.org/Volume21/n2/JISEv21n2p241.html">Kraushaar &amp; Novak, 2010</a>）Mahama（2025）實驗一以需長答的校園經驗問卷模擬「completing an assignment for another course」：lecture-irrelevant multitasking（LIM）顯著降低注意力指數（ηp² = <strong>0.16</strong>）、事實保留（ηp² = <strong>0.14</strong>）與概念保留（ηp² = <strong>0.10</strong>）；LIM-only 的事實保留均值約 <strong>0.35</strong>，遠低於本課筆記組約 <strong>0.63</strong>。（<a href="https://repository.library.washu.edu/cgi/viewcontent.cgi?article=4916&amp;context=art_sci_etds">Mahama, 2025</a>）方向與 Sana 等（2013）的無關線上任務實驗一致：多工組後測理解約低 <strong>11%</strong>，鄰座看到多工同儕亦約受害 <strong>17%</strong>。（<a href="https://www.sciencedirect.com/science/article/pii/S0360131512002254">Sana, Weston, &amp; Cepeda, 2013</a>）Waite 等（2022）則顯示講課中插入 irrelevant clicker 問題時後測差於 relevant，再次確認「次任務是否對準本講」會改變保留結果。（<a href="https://bpb-us-e1.wpmucdn.com/websites.uta.edu/dist/f/5265/files/2025/05/2022MR.pdf">Waite et al., 2022</a>）</p>
+    <p>客觀追蹤補強了「非本課視窗」的生態圖像：Kraushaar 與 Novak（2010）發現非本課應用約佔 <strong>42%</strong> 時間，distractive／productive 比率與學業表現顯著負相關；Gaudreau 等（2014）以官方學期 GPA 顯示 school-unrelated 筆電使用仍預測較低表現，即使控制自我調節失敗與動機不足等。（<a href="https://jise.org/Volume21/n2/JISEv21n2p241.html">Kraushaar &amp; Novak, 2010</a>）（<a href="https://www.sciencedirect.com/science/article/pii/S0360131513002546">Gaudreau et al., 2014</a>）心智漫遊文獻把刻意想與本講無關之事視為 intentional mind wandering；現場課中整體 MW 約 <strong>33%</strong>，且 intentional MW 時段的短期 quiz 表現較差——主動改做他科可視為外化的、刻意的 task-unrelated engagement，機制上與 intentional MW／分神多工重疊。（<a href="https://pob3541.github.io/pdfs/Wammes2016.pdf">Wammes et al., 2016</a>）（<a href="https://doi.org/10.1037/stl0000055">Wammes et al., 2016 Lectures II</a>）</p>
+    <p>關鍵限制必須說清楚：現有實驗幾乎不量測「他科次任務」的完成品質，因此只能保證<strong>本講成本</strong>，無法證明策略性交換是否淨正；Glass 與 Kang（2019）允許的是非學術裝置使用，其長期保留下降也不宜直接外推到「寫他科報告」。（<a href="https://doi.org/10.1080/01443410.2018.1489046">Glass &amp; Kang, 2019</a>）May 與 Elder（2018）回顧亦提醒學生常高估多工能力；Pusa 等（2025）scoping review 在 88 組關聯中見 <strong>57</strong> 組負向、僅 <strong>2</strong> 組正向。（<a href="https://link.springer.com/article/10.1186/s41239-018-0096-z">May &amp; Elder, 2018</a>）（<a href="https://link.springer.com/article/10.1007/s44217-025-01028-x">Pusa et al., 2025</a>）質性上學生確實會 triage 低價值講次並預先計畫他科趕工，但那是行為選擇與主觀合理化，不是淨學習收益的因果證明。（<a href="https://link.springer.com/article/10.1007/s10639-024-12786-w">Deng et al., 2024</a>）</p>
+
+    <h2>禁娛樂裝置解不了學術分流，價值與問責才對症</h2>
+    <p>娛樂／社群分心與他科學術分流的動機結構不同，介入工具箱也不該混用。前者多為通知觸發、無聊／習慣與同儕傳染；後者常在考試週、作業截止前與低利害選修出現，且課前已帶好他科講義或預開文件。（<a href="https://link.springer.com/article/10.1007/s10639-024-12786-w">Deng et al., 2024</a>）（<a href="https://www.degruyterbrill.com/document/doi/10.7556/jaoa.2014.130/html">JAOA, 2014</a>）裝置全面禁止對社群／娛樂較有執行邏輯——西點軍校隨機試驗顯示允許電腦教室期末考約低 <strong>0.18 SD</strong>——但對他科課業很難覆蓋：學生可用紙本、下載教材，甚至「看起來像在做本科筆記」；高教全面禁筆電還可能傷出勤與書面作業，並與無障礙、數位教材衝突。（<a href="https://people.it.tamu.edu/~w-arthur/302/Payne%20et%20al%20(2017)%20Economics%20of%20Educ%20Review,%20impact%20of%20computer%20usage%20on%20academic%20perf.pdf">Carter, Greenberg, &amp; Walker, 2017</a>）（<a href="https://www.sciencedirect.com/science/article/abs/pii/S0360131518301830">Elliott-Dorans, 2018</a>）結構化引導使用則較能增加筆記與學術活動、減少 email／IM／遊戲，卻仍難偵測「他科 Word」。（<a href="https://jite.org/documents/Vol10/JITEv10IIPp033-042Kay840.pdf">Kay &amp; Lauricella, 2011</a>）</p>
+    <p>對他科分流最對症的槓桿是提高當下活動的<strong>工具價值與交互責任</strong>：感知活動重要性強烈預測投入，多工則強烈負向預測投入；主動學習、短講＋活動循環、把裝置改作投票／查資料，可提高「改做他科」的機會成本。（<a href="https://scholarsarchive.byu.edu/cgi/viewcontent.cgi?article=9052&amp;context=facpub">Manwaring et al.</a>）（<a href="https://link.springer.com/article/10.1186/s41239-018-0096-z">May &amp; Elder, 2018</a>）內插測驗在部分實驗能降低神遊並提升後續段落學習（例如第四段答對率 <strong>84%</strong> vs <strong>59%</strong>），但較大複製研究顯示效果量偏小、跨研究變異大，不宜當成單方特效藥。（<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3631699/">Szpunar, Khan, &amp; Schacter, 2013</a>）（<a href="https://link.springer.com/article/10.1186/s41235-022-00372-y">Jing et al., 2022</a>）可攜式 EEG 還提醒：學生主導活動的神經注意力指標常優於長講，但行為外表可能更「不專心」——只靠巡堂抓低頭，容易誤罰有效投入、也漏掉靜坐聽講時的內在神遊。（<a href="https://www.nature.com/articles/s41539-021-00094-8">Ko et al., 2021</a>）只教 SRL 技巧而不提升 utility value，效果會在「他科趕工」情境大幅打折：跨國證據顯示 SRL 傾向對課堂裝置誤用預測力很弱，基本心理需求滿足與 utility value 才是較穩的保護因子；MCII 若把分心當障礙並寫下克服意圖，自陳分心可下降，但約一半學生的意圖與目標不一致。（<a href="https://scholars.georgiasouthern.edu/en/publications/the-interplay-among-digital-distraction-self-regulation-of-learni/">Flanigan et al.</a>）（<a href="https://www.lifescied.org/doi/10.1187/cbe.23-05-0092">CBE—LSE, 2024</a>）</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>方法</th>
+            <th>主要應用</th>
+            <th>對「他科課業」適配度</th>
+            <th>關鍵限制</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>提升感知課程／活動價值</td>
+            <td>對準 Deng／Manwaring 描述的機制</td>
+            <td><strong>高</strong></td>
+            <td>單堂教師對評量權重、就業敘事的能動性有限</td>
+          </tr>
+          <tr>
+            <td>主動學習／短講＋檢測</td>
+            <td>提高切走成本與 accountability</td>
+            <td>中高</td>
+            <td>活動品質低仍可能被分流；命題與課時成本</td>
+          </tr>
+          <tr>
+            <td>結構化裝置使用（guided use）</td>
+            <td>增筆記、減遊戲／IM</td>
+            <td>中</td>
+            <td>難辨他科檔案；生產性使用仍可滑向離任務</td>
+          </tr>
+          <tr>
+            <td>學生 SRL／環境結構化</td>
+            <td>高利害課自制、低成本</td>
+            <td>中</td>
+            <td>低價值課學生會「關閉」SRL，甚至把 SRL 用在有效完成他科</td>
+          </tr>
+          <tr>
+            <td>裝置全面禁止</td>
+            <td>降可見娛樂分心、部分考試情境減損</td>
+            <td>低–中</td>
+            <td>難禁紙本／下載；可能促使翹課趕工；高教倫理與出勤成本</td>
+          </tr>
+          <tr>
+            <td>嚴懲／沒收</td>
+            <td>短期嚇阻</td>
+            <td>低</td>
+            <td>傷師生關係；對學術分流易被視為不公平</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>最佳系統介入因此是機構層（錯開大考、作業日曆透明）＋課堂層（價值設計、主動學習、內插檢測）＋個人層（誠實討論「何時該不該在 A 課做 B 科」），而非單一教室禁令。（<a href="https://kiewra.unl.edu/sites/unl.edu.cehs.kiewra/files/media/file/Cyber-Slacking.pdf">Flanigan &amp; Kiewra Cyber-Slacking</a>）仍缺的是以「課堂他科分鐘數」為依變項的 RCT，以及台灣／華語中小學的在地實驗；目前對 K–12 手機禁令的學業平均效果也不穩定，執行品質與公平性成本需一併評估。（<a href="https://journals.sagepub.com/doi/full/10.1177/20556365241270394">Campbell et al., 2024</a>）</p>
+
+    <h2>Conclusion</h2>
+    <p>把「課堂看他科資料」讀成沉迷螢幕或道德失格，會錯過文獻已反覆驗證的核心機制：<strong>相對任務價值與截止壓力驅動的學術時間挪用</strong>。研究並未證明這種分流提升總學習產出，卻清楚顯示它會占用當堂編碼資源；真正要改變的，是讓當堂課的價值與問責高到足以勝過他科 deadline，並在制度上降低學生必須在 A 課趕 B 科的結構誘因。</p>
+
+    <h2>參考資料（含取得日期）</h2>
+    <p>取得日期皆為 <strong>2026-11-11</strong>。完整書目見同名 Markdown 檔。</p>
+    <ol class="refs">
+      <li>Deng et al. (2022). <a href="https://doi.org/10.1080/87567555.2021.1973947">College Teaching DOI</a></li>
+      <li>Deng, Zhou, &amp; Broadbent (2024). <a href="https://doi.org/10.1007/s10639-024-12786-w">Education and Information Technologies</a></li>
+      <li>Zhou &amp; Deng (2024). <a href="https://doi.org/10.14742/ajet.8941">AJET</a></li>
+      <li>Simanjuntak et al. (2022). <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9642801/">PMC9642801</a></li>
+      <li>Mahama (2025). <a href="https://repository.library.washu.edu/art_sci_etds/3633/">WashU thesis</a></li>
+      <li>Qian (2017). <a href="https://etd.ohiolink.edu/acprod/odb_etd/ws/send_file/send?accession=osu1503297396117411&amp;disposition=inline">Ohio State thesis</a></li>
+      <li>Borbone (2009). <a href="https://ils.unc.edu/MSpapers/3470.pdf">UNC Master’s paper</a></li>
+      <li>Sana, Weston, &amp; Cepeda (2013). <a href="https://www.sciencedirect.com/science/article/pii/S0360131512002254">Laptop multitasking</a></li>
+      <li>Han, Yang, &amp; Huang (2025). <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12426119/">Classroom injustice</a></li>
+      <li>Kay &amp; Lauricella (2011). <a href="https://jite.org/documents/Vol10/JITEv10IIPp033-042Kay840.pdf">Structured laptop use</a></li>
+    </ol>
+
+    <h2>提示詞歷史與變更記錄</h2>
+    <div class="archive">
+      <p><strong>🔹 [2026-11-11 11:00:18] Composer / deep-research report writer</strong></p>
+      <p>綜合 causes_motivation、effects_outcomes、interventions_comparison 三份研究筆記，依 report-writer 規範寫成獨立研究報告，並產出 MD／HTML。</p>
+      <pre>Read the notes in D:\CLASS_NOTE\inquiry-1\research_notes\課堂看他科資料原因研究\ and synthesize into a research report that answers: 為什麼很多學生會在課堂上看其他課程的資料 包含講義 課本 測驗卷，有沒有什麼相關研究？
+
+Earlier research in this conversation to build on: none
+
+Save your final report to this exact path: D:\CLASS_NOTE\inquiry-1\reports\課堂看他科資料原因研究.md
+
+**As a first step, you must read ...\deep-research\references\report-writer.md for instructions on how to write your research report.**</pre>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube 影片取得字幕並轉換成文字檔（.txt / .srt）完整解決方案指南</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'neutral' });</script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --primary-color: #1e3a8a;
+      --secondary-color: #2563eb;
+      --accent-color: #0d9488;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --code-bg: #0f172a;
+      --highlight-bg: #eff6ff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.8;
+      color: var(--text-main);
+      background-color: var(--bg-color);
+      padding: 2.5rem 1.5rem;
+    }
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 3rem;
+      border-radius: 14px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border-color);
+    }
+    .header-section {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .title-group { flex: 1; min-width: 280px; }
+    .title-group h1 {
+      font-size: 1.85rem;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+      line-height: 1.35;
+      font-weight: 800;
+    }
+    .metadata-card {
+      background: var(--highlight-bg);
+      border-left: 4px solid var(--secondary-color);
+      padding: 0.85rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+    }
+    .metadata-card p { margin: 0.25rem 0; }
+    .metadata-card strong { color: #1e40af; }
+    .btn-export {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #ffffff;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+    .btn-export:hover {
+      background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(239, 68, 68, 0.5);
+    }
+    h2 {
+      font-size: 1.55rem;
+      color: var(--primary-color);
+      margin: 3rem 0 1.2rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 2px solid #e0e7ff;
+    }
+    h3 { font-size: 1.25rem; color: #1e40af; margin: 2rem 0 0.9rem; }
+    h4 { font-size: 1.1rem; color: #0f766e; margin: 1.3rem 0 0.5rem; }
+    p { margin-bottom: 1.1rem; }
+    ul, ol { margin-left: 1.5rem; margin-bottom: 1.25rem; }
+    li { margin-bottom: 0.45rem; }
+    a { color: var(--secondary-color); text-decoration: none; font-weight: 500; }
+    a:hover { text-decoration: underline; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.94rem;
+      background: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      border: 1px solid var(--border-color);
+    }
+    th, td {
+      padding: 0.85rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+    }
+    th { background: #f1f5f9; color: #0f172a; font-weight: 700; }
+    tr:hover { background: #f8fafc; }
+    .code-container {
+      position: relative;
+      margin: 1.25rem 0 1.75rem;
+      background: var(--code-bg);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    }
+    .code-header {
+      background: #1e293b;
+      padding: 0.5rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      font-family: monospace;
+      border-bottom: 1px solid #334155;
+    }
+    .btn-copy {
+      background: #334155;
+      color: #f8fafc;
+      border: 1px solid #475569;
+      padding: 0.3rem 0.75rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s ease;
+    }
+    .btn-copy:hover { background: #475569; color: #ffffff; }
+    .btn-copy.copied { background: #16a34a; border-color: #16a34a; color: white; }
+    pre {
+      padding: 1.25rem;
+      overflow-x: auto;
+      color: #e2e8f0;
+      font-family: "Cascadia Code", "Fira Code", Consolas, Monaco, monospace;
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+    code {
+      font-family: "Cascadia Code", "Fira Code", Consolas, Monaco, monospace;
+      background: #f1f5f9;
+      color: #be123c;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      font-size: inherit;
+    }
+    .mermaid-box {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin: 1.25rem 0;
+      text-align: center;
+      overflow-x: auto;
+    }
+    .highlight-box {
+      background: #f0fdfa;
+      border-left: 4px solid var(--accent-color);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.25rem 0;
+    }
+    .warning-box {
+      background: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.25rem 0;
+    }
+    .formula-box {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      margin: 1.25rem 0;
+      text-align: center;
+    }
+    .archive-item {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+    @media print {
+      body { background: white; padding: 0; }
+      .container { box-shadow: none; border: none; padding: 1rem; max-width: 100%; }
+      .btn-export, .btn-copy { display: none !important; }
+      .code-container { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-section">
+      <div class="title-group">
+        <h1>🎬 YouTube 影片取得字幕並轉換成文字檔（.txt / .srt）完整解決方案指南</h1>
+        <div class="metadata-card">
+          <p><strong>最後更新時間：</strong>2026-11-11 08:50:00 (UTC+8)</p>
+          <p><strong>使用模型：</strong>Gemini 4 Argon (Medium)</p>
+          <p><strong>執行 Agent：</strong>Antigravity</p>
+          <p><strong>主題分類：</strong>PBL 專題研究 / 多媒體資訊檢索 / 自動語音辨識 (ASR) / Python 自動化</p>
+        </div>
+      </div>
+      <button class="btn-export" onclick="window.print()">🖨️ 匯出成 PDF</button>
+    </div>
+
+    <h2>🎯 摘要 (Summary)</h2>
+    <p>
+      將 YouTube 影片中的語音或字幕提取並轉換為純文字檔（<code>.txt</code> 逐字稿）或時間軸字幕檔（<code>.srt</code> / <code>.vtt</code>），在課堂筆記整理、PBL 專題文獻蒐集、AI 知識庫建置（RAG）與語料分析中是極為常見的需求。
+    </p>
+    <p>
+      本文件根據關鍵字搜尋與實務技術驗證，系統化整理 <strong>五大主流解決方案</strong>（從零程式碼的內建功能與線上工具，到工程師與研究人員常用的 <code>yt-dlp</code>、<code>youtube-transcript-api</code> 與 <code>Whisper</code> 本地 AI 語音辨識），剖析其底層運作原理、提供含流程圖與完整註解的 Python 實作範例，並針對各種方法的<strong>應用場景與限制</strong>進行全方位比較。
+    </p>
+
+    <h2>💡 1. 核心概念剖析 (Core Concepts)</h2>
+
+    <h3>1.1 YouTube 字幕轉文字的兩大技術路徑</h3>
+    <p>要從 YouTube 影片取得文字，底層技術可分為<strong>「直接提取現有字幕軌道」</strong>與<strong>「下載音訊重新進行 AI 語音辨識」</strong>兩條截然不同的路徑：</p>
+
+    <div class="mermaid-box">
+      <pre class="mermaid">
+flowchart TD
+    Start["輸入 YouTube 影片網址 (URL / Video ID)"] --> CheckSub{"影片是否已有字幕？<br/>(手動CC字幕 或 自動產生字幕)"}
+    
+    CheckSub -->|"有現成字幕 (快速路徑)"| PathA["路徑 A：字幕軌道提取<br/>(Caption Track Extraction)"]
+    CheckSub -->|"無字幕 或 自動字幕品質太差"| PathB["路徑 B：音訊提取 + AI 語音辨識<br/>(Audio Demux + ASR Transcription)"]
+    
+    PathA --> A1["方法 1：YouTube 網頁內建「顯示轉錄稿」"]
+    PathA --> A2["方法 2：第三方線上字幕下載網站 (DownSub / NoteGPT)"]
+    PathA --> A3["方法 3：CLI 工具 yt-dlp (--write-subs)"]
+    PathA --> A4["方法 4：Python youtube-transcript-api"]
+    
+    PathB --> B1["方法 2：AI 線上轉錄平台 (TurboScribe / NotebookLM)"]
+    PathB --> B2["方法 5：yt-dlp 下載音訊 + Whisper / Faster-Whisper"]
+    
+    A1 & A2 & A3 & A4 & B1 & B2 --> Clean["時間軸清洗與格式轉換<br/>(移除時間碼、合併斷句、標點修復)"]
+    Clean --> Output["輸出純文字檔 (.txt) 或 字幕檔 (.srt)"]
+      </pre>
+    </div>
+
+    <ol>
+      <li>
+        <strong>路徑 A — 字幕軌道提取（Caption Track Extraction）</strong>：
+        <ul>
+          <li><strong>原理</strong>：YouTube 影片若包含創作者上傳的字幕（Manual Captions）或 YouTube 伺服器預先算好的自動字幕（Auto-generated Captions），這些文字實際上以 XML / JSON3 / WebVTT 格式儲存在 YouTube 的 TimedText 伺服器上。工具只需透過 YouTube 的 Innertube API 請求該文字軌道，<strong>完全不必下載龐大的影音串流</strong>，因此可在 <strong>1～3 秒內</strong>完成提取。</li>
+          <li><strong>核心限制</strong>：若影片創作者關閉自動字幕、影片語言冷門、音訊含大量背景音樂導致 YouTube 未生成自動字幕，或屬於私人／限制嵌入影片，路徑 A 就會無法取得資料。</li>
+        </ul>
+      </li>
+      <li>
+        <strong>路徑 B — 音訊串流提取 + 自動語音辨識（Audio Stream + ASR）</strong>：
+        <ul>
+          <li><strong>原理</strong>：當影片完全沒有字幕時，必須先透過影音下載工具（如 <code>yt-dlp</code> 搭配 <code>FFmpeg</code>）從 YouTube 的 DASH / HLS 串流中分離出純音訊軌（如 <code>.mp3</code>、<code>.m4a</code> 或 <code>16kHz WAV</code>），再送入自動語音辨識（Automatic Speech Recognition, ASR）模型（如 OpenAI 開源的 <strong>Whisper</strong> 架構）。</li>
+          <li><strong>Whisper 聲學模型底層機制</strong>：將輸入音訊重新取樣至 $16,000\text{ Hz}$，計算 $80$ 頻道的對數梅爾頻譜圖（Log-Mel Spectrogram）特徵，再透過 <strong>Encoder-Decoder Transformer</strong> 序列到序列（Seq2Seq）模型直接預測多語言文字 Token 與時間戳記（Timestamps）。</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h3>1.2 字幕格式結構與語音辨識評估公式</h3>
+    <p>在將字幕轉為純文字（<code>.txt</code>）的過程中，常會接觸到以下檔案格式：</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>格式名稱</th>
+          <th>副檔名</th>
+          <th>內容結構特徵</th>
+          <th>轉換為純文字 (<code>.txt</code>) 的處理重點</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>SubRip</strong></td>
+          <td><code>.srt</code></td>
+          <td>由「序號」、「時間軸 (<code>00:00:01,000 --&gt; 00:00:04,000</code>)」與「字幕文字」三行一組構成。</td>
+          <td>需以正規表示式（Regex）濾除純數字序號行、時間軸行與多餘空行。</td>
+        </tr>
+        <tr>
+          <td><strong>WebVTT</strong></td>
+          <td><code>.vtt</code></td>
+          <td>YouTube 預設串流字幕格式，開頭有 <code>WEBVTT</code> 標頭，自動字幕常包含逐字時間標籤（如 <code>&lt;00:00:01.200&gt;&lt;c&gt;</code>）與滾動重複行。</td>
+          <td>除了移除時間軸與 HTML/VTT 標籤外，<strong>必須進行相鄰重複行去重（Deduplication）</strong>。</td>
+        </tr>
+        <tr>
+          <td><strong>JSON3</strong></td>
+          <td><code>.json3</code></td>
+          <td>YouTube 內部結構化字幕，包含 <code>events</code> 陣列與每個詞彙的毫秒級偏移量。</td>
+          <td>直接解析 JSON 結構提取 <code>segs[].utf8</code> 欄位即可無損串接。</td>
+        </tr>
+        <tr>
+          <td><strong>Plain Text</strong></td>
+          <td><code>.txt</code></td>
+          <td>純文字內容，不含時間軸與標籤。</td>
+          <td>可直接供 Word、Notion、Obsidian 或 LLM（ChatGPT / Gemini）讀取摘要。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4>語音辨識準確率指標：字錯率（Word Error Rate, WER / Character Error Rate, CER）</h4>
+    <p>衡量 YouTube 自動字幕與 Whisper AI 轉錄品質的標準數學指標為 <strong>WER（英文以詞為單位）</strong> 或 <strong>CER（中文以字元為單位）</strong>：</p>
+    <div class="formula-box">
+      $$\text{CER} = \frac{S + D + I}{N} \times 100\%$$
+    </div>
+    <ul>
+      <li>$S$（Substitutions）：被替換錯的字數（例如同音異字錯誤）。</li>
+      <li>$D$（Deletions）：漏掉未辨識出的字數（語速過快或吞音）。</li>
+      <li>$I$（Insertions）：多餘插入的字數（背景雜訊或模型幻覺重複）。</li>
+      <li>$N$：人工標準逐字稿（Ground Truth）的總字數。指標數值越低代表轉錄越精準。</li>
+    </ul>
+
+    <h2>🛠️ 2. 實作與應用範例 (Practical Examples)</h2>
+    <p>以下依技術門檻由淺入深，詳列五種將 YouTube 字幕轉換為文字檔的實作方法。</p>
+
+    <h3>2.1 方法一：YouTube 官方網頁內建「顯示轉錄稿」（免安裝、最快）</h3>
+    <p>如果只需要偶爾複製一兩部影片的字幕，YouTube 網頁版其實已內建逐字稿檢視器：</p>
+    <ol>
+      <li>在電腦瀏覽器打開目標 YouTube 影片。</li>
+      <li>點擊影片下方資訊欄的 <strong>「...更多」</strong> 展開完整說明。</li>
+      <li>向下捲動找到 <strong>「轉錄稿」</strong> 區塊，點擊 <strong>「顯示轉錄稿」（Show transcript）</strong> 按鈕。</li>
+      <li>影片右側（或下方）會出現完整字幕列表，點擊該面板右上角的 <strong>「⋮」（三個點）</strong> 選單，點擊 <strong>「切換時間戳記」（Toggle timestamps）</strong> 將時間隱藏。</li>
+      <li>直接用滑鼠反白全選文字，複製貼上到記事本（<code>.txt</code>）或 Word 即可。</li>
+    </ol>
+
+    <h3>2.2 方法二：第三方線上工具與 AI 知識庫平台（免寫程式、支援直接匯出檔案）</h3>
+    <p>當需要直接下載 <code>.txt</code> 或 <code>.srt</code> 檔案，或希望同時讓 AI 整理重點時，可使用以下經過驗證的線上工具：</p>
+    <ol>
+      <li>
+        <strong>純字幕提取下載站（速度最快，依賴影片原有字幕）</strong>：
+        <ul>
+          <li><a href="https://downsub.com/" target="_blank" rel="noopener"><strong>DownSub</strong></a>：貼上 YouTube 網址即可直接選擇下載 <code>[TXT]</code>（純文字檔）或 <code>[SRT]</code>（含時間軸字幕），並支援自動翻譯成繁體中文。</li>
+          <li><a href="https://youtube-transcript.ai/" target="_blank" rel="noopener"><strong>YouTube Transcript AI</strong></a>：貼上網址秒級提取字幕，提供一鍵複製純文字與下載檔案。</li>
+        </ul>
+      </li>
+      <li>
+        <strong>AI 筆記與摘要整合平台（兼具字幕提取與 AI 結構化整理）</strong>：
+        <ul>
+          <li><a href="https://notebooklm.google.com/" target="_blank" rel="noopener"><strong>Google NotebookLM</strong></a>：免費建立筆記本後，點擊「新增來源」→ 選擇「YouTube 連結」，Google 會自動抓取整部影片的轉錄文字稿作為知識庫來源，可在來源檢視器中複製完整文字稿，還能直接針對影片內容提問或生成學習指南。</li>
+          <li><a href="https://notegpt.io/youtube-transcript-generator" target="_blank" rel="noopener"><strong>NoteGPT</strong></a>：提供雙語對照逐字稿、時間戳記跳轉與一鍵下載 <code>.txt</code> 功能。</li>
+        </ul>
+      </li>
+      <li>
+        <strong>雲端 AI 語音轉錄平台（適合「完全沒有字幕」的影片）</strong>：
+        <ul>
+          <li><a href="https://turboscribe.ai/" target="_blank" rel="noopener"><strong>TurboScribe</strong></a>：底層採用 Whisper 大型模型，免費版每日可轉錄 3 部（每部最長 30 分鐘）無字幕影片，並可匯出 <code>.txt</code>、<code>.docx</code>、<code>.srt</code> 與 <code>.pdf</code>。</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h3>2.3 方法三：命令列工具 <code>yt-dlp</code> 下載字幕並自動清洗為 <code>.txt</code></h3>
+    <p>若需要批次處理多部影片或整個播放清單，開源專案 <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener"><strong>yt-dlp</strong></a> 是功能最強大的命令列工具。由於 <code>yt-dlp</code> 原生下載的自動字幕（<code>.vtt</code> 或 <code>.srt</code>）會包含時間軸與滾動重複行，我們可透過下方流程將其轉為乾淨的 <code>.txt</code> 文字檔。</p>
+
+    <h4>📊 程式邏輯流程圖 (<code>yt-dlp</code> 字幕提取與去重清洗)</h4>
+    <div class="mermaid-box">
+      <pre class="mermaid">
+flowchart LR
+    URL["輸入 YouTube 網址"] --> YTDLP["執行 yt-dlp<br/>--write-subs --write-auto-subs<br/>--skip-download"]
+    YTDLP --> SubFile["產生原始字幕檔<br/>(.vtt 或 .srt)"]
+    SubFile --> Regex["正規表示式清洗<br/>移除 WEBVTT 標頭、時間軸<br/>與 &lt;c&gt; 時間標籤"]
+    Regex --> Dedup["相鄰重複行去除<br/>(解決 YouTube 滾動字幕重複問題)"]
+    Dedup --> TxtOut["輸出乾淨純文字檔<br/>output.txt"]
+      </pre>
+    </div>
+
+    <h4>💻 步驟 1：終端機 CLI 指令（僅下載字幕、不下載影片）</h4>
+    <div class="code-container">
+      <div class="code-header"><span>bash</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div>
+      <pre><code># 1. 安裝 yt-dlp
+pip install -U yt-dlp
+
+# 2. 下載繁體中文/中文/英文字幕（優先手動字幕，若無則抓自動字幕），跳過影片下載並轉成 srt 格式
+yt-dlp --write-subs --write-auto-subs --sub-langs "zh-TW,zh-Hant,zh,en" --convert-subs srt --skip-download -o "subtitle_%(id)s" "https://www.youtube.com/watch?v=VIDEO_ID"</code></pre>
+    </div>
+
+    <h4>💻 步驟 2：Python 清洗 <code>.srt</code> / <code>.vtt</code> 為乾淨 <code>.txt</code> 腳本</h4>
+    <div class="code-container">
+      <div class="code-header"><span>python</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div>
+      <pre><code>import re
+from pathlib import Path
+
+def clean_subtitle_to_txt(sub_file_path: str, output_txt_path: str) -> None:
+    """
+    將 yt-dlp 下載的 .srt 或 .vtt 字幕檔清洗為無時間軸、無重複行的純文字檔 (.txt)
+    """
+    raw_text = Path(sub_file_path).read_text(encoding="utf-8", errors="ignore")
+    lines = raw_text.splitlines()
+
+    cleaned_lines = []
+    for line in lines:
+        line = line.strip()
+        # 1. 略過空行、WEBVTT 標頭、語系設定標頭與純數字序號行
+        if not line or line.startswith(("WEBVTT", "Kind:", "Language:", "NOTE")):
+            continue
+        if line.isdigit():
+            continue
+        # 2. 略過 SRT / VTT 時間軸行 (例如 00:00:01,000 --> 00:00:04,000)
+        if "-->" in line:
+            continue
+
+        # 3. 移除 VTT 內嵌的時間標籤與 HTML 標籤 (如 &lt;00:00:01.200&gt;&lt;c&gt;文字&lt;/c&gt;)
+        clean_line = re.sub(r"&lt;[^&gt;]+&gt;", "", line).strip()
+        if not clean_line:
+            continue
+
+        # 4. 去除相鄰重複行 (YouTube 自動產生的 VTT 常因雙行滾動而重複上一句)
+        if not cleaned_lines or cleaned_lines[-1] != clean_line:
+            cleaned_lines.append(clean_line)
+
+    # 5. 將清洗後的句子寫入 .txt 文字檔
+    Path(output_txt_path).write_text("\n".join(cleaned_lines), encoding="utf-8")
+    print(f"✅ 轉換完成！共輸出 {len(cleaned_lines)} 行文字至：{output_txt_path}")
+
+if __name__ == "__main__":
+    # 替換為實際下載的字幕檔路徑
+    clean_subtitle_to_txt("subtitle_VIDEO_ID.zh-TW.srt", "clean_transcript.txt")</code></pre>
+    </div>
+
+    <h3>2.4 方法四：Python <code>youtube-transcript-api</code> 直接抓取字幕轉文字檔</h3>
+    <p>如果你使用 Python 開發自動化腳本，<a href="https://github.com/jdepoix/youtube-transcript-api" target="_blank" rel="noopener"><strong><code>youtube-transcript-api</code></strong></a> 是最輕量、最快速的專用套件。它不需要申請 Google Cloud API Key，也不必安裝 Chrome WebDriver，即可直接提取字幕並透過內建的 <code>TextFormatter</code> 輸出成純文字檔。</p>
+
+    <h4>📊 程式邏輯流程圖 (<code>youtube-transcript-api</code> 提取流程)</h4>
+    <div class="mermaid-box">
+      <pre class="mermaid">
+flowchart TD
+    Input["輸入 YouTube 網址或 Video ID"] --> ParseID["使用正規表示式解析 11 碼 Video ID"]
+    ParseID --> InitAPI["初始化 YouTubeTranscriptApi<br/>設定語言優先順序：zh-TW > zh-Hant > zh > en"]
+    InitAPI --> Fetch{"呼叫 API 擷取字幕軌道"}
+    Fetch -->|"成功取得字幕片段"| FormatTxt["使用 TextFormatter / 迴圈串接<br/>轉為純文字與含時間戳記格式"]
+    Fetch -->|"找不到指定語言"| Translate["尋找可翻譯軌道並自動翻譯為 zh-TW"]
+    Translate --> FormatTxt
+    FormatTxt --> SaveFile["寫入 transcript.txt 與 transcript_timestamped.txt"]
+      </pre>
+    </div>
+
+    <h4>💻 完整 Python 實作程式碼（相容 <code>youtube-transcript-api</code> v1.0+ 與舊版 v0.6.x）</h4>
+    <div class="code-container">
+      <div class="code-header"><span>python</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div>
+      <pre><code>"""
+安裝套件：
+pip install youtube-transcript-api
+"""
+import re
+from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api.formatters import TextFormatter, SRTFormatter
+
+def extract_video_id(url_or_id: str) -> str:
+    """從各種 YouTube 網址格式 (watch?v=, youtu.be/, shorts/) 提取 11 碼 Video ID"""
+    pattern = r"(?:v=|\/videos\/|embed\/|youtu\.be\/|\/v\/|\/e\/|watch\?v=|&amp;v=|\/shorts\/)([a-zA-Z0-9_-]{11})"
+    match = re.search(pattern, url_or_id)
+    return match.group(1) if match else url_or_id.strip()
+
+def save_youtube_transcript(video_url: str, output_prefix: str = "output") -> None:
+    """
+    擷取 YouTube 字幕並同時儲存為：
+    1. 純文字檔 (.txt)
+    2. 含時間戳記對照的文字檔 (_timestamped.txt)
+    3. 標準字幕檔 (.srt)
+    """
+    video_id = extract_video_id(video_url)
+    # 設定語言優先順序：繁體中文 -> 中文 -> 簡體中文 -> 英文
+    preferred_langs = ["zh-TW", "zh-Hant", "zh", "zh-Hans", "en"]
+
+    print(f"🔍 正在擷取影片 ID [{video_id}] 的字幕...")
+
+    # 相容性處理：支援 youtube-transcript-api v1.0+ 物件語法與 v0.6.x 靜態方法
+    ytt_api = YouTubeTranscriptApi()
+    if hasattr(ytt_api, "fetch"):
+        # v1.0.0+ 新版語法
+        fetched_transcript = ytt_api.fetch(video_id, languages=preferred_langs)
+        raw_entries = fetched_transcript.to_raw_data()
+    else:
+        # v0.6.x 舊版語法
+        fetched_transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=preferred_langs)
+        raw_entries = fetched_transcript
+
+    # 1. 使用內建 TextFormatter 轉為純文字檔 (.txt)
+    txt_formatter = TextFormatter()
+    plain_text = txt_formatter.format_transcript(fetched_transcript)
+    txt_filename = f"{output_prefix}.txt"
+    with open(txt_filename, "w", encoding="utf-8") as f:
+        f.write(plain_text)
+
+    # 2. 儲存包含 [分:秒] 時間戳記的閱讀版文字檔 (方便回頭查考影片段落)
+    ts_filename = f"{output_prefix}_timestamped.txt"
+    with open(ts_filename, "w", encoding="utf-8") as f:
+        for item in raw_entries:
+            minutes = int(item["start"] // 60)
+            seconds = int(item["start"] % 60)
+            text_line = item["text"].replace("\n", " ")
+            f.write(f"[{minutes:02d}:{seconds:02d}] {text_line}\n")
+
+    # 3. 使用內建 SRTFormatter 儲存標準 .srt 字幕檔
+    srt_formatter = SRTFormatter()
+    srt_text = srt_formatter.format_transcript(fetched_transcript)
+    srt_filename = f"{output_prefix}.srt"
+    with open(srt_filename, "w", encoding="utf-8") as f:
+        f.write(srt_text)
+
+    print(f"✅ 字幕轉換成功！")
+    print(f"   📄 純文字檔：{txt_filename}")
+    print(f"   ⏱️ 時間戳記版：{ts_filename}")
+    print(f"   🎬 SRT 字幕檔：{srt_filename}")
+
+if __name__ == "__main__":
+    # 輸入任意含有字幕的 YouTube 影片網址
+    sample_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    save_youtube_transcript(sample_url, output_prefix="youtube_note")</code></pre>
+    </div>
+
+    <h3>2.5 方法五：終極雙軌方案 — <code>yt-dlp</code> + <code>faster-whisper</code> 本地 AI 語音辨識（支援無字幕影片）</h3>
+    <p>當遇到<strong>完全沒有 CC 字幕也沒有自動字幕</strong>的影片（例如學校演講錄影、無字幕 Vlog、專業技術研討會），或是 YouTube 內建自動字幕錯字太多時，最佳工程實踐是建立<strong>「智慧雙軌 Fallback 管線」</strong>：</p>
+    <ol>
+      <li><strong>第一軌（極速軌道）</strong>：先嘗試用 <code>youtube-transcript-api</code> 秒抓現成字幕。</li>
+      <li><strong>第二軌（AI 語音辨識備援）</strong>：若影片無字幕，自動呼叫 <code>yt-dlp</code> 下載音訊，並交由 <a href="https://github.com/SYSTRAN/faster-whisper" target="_blank" rel="noopener"><strong><code>faster-whisper</code></strong></a>（基於 CTranslate2 優化的 Whisper 引擎，速度比原版 <code>openai-whisper</code> 快 <strong>4 倍</strong>、記憶體佔用減半）進行本地 AI 語音轉文字。</li>
+    </ol>
+
+    <h4>📊 程式邏輯流程圖 (智慧雙軌 Fallback：API 優先 + Whisper AI 備援)</h4>
+    <div class="mermaid-box">
+      <pre class="mermaid">
+flowchart TD
+    Start["輸入 YouTube 影片網址"] --> TryFast["第一軌：嘗試使用 youtube-transcript-api<br/>抓取現成字幕"]
+    TryFast --> HasSub{"是否成功取得字幕？"}
+    
+    HasSub -->|"是 (耗時 ~1 秒)"| SaveDirect["直接格式化並輸出 .txt 文字檔"]
+    
+    HasSub -->|"否 (無字幕或被停用)"| Fallback["啟動第二軌：AI 語音辨識備援"]
+    Fallback --> DownloadAudio["使用 yt-dlp + FFmpeg<br/>僅提取最佳音訊軌 (temp_audio.m4a)"]
+    DownloadAudio --> LoadWhisper["載入 Faster-Whisper 模型<br/>(自動偵測 CUDA GPU 或 CPU INT8 量化)"]
+    LoadWhisper --> VAD["啟用 Silero VAD 語音活動偵測<br/>過濾靜音與背景音樂雜訊"]
+    VAD --> Transcribe["執行 AI 語音轉錄 (Beam Search = 5)<br/>自動加上標點符號與時間軸"]
+    Transcribe --> SaveWhisper["輸出高精準度 .txt 文字檔<br/>並清理暫存音訊檔"]
+    
+    SaveDirect & SaveWhisper --> End["完成轉檔！"]
+      </pre>
+    </div>
+
+    <h4>💻 完整 Python 實作程式碼（智慧雙軌整合腳本）</h4>
+    <div class="code-container">
+      <div class="code-header"><span>python</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div>
+      <pre><code>"""
+事前準備：
+1. 系統需安裝 FFmpeg (Windows 可執行: winget install Gyan.FFmpeg)
+2. 安裝 Python 套件：
+   pip install youtube-transcript-api yt-dlp faster-whisper
+"""
+import os
+import re
+import yt_dlp
+from faster_whisper import WhisperModel
+from youtube_transcript_api import YouTubeTranscriptApi
+
+def get_video_id(url: str) -> str:
+    """從網址解析 11 碼 YouTube Video ID"""
+    match = re.search(r"(?:v=|youtu\.be\/|shorts\/)([a-zA-Z0-9_-]{11})", url)
+    return match.group(1) if match else url.strip()
+
+def transcribe_youtube_smart(
+    youtube_url: str,
+    output_txt: str = "final_transcript.txt",
+    force_whisper: bool = False,
+    whisper_model_size: str = "base"
+) -> None:
+    """
+    智慧雙軌 YouTube 轉文字工具：
+    - 若 force_whisper=False，優先使用 youtube-transcript-api 秒抓現成字幕。
+    - 若影片無字幕或設定 force_whisper=True，則自動下載音訊並用 faster-whisper 轉錄。
+    """
+    video_id = get_video_id(youtube_url)
+
+    # ==================== 第一軌：嘗試抓取現有 YouTube 字幕 ====================
+    if not force_whisper:
+        try:
+            print(f"⚡ [第一軌] 嘗試直接抓取影片 [{video_id}] 的現成字幕...")
+            ytt_api = YouTubeTranscriptApi()
+            langs = ["zh-TW", "zh-Hant", "zh", "en"]
+            if hasattr(ytt_api, "fetch"):
+                fetched = ytt_api.fetch(video_id, languages=langs)
+                entries = fetched.to_raw_data()
+            else:
+                entries = YouTubeTranscriptApi.get_transcript(video_id, languages=langs)
+
+            with open(output_txt, "w", encoding="utf-8") as f:
+                for entry in entries:
+                    f.write(entry["text"].strip() + "\n")
+            print(f"✅ [第一軌成功] 已快速匯出文字檔至：{output_txt}")
+            return
+        except Exception as e:
+            print(f"⚠️ 無法直接取得現成字幕 ({e})，自動切換至 [第二軌：Whisper AI 語音辨識]...")
+
+    # ==================== 第二軌：yt-dlp 下載音訊 + Faster-Whisper 轉錄 ====================
+    temp_audio = f"temp_{video_id}.m4a"
+    ydl_opts = {
+        "format": "bestaudio[ext=m4a]/bestaudio/best",
+        "outtmpl": temp_audio,
+        "quiet": False,
+        "overwrites": True,
+    }
+
+    print(f"📥 [第二軌 1/2] 正在透過 yt-dlp 下載純音訊串流...")
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([youtube_url])
+
+    print(f"🧠 [第二軌 2/2] 正在載入 Faster-Whisper ({whisper_model_size}) 模型進行 AI 語音辨識...")
+    # 在 CPU 環境使用 int8 量化可大幅提升速度並降低記憶體消耗；若有 NVIDIA GPU 可改為 device="cuda", compute_type="float16"
+    model = WhisperModel(whisper_model_size, device="cpu", compute_type="int8")
+
+    # 啟用 vad_filter=True 過濾靜音區段，避免 Whisper 在無聲處產生重複字詞幻覺
+    segments, info = model.transcribe(
+        temp_audio,
+        beam_size=5,
+        vad_filter=True,
+        initial_prompt="以下是繁體中文的逐字稿，包含正確的標點符號。"
+    )
+
+    print(f"🌐 偵測語言：{info.language} (信心度：{info.language_probability:.2%})")
+
+    with open(output_txt, "w", encoding="utf-8") as f:
+        for segment in segments:
+            line = segment.text.strip()
+            print(f"[{segment.start:6.2f}s -> {segment.end:6.2f}s] {line}")
+            f.write(line + "\n")
+
+    # 清理暫存音訊檔
+    if os.path.exists(temp_audio):
+        os.remove(temp_audio)
+
+    print(f"✅ [第二軌成功] AI 語音轉錄完成！文字檔已儲存至：{output_txt}")
+
+if __name__ == "__main__":
+    target_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    # 預設先抓現成字幕，無字幕才跑 Whisper；若想強制使用 Whisper 高精度辨識可設 force_whisper=True
+    transcribe_youtube_smart(target_url, output_txt="lecture_note.txt", force_whisper=False, whisper_model_size="small")</code></pre>
+    </div>
+
+    <h3>2.6 實戰工具封裝：可重複使用的 YouTube CC 字幕轉文字檔工具 (<code>yt_sub_to_txt.py</code>)</h3>
+    <p>針對擁有 CC 字幕的影片（如實測範例 <code>https://youtu.be/oIk3R-sMX5o</code> — <em>Chip design from the bottom up – Reiner Pope</em>），我們將上述技術封裝成一支可無限次重複使用的獨立工具 <a href="./yt_sub_to_txt.py"><code>yt_sub_to_txt.py</code></a>，具備以下四大工程設計：</p>
+    <ol>
+      <li><strong>自動影片中繼資料解析（oEmbed API）</strong>：免 API Key 自動取得影片標題與頻道作者，並過濾非法字元自動命名輸出檔案。</li>
+      <li><strong>智慧字幕軌道選擇（手動 CC 優先）</strong>：優先挑選創作者上傳的 <code>Manually Created</code> 高品質 CC 字幕，若無才退回自動產生字幕。</li>
+      <li><strong>智慧自然段落合併（Paragraph Merging）</strong>：解決原始字幕每 3 秒強制換行造成的閱讀破碎感，根據句尾標點（<code>.</code>、<code>?</code>、<code>!</code>、<code>。</code>）與停頓秒數自動重組為流暢段落。</li>
+      <li>
+        <strong>三種重複使用模式</strong>：
+        <ul>
+          <li><strong>模式 A（CLI 單次/批次轉檔）</strong>：<code>python yt_sub_to_txt.py https://youtu.be/oIk3R-sMX5o</code></li>
+          <li><strong>模式 B（互動式循環輸入）</strong>：直接執行 <code>python yt_sub_to_txt.py</code>，可連續貼上多部影片網址重複轉檔。</li>
+          <li><strong>模式 C（Tkinter 圖形化視窗 GUI）</strong>：執行 <code>python yt_sub_to_txt.py --gui</code>，開啟視窗介面一鍵貼上網址轉檔。</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h4>📊 程式邏輯流程圖 (<code>yt_sub_to_txt.py</code> 可重複使用工具架構)</h4>
+    <div class="mermaid-box">
+      <pre class="mermaid">
+flowchart TD
+    Entry["啟動 yt_sub_to_txt.py"] --> Mode{"選擇執行模式"}
+    Mode -->|"傳入網址參數"| CLI["模式 A：CLI 直接/批次轉檔"]
+    Mode -->|"無參數啟動"| Loop["模式 B：終端機互動式循環輸入<br/>(可連續貼上網址重複使用)"]
+    Mode -->|"加上 --gui 參數"| GUI["模式 C：Tkinter 圖形視窗介面"]
+
+    CLI &amp; Loop &amp; GUI --> Parse["1. 解析 11 碼 Video ID<br/>2. 呼叫 oEmbed 取得影片標題與作者"]
+    Parse --> SelectTrack["3. 查詢字幕清單並優先選取「手動建立 CC 字幕」"]
+    SelectTrack --> Export1["輸出檔案 1：純文字自然段落版 (.txt)<br/>自動合併破碎短句，適合筆記與 AI 摘要"]
+    SelectTrack --> Export2["輸出檔案 2：時間戳記對照版 (_timestamped.txt)<br/>每行附帶 [MM:SS] 方便回查影片"]
+    SelectTrack --> Export3["輸出檔案 3：標準時間軸字幕檔 (.srt)<br/>可供播放器外掛載入"]
+      </pre>
+    </div>
+
+    <h4>💻 實際執行成果（以 <code>oIk3R-sMX5o</code> 與 <code>gvi0OE5OzOk</code> 兩部影片實測）</h4>
+    <p>在終端機執行以下指令即可隨時重複轉換任意 YouTube 影片：</p>
+    <div class="code-container">
+      <div class="code-header"><span>bash</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div>
+      <pre><code># 方式 1：直接傳入一個或多個 YouTube 網址立即轉檔
+python yt_sub_to_txt.py https://youtu.be/oIk3R-sMX5o https://youtu.be/gvi0OE5OzOk
+
+# 方式 2：啟動互動式循環模式（可連續貼上網址重複轉檔）
+python yt_sub_to_txt.py
+
+# 方式 3：啟動圖形化視窗介面 (GUI)
+python yt_sub_to_txt.py --gui</code></pre>
+    </div>
+
+    <div class="highlight-box">
+      <strong>1. 實測影片一：<code>https://youtu.be/oIk3R-sMX5o</code>（<em>Chip design from the bottom up – Reiner Pope</em>，手動建立 CC 字幕）</strong>
+      <ul>
+        <li>📄 <strong>純文字自然段落檔（351 行完整文章段落）</strong>：<a href="./oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20%E2%80%93%20Reiner%20Pope.txt"><code>oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope.txt</code></a></li>
+        <li>⏱️ <strong>時間戳記逐句對照檔（761 行含 <code>[MM:SS]</code> 時間碼）</strong>：<a href="./oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20%E2%80%93%20Reiner%20Pope_timestamped.txt"><code>oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope_timestamped.txt</code></a></li>
+        <li>🎬 <strong>標準 SubRip 字幕檔</strong>：<a href="./oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20%E2%80%93%20Reiner%20Pope.srt"><code>oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope.srt</code></a></li>
+      </ul>
+      <br/>
+      <strong>2. 實測影片二：<code>https://youtu.be/gvi0OE5OzOk</code>（<em>14 GPU Architecture 1</em> by <code>Yifan&amp;GPU</code>，自動產生英文字幕）</strong>
+      <ul>
+        <li>📄 <strong>純文字自然段落檔（由 1,740 句自動字幕重組為 299 行自然段落）</strong>：<a href="./gvi0OE5OzOk_14%20GPU%20Architecture%201.txt"><code>gvi0OE5OzOk_14 GPU Architecture 1.txt</code></a></li>
+        <li>⏱️ <strong>時間戳記逐句對照檔（1,740 行含 <code>[MM:SS]</code> 時間碼）</strong>：<a href="./gvi0OE5OzOk_14%20GPU%20Architecture%201_timestamped.txt"><code>gvi0OE5OzOk_14 GPU Architecture 1_timestamped.txt</code></a></li>
+        <li>🎬 <strong>標準 SubRip 字幕檔</strong>：<a href="./gvi0OE5OzOk_14%20GPU%20Architecture%201.srt"><code>gvi0OE5OzOk_14 GPU Architecture 1.srt</code></a></li>
+      </ul>
+    </div>
+
+    <h4>💻 <code>yt_sub_to_txt.py</code> 核心程式碼（含完整註解）</h4>
+    <div class="code-container">
+      <div class="code-header"><span>python</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div>
+      <pre><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+YouTube CC 字幕提取與文字檔轉換工具 (yt_sub_to_txt.py)
+支援：單次/批次 CLI、互動式循環輸入、以及 --gui 圖形化視窗模式
+"""
+import argparse
+import re
+import sys
+from pathlib import Path
+from typing import Dict, List, Optional
+import requests
+from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api.formatters import SRTFormatter
+
+
+def extract_video_id(url_or_id: str) -> str:
+    """從各種 YouTube 網址格式 (youtu.be/, watch?v=, shorts/) 提取 11 碼 Video ID"""
+    text = url_or_id.strip()
+    pattern = r"(?:v=|\/videos\/|embed\/|youtu\.be\/|\/v\/|\/e\/|watch\?v=|&amp;v=|\/shorts\/)([a-zA-Z0-9_-]{11})"
+    match = re.search(pattern, text)
+    if match:
+        return match.group(1)
+    if re.fullmatch(r"[a-zA-Z0-9_-]{11}", text):
+        return text
+    raise ValueError(f"無法從輸入字串解析出有效的 YouTube Video ID: {url_or_id}")
+
+
+def fetch_video_metadata(video_id: str) -> Dict[str, str]:
+    """透過 YouTube 官方 oEmbed API 取得影片標題與作者名稱（免 API Key）"""
+    watch_url = f"https://www.youtube.com/watch?v={video_id}"
+    try:
+        resp = requests.get(
+            "https://www.youtube.com/oembed",
+            params={"url": watch_url, "format": "json"},
+            timeout=10,
+        )
+        if resp.status_code == 200:
+            data = resp.json()
+            return {
+                "title": data.get("title", video_id),
+                "author": data.get("author_name", "Unknown"),
+                "url": watch_url,
+            }
+    except Exception:
+        pass
+    return {"title": video_id, "author": "Unknown", "url": watch_url}
+
+
+def merge_snippets_to_paragraphs(entries: List[Dict], pause_threshold: float = 2.0) -> str:
+    """將破碎的 CC 字幕片段依標點符號與停頓秒數合併為自然閱讀段落"""
+    paragraphs, current_chunk, current_len, prev_end = [], [], 0, None
+    for item in entries:
+        text = re.sub(r"\s+", " ", item["text"]).strip()
+        if not text:
+            continue
+        start = float(item.get("start", 0.0))
+        duration = float(item.get("duration", 0.0))
+        long_pause = (prev_end is not None) and ((start - prev_end) &gt; pause_threshold)
+        prev_end = start + duration
+
+        if long_pause and current_chunk:
+            paragraphs.append(" ".join(current_chunk))
+            current_chunk, current_len = [], 0
+
+        current_chunk.append(text)
+        current_len += len(text)
+        if text.endswith((".", "?", "!", "。", "？", "！")) and current_len &gt;= 280:
+            paragraphs.append(" ".join(current_chunk))
+            current_chunk, current_len = [], 0
+
+    if current_chunk:
+        paragraphs.append(" ".join(current_chunk))
+    return "\n\n".join(paragraphs)</code></pre>
+    </div>
+
+    <h2>🚀 3. 延伸思考與進階主題 (Extensions &amp; Advanced Topics)</h2>
+
+    <h3>3.1 五大解決方案之應用與限制完整比較表</h3>
+    <p>為了協助在不同專題規模與硬體條件下做出最佳選擇，下表綜合比較五種方法的<strong>適用場景、速度、準確率與核心限制</strong>：</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>方法名稱</th>
+          <th>是否需原影片有字幕？</th>
+          <th>轉換速度</th>
+          <th>標點符號與準確率</th>
+          <th>技術門檻</th>
+          <th>最適合的應用場景</th>
+          <th>主要限制與缺點</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. YouTube 內建「顯示轉錄稿」</strong></td>
+          <td><strong>是</strong>（需有手動或自動字幕）</td>
+          <td>⭐⭐⭐⭐⭐<br/>（即時）</td>
+          <td>依賴原字幕<br/>（自動字幕無標點）</td>
+          <td>零門檻</td>
+          <td>臨時查閱單部影片、快速複製幾段重點引述。</td>
+          <td>無法直接匯出 <code>.txt</code> / <code>.srt</code> 檔；長影片手動反白複製較繁瑣；無字幕影片無法使用。</td>
+        </tr>
+        <tr>
+          <td><strong>2. 第三方線上工具 / NotebookLM</strong></td>
+          <td>視工具而定<br/>（DownSub 需有字幕；TurboScribe 免字幕）</td>
+          <td>⭐⭐⭐⭐<br/>（數秒～數分）</td>
+          <td>高（AI 平台會自動斷句與加標點）</td>
+          <td>極低</td>
+          <td>學生整理課堂筆記、需要 AI 順便產生摘要與心智圖。</td>
+          <td>免費版通常有每日次數或影片長度（如 30 分鐘）限制；不適合上百部影片的自動化批次處理。</td>
+        </tr>
+        <tr>
+          <td><strong>3. CLI 工具 <code>yt-dlp</code></strong></td>
+          <td><strong>是</strong>（僅抓字幕時）</td>
+          <td>⭐⭐⭐⭐⭐<br/>（1～3 秒/部）</td>
+          <td>依賴原字幕</td>
+          <td>中（需熟悉命令列）</td>
+          <td><strong>整個播放清單或頻道</strong>的上百部影片批次抓字幕、Shell 自動化腳本。</td>
+          <td>原生輸出為 <code>.vtt</code> / <code>.srt</code>，自動字幕含有時間標籤與滾動重複行，需額外跑清洗腳本才能變成乾淨 <code>.txt</code>。</td>
+        </tr>
+        <tr>
+          <td><strong>4. Python <code>youtube-transcript-api</code></strong></td>
+          <td><strong>是</strong>（需有手動或自動字幕）</td>
+          <td>⭐⭐⭐⭐⭐<br/>（1～2 秒/部）</td>
+          <td>依賴原字幕</td>
+          <td>中（需基礎 Python）</td>
+          <td>整合至 Python 資料爬蟲、RAG 知識庫管線、Discord / Line 摘要機器人。</td>
+          <td>只要影片無字幕或創作者關閉字幕即拋出 <code>TranscriptsDisabled</code> 例外；高頻率大量請求可能觸發 IP 限制。</td>
+        </tr>
+        <tr>
+          <td><strong>5. <code>yt-dlp</code> + <code>faster-whisper</code> (本地 AI)</strong></td>
+          <td><strong>否</strong>（只要有聲音就能轉！）</td>
+          <td>⭐⭐<br/>（視硬體與影片長度）</td>
+          <td>⭐⭐⭐⭐⭐<br/>（極高，支援 <code>initial_prompt</code> 繁體標點）</td>
+          <td>中高（需 Python + FFmpeg）</td>
+          <td><strong>完全沒有字幕的演講/訪談影片</strong>、中英夾雜專業術語課程、高隱私需求。</td>
+          <td>需要下載音訊並消耗本地 CPU / GPU 算力；在無獨立顯卡的輕薄筆電上跑 <code>large</code> 模型較慢。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>3.2 「有字幕影片」vs.「無字幕影片」工具選型對照指南</h3>
+    <p>在實務應用中，決定該用哪種工具的最關鍵分水嶺就是<strong>「目標 YouTube 影片本身有沒有字幕軌道」</strong>。以下提供完整的決策流程圖與對照表：</p>
+
+    <h4>📊 工具選型決策流程圖</h4>
+    <div class="mermaid-box">
+      <pre class="mermaid">
+flowchart TD
+    Check["目標 YouTube 影片"] --> SubStatus{"1. 檢查影片字幕狀態<br/>(點擊播放器 [CC] 按鈕)"}
+    
+    SubStatus -->|"情況 A：有「手動上傳 CC 字幕」<br/>(如 oIk3R-sMX5o)"| Manual["字幕品質極佳、含完整標點<br/>👉 走【字幕軌道提取】秒速完成"]
+    SubStatus -->|"情況 B：僅有「自動產生字幕」<br/>(如 gvi0OE5OzOk)"| AutoSub{"2. 自動字幕的準確率可接受嗎？"}
+    SubStatus -->|"情況 C：完全「沒有任何字幕」<br/>([CC] 按鈕反灰不可按)"| NoSub["無文字軌道可抓<br/>👉 必須走【音訊提取 + AI 語音辨識】"]
+    
+    AutoSub -->|"可接受 (如發音清楚的英文演講)"| Manual
+    AutoSub -->|"不可接受 (中英夾雜、口音重、錯字多)"| NoSub
+    
+    Manual --> M_NoCode["免寫程式：<br/>• YouTube 內建「顯示轉錄稿」<br/>• DownSub / NoteGPT<br/>• Google NotebookLM"]
+    Manual --> M_Code["程式自動化 / 重複使用：<br/>• yt_sub_to_txt.py (youtube-transcript-api)<br/>• yt-dlp --write-subs"]
+    
+    NoSub --> N_NoCode["免寫程式：<br/>• TurboScribe (雲端 Whisper)<br/>• yt-dlp 下載音訊 + NotebookLM / Gemini"]
+    NoSub --> N_Code["程式自動化 / 無長度限制：<br/>• yt-dlp + Faster-Whisper 本地轉錄<br/>(第 2.5 節 transcribe_youtube_smart)"]
+      </pre>
+    </div>
+
+    <h4>📋 一、依影片字幕狀態分類：各情境最適合的工具</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>影片字幕狀態</th>
+          <th>字幕特徵與痛點</th>
+          <th>✅ 最適合使用的工具（推薦首選）</th>
+          <th>❌ 不適合／會失效的工具</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>情況 A：有「手動上傳 CC 字幕」</strong><br/><em>(如實測一：<code>oIk3R-sMX5o</code>)</em></td>
+          <td>• 創作者人工校對上傳，專有名詞最準確。<br/>• 已包含正確標點符號，僅每 3 秒斷行一次。</td>
+          <td>
+            1. <strong>重複/批次轉檔首選</strong>：<a href="./yt_sub_to_txt.py"><code>yt_sub_to_txt.py</code></a>（<code>youtube-transcript-api</code>），1 秒抓取並自動合併成自然段落。<br/>
+            2. <strong>單次免安裝首選</strong>：YouTube 內建「顯示轉錄稿」、<strong>DownSub</strong>。<br/>
+            3. <strong>AI 互動問答首選</strong>：<strong>Google NotebookLM</strong>（直接貼上網址）。
+          </td>
+          <td>• <strong>Whisper 重新語音辨識</strong>：雖可使用，但耗時數分鐘且浪費算力，人工校對過的 CC 字幕通常比 AI 聽寫更準。</td>
+        </tr>
+        <tr>
+          <td><strong>情況 B：僅有「YouTube 自動產生字幕」</strong><br/><em>(如實測二：<code>gvi0OE5OzOk</code>)</em></td>
+          <td>• 可透過 API 秒抓，不需下載音訊。<br/>• <strong>痛點</strong>：斷句非常零碎（如 1,740 句短詞），中文自動字幕常無標點符號，中英夾雜易有同音錯字。</td>
+          <td>
+            1. <strong>英文課程快速轉檔</strong>：<a href="./yt_sub_to_txt.py"><code>yt_sub_to_txt.py</code></a>（利用內建段落合併功能將破碎短句重組為完整段落）。<br/>
+            2. <strong>自動補標點與除錯</strong>：抓出 <code>.txt</code> 後餵給 <strong>Gemini / ChatGPT</strong> 補上標點並修正專有名詞。<br/>
+            3. <strong>若自動字幕錯字太多</strong>：改用 <strong><code>yt-dlp</code> + <code>faster-whisper</code></strong> 重新轉錄。
+          </td>
+          <td>• <strong>直接下載原始 <code>.vtt</code> 未清洗</strong>：YouTube 自動字幕的 <code>.vtt</code> 檔含大量 <code>&lt;c&gt;</code> 時間標籤與滾動重複行，未經腳本清洗無法直接閱讀。</td>
+        </tr>
+        <tr>
+          <td><strong>情況 C：完全「沒有任何字幕」的影片</strong><br/><em>(如課堂側錄、中文訪談、關閉字幕影片)</em></td>
+          <td>• 播放器上的 <code>[CC]</code> 按鈕反灰無法點擊。<br/>• YouTube 伺服器上沒有任何文字檔，所有「純字幕提取器」都會報錯。</td>
+          <td>
+            1. <strong>本地無限轉錄首選</strong>：<strong><code>yt-dlp</code>（下載純音訊）+ <code>faster-whisper</code>（AI 語音辨識）</strong>（即第 2.5 節智慧雙軌腳本）。<br/>
+            2. <strong>免寫程式雲端首選（30 分鐘內）</strong>：<strong>TurboScribe</strong>（貼網址或上傳音訊由雲端 Whisper 轉文字）。<br/>
+            3. <strong>長音訊 AI 摘要</strong>：先用 <code>yt-dlp -x</code> 抓出 <code>.m4a</code> 音訊，再將音訊檔上傳至 <strong>NotebookLM</strong> 或 <strong>Gemini API</strong>。
+          </td>
+          <td>
+            • ❌ <strong>YouTube 內建「顯示轉錄稿」</strong>（無按鈕）<br/>
+            • ❌ <strong>DownSub / YouTube Transcript AI</strong>（顯示無字幕）<br/>
+            • ❌ <strong>純 <code>youtube-transcript-api</code></strong>（拋出 <code>TranscriptsDisabled</code> 或 <code>NoTranscriptFound</code>）
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4>📋 二、各工具在「有字幕」與「無字幕」影片之支援度矩陣</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>工具名稱</th>
+          <th>有手動 CC 字幕</th>
+          <th>僅有自動產生字幕</th>
+          <th>完全無字幕影片</th>
+          <th>輸出 <code>.txt</code> 品質與操作建議</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>YouTube 內建「顯示轉錄稿」</strong></td>
+          <td>⭐⭐⭐⭐⭐ 支援</td>
+          <td>⭐⭐⭐⭐ 支援</td>
+          <td>❌ <strong>不支援</strong></td>
+          <td>需手動隱藏時間戳記並反白複製，適合單片臨時查閱。</td>
+        </tr>
+        <tr>
+          <td><strong>DownSub / NoteGPT</strong></td>
+          <td>⭐⭐⭐⭐⭐ 支援</td>
+          <td>⭐⭐⭐⭐ 支援</td>
+          <td>❌ <strong>不支援</strong></td>
+          <td>貼網址即可下載 <code>.txt</code> / <code>.srt</code>，免裝軟體最方便。</td>
+        </tr>
+        <tr>
+          <td><strong>Google NotebookLM</strong></td>
+          <td>⭐⭐⭐⭐⭐ 支援</td>
+          <td>⭐⭐⭐⭐ 支援</td>
+          <td>⚠️ 貼網址不支援<br/><em>(改上傳音訊檔則支援)</em></td>
+          <td>若影片無字幕，直接貼 YouTube 網址會匯入失敗；但先下載成 <code>.mp3</code>/<code>.m4a</code> 上傳，NotebookLM 會自動語音轉文字！</td>
+        </tr>
+        <tr>
+          <td><strong><code>yt_sub_to_txt.py</code> (<code>youtube-transcript-api</code>)</strong></td>
+          <td>⭐⭐⭐⭐⭐ <strong>最佳首選</strong></td>
+          <td>⭐⭐⭐⭐⭐ <strong>最佳首選</strong></td>
+          <td>❌ <strong>不支援</strong></td>
+          <td><strong>有字幕影片的自動化首選</strong>：1～2 秒完成，且能將破碎短句合併為自然段落。</td>
+        </tr>
+        <tr>
+          <td><strong><code>yt-dlp --write-subs --write-auto-subs</code></strong></td>
+          <td>⭐⭐⭐⭐⭐ 支援</td>
+          <td>⭐⭐⭐⭐ 支援</td>
+          <td>❌ <strong>不支援</strong></td>
+          <td>適合整個播放清單批次抓 <code>.srt</code>，需搭配正規表示式清洗腳本轉 <code>.txt</code>。</td>
+        </tr>
+        <tr>
+          <td><strong>TurboScribe (雲端 AI)</strong></td>
+          <td>⭐⭐⭐ 支援</td>
+          <td>⭐⭐⭐⭐ 支援</td>
+          <td>⭐⭐⭐⭐⭐ <strong>免寫程式首選</strong></td>
+          <td>不管有無字幕皆是下載音訊跑 Whisper AI，準確率極高，惟免費版每日限 3 次（每次 30 分鐘）。</td>
+        </tr>
+        <tr>
+          <td><strong><code>yt-dlp</code> + <code>faster-whisper</code> (雙軌腳本)</strong></td>
+          <td>⭐⭐⭐⭐⭐ 支援<br/><em>(第一軌秒抓)</em></td>
+          <td>⭐⭐⭐⭐⭐ 支援<br/><em>(可選重轉提高精度)</em></td>
+          <td>⭐⭐⭐⭐⭐ <strong>無字幕終極首選</strong></td>
+          <td><strong>全能方案</strong>：有字幕時走第一軌 1 秒抓完；無字幕時自動切換第二軌下載音訊跑本地 AI 語音辨識，無次數與片長限制。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>3.3 邊界條件與常見坑點 (Edge Cases &amp; Pitfalls)</h3>
+    <ul>
+      <li>
+        <strong>坑點一：YouTube 自動字幕「沒有標點符號」且「斷句破碎」</strong><br/>
+        透過 <code>youtube-transcript-api</code> 或 <code>yt-dlp</code> 抓下來的自動生成字幕（Auto-generated captions），每一行只有短短幾個字且完全沒有逗號、句號。<strong>解決對策：</strong>將抓下來的純文字檔交由大型語言模型（如 Gemini API）進行後處理（Post-processing），使用提示詞：<em>「請在不改變原意與不刪減內容的前提下，為以下逐字稿補上正確的繁體中文標點符號與段落分段」</em>。
+      </li>
+      <li>
+        <strong>坑點二：大量抓取時遭遇 <code>HTTP Error 429: Too Many Requests</code> 或雲端 IP 封鎖</strong><br/>
+        在 Google Colab、AWS EC2 或校園共用 IP 短時間內連續抓取數十部 YouTube 字幕時，YouTube 會判定為機器人流量而阻擋請求。<strong>解決對策：</strong>在批次迴圈中加入隨機延遲（<code>time.sleep(random.uniform(2, 5))</code>），或在 <code>yt-dlp</code> 中使用 <code>--cookies-from-browser chrome</code> 參數帶入已登入的瀏覽器 Cookie。
+      </li>
+      <li>
+        <strong>坑點三：Whisper 在背景音樂或靜音片段產生「幻覺重複（Hallucination）」</strong><br/>
+        影片片頭、片尾若只有背景音樂而無人聲，原版 Whisper 常會陷入無窮迴圈，重複輸出<em>「請訂閱按讚」</em>或同一句話數十次。<strong>解決對策：</strong>改用 <code>faster-whisper</code> 並務必開啟 <strong><code>vad_filter=True</code></strong>（內建 Silero VAD 語音活動偵測器），先將無人聲的靜音與純音樂片段切除再送入模型，即可根除幻覺問題。
+      </li>
+      <li>
+        <strong>坑點四：Whisper 模型大小與硬體記憶體（VRAM / RAM）的性能權衡</strong>
+      </li>
+    </ul>
+
+    <table>
+      <thead>
+        <tr>
+          <th>模型尺寸 (<code>model_size</code>)</th>
+          <th>參數量</th>
+          <th>硬體記憶體需求 (FP16 / INT8)</th>
+          <th>相對速度</th>
+          <th>適用情境建議</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>tiny</code> / <code>base</code></td>
+          <td>39M / 74M</td>
+          <td>~1 GB</td>
+          <td>極快</td>
+          <td>快速測試管線、發音標準的純英文短片。</td>
+        </tr>
+        <tr>
+          <td><code>small</code></td>
+          <td>244M</td>
+          <td>~2 GB</td>
+          <td>快</td>
+          <td><strong>一般無獨顯筆電（CPU + INT8）的最佳平衡點</strong>，中文辨識已有不錯水準。</td>
+        </tr>
+        <tr>
+          <td><code>medium</code></td>
+          <td>769M</td>
+          <td>~5 GB</td>
+          <td>中等</td>
+          <td>含中英夾雜、專有名詞的課堂錄影。</td>
+        </tr>
+        <tr>
+          <td><code>large-v3</code> / <code>large-v3-turbo</code></td>
+          <td>1550M / 809M</td>
+          <td>~6–10 GB</td>
+          <td>較慢（<code>turbo</code> 快 3 倍）</td>
+          <td><strong>配備 NVIDIA GPU 時的首選</strong>，對台灣口音、中英混雜與吵雜環境準確率最高。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>3.4 未來延伸：結合 LLM 打造全自動「YouTube 影片 → 結構化筆記」工作流</h3>
+    <div class="highlight-box">
+      取得 <code>.txt</code> 逐字稿往往只是知識管理的第一步。未來可將本筆記中的 <strong>方法四／方法五 Python 腳本</strong> 與 <strong>Google <code>google-genai</code> SDK (Gemini API)</strong> 串接，建立端到端（End-to-End）自動化學習管線：輸入課堂或演講 YouTube 網址 → 自動以雙軌機制提取 <code>.txt</code> 逐字稿與時間戳記 → 自動呼叫 Gemini 模型輸出包含<strong>「核心觀念摘要」、「關鍵術語解釋」、「時間軸章節導覽」</strong>與<strong>「課後自我測驗題」</strong>的結構化筆記。
+    </div>
+
+    <h2>📚 4. 參考資料列表 (References)</h2>
+    <p>以下列出本文件撰寫過程中所檢索並引用之技術文獻、開源專案與線上工具（依 <code>pbl/AGENTS.md</code> 規範標註取得日期）：</p>
+    <ol>
+      <li>
+        <strong>jdepoix / youtube-transcript-api (GitHub &amp; PyPI 官方文件)</strong> — Python 擷取 YouTube 手動與自動字幕及 <code>TextFormatter</code> 格式化器說明。<br/>
+        網址：<a href="https://github.com/jdepoix/youtube-transcript-api" target="_blank" rel="noopener">https://github.com/jdepoix/youtube-transcript-api</a> ／ <a href="https://pypi.org/project/youtube-transcript-api/" target="_blank" rel="noopener">https://pypi.org/project/youtube-transcript-api/</a>（取得日期：2026-11-11）
+      </li>
+      <li>
+        <strong>yt-dlp / yt-dlp (GitHub 官方開源儲存庫)</strong> — 命令列影音與字幕下載工具（<code>--write-subs</code>、<code>--write-auto-subs</code>、<code>--convert-subs</code>、<code>--skip-download</code> 參數規範）。<br/>
+        網址：<a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener">https://github.com/yt-dlp/yt-dlp</a>（取得日期：2026-11-11）
+      </li>
+      <li>
+        <strong>openai / whisper (GitHub 官方開源儲存庫)</strong> — Robust Speech Recognition via Large-Scale Weak Supervision（OpenAI 多語言自動語音辨識模型架構與用法）。<br/>
+        網址：<a href="https://github.com/openai/whisper" target="_blank" rel="noopener">https://github.com/openai/whisper</a>（取得日期：2026-11-11）
+      </li>
+      <li>
+        <strong>SYSTRAN / faster-whisper (GitHub 官方開源儲存庫)</strong> — 基於 CTranslate2 推論引擎優化之 Whisper 實作（支援 INT8 量化與 Silero VAD 語音活動偵測）。<br/>
+        網址：<a href="https://github.com/SYSTRAN/faster-whisper" target="_blank" rel="noopener">https://github.com/SYSTRAN/faster-whisper</a>（取得日期：2026-11-11）
+      </li>
+      <li>
+        <strong>iThome 技術專欄與開發實戰</strong> — Python 結合 <code>youtube-transcript-api</code>、<code>yt-dlp</code> 與 <code>Whisper</code> 擷取 YouTube 逐字稿之架構設計。<br/>
+        網址：<a href="https://ithelp.ithome.com.tw/" target="_blank" rel="noopener">https://ithelp.ithome.com.tw/</a>（取得日期：2026-11-11）
+      </li>
+      <li>
+        <strong>DownSub — Download subtitles from YouTube</strong> — 線上提取 YouTube <code>.srt</code> 與 <code>.txt</code> 字幕工具。<br/>
+        網址：<a href="https://downsub.com/" target="_blank" rel="noopener">https://downsub.com/</a>（取得日期：2026-11-11）
+      </li>
+      <li>
+        <strong>NoteGPT — YouTube Transcript Generator</strong> — 線上 YouTube 字幕提取與 AI 摘要工具。<br/>
+        網址：<a href="https://notegpt.io/youtube-transcript-generator" target="_blank" rel="noopener">https://notegpt.io/youtube-transcript-generator</a>（取得日期：2026-11-11）
+      </li>
+      <li>
+        <strong>TurboScribe AI</strong> — 基於 Whisper 之線上音訊與 YouTube 影片轉文字服務。<br/>
+        網址：<a href="https://turboscribe.ai/" target="_blank" rel="noopener">https://turboscribe.ai/</a>（取得日期：2026-11-11）
+      </li>
+      <li>
+        <strong>YouTube Transcript AI</strong> — 線上快速提取 YouTube 影片逐字稿工具。<br/>
+        網址：<a href="https://youtube-transcript.ai/" target="_blank" rel="noopener">https://youtube-transcript.ai/</a>（取得日期：2026-11-11）
+      </li>
+    </ol>
+
+    <h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+    <div class="archive-item">
+      <h3>🔹 [2026-11-11 08:30:00] [Gemini 4 Argon (Medium) / Antigravity] 變更紀錄</h3>
+      <p><strong>模型/Agent:</strong> Gemini 4 Argon (Medium) / Antigravity</p>
+      <p><strong>Prompt 原文:</strong></p>
+      <div class="code-container">
+        <div class="code-header"><span>text</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div>
+        <pre><code>如果我要將youtube的影片取得字幕轉換成文字檔 有哪些方法</code></pre>
+      </div>
+      <p><strong>變更摘要:</strong> 依 <code>pbl/AGENTS.md</code> 與工作區核心規範，檢索並整理將 YouTube 影片字幕轉換為文字檔（<code>.txt</code> / <code>.srt</code>）的五大方法（YouTube 內建轉錄稿、線上工具 DownSub/NoteGPT/TurboScribe/NotebookLM、命令列 <code>yt-dlp</code> + Regex 清洗、Python <code>youtube-transcript-api</code>、以及 <code>yt-dlp</code> + <code>faster-whisper</code> 智慧雙軌 AI 語音辨識）；包含底層原理剖析、Mermaid 程式邏輯流程圖、含完整註解與一鍵複製按鈕的程式碼、五大方案應用與限制比較表、常見坑點與解決對策，並附上標註取得日期（2026-11-11）之參考資料列表，同步產出 <code>.md</code> 與 <code>.html</code> 雙格式檔案。</p>
+    </div>
+    <div class="archive-item">
+      <h3>🔹 [2026-11-11 08:42:00] [Gemini 4 Argon (Medium) / Antigravity] 變更紀錄</h3>
+      <p><strong>模型/Agent:</strong> Gemini 4 Argon (Medium) / Antigravity</p>
+      <p><strong>Prompt 原文:</strong></p>
+      <div class="code-container">
+        <div class="code-header"><span>text</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div>
+        <pre><code>https://youtu.be/oIk3R-sMX5o 這個影片有CC字幕 寫一個工具讓我可以重複使用取得字幕轉換成文字檔</code></pre>
+      </div>
+      <p><strong>變更摘要:</strong> 開發可重複使用的獨立工具 <a href="./yt_sub_to_txt.py"><code>pbl/yt_sub_to_txt.py</code></a>（支援 CLI 單次與批次參數、終端機互動式循環輸入、以及 <code>--gui</code> Tkinter 圖形化視窗介面；具備 oEmbed 自動取得影片標題、優先選取手動 CC 字幕、自然段落重組等功能），並實際轉換目標影片 <code>https://youtu.be/oIk3R-sMX5o</code>（<em>Chip design from the bottom up – Reiner Pope</em>），產出純文字段落檔（<code>.txt</code>）、時間戳記對照檔（<code>_timestamped.txt</code>）與標準字幕檔（<code>.srt</code>）；同步更新 <code>.md</code> 與 <code>.html</code> 筆記第 2.6 節與提示詞紀錄。</p>
+    </div>
+    <div class="archive-item">
+      <h3>🔹 [2026-11-11 08:46:00] [Gemini 4 Argon (Medium) / Antigravity] 變更紀錄</h3>
+      <p><strong>模型/Agent:</strong> Gemini 4 Argon (Medium) / Antigravity</p>
+      <p><strong>Prompt 原文:</strong></p>
+      <div class="code-container">
+        <div class="code-header"><span>text</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div>
+        <pre><code>https://youtu.be/gvi0OE5OzOk 用同樣的工具 取得這個影片的字幕</code></pre>
+      </div>
+      <p><strong>變更摘要:</strong> 使用 <a href="./yt_sub_to_txt.py"><code>pbl/yt_sub_to_txt.py</code></a> 轉換 <code>https://youtu.be/gvi0OE5OzOk</code>（<em>14 GPU Architecture 1</em> by <code>Yifan&amp;GPU</code>），自動偵測並提取其 <code>English (auto-generated)</code> 字幕，將 1,740 句破碎時間軸字幕合併重組為 299 行純文字自然段落檔（<code>gvi0OE5OzOk_14 GPU Architecture 1.txt</code>）、時間戳記對照檔（<code>gvi0OE5OzOk_14 GPU Architecture 1_timestamped.txt</code>）與標準字幕檔（<code>gvi0OE5OzOk_14 GPU Architecture 1.srt</code>）；同步更新 <code>.md</code> 與 <code>.html</code> 實測紀錄與提示詞歷史。</p>
+    </div>
+    <div class="archive-item">
+      <h3>🔹 [2026-11-11 08:50:00] [Gemini 4 Argon (Medium) / Antigravity] 變更紀錄</h3>
+      <p><strong>模型/Agent:</strong> Gemini 4 Argon (Medium) / Antigravity</p>
+      <p><strong>Prompt 原文:</strong></p>
+      <div class="code-container">
+        <div class="code-header"><span>text</span><button class="btn-copy" onclick="copyCode(this)">📋 複製</button></div>
+        <pre><code>在文件增加一個工具比較 有字幕的影片與沒有字幕的影片 個適合適用什麼工具</code></pre>
+      </div>
+      <p><strong>變更摘要:</strong> 於 <code>.md</code> 與 <code>.html</code> 筆記新增第 3.2 節「『有字幕影片』vs.『無字幕影片』工具選型對照指南」，包含工具選型決策流程圖（Mermaid）、依三種字幕狀態（手動 CC 字幕、僅自動產生字幕、完全無字幕）之推薦與不適用工具比較表、以及七大工具在有／無字幕情境下的支援度評級矩陣。</p>
+    </div>
+  </div>
+
+  <script>
+    function copyCode(btn) {
+      const code = btn.closest('.code-container').querySelector('code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const original = btn.textContent;
+        btn.textContent = '✅ 已複製';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 1600);
+      });
+    }
+  </script>
+</body>
+</html>

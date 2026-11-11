@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NodeMCU-32S (ESP32) + Wi-Fi DHCP Web Server + DHT + SSD1306 OLED 溫濕度與天氣符號實作 (1110-1)</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --card-alt: #0b1120;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --border: #334155;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Microsoft JhengHei", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 28px 18px 60px;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .btn {
+      background: linear-gradient(135deg, #0284c7, #06b6d4);
+      color: #fff;
+      border: none;
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.92rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }
+    .btn:hover { opacity: 0.92; }
+    h1 {
+      font-size: 1.8rem;
+      margin: 0 0 14px;
+      color: #f8fafc;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 12px;
+    }
+    h2 {
+      font-size: 1.35rem;
+      color: var(--accent);
+      margin-top: 32px;
+      border-left: 4px solid var(--accent);
+      padding-left: 12px;
+    }
+    h3 {
+      font-size: 1.1rem;
+      color: #bae6fd;
+      margin-top: 22px;
+    }
+    .meta-box {
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      font-size: 0.93rem;
+    }
+    .meta-box p { margin: 4px 0; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 22px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 0.93rem;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+    }
+    th {
+      background: #0f172a;
+      color: var(--accent);
+    }
+    tr:nth-child(even) td {
+      background: rgba(15, 23, 42, 0.45);
+    }
+    code {
+      font-family: "Consolas", "Fira Code", monospace;
+      background: rgba(15, 23, 42, 0.8);
+      color: #7dd3fc;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    .code-wrap {
+      position: relative;
+      margin: 14px 0;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #334155;
+      color: #f8fafc;
+      border: 1px solid #475569;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .copy-btn:hover { background: #475569; }
+    pre {
+      background: #090d16;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      overflow-x: auto;
+      margin: 0;
+    }
+    pre code {
+      background: none;
+      padding: 0;
+      color: #e2e8f0;
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+    .mermaid {
+      background: #0b1120;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      margin: 16px 0;
+    }
+    /* Dual-Screen Simulator */
+    .sim-dual-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 14px;
+    }
+    @media (max-width: 820px) {
+      .sim-dual-grid { grid-template-columns: 1fr; }
+    }
+    .oled-bezel {
+      background: #111827;
+      border: 3px solid #374151;
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+    }
+    .oled-pcb-label {
+      color: #9ca3af;
+      font-size: 0.78rem;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .oled-pcb-label span {
+      background: #1f2937;
+      border: 1px solid #4b5563;
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: #fbbf24;
+      font-family: monospace;
+    }
+    canvas#oledCanvas {
+      background: #000;
+      border: 2px solid #1e293b;
+      border-radius: 4px;
+      width: 384px;
+      height: 192px;
+      image-rendering: pixelated;
+      max-width: 100%;
+    }
+    .browser-mock {
+      background: #0f172a;
+      border: 2px solid #334155;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .browser-bar {
+      background: #1e293b;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #334155;
+    }
+    .dots { display: flex; gap: 6px; }
+    .dots span { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .url-bar {
+      background: #090d16;
+      border: 1px solid #475569;
+      border-radius: 6px;
+      padding: 3px 12px;
+      font-family: monospace;
+      font-size: 0.82rem;
+      color: #38bdf8;
+      flex: 1;
+    }
+    .web-preview-body {
+      padding: 16px;
+      text-align: center;
+    }
+    .control-group {
+      margin-bottom: 12px;
+    }
+    .control-group label {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      margin-bottom: 4px;
+      font-size: 0.92rem;
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      background: rgba(56, 189, 248, 0.18);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+    }
+    @media print {
+      body { background: #fff; color: #000; padding: 0; }
+      .card, .meta-box { background: #fff; border-color: #ccc; box-shadow: none; }
+      .top-bar, .copy-btn { display: none !important; }
+      pre { background: #f8fafc; color: #000; border: 1px solid #ccc; }
+      pre code, code { color: #000; background: #f1f5f9; }
+      h1, h2, h3, th { color: #000; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <a class="btn" href="../index.html">⬅ 返回全站索引</a>
+      <div style="display:flex; gap:10px;">
+        <a class="btn" href="./1110-1.ino" download>💾 下載 1110-1.ino</a>
+        <button class="btn" onclick="window.print()">📄 匯出成 PDF</button>
+      </div>
+    </div>
+
+    <h1>🌤️ NodeMCU-32S (ESP32) + Wi-Fi DHCP Web Server + DHT 溫濕度 + SSD1306 OLED 天氣符號實作 (1110-1)</h1>
+
+    <div class="meta-box">
+      <p><strong>最後更新時間</strong>: 2026-11-10 15:31:30 (UTC+8)</p>
+      <p><strong>使用模型</strong>: Gemini 4 Argon</p>
+      <p><strong>執行 Agent</strong>: Antigravity</p>
+      <p><strong>對應程式碼</strong>: <a href="./1110-1.ino" style="color:var(--accent);"><code>1110-1.ino</code></a></p>
+    </div>
+
+    <!-- Interactive Dual Simulator -->
+    <div class="card">
+      <h2 style="margin-top:0;">🎮 雙端同步模擬器：SSD1306 OLED (含 DHCP IP) ↔ HTTP Web Server 網頁</h2>
+      <p style="color:var(--muted); margin-top:4px;">
+        調整下方溫濕度滑桿或模擬 DHCP IP，可同步預覽 <strong>NodeMCU-32S 上的 128×64 OLED 螢幕</strong> 與 <strong>瀏覽器連線 <code>http://&lt;IP&gt;/</code> 的即時畫面</strong>：
+      </p>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:16px; background:#0b1120; padding:14px 18px; border-radius:10px; border:1px solid var(--border);">
+        <div class="control-group" style="margin:0;">
+          <label><span>🌡️ 溫度 (GPIO 16):</span><span id="tempVal" class="badge">26.4 °C</span></label>
+          <input type="range" id="tempSlider" min="10" max="40" step="0.2" value="26.4" />
+        </div>
+        <div class="control-group" style="margin:0;">
+          <label><span>💧 相對濕度:</span><span id="humVal" class="badge">62.0 %</span></label>
+          <input type="range" id="humSlider" min="30" max="98" step="0.5" value="62.0" />
+        </div>
+        <div class="control-group" style="margin:0;">
+          <label><span>🌐 模擬 DHCP IP:</span><span class="badge">SSID: ite-eng</span></label>
+          <input type="text" id="ipInput" value="192.168.1.108" style="width:100%; background:#1e293b; color:#38bdf8; border:1px solid #475569; border-radius:6px; padding:5px 10px; font-family:monospace;" />
+        </div>
+      </div>
+
+      <div class="sim-dual-grid">
+        <!-- Left: OLED 128x64 -->
+        <div class="oled-bezel">
+          <div class="oled-pcb-label">
+            <span>GND</span><span>VCC(3V3)</span><span>SCL(GPIO22)</span><span>SDA(GPIO21)</span>
+          </div>
+          <canvas id="oledCanvas" width="128" height="64"></canvas>
+          <div style="margin-top:8px; font-size:0.82rem; color:#94a3b8;">
+            實體端：SSD1306 128×64 OLED（天氣圖示 + 溫濕度 + 底部 DHCP IP）
+          </div>
+        </div>
+
+        <!-- Right: HTTP Web Server -->
+        <div class="browser-mock">
+          <div class="browser-bar">
+            <div class="dots">
+              <span style="background:#ef4444;"></span>
+              <span style="background:#f59e0b;"></span>
+              <span style="background:#10b981;"></span>
+            </div>
+            <div class="url-bar" id="browserUrl">http://192.168.1.108/</div>
+          </div>
+          <div class="web-preview-body">
+            <div style="font-size:1.05rem; font-weight:700; color:#38bdf8;">🌤️ NodeMCU-32S 即時天氣站</div>
+            <div style="font-size:0.78rem; color:#94a3b8; margin-bottom:8px;">DHT Sensor (GPIO 16) + SSD1306 OLED (I2C)</div>
+            <div id="webEmoji" style="font-size:3.4rem; line-height:1.1; margin:6px 0;">⛅</div>
+            <div id="webWname" class="badge" style="margin-bottom:12px;">晴時多雲 (Partly Cloudy)</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+              <div style="background:#1e293b; border:1px solid #334155; border-radius:8px; padding:8px;">
+                <div style="font-size:0.75rem; color:#94a3b8;">🌡️ 溫度</div>
+                <div style="font-size:1.35rem; font-weight:700;"><span id="webTemp">26.4</span> <span style="color:#38bdf8; font-size:0.85rem;">°C</span></div>
+              </div>
+              <div style="background:#1e293b; border:1px solid #334155; border-radius:8px; padding:8px;">
+                <div style="font-size:0.75rem; color:#94a3b8;">💧 濕度</div>
+                <div style="font-size:1.35rem; font-weight:700;"><span id="webHum">62.0</span> <span style="color:#38bdf8; font-size:0.85rem;">%</span></div>
+              </div>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#64748b; border-top:1px solid #334155; padding-top:8px;">
+              <span>SSID: <strong>ite-eng</strong></span>
+              <span>DHCP IP: <strong id="webIp">192.168.1.108</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 1: Core Concepts -->
+    <div class="card">
+      <h2>🧠 1. 核心概念剖析 (Core Concepts)</h2>
+
+      <h3>1.1 Wi-Fi Station 模式與 DHCP 自動取得 IP 原理</h3>
+      <p>
+        在 ESP32 中呼叫 <code>WiFi.mode(WIFI_STA)</code> 與 <code>WiFi.begin("ite-eng", "cygsh1811")</code> 時，ESP32 內建的 LwIP 網路堆疊會自動啟動 <strong>DHCP Client</strong>，透過 <strong>Discover → Offer → Request → Acknowledge (DORA)</strong> 四步驟向路由器取得區網 IP。連線完成後呼叫 <code>WiFi.localIP().toString()</code> 即可取得 IP 字串並同步顯示在 OLED 底部。
+      </p>
+
+      <h3>1.2 非阻塞式 <code>loop()</code>：為何不能再用 <code>delay(2000)</code>？</h3>
+      <p>
+        <code>WebServer server(80)</code> 需要透過 <code>server.handleClient()</code> 持續監聽 HTTP 請求。若使用阻塞式的 <code>delay(2000)</code>，使用者開啟網頁時會遭遇長達 2 秒的停頓。因此本程式在 <code>loop()</code> 中無延遲執行 <code>server.handleClient()</code>，並以 <code>millis() - lastSensorRead &gt;= delayMS</code> 每 2 秒才讀取一次 DHT 感測器與更新 OLED。
+      </p>
+
+      <h3>1.3 OLED 128×64 四資訊版面配置 (天氣符號 + 溫度 + 濕度 + IP)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>畫面區域</th>
+            <th>座標範圍</th>
+            <th>使用字型</th>
+            <th>顯示內容</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>左上圖示區</strong></td>
+            <td><code>(0, 48)</code> (48×48 px)</td>
+            <td><code>u8g2_font_open_iconic_weather_6x_t</code></td>
+            <td>5 種動態天氣符號 (☀️ / ⛅ / ☁️ / 🌧️ / ⚡)</td>
+          </tr>
+          <tr>
+            <td><strong>右上第一行</strong></td>
+            <td><code>(52, 20)</code></td>
+            <td><code>u8g2_font_helvB14_tf</code></td>
+            <td>即時溫度 <code>26.4°C</code></td>
+          </tr>
+          <tr>
+            <td><strong>右上第二行</strong></td>
+            <td><code>(52, 44)</code></td>
+            <td><code>u8g2_font_helvB14_tf</code></td>
+            <td>相對濕度 <code>62.0 %</code></td>
+          </tr>
+          <tr>
+            <td><strong>底部 IP 狀態列</strong></td>
+            <td><code>(0, 62)</code> (上方 <code>y=50</code> 分隔線)</td>
+            <td><code>u8g2_font_6x12_tf</code></td>
+            <td><code>IP:192.168.x.x</code>（最多可容納 21 字元不截斷）</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Section 2: Practical Examples -->
+    <div class="card">
+      <h2>🛠️ 2. 實作與應用範例 (Practical Examples)</h2>
+
+      <h3>2.1 程式邏輯流程圖</h3>
+      <div class="mermaid">
+flowchart TD
+    A(["NodeMCU-32S 通電啟動"]) --> B["setup(): 初始化 Serial(115200)、OLED 與 DHT(GPIO 16)"]
+    B --> C["WiFi.begin('ite-eng', 'cygsh1811')<br/>OLED 同步顯示連線進度畫面"]
+    C --> D{"DHCP 取得 IP 成功？"}
+    D -- 是 --> E["Serial 與 OLED 紀錄 WiFi.localIP()"]
+    D -- 逾時 --> F["顯示 Connecting... 並在背景持續重連"]
+    E --> G["註冊 WebServer 路由 ('/' 與 '/api/weather')<br/>執行 server.begin()"]
+    F --> G
+    G --> H["loop(): 執行 server.handleClient()"]
+    H --> I{"有 HTTP 請求？"}
+    I -- "GET /" --> J["回傳 RWD 溫濕度與天氣符號網頁"]
+    I -- "GET /api/weather" --> K["回傳 JSON (temp, hum, symbol, emoji, ip)"]
+    I -- 無 --> L{"millis() - lastSensorRead >= 2000ms?"}
+    J --> L
+    K --> L
+    L -- 否 --> H
+    L -- 是 --> M["讀取 DHT 溫濕度 → 判斷天氣符號<br/>更新 OLED (天氣圖示 + 溫濕度 + DHCP IP)"]
+    M --> H
+      </div>
+
+      <h3>2.2 完整整合程式碼 (<code>1110-1.ino</code>)</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">📋 複製程式碼</button>
+        <pre><code>// ============================================================================
+// 1110-1.ino — NodeMCU-32S (ESP32) + Wi-Fi DHCP Web Server + DHT 溫濕度 + SSD1306 OLED
+// 整合功能：
+//   1. 連接 Wi-Fi (SSID: ite-eng, WPA2: cygsh1811) 並透過 DHCP 取得 IP
+//   2. 建立 HTTP Web Server (Port 80)，瀏覽器輸入 http://&lt;IP&gt;/ 即時顯示溫濕度與天氣符號
+//   3. SSD1306 128x64 OLED 同時顯示：48x48 天氣符號、溫度、濕度、以及 DHCP IP 位址
+//
+// 【硬體接線 (NodeMCU-32S / ESP32)】
+//   1. DHT 溫濕度感測器：
+//      - VCC  -&gt; 3V3 (3.3V)
+//      - DATA -&gt; GPIO 16 (板子上標示 RX2 / IO16 / 16)
+//      - GND  -&gt; GND
+//   2. SSD1306 OLED (128x64, I2C 介面)：
+//      - GND  -&gt; GND
+//      - VCC  -&gt; 3V3 (3.3V)
+//      - SCL  -&gt; GPIO 22 (ESP32 預設硬體 I2C SCL)
+//      - SDA  -&gt; GPIO 21 (ESP32 預設硬體 I2C SDA)
+// ============================================================================
+
+#include &lt;Arduino.h&gt;
+#include &lt;WiFi.h&gt;
+#include &lt;WebServer.h&gt;
+#include &lt;Wire.h&gt;
+#include &lt;U8g2lib.h&gt;
+#include &lt;Adafruit_Sensor.h&gt;
+#include &lt;DHT.h&gt;
+#include &lt;DHT_U.h&gt;
+
+// -------------------- 1. Wi-Fi 與 Web Server 設定 --------------------
+const char* WIFI_SSID = "ite-eng";
+const char* WIFI_PASS = "cygsh1811";
+
+WebServer server(80); // 建立 HTTP Web Server 於 Port 80
+
+// -------------------- 2. DHT 感測器設定 --------------------
+#define DHTPIN 16          // DHT 資料腳位接 NodeMCU-32S 的 GPIO 16
+
+// 請依實際使用的感測器型號取消註解對應行：
+//#define DHTTYPE    DHT11   // DHT 11 (藍色外殼)
+#define DHTTYPE    DHT22   // DHT 22 / AM2302 (白色外殼，1110-1.txt 預設)
+//#define DHTTYPE    DHT21   // DHT 21 / AM2301
+
+DHT_Unified dht(DHTPIN, DHTTYPE);
+uint32_t delayMS = 2000;
+uint32_t lastSensorRead = 0;
+
+// 儲存最新感測資料供 OLED 與 Web Server 共用
+float   currentTemp   = NAN;
+float   currentHum    = NAN;
+uint8_t currentSymbol = 2; // 預設 CLOUD
+
+// -------------------- 3. OLED SSD1306 (128x64) 設定 --------------------
+U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+
+// -------------------- 4. 天氣符號常數定義 (取自 Weather.ino) --------------------
+#define SUN        0   // 晴天 (Glyph 69)
+#define SUN_CLOUD  1   // 晴時多雲 (Glyph 65)
+#define CLOUD      2   // 多雲 / 陰天 (Glyph 64)
+#define RAIN       3   // 下雨 / 高濕 (Glyph 67)
+#define THUNDER    4   // 雷雨 / 悶熱高濕 (Embedded Glyph 67)
+
+// -------------------- 5. 依溫濕度決定天氣符號與名稱 --------------------
+uint8_t getWeatherSymbol(float temp, float hum) {
+  if (isnan(temp) || isnan(hum)) {
+    return CLOUD;
+  }
+  if (hum &gt;= 85.0 &amp;&amp; temp &gt;= 28.0) {
+    return THUNDER;
+  } else if (hum &gt;= 80.0) {
+    return RAIN;
+  } else if (hum &gt;= 70.0) {
+    return CLOUD;
+  } else if (hum &gt;= 55.0) {
+    return SUN_CLOUD;
+  } else {
+    return SUN;
+  }
+}
+
+const char* getWeatherName(uint8_t symbol) {
+  switch (symbol) {
+    case SUN:       return "晴天 (Sunny)";
+    case SUN_CLOUD: return "晴時多雲 (Partly Cloudy)";
+    case CLOUD:     return "多雲 (Cloudy)";
+    case RAIN:      return "下雨 / 潮濕 (Rainy)";
+    case THUNDER:   return "雷雨 / 悶熱 (Thunderstorm)";
+    default:        return "未知 (Unknown)";
+  }
+}
+
+const char* getWeatherEmoji(uint8_t symbol) {
+  switch (symbol) {
+    case SUN:       return "☀️";
+    case SUN_CLOUD: return "⛅";
+    case CLOUD:     return "☁️";
+    case RAIN:      return "🌧️";
+    case THUNDER:   return "⛈️";
+    default:        return "☁️";
+  }
+}
+
+// -------------------- 6. 繪製 48x48 天氣圖示 (取自 Weather.ino) --------------------
+void drawWeatherSymbol(u8g2_uint_t x, u8g2_uint_t y, uint8_t symbol) {
+  switch (symbol) {
+    case SUN:
+      u8g2.setFont(u8g2_font_open_iconic_weather_6x_t);
+      u8g2.drawGlyph(x, y, 69);
+      break;
+    case SUN_CLOUD:
+      u8g2.setFont(u8g2_font_open_iconic_weather_6x_t);
+      u8g2.drawGlyph(x, y, 65);
+      break;
+    case CLOUD:
+      u8g2.setFont(u8g2_font_open_iconic_weather_6x_t);
+      u8g2.drawGlyph(x, y, 64);
+      break;
+    case RAIN:
+      u8g2.setFont(u8g2_font_open_iconic_weather_6x_t);
+      u8g2.drawGlyph(x, y, 67);
+      break;
+    case THUNDER:
+      u8g2.setFont(u8g2_font_open_iconic_embedded_6x_t);
+      u8g2.drawGlyph(x, y, 67);
+      break;
+  }
+}
+
+// -------------------- 7. 繪製 OLED 畫面：天氣符號 + 溫濕度 + IP 位址 --------------------
+void updateOLED() {
+  String ipStr = (WiFi.status() == WL_CONNECTED)
+                   ? WiFi.localIP().toString()
+                   : String("Connecting...");
+
+  u8g2.firstPage();
+  do {
+    // (A) 左上 (0, 48) 繪製 48x48 天氣圖示
+    drawWeatherSymbol(0, 48, currentSymbol);
+
+    // (B) 右上區塊 (x=52) 分兩行顯示溫度與濕度
+    u8g2.setFont(u8g2_font_helvB14_tf);
+
+    // 第一行 (y=20)：溫度
+    u8g2.setCursor(52, 20);
+    if (isnan(currentTemp)) {
+      u8g2.print("--.-°C");
+    } else {
+      u8g2.print(currentTemp, 1);
+      u8g2.print("°C");
+    }
+
+    // 第二行 (y=44)：濕度
+    u8g2.setCursor(52, 44);
+    if (isnan(currentHum)) {
+      u8g2.print("--.- %");
+    } else {
+      u8g2.print(currentHum, 1);
+      u8g2.print(" %");
+    }
+
+    // (C) 底部分隔線與 DHCP IP 位址 (y=62)
+    u8g2.drawHLine(0, 50, 128);
+    u8g2.setFont(u8g2_font_6x12_tf);
+    u8g2.setCursor(0, 62);
+    u8g2.print("IP:");
+    u8g2.print(ipStr);
+  } while (u8g2.nextPage());
+}
+
+// -------------------- 8. HTTP Web Server 路由處理 --------------------
+void handleApiWeather() {
+  String json = "{";
+  json += "\"valid\":" + String((!isnan(currentTemp) &amp;&amp; !isnan(currentHum)) ? "true" : "false") + ",";
+  json += "\"temp\":" + (isnan(currentTemp) ? String("null") : String(currentTemp, 1)) + ",";
+  json += "\"hum\":" + (isnan(currentHum) ? String("null") : String(currentHum, 1)) + ",";
+  json += "\"symbol\":" + String(currentSymbol) + ",";
+  json += "\"weatherName\":\"" + String(getWeatherName(currentSymbol)) + "\",";
+  json += "\"emoji\":\"" + String(getWeatherEmoji(currentSymbol)) + "\",";
+  json += "\"ip\":\"" + WiFi.localIP().toString() + "\",";
+  json += "\"ssid\":\"" + String(WIFI_SSID) + "\",";
+  json += "\"rssi\":" + String(WiFi.RSSI());
+  json += "}";
+  server.send(200, "application/json; charset=utf-8", json);
+}
+
+void handleRoot() {
+  String tempText = isnan(currentTemp) ? "--.-" : String(currentTemp, 1);
+  String humText  = isnan(currentHum)  ? "--.-" : String(currentHum, 1);
+
+  String html = R"rawliteral(&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-TW"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;title&gt;NodeMCU-32S 溫濕度與天氣觀測站&lt;/title&gt;
+  &lt;style&gt;
+    body {
+      margin: 0; padding: 24px 16px;
+      font-family: "Segoe UI", "Microsoft JhengHei", sans-serif;
+      background: #0f172a; color: #f8fafc;
+      display: flex; justify-content: center; align-items: center; min-height: 90vh;
+    }
+    .card {
+      background: #1e293b; border: 1px solid #334155; border-radius: 18px;
+      max-width: 420px; width: 100%; padding: 28px 24px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.45); text-align: center;
+    }
+    .title { font-size: 1.25rem; font-weight: 700; color: #38bdf8; margin-bottom: 6px; }
+    .sub { font-size: 0.85rem; color: #94a3b8; margin-bottom: 20px; }
+    .weather-icon { font-size: 4.8rem; line-height: 1.1; margin: 10px 0; }
+    .weather-name {
+      display: inline-block; background: rgba(56, 189, 248, 0.15);
+      color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 4px 14px; border-radius: 999px; font-size: 0.95rem; font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+    .box {
+      background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 14px 10px;
+    }
+    .label { font-size: 0.82rem; color: #94a3b8; margin-bottom: 6px; }
+    .val { font-size: 1.75rem; font-weight: 700; color: #f8fafc; }
+    .unit { font-size: 0.95rem; color: #38bdf8; }
+    .footer {
+      font-size: 0.8rem; color: #64748b; border-top: 1px solid #334155; padding-top: 12px;
+      display: flex; justify-content: space-between;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class="card"&gt;
+    &lt;div class="title"&gt;🌤️ NodeMCU-32S 即時天氣站&lt;/div&gt;
+    &lt;div class="sub"&gt;DHT Sensor (GPIO 16) + SSD1306 OLED (I2C)&lt;/div&gt;
+    &lt;div id="emoji" class="weather-icon"&gt;)rawliteral" + String(getWeatherEmoji(currentSymbol)) + R"rawliteral(&lt;/div&gt;
+    &lt;div id="wname" class="weather-name"&gt;)rawliteral" + String(getWeatherName(currentSymbol)) + R"rawliteral(&lt;/div&gt;
+    &lt;div class="metrics"&gt;
+      &lt;div class="box"&gt;
+        &lt;div class="label"&gt;🌡️ 溫度 (Temperature)&lt;/div&gt;
+        &lt;div class="val"&gt;&lt;span id="temp"&gt;)rawliteral" + tempText + R"rawliteral(&lt;/span&gt; &lt;span class="unit"&gt;°C&lt;/span&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="box"&gt;
+        &lt;div class="label"&gt;💧 濕度 (Humidity)&lt;/div&gt;
+        &lt;div class="val"&gt;&lt;span id="hum"&gt;)rawliteral" + humText + R"rawliteral(&lt;/span&gt; &lt;span class="unit"&gt;%&lt;/span&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="footer"&gt;
+      &lt;span&gt;SSID: &lt;strong id="ssid"&gt;)rawliteral" + String(WIFI_SSID) + R"rawliteral(&lt;/strong&gt;&lt;/span&gt;
+      &lt;span&gt;IP: &lt;strong id="ip"&gt;)rawliteral" + WiFi.localIP().toString() + R"rawliteral(&lt;/strong&gt;&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;script&gt;
+    setInterval(async () =&gt; {
+      try {
+        const res = await fetch('/api/weather');
+        const d = await res.json();
+        document.getElementById('emoji').textContent = d.emoji;
+        document.getElementById('wname').textContent = d.weatherName;
+        document.getElementById('temp').textContent = d.temp !== null ? d.temp.toFixed(1) : '--.-';
+        document.getElementById('hum').textContent = d.hum !== null ? d.hum.toFixed(1) : '--.-';
+        document.getElementById('ip').textContent = d.ip;
+      } catch (e) {}
+    }, 2000);
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;)rawliteral";
+
+  server.send(200, "text/html; charset=utf-8", html);
+}
+
+// -------------------- 9. 讀取感測器並更新畫面 --------------------
+void readSensorAndUpdate() {
+  sensors_event_t temp_event, hum_event;
+  dht.temperature().getEvent(&amp;temp_event);
+  dht.humidity().getEvent(&amp;hum_event);
+
+  currentTemp = temp_event.temperature;
+  currentHum  = hum_event.relative_humidity;
+
+  currentSymbol = getWeatherSymbol(currentTemp, currentHum);
+  updateOLED();
+}
+
+// -------------------- 10. 初始化設定 setup() --------------------
+void setup(void) {
+  Serial.begin(115200);
+  u8g2.begin();
+  u8g2.enableUTF8Print();
+
+  dht.begin();
+  sensor_t sensor;
+  dht.temperature().getSensor(&amp;sensor);
+  dht.humidity().getSensor(&amp;sensor);
+  delayMS = sensor.min_delay / 1000;
+  if (delayMS &lt; 2000) delayMS = 2000;
+
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
+
+  int retryCount = 0;
+  while (WiFi.status() != WL_CONNECTED &amp;&amp; retryCount &lt; 30) {
+    delay(500);
+    retryCount++;
+    u8g2.firstPage();
+    do {
+      u8g2.setFont(u8g2_font_8x13_mf);
+      u8g2.setCursor(0, 18); u8g2.print("WiFi Connecting");
+      u8g2.setCursor(0, 36); u8g2.print("SSID: "); u8g2.print(WIFI_SSID);
+      u8g2.setCursor(0, 54);
+      for (int i = 0; i &lt; (retryCount % 15); i++) u8g2.print(".");
+    } while (u8g2.nextPage());
+  }
+
+  server.on("/", handleRoot);
+  server.on("/api/weather", handleApiWeather);
+  server.begin();
+
+  readSensorAndUpdate();
+  lastSensorRead = millis();
+}
+
+// -------------------- 11. 主迴圈 loop() --------------------
+void loop(void) {
+  server.handleClient();
+
+  uint32_t now = millis();
+  if (now - lastSensorRead &gt;= delayMS) {
+    lastSensorRead = now;
+    readSensorAndUpdate();
+  }
+}</code></pre>
+      </div>
+    </div>
+
+    <!-- Section 3: Advanced Extensions -->
+    <div class="card">
+      <h2>🚀 3. 延伸思考與進階主題 (Extensions &amp; Advanced Topics)</h2>
+      <h3>3.1 C++11 Raw String Literal (<code>R"rawliteral(...)rawliteral"</code>)</h3>
+      <p>
+        在嵌入式 Web Server 中，使用 C++11 的原始字串字面量可直接嵌入多行 HTML、CSS 與 JavaScript，免除反斜線跳脫字元，讓網頁維護更直覺。
+      </p>
+      <h3>3.2 mDNS 區域網路網域名稱 (<code>ESPmDNS.h</code>)</h3>
+      <p>
+        除了直接查看 OLED 底部的 DHCP IP 外，亦可引入 <code>&lt;ESPmDNS.h&gt;</code> 並呼叫 <code>MDNS.begin("esp32weather")</code>，即可使用 <code>http://esp32weather.local/</code> 連線。
+      </p>
+    </div>
+
+    <!-- Prompt Archive -->
+    <div class="card">
+      <h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+
+      <h3>🔹 [2026-11-10 15:06:30] [Gemini 4 Argon / Antigravity] 變更紀錄</h3>
+      <ul>
+        <li><strong>模型/Agent</strong>: Gemini 4 Argon / Antigravity</li>
+        <li><strong>Prompt 原文</strong>:
+          <pre><code>C:\Users\User\Desktop\onclass\1110-1.txt 整合這個程式，在nodemcu32s上讓OLED 1306 128X64顯示溫溼度以及天氣符號 存成1110-1.ino</code></pre>
+        </li>
+        <li><strong>變更摘要</strong>: 整合 <code>1110-1.txt</code> 中的 <code>DHT_Unified</code>（GPIO 16）與 U8g2 <code>Weather.ino</code>（SSD1306 128×64 硬體 I2C：SDA=GPIO 21, SCL=GPIO 22），建立 <code>1110-1.ino</code> 並撰寫完整技術筆記與互動模擬器（<code>.md</code> 與 <code>.html</code>）。</li>
+      </ul>
+
+      <h3>🔹 [2026-11-10 15:31:30] [Gemini 4 Argon / Antigravity] 變更紀錄</h3>
+      <ul>
+        <li><strong>模型/Agent</strong>: Gemini 4 Argon / Antigravity</li>
+        <li><strong>Prompt 原文</strong>:
+          <pre><code>加上Wifi連接，SSID: ite-eng, wpa2: cygsh1811,連上後利用DHCP取得ip，並建立web server, 可以使用http 連線後顯示溫溼度及天氣符號，OLED上顯示IP 更新1110-1.ino</code></pre>
+        </li>
+        <li><strong>變更摘要</strong>: 更新 <code>1110-1.ino</code>，新增 Wi-Fi Station 連線（<code>SSID: ite-eng</code>, <code>WPA2: cygsh1811</code>）、DHCP 自動取得 IP、Port 80 HTTP Web Server（含 <code>/</code> 響應式天氣儀表板與 <code>/api/weather</code> JSON 即時更新介面），並將 OLED 128×64 版面升級為同時顯示 48×48 天氣圖示、溫度、濕度與底部 <code>IP:xxx.xxx.xxx.xxx</code>；同步更新 <code>.md</code> 與 <code>.html</code> 雙端互動模擬器。</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: "dark" });
+
+    function copyCode(btn) {
+      const code = btn.parentElement.querySelector("code").innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const orig = btn.innerText;
+        btn.innerText = "✅ 已複製！";
+        setTimeout(() => (btn.innerText = orig), 1800);
+      });
+    }
+
+    const canvas = document.getElementById("oledCanvas");
+    const ctx = canvas.getContext("2d");
+    const tempSlider = document.getElementById("tempSlider");
+    const humSlider = document.getElementById("humSlider");
+    const ipInput = document.getElementById("ipInput");
+    const tempVal = document.getElementById("tempVal");
+    const humVal = document.getElementById("humVal");
+
+    const browserUrl = document.getElementById("browserUrl");
+    const webEmoji = document.getElementById("webEmoji");
+    const webWname = document.getElementById("webWname");
+    const webTemp = document.getElementById("webTemp");
+    const webHum = document.getElementById("webHum");
+    const webIp = document.getElementById("webIp");
+
+    function getWeatherInfo(temp, hum) {
+      if (hum >= 85.0 && temp >= 28.0)
+        return { id: 4, emoji: "⛈️", name: "雷雨 / 悶熱 (Thunderstorm)" };
+      if (hum >= 80.0)
+        return { id: 3, emoji: "🌧️", name: "下雨 / 潮濕 (Rainy)" };
+      if (hum >= 70.0)
+        return { id: 2, emoji: "☁️", name: "多雲 (Cloudy)" };
+      if (hum >= 55.0)
+        return { id: 1, emoji: "⛅", name: "晴時多雲 (Partly Cloudy)" };
+      return { id: 0, emoji: "☀️", name: "晴天 (Sunny)" };
+    }
+
+    function drawCloudShape(cx, cy, r) {
+      ctx.beginPath();
+      ctx.arc(cx - 8, cy + 2, r * 0.75, 0, Math.PI * 2);
+      ctx.arc(cx, cy - 3, r, 0, Math.PI * 2);
+      ctx.arc(cx + 9, cy + 2, r * 0.8, 0, Math.PI * 2);
+      ctx.fillRect(cx - 10, cy + 1, 20, r * 0.8);
+      ctx.fill();
+    }
+
+    function drawIcon(symbolId) {
+      ctx.fillStyle = "#38bdf8";
+      ctx.strokeStyle = "#38bdf8";
+      ctx.lineWidth = 2.0;
+
+      if (symbolId === 0) {
+        ctx.beginPath();
+        ctx.arc(22, 24, 9, 0, Math.PI * 2);
+        ctx.fill();
+        for (let i = 0; i < 8; i++) {
+          const a = (i * Math.PI) / 4;
+          ctx.beginPath();
+          ctx.moveTo(22 + Math.cos(a) * 12, 24 + Math.sin(a) * 12);
+          ctx.lineTo(22 + Math.cos(a) * 17, 24 + Math.sin(a) * 17);
+          ctx.stroke();
+        }
+      } else if (symbolId === 1) {
+        ctx.beginPath();
+        ctx.arc(16, 17, 6, 0, Math.PI * 2);
+        ctx.stroke();
+        for (let i = 0; i < 8; i++) {
+          const a = (i * Math.PI) / 4;
+          ctx.beginPath();
+          ctx.moveTo(16 + Math.cos(a) * 8, 17 + Math.sin(a) * 8);
+          ctx.lineTo(16 + Math.cos(a) * 11, 17 + Math.sin(a) * 11);
+          ctx.stroke();
+        }
+        drawCloudShape(25, 28, 8);
+      } else if (symbolId === 2) {
+        drawCloudShape(23, 24, 10);
+      } else if (symbolId === 3) {
+        drawCloudShape(23, 20, 9);
+        for (let i = -1; i <= 1; i++) {
+          ctx.beginPath();
+          ctx.moveTo(23 + i * 7, 31);
+          ctx.lineTo(20 + i * 7, 40);
+          ctx.stroke();
+        }
+      } else if (symbolId === 4) {
+        ctx.beginPath();
+        ctx.moveTo(26, 6);
+        ctx.lineTo(14, 25);
+        ctx.lineTo(23, 25);
+        ctx.lineTo(18, 42);
+        ctx.lineTo(33, 21);
+        ctx.lineTo(24, 21);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+
+    function renderAll() {
+      const temp = parseFloat(tempSlider.value);
+      const hum = parseFloat(humSlider.value);
+      const ip = ipInput.value.trim() || "192.168.1.108";
+
+      tempVal.textContent = temp.toFixed(1) + " °C";
+      humVal.textContent = hum.toFixed(1) + " %";
+
+      const info = getWeatherInfo(temp, hum);
+
+      // Update Web Server preview
+      browserUrl.textContent = `http://${ip}/`;
+      webEmoji.textContent = info.emoji;
+      webWname.textContent = info.name;
+      webTemp.textContent = temp.toFixed(1);
+      webHum.textContent = hum.toFixed(1);
+      webIp.textContent = ip;
+
+      // Update OLED 128x64 canvas
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(0, 0, 128, 64);
+
+      drawIcon(info.id);
+
+      ctx.fillStyle = "#38bdf8";
+      ctx.font = "bold 14px monospace";
+      ctx.fillText(temp.toFixed(1) + "°C", 52, 20);
+      ctx.fillText(hum.toFixed(1) + " %", 52, 43);
+
+      // Divider at y=50
+      ctx.fillRect(0, 50, 128, 1);
+
+      // Bottom IP bar
+      ctx.font = "10px monospace";
+      ctx.fillText("IP:" + ip, 0, 62);
+    }
+
+    tempSlider.addEventListener("input", renderAll);
+    humSlider.addEventListener("input", renderAll);
+    ipInput.addEventListener("input", renderAll);
+    renderAll();
+  </script>
+</body>
+</html>

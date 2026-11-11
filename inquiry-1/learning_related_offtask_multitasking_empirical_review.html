@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>課堂「學習相關但離題」多工：他科講義／課本／測驗卷行為的實證研究綜述</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'neutral' });</script>
+  <style>
+    :root {
+      --primary-color: #1e3a8a;
+      --secondary-color: #2563eb;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --code-bg: #0f172a;
+      --highlight-bg: #eff6ff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.8; color: var(--text-main); background-color: var(--bg-color); padding: 2.5rem 1.5rem;
+    }
+    .container {
+      max-width: 1100px; margin: 0 auto; background: var(--card-bg); padding: 3rem; border-radius: 14px;
+      box-shadow: 0 4px 25px rgba(0,0,0,0.06); border: 1px solid var(--border-color);
+    }
+    .header-section {
+      border-bottom: 2px solid var(--border-color); padding-bottom: 1.5rem; margin-bottom: 2.5rem;
+      display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.5rem;
+    }
+    .title-group { flex: 1; min-width: 280px; }
+    .title-group h1 { font-size: 1.85rem; color: var(--primary-color); margin-bottom: 0.5rem; line-height: 1.35; font-weight: 800; }
+    .metadata-card {
+      background: var(--highlight-bg); border-left: 4px solid var(--secondary-color); padding: 0.85rem 1.25rem;
+      border-radius: 0 8px 8px 0; font-size: 0.92rem; color: var(--text-muted); margin: 0.75rem 0 1rem;
+    }
+    .metadata-card p { margin: 0.25rem 0; }
+    .metadata-card strong { color: #1e40af; }
+    .btn-export {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #fff; border: none;
+      padding: 0.8rem 1.6rem; font-size: 1rem; font-weight: 700; border-radius: 8px; cursor: pointer;
+      box-shadow: 0 4px 14px rgba(239,68,68,0.35);
+    }
+    h2 { font-size: 1.55rem; color: var(--primary-color); margin: 3rem 0 1.2rem; padding-bottom: 0.6rem; border-bottom: 2px solid #e0e7ff; }
+    h3 { font-size: 1.25rem; color: #1e40af; margin: 2rem 0 0.9rem; }
+    h4 { font-size: 1.1rem; color: #0f766e; margin: 1.3rem 0 0.5rem; }
+    p { margin-bottom: 1.1rem; }
+    ul, ol { margin-left: 1.5rem; margin-bottom: 1.25rem; }
+    li { margin-bottom: 0.45rem; }
+    a { color: var(--secondary-color); text-decoration: none; font-weight: 500; }
+    a:hover { text-decoration: underline; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.94rem; border: 1px solid var(--border-color); }
+    th, td { padding: 0.85rem 1rem; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: top; }
+    th { background-color: #f1f5f9; font-weight: 700; color: #1e3a8a; }
+    .alert-box { padding: 1.15rem 1.4rem; border-radius: 8px; margin: 1.4rem 0; border-left: 5px solid; }
+    .alert-tip { background-color: #ecfdf5; border-left-color: #10b981; color: #065f46; }
+    .mermaid-box { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 1.5rem; margin: 1.5rem 0; overflow-x: auto; }
+    .code-wrapper { position: relative; margin: 1.5rem 0; border-radius: 10px; overflow: hidden; border: 1px solid #334155; }
+    .code-header { background: #1e293b; color: #e2e8f0; padding: 0.6rem 1.1rem; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; }
+    .btn-copy { background: #3b82f6; color: #fff; border: none; padding: 0.35rem 0.85rem; border-radius: 5px; font-size: 0.8rem; cursor: pointer; font-weight: 600; }
+    pre { background: var(--code-bg); color: #f8fafc; padding: 1.25rem; overflow-x: auto; margin: 0; font-family: Consolas, Monaco, monospace; font-size: 0.9rem; line-height: 1.6; }
+    code { font-family: Consolas, Monaco, monospace; background: #f1f5f9; color: #be123c; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9em; }
+    pre code { background: transparent; color: inherit; padding: 0; }
+    hr { border: none; border-top: 1px solid var(--border-color); margin: 2rem 0; }
+    @media print {
+      .btn-export, .btn-copy { display: none !important; }
+      body { padding: 0; background: #fff; }
+      .container { box-shadow: none; border: none; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-section">
+      <div class="title-group">
+        <h1>課堂「學習相關但離題」多工：他科講義／課本／測驗卷行為的實證研究綜述</h1>
+      </div>
+      <button class="btn-export" onclick="window.print()">匯出成 PDF</button>
+    </div>
+    <div class="metadata-card"><p><strong>最後更新時間</strong>: 2026-11-11 11:00:43 (UTC+8)</p><p><strong>使用模型</strong>: Composer</p><p><strong>執行 Agent</strong>: Auto (Cursor)</p><p><strong>主題分類</strong>: inquiry-1 教育議題探究／課堂多工／自我調節學習／高等教育實證</p></div>
+<div class="alert-box alert-tip"><strong>說明</strong><br><strong>與既有檔案的區分（請勿混用）</strong><br>- 本檔為<strong>獨立新建</strong>的實證文獻綜述，檔名：<code>learning_related_offtask_multitasking_empirical_review.*</code><br>- <strong>不編輯、不覆蓋</strong>既有的 <code>classroom_cross_subject_study_research_and_solutions.md/.html</code>（理論框架＋班級經營方案指南）與 <code>pbl2/classroom_smartphone_management_solutions.*</code>（手機分心方案）<br>- 本檔聚焦 Deng 團隊等提出的 <strong>learning-related yet off-task</strong>（學習相關但離題）概念、盛行率數據、對<strong>當堂課</strong>注意力／保留的實驗與追蹤證據，以及介入方法比較<br>- 敘事體完整研究報告另見：<code>reports/課堂看他科資料原因研究.md</code>（由研究筆記綜合而成；與本檔互補，非同一檔）<br></div>
+<hr>
+<h2>🎯 摘要 (Summary)</h2>
+<p>「學生在 A 課堂看 B 科講義、課本、測驗卷或趕他科作業」在研究上最貼切的標籤是 <strong>learning-related yet off-task multitasking</strong>（學習相關但偏離當堂課的多工）。它不是單純「滑社群偷懶」，也不是「本課相關的筆記／查資料」；文獻幾乎一律以「是否服務<strong>當下這堂課</strong>」劃分，因此他科學術工作在分類上屬於 <strong>lecture-irrelevant／distractive</strong>。</p>
+<p>關鍵實證結論：</p>
+<ol><li><strong>很常見</strong>：中國大學樣本中，超過八成報告曾在課堂做學習相關的次要任務（含他科作業）；印尼大型問卷約三分之一曾瀏覽他科網站或通訊討論他科作業；美國筆電調查近半數曾在課堂做他課課業。</li><li><strong>多半是策略性分流，不是單純自制失敗</strong>：當堂課感知價值／興趣低、他科 deadline／考試緊急時，學生會<strong>事先計畫</strong>帶哪份作業進教室，並合理化為「不浪費時間」。</li><li><strong>對當堂課有代價</strong>：以「模擬他科長答作業」為無關次任務的實驗顯示，注意力與事實／概念保留皆明顯下降；筆電追蹤亦顯示非本課活動比率與成績負相關。</li><li><strong>禁手機治不好這題</strong>：紙本講義、下載教材、他科 Word／PDF 都繞得過裝置禁令；較對症的是提高當堂課工具價值與課中 accountability，並在機構層協調評量時程。</li></ol>
+<hr>
+<h2>💡 1. 核心概念剖析 (Core Concepts)</h2>
+<h3>1.1 術語地圖：這行為在文獻裡叫什麼？</h3>
+<table>
+<tr><th>標籤</th><th>含義</th><th>是否直接對應「看他科資料」</th></tr>
+<tr><td><strong>learning-related yet off-task</strong>／<strong>off-task yet learning-related</strong></td><td>次任務仍屬學習，但與當堂課無關</td><td><strong>是（最精準）</strong></td></tr>
+<tr><td>distractive multitasking／off-task multitasking</td><td>偏離當堂目標的任何次任務</td><td>上位概念（含社群與他科）</td></tr>
+<tr><td>productive／course-related multitasking</td><td>服務<strong>本課</strong>的筆記、投影片、查本課資料</td><td><strong>否</strong>（他科不算 productive）</td></tr>
+<tr><td>academic cyberslacking／cyberloafing</td><td>課堂非當堂用途的上網</td><td>部分題項會納入「他科網站／他科作業通訊」</td></tr>
+<tr><td>intentional mind wandering (TUT)</td><td>刻意想與本講無關之事</td><td>機制相近（刻意離題），但未必外化成他科作業</td></tr>
+</table>
+<div class="mermaid-box"><div class="mermaid">flowchart TD
+    All["課堂次要任務"] --> Rel{"是否服務當下這堂課？"}
+    Rel -->|是| On["On-task / lecture-relevant<br/>筆記、本課查詢、相關提問"]
+    Rel -->|否| Off["Off-task / distractive"]
+    Off --> Learn{"是否仍屬學業／學習？"}
+    Learn -->|是| LR["learning-related yet off-task<br/>他科講義／課本／測驗卷／作業"]
+    Learn -->|否| Ent["娛樂／社群／購物等"]</div></div>
+<h3>1.2 為什麼會發生？實證指出的內外成因</h3>
+<div class="mermaid-box"><div class="mermaid">flowchart LR
+    subgraph Internal["內部條件"]
+      V["當堂感知價值／興趣低"]
+      U["他科緊急度／考試壓力高"]
+      B["無聊、聽不懂、過易或過難"]
+      S["情境式自我調節：高利害課才開 SRL"]
+    end
+    subgraph External["外部條件"]
+      D["裝置／紙本教材可得性"]
+      P["同儕規範與示範"]
+      T["講述步調、座位、通知"]
+      A["評量日曆擠在同一週"]
+    end
+    Internal --> Decision["有意識時間配置：改做他科"]
+    External --> Decision
+    Decision --> Beh["課堂看他科講義／寫測驗卷"]</div></div>
+<p><strong>最一致的機制</strong>（Deng, Zhou, &amp; Broadbent, 2024；Qian, 2017）：學生會比較當堂課與替代任務的重要性、緊急性與報酬。任務價值越高，off-task 時間越少；低價值課上，改做他科常是<strong>刻意選擇</strong>，作者甚至提醒不宜一律視為「自我調節失敗」。</p>
+<p>質性合理化常見句型：</p>
+<ul><li>「不要浪費時間」</li><li>「教室有學習氛圍，適合趕學習任務」</li><li>「這堂不重要，整堂做自己的事」</li><li>「留一隻耳朵聽課，講到重點再回來」</li><li>理論上可對應中立化技術的 <em>appealing to higher loyalties</em>（他科更重要）與 <em>condemning the condemners</em>（怪老師無聊／不公）（Han et al., 2025）</li></ul>
+<h3>1.3 對學習的影響：分類與效應</h3>
+<p>文獻幾乎不把「學術但非本課」算成有益的 productive multitasking。</p>
+<table>
+<tr><th>次任務</th><th>對<strong>本講</strong>注意力／保留</th><th>證據類型</th></tr>
+<tr><td>本課筆記／相關提問</td><td>中性至正向</td><td>實驗（如 Mahama 的 lecture-relevant）</td></tr>
+<tr><td><strong>他科作業／模擬他科長答</strong></td><td><strong>負向</strong></td><td>實驗（Mahama Exp.1 明確模擬 other-course assignment）</td></tr>
+<tr><td>社群／簡訊／娛樂</td><td>負向</td><td>實驗＋追蹤＋相關</td></tr>
+<tr><td>刻意心智漫遊</td><td>負向（短期 quiz 尤明顯）</td><td>現場 thought-probe</td></tr>
+</table>
+<p>Mahama（2025）實驗摘要（影音講課、大學部 <em>N</em>=100）：lecture-irrelevant（填寫與講課無關、需長答的校園經驗問卷＝模擬他科作業）組注意力、事實保留、概念保留皆最低；lecture-relevant（筆記）組最高。</p>
+<hr>
+<h2>🛠️ 2. 實作與應用範例 (Practical Examples)</h2>
+<h3>2.1 盛行率速覽（不可直接互比，題幹不同）</h3>
+<table>
+<tr><th>研究</th><th>樣本</th><th>與「他科」直接相關的發現</th></tr>
+<tr><td>Deng et al., 2024</td><td>中國三校問卷 <em>n</em>=385；訪談 15</td><td>&gt;80% 曾從事 learning-related 次任務（含完成他科作業）；45 分鐘課平均約 12.8 分鐘從事與當堂無關活動</td></tr>
+<tr><td>Zhou &amp; Deng, 2024</td><td>問卷 <em>n</em>=543 等</td><td>「最常做」的 course-unrelated yet learning-related 約 16%；多數曾用手機做他科作業／搜他科資料</td></tr>
+<tr><td>Simanjuntak et al., 2022</td><td>印尼大學生 <em>n</em>=1485</td><td>瀏覽他科網站 34.61%；通訊討論他科作業 32.18%</td></tr>
+<tr><td>Borbone, 2009</td><td>UNC 筆電使用者子集 <em>n</em>=81</td><td>49.4% 在課堂做 coursework for other classes</td></tr>
+<tr><td>JAOA／骨科醫學生調查, 2014</td><td>醫學教育脈絡</td><td>50 分鐘講課中 74% 會讀他科，平均約 23 分鐘；主因含考試時程、講者、興趣</td></tr>
+</table>
+<h3>2.2 現場區辨：娛樂分心 vs 他科學術分流</h3>
+<p>教師若一律用「沉迷手機」解讀，容易誤判課業過載或教學設計問題。</p>
+<table>
+<tr><th>線索</th><th>較像娛樂／社群</th><th>較像他科學術分流</th></tr>
+<tr><td>時機</td><td>整學期零星、無聊段落</td><td>考試週、作業截止前、低利害選修</td></tr>
+<tr><td>計畫性</td><td>通知觸發、習慣性解鎖</td><td>課前已夾他科講義／預開文件</td></tr>
+<tr><td>學生說法</td><td>FOMO、解悶</td><td>「這堂用處不大／不浪費時間」</td></tr>
+<tr><td>介入含意</td><td>裝置規範＋習慣／同儕常模</td><td>課程價值、節奏、評量對齊、跨課負荷</td></tr>
+</table>
+<h3>2.3 決策流程（診斷 → 選工具）</h3>
+<div class="mermaid-box"><div class="mermaid">flowchart TD
+    Start["觀察到學生在看非本科資料"] --> Q1{"內容是娛樂／社群<br/>還是他科講義／測驗卷？"}
+    Q1 -->|娛樂／社群| EntPath["裝置規範＋主動學習＋同儕常模"]
+    Q1 -->|他科學術| Q2{"是否集中在考試週／截止日前？"}
+    Q2 -->|是| Load["跨課評量熱力圖／分散形成性評量"]
+    Q2 -->|否| Q3{"當堂是否低互動、低工具價值？"}
+    Q3 -->|是| Teach["短講＋產出責任＋內插小檢／抽問"]
+    Q3 -->|否| Talk["課後晤談：時間配置與 SRL，避免當眾羞辱"]
+    EntPath & Load & Teach & Talk --> Review["追蹤：當堂參與＋該生整體負荷，而非只盯螢幕"]</div></div>
+<h3>2.4 輕量診斷腳本（獨立於既有 <code>classroom_cross_subject_analyzer.py</code>）</h3>
+<p>下列小工具只做「行為類型標籤＋建議介入方向」的文字輸出，<strong>不取代</strong>既有認知損益模擬器。</p>
+<div class="mermaid-box"><div class="mermaid">flowchart TD
+    A["輸入：計畫性 / 考試週 / 內容類型"] --> B["規則：entertainment vs academic_triage"]
+    B --> C["輸出：標籤 + 建議槓桿"]</div></div>
+<div class="code-wrapper"><div class="code-header"><span>python</span><button class="btn-copy" onclick="copyCode(this)">複製</button></div><pre><code># classroom_offtask_triage_labeler.py
+# 獨立小工具：依線索粗分「娛樂分心」與「他科學術分流」
+# 不依賴、不修改 classroom_cross_subject_analyzer.py
+
+from dataclasses import dataclass
+
+
+@dataclass
+class Clue:
+    planned: bool          # 課前就帶好他科講義／檔案？
+    exam_week: bool        # 是否考試週或大截止日前？
+    content: str           # &quot;other_course&quot; | &quot;social&quot; | &quot;game&quot; | &quot;mixed&quot;
+    low_course_value: bool # 學生自述／觀察：當堂低興趣低利害？
+
+
+def label(clue: Clue) -&gt; dict:
+    &quot;&quot;&quot;回傳粗分類與建議；僅供討論，非心理診斷。&quot;&quot;&quot;
+    if clue.content in {&quot;social&quot;, &quot;game&quot;} and not clue.planned:
+        kind = &quot;entertainment_distraction&quot;
+        levers = [&quot;裝置結構化使用&quot;, &quot;短講+活動循環&quot;, &quot;同儕常模與延遲通知&quot;]
+    elif clue.content == &quot;other_course&quot; and (clue.planned or clue.exam_week or clue.low_course_value):
+        kind = &quot;academic_triage_other_course&quot;
+        levers = [&quot;提高當堂工具價值與產出責任&quot;, &quot;內插／抽問提高切走成本&quot;, &quot;跨課評量時程協調&quot;]
+    else:
+        kind = &quot;mixed_or_unclear&quot;
+        levers = [&quot;先低干擾近距離提示&quot;, &quot;課後短談釐清動機&quot;, &quot;避免一開始就道德化&quot;]
+    return {&quot;label&quot;: kind, &quot;suggested_levers&quot;: levers}
+
+
+if __name__ == &quot;__main__&quot;:
+    demo = Clue(
+        planned=True,
+        exam_week=True,
+        content=&quot;other_course&quot;,
+        low_course_value=True,
+    )
+    print(label(demo))</code></pre></div>
+<h3>2.5 介入方法比較（應用與限制）</h3>
+<table>
+<tr><th>方法</th><th>應用</th><th>限制</th><th>對「他科課業」適配</th></tr>
+<tr><td>提升感知課程／活動價值</td><td>直接對準 Deng／任務價值機制</td><td>單堂教師能動性受主修、評量權重限制</td><td><strong>高</strong></td></tr>
+<tr><td>主動學習＋短講循環</td><td>降被動空檔、提高切走成本</td><td>備課成本；低品質活動仍可能被分流</td><td>中高</td></tr>
+<tr><td>內插／concurrent testing</td><td>降 TUT／神遊、錨定注意力</td><td>複製效果量常偏小；多在影片／實驗情境</td><td>中高</td></tr>
+<tr><td>學生 SRL／環境結構化</td><td>高利害課有效（藏手機、選座、延遲通知）</td><td>低價值課學生會「關閉」SRL，甚至用 SRL 更有效趕他科</td><td>中</td></tr>
+<tr><td>裝置全面禁止</td><td>降低可見娛樂手機使用</td><td>難禁紙本／下載他科；高教可能傷出勤與無障礙</td><td><strong>低–中</strong></td></tr>
+<tr><td>引導式裝置使用</td><td>增加本課筆記／學術用途</td><td>難偵測「他科 Word／PDF」</td><td>中</td></tr>
+<tr><td>嚴懲／當眾羞辱</td><td>短期嚇阻</td><td>傷關係；對「自覺理性趕工」說服力弱</td><td>低</td></tr>
+</table>
+<hr>
+<h2>🚀 3. 延伸思考與進階主題 (Extensions &amp; Advanced Topics)</h2>
+<ol><li><strong>雙結果缺口</strong>：現有實驗多量測「本講損失」，幾乎不同時量測「他科作業完成品質／GPA 淨效益」。學生 triage 的「好處」目前停在質性自我報告。</li><li><strong>與手機方案的關係</strong>：<code>pbl2</code> 手機管理對娛樂分心較對症；本現象常混紙本與檔案，需要評量節奏與教學設計，而非只靠收手機。</li><li><strong>與既有理論指南的互補</strong>：<code>classroom_cross_subject_study_research_and_solutions</code> 強在期望—價值、動機干擾、自我價值等理論敘事與班級經營 SOP；本檔強在 Deng／Simanjuntak／Mahama／追蹤研究的操作性定義與數據。</li><li><strong>K–12 vs 高教</strong>：多數精準「他科 multitasking」證據來自大學；國高中現場常被升學時程放大，但同題幹的大型量化仍不足。</li><li><strong>倫理</strong>：把「看起來沒在聽」一律罰，可能誤傷學生主導活動中的有效投入（課堂 EEG 研究顯示行為觀察與神經注意力指標可能不一致）。</li></ol>
+<hr>
+<h2>📚 4. 參考資料列表 (References)</h2>
+<p>取得日期皆為 <strong>2026-11-11</strong>。</p>
+<ol><li>Deng, L., Zhou, Y., &amp; Broadbent, J. (2024). Distraction, multitasking and self-regulation inside university classroom. <em>Education and Information Technologies</em>. https://doi.org/10.1007/s10639-024-12786-w</li><li>Deng, L., Liu, Y., Ku, K. Y. L., &amp; Lin, L. (2022). In-class multitasking with smartphones and laptops. <em>College Teaching</em>. https://doi.org/10.1080/87567555.2021.1973947</li><li>Zhou, Y., &amp; Deng, L. (2024). Lost in multitasking… <em>Australasian Journal of Educational Technology</em>. https://doi.org/10.14742/ajet.8941</li><li>Deng, L., et al. (2022). Off-task social media multitasking during class. <em>International Journal of Educational Technology in Higher Education</em>. https://doi.org/10.1186/s41239-022-00321-1</li><li>Simanjuntak, E., Nawangsari, N. A. F., &amp; Ardi, R. (2022). Academic cyberslacking… <em>Psychology Research and Behavior Management</em>. https://pmc.ncbi.nlm.nih.gov/articles/PMC9642801/</li><li>Mahama, S. (2025). When engagement meets distraction…（WashU thesis；模擬他科作業）. https://openscholarship.wustl.edu/art_sci_etds/3633</li><li>Kraushaar, J. M., &amp; Novak, D. C. (2010). Examining the affects of student multitasking with laptops during the lecture. <em>JISE</em>. https://jise.org/Volume21/n2/JISEv21n2p241.pdf</li><li>Sana, F., Weston, T., &amp; Cepeda, N. J. (2013). Laptop multitasking hinders classroom learning… <em>Computers &amp; Education</em>. https://www.sciencedirect.com/science/article/pii/S0360131512002254</li><li>Borbone, M. (2009). From doodle to Google…（UNC master’s paper）. https://ils.unc.edu/MSpapers/3470.pdf</li><li>Qian, Y. (2017). Multitasking and distracted learning…（Ohio State thesis）. OhioLINK</li><li>Han, Z., Yang, Z., &amp; Huang, Z. (2025). Classroom injustice and university students’ cyberloafing… <em>Frontiers in Psychology</em>. https://pmc.ncbi.nlm.nih.gov/articles/PMC12426119/</li><li>Wammes, J. D., et al. (2016). Mind wandering during lectures I &amp; II.（intentional TUT 與 quiz／exam）</li><li>May, K. E., &amp; Elder, A. D. (2018). Efficient, helpful, or distracting? A literature review of media multitasking… https://link.springer.com/article/10.1186/s41239-018-0096-z</li><li>Szpunar, K. K., Khan, N. Y., &amp; Schacter, D. L. (2013). Interpolated memory tests… https://pmc.ncbi.nlm.nih.gov/articles/PMC3631699/</li><li>Ko, L.-W., et al. (2021). Effects of context on the neural correlates of attention in a college classroom. <em>npj Science of Learning</em>. https://www.nature.com/articles/s41539-021-00094-8</li></ol>
+<p>研究過程筆記另存於：<code>inquiry-1/research_notes/課堂看他科資料原因研究/</code>（causes_motivation.md、effects_outcomes.md、interventions_comparison.md）。</p>
+<p>敘事體完整報告：<a href="./reports/課堂看他科資料原因研究.html">inquiry-1/reports/課堂看他科資料原因研究.md</a>（及同名 <code>.html</code>）。</p>
+<hr>
+<h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+<h3>🔹 [2026-11-11 10:53:00] [Composer / Auto] 變更紀錄</h3>
+<ul><li><strong>模型/Agent</strong>: Composer / Auto (Cursor)</li><li><strong>Prompt 原文</strong>:</li></ul>
+<p>  ```text</p>
+<p>  為什麼很多學生會在課堂上看其他課程的資料 包含講義 課本 測驗卷，有沒有什麼相關研究</p>
+<p>  ```</p>
+<ul><li><strong>變更摘要</strong>: 依 <code>inquiry-1/AGENTS.md</code> 以關鍵字檢索（learning-related yet off-task、academic cyberslacking、classroom multitasking、他科作業等），蒐集 Deng／Zhou、Simanjuntak、Mahama、Kraushaar &amp; Novak 等實證來源，並寫入 <code>research_notes/課堂看他科資料原因研究/</code>。</li></ul>
+<h3>🔹 [2026-11-11 11:00:43] [Composer / Auto] 變更紀錄</h3>
+<ul><li><strong>模型/Agent</strong>: Composer / Auto (Cursor)</li><li><strong>Prompt 原文</strong>:</li></ul>
+<p>  ```text</p>
+<p>  跟現有檔案區分 不要編輯同一份檔案</p>
+<p>  ```</p>
+<ul><li><strong>變更摘要</strong>: <strong>不編輯</strong>既有 <code>classroom_cross_subject_study_research_and_solutions.*</code> 與 <code>pbl2/classroom_smartphone_management_solutions.*</code>；另建本獨立檔 <code>learning_related_offtask_multitasking_empirical_review.md/.html</code> 與輕量腳本 <code>classroom_offtask_triage_labeler.py</code>，專做實證術語、盛行率、效應與介入比較，並標明與既有理論／手機方案文件的分工。</li></ul>
+<h3>🔹 [2026-11-11 11:25:00] [Composer / Auto] 變更紀錄</h3>
+<ul><li><strong>模型/Agent</strong>: Composer / Auto (Cursor)</li><li><strong>Prompt 原文</strong>:</li></ul>
+<pre><code>Perform any necessary follow-up actions in response to the subagent completion above.</code></pre>
+<ul><li><strong>變更摘要</strong>: 報告寫手已將完整敘事報告寫入 <code>reports/課堂看他科資料原因研究.md/.html</code>；本檔僅補上對該報告的交叉連結與檔案分工說明，並整理索引歸屬（報告 md／html 併為同一篇筆記）。</li></ul>
+  </div>
+  <script>
+    function copyCode(btn) {
+      const code = btn.closest('.code-wrapper').querySelector('code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const old = btn.textContent; btn.textContent = '已複製';
+        setTimeout(() => btn.textContent = old, 1500);
+      });
+    }
+  </script>
+</body>
+</html>

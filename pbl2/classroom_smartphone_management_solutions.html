@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>解決學生上課滑手機問題：從腦科學機制、班級經營到數位教學轉化的完整解決方案指南</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'neutral' });</script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --primary-color: #1e3a8a;
+      --secondary-color: #2563eb;
+      --accent-color: #0d9488;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --code-bg: #0f172a;
+      --highlight-bg: #eff6ff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.8;
+      color: var(--text-main);
+      background-color: var(--bg-color);
+      padding: 2.5rem 1.5rem;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 3rem;
+      border-radius: 14px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border-color);
+    }
+    .header-section {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .title-group { flex: 1; min-width: 280px; }
+    .title-group h1 {
+      font-size: 1.85rem;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+      line-height: 1.35;
+      font-weight: 800;
+    }
+    .metadata-card {
+      background: var(--highlight-bg);
+      border-left: 4px solid var(--secondary-color);
+      padding: 0.85rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+    }
+    .metadata-card p { margin: 0.25rem 0; }
+    .metadata-card strong { color: #1e40af; }
+    .btn-export {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #ffffff;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+    .btn-export:hover {
+      background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(239, 68, 68, 0.5);
+    }
+    h2 {
+      font-size: 1.55rem;
+      color: var(--primary-color);
+      margin: 3rem 0 1.2rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 2px solid #e0e7ff;
+    }
+    h3 { font-size: 1.25rem; color: #1e40af; margin: 2rem 0 0.9rem; }
+    h4 { font-size: 1.1rem; color: #0f766e; margin: 1.3rem 0 0.5rem; }
+    p { margin-bottom: 1.1rem; }
+    ul, ol { margin-left: 1.5rem; margin-bottom: 1.25rem; }
+    li { margin-bottom: 0.45rem; }
+    a { color: var(--secondary-color); text-decoration: none; font-weight: 500; }
+    a:hover { text-decoration: underline; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.94rem;
+      background: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      border: 1px solid var(--border-color);
+    }
+    th, td {
+      padding: 0.85rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+    }
+    th {
+      background-color: #f1f5f9;
+      font-weight: 700;
+      color: #1e3a8a;
+    }
+    tr:hover { background-color: #f8fafc; }
+    .alert-box {
+      padding: 1.15rem 1.4rem;
+      border-radius: 8px;
+      margin: 1.4rem 0;
+      border-left: 5px solid;
+    }
+    .alert-important {
+      background-color: #fef2f2;
+      border-left-color: #dc2626;
+      color: #7f1d1d;
+    }
+    .alert-tip {
+      background-color: #ecfdf5;
+      border-left-color: #10b981;
+      color: #065f46;
+    }
+    .mermaid-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      text-align: center;
+      overflow-x: auto;
+    }
+    .formula-box {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 1.2rem;
+      margin: 1.2rem 0;
+      text-align: center;
+      overflow-x: auto;
+    }
+    .code-wrapper {
+      position: relative;
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #334155;
+    }
+    .code-header {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 0.6rem 1.1rem;
+      font-size: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: Consolas, Monaco, monospace;
+    }
+    .btn-copy {
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      padding: 0.35rem 0.85rem;
+      border-radius: 5px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .btn-copy:hover { background: #2563eb; }
+    pre {
+      background: var(--code-bg);
+      color: #f8fafc;
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin: 0;
+    }
+    code {
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      background: #f1f5f9;
+      color: #be123c;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+    /* 互動式課堂紅綠燈展示看板 */
+    .live-widget {
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 2rem 0;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    }
+    .widget-banner {
+      background: #dc2626;
+      color: white;
+      padding: 1.4rem;
+      text-align: center;
+      transition: background 0.3s ease;
+    }
+    .widget-banner h3 { color: white; margin: 0 0 0.4rem 0; font-size: 1.45rem; }
+    .widget-banner p { margin: 0; font-size: 0.98rem; opacity: 0.95; }
+    .widget-body {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 1.5rem;
+      background: #ffffff;
+    }
+    .widget-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1.2rem;
+    }
+    .light-btn-group {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .light-btn {
+      flex: 1;
+      border: none;
+      color: white;
+      padding: 0.65rem;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .timer-display {
+      font-family: Consolas, monospace;
+      font-size: 2.8rem;
+      font-weight: 800;
+      text-align: center;
+      background: #0f172a;
+      color: #38bdf8;
+      border-radius: 8px;
+      padding: 0.5rem;
+      margin: 0.6rem 0;
+    }
+    .prompt-archive {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-top: 2.5rem;
+    }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .container { box-shadow: none; border: none; max-width: 100%; padding: 1rem; }
+      .btn-export, .btn-copy { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-section">
+      <div class="title-group">
+        <h1>📱 解決學生上課滑手機問題：從腦科學機制、班級經營到數位教學轉化的完整解決方案指南</h1>
+        <div class="metadata-card">
+          <p><strong>最後更新時間</strong>: 2026-11-11 09:58:00 (UTC+8)</p>
+          <p><strong>使用模型</strong>: Gemini 4 Argon (Medium)</p>
+          <p><strong>執行 Agent</strong>: Antigravity</p>
+          <p><strong>主題分類</strong>: PBL 專題研究 / 班級經營 / 數位素養 / 教育心理學 / 創新教學策略</p>
+        </div>
+      </div>
+      <button class="btn-export" onclick="window.print()">🖨️ 匯出成 PDF</button>
+    </div>
+
+    <h2>🎯 摘要 (Summary)</h2>
+    <p>面對「數位原住民（Digital Natives）」世代，學生上課滑手機已成為國小高年級、國中、高中職乃至大學課堂最普遍的教學挑戰。單憑威權式的責罵或強行沒收，往往只能短暫壓制，卻容易引發師生對立、親師衝突，甚至衍生財物保管的法律責任爭議。</p>
+    <p>本文件根據關鍵字檢索國內外教育政策（教育部《高級中等以下學校校園行動載具使用原則》、聯合國教科文組織 UNESCO 2023 報告）、認知心理學研究與第一線教師班級經營實務，系統化整理 <strong>六大維度解決方案</strong>：</p>
+    <ol>
+      <li><strong>政策與法規制度法（民主程序與三級輔導管教）</strong></li>
+      <li><strong>物理環境隔離法（「手機旅館 Phone Hotel」與訊號/視線阻斷）</strong></li>
+      <li><strong>行為契約與「紅綠燈（Traffic-Light）」分級管理法</strong></li>
+      <li><strong>正向行為支持（PBIS）與遊戲化同儕激勵法</strong></li>
+      <li><strong>主動式教學設計與 BYOD（自攜載具）課堂轉化法</strong></li>
+      <li><strong>數位監控、互動回饋平台與專注力科技工具法</strong></li>
+    </ol>
+    <p>文中深入剖析學生滑手機成癮的認知神經科學機制，提供課堂決策流程圖、可直接用於課堂投影的 <strong>Python 課堂載具紅綠燈與專注計時/互動抽籤工具</strong>（附完整註解與邏輯流程圖），並針對六大方案的<strong>適用對象、應用場景與實務限制</strong>進行完整比較。</p>
+
+    <h2>💡 1. 核心概念剖析 (Core Concepts)</h2>
+    <p>要有效解決學生上課滑手機的問題，必須先從<strong>認知心理學（Cognitive Psychology）</strong>與<strong>行為神經科學（Behavioral Neuroscience）</strong>理解：「為什麼學生明知上課滑手機會影響成績，卻仍然控制不住手指？」</p>
+
+    <h3>1.1 學生上課滑手機的四大底層心理與腦科學機制</h3>
+    <div class="mermaid-box">
+      <div class="mermaid">
+flowchart TD
+    Root["學生上課滑手機的底層驅動力"] --> M1["1. 多巴胺變動比率強化<br/>(Variable Ratio Reinforcement)"]
+    Root --> M2["2. 大腦榨乾效應<br/>(Brain Drain Effect, Ward et al., 2017)"]
+    Root --> M3["3. 認知負荷失衡與無聊逃避<br/>(Cognitive Load Imbalance)"]
+    Root --> M4["4. 錯失恐懼症與社群焦慮<br/>(FOMO, Fear of Missing Out)"]
+
+    M1 --> E1["短影音/手遊/通知如同吃角子老虎機<br/>產生高頻預期性多巴胺分泌"]
+    M2 --> E2["手機只要在視線或口袋內<br/>大腦需耗費工作記憶去『抑制不看它』"]
+    M3 --> E3["課程太難(超載)或太單調(低載)<br/>大腦自動尋求低成本高回饋刺激"]
+    M4 --> E4["擔心漏看群組訊息或限時動態<br/>引發焦慮驅動型強迫檢視"]
+
+    E1 & E2 & E3 & E4 --> Result["注意力碎片化 + 任務切換懲罰 (Task Switching Cost)<br/>導致課堂吸收率大幅崩跌"]
+      </div>
+    </div>
+
+    <ol>
+      <li><strong>多巴胺變動比率強化機制（Variable Ratio Reinforcement Schedule）</strong>：
+        <ul>
+          <li><strong>原理</strong>：行為主義心理學家 B.F. Skinner 的操作制約實驗指出，「不可預測的間歇性獎勵」最難戒除。社群媒體的下拉重新整理（Pull-to-refresh）、Reels / TikTok 短影音演算法、手遊抽卡與隨機推播通知，皆採用變動比率強化設計。相比之下，傳統課堂講述屬於「高認知努力、延遲且低頻回饋」，在神經迴路競爭上天然處於劣勢。</li>
+        </ul>
+      </li>
+      <li><strong>「大腦榨乾效應」（Brain Drain Effect, Ward et al., 2017）</strong>：
+        <ul>
+          <li><strong>原理</strong>：德州大學奧斯汀分校學者 Adrian F. Ward 團隊於 2017 年發表於《Journal of the Association for Consumer Research》的經典實驗證實：<strong>即使手機處於靜音、螢幕朝下且學生完全沒有去碰它，只要手機放在書桌上或口袋裡（視線與觸手可及範圍內），學生的工作記憶容量（Working Memory Capacity）與流動智力表現就會顯著下降</strong>。</li>
+          <li><strong>原因</strong>：大腦的前額葉皮質（Prefrontal Cortex）必須持續消耗有限的執行控制資源（Executive Control）去「抑制想拿手機的衝動」，導致真正用於聽課與思考的認知資源被「暗中抽乾」。</li>
+        </ul>
+      </li>
+      <li><strong>認知負荷失衡（Cognitive Load Theory, Sweller, 1988）</strong>：
+        <ul>
+          <li><strong>原理</strong>：當課堂教學內容超出學生的先備知識（內在與外在認知負荷過高，學生「聽不懂」），或是單向講述時間過長、缺乏互動（認知負荷過低，學生「覺得無聊」），大腦便會啟動逃避機制，轉向手機尋求即時的掌控感與感官刺激。</li>
+        </ul>
+      </li>
+      <li><strong>錯失恐懼症（FOMO, Fear of Missing Out）與同儕連結需求</strong>：
+        <ul>
+          <li><strong>原理</strong>：青少年時期極度重視同儕認同，深怕未即時回覆 IG 限時動態、LINE 群組或遊戲組隊邀請而被排擠。許多學生滑手機並非為了娛樂，而是為了緩解「漏接訊息」的焦慮感。</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h3>1.2 課堂分心與任務切換成本（Task Switching Cost）數學模型</h3>
+    <p>許多學生認為自己可以「邊聽課、邊回訊息（Multitasking 多工處理）」，但認知神經科學早已證實人類大腦無法同時處理兩項需要語義理解的任務，所謂「多工」其實是高頻率的<strong>任務切換（Task Switching）</strong>。</p>
+    <p>根據加州大學爾灣分校（UC Irvine）Gloria Mark 教授的注意力研究與認知負荷模型，學生在課堂時間 $T_{\text{total}}$ 內的有效學習認知產出 $E_{\text{learning}}$ 可表示為：</p>
+
+    <div class="formula-box">
+      $$E_{\text{learning}} = \eta \cdot \left[ T_{\text{total}} - \sum_{i=1}^{N} \left( t_{\text{phone}, i} + \tau_{\text{resumption}, i} \right) \right] \cdot \left( 1 - \alpha_{\text{presence}} \right)$$
+    </div>
+
+    <ul>
+      <li>$N$：單節課（例如 $50$ 分鐘）內低頭查看手機的次數。</li>
+      <li>$t_{\text{phone}, i}$：第 $i$ 次滑手機實際花費的時間（即使只看一眼通知，平均為 $15 \sim 45$ 秒）。</li>
+      <li>$\tau_{\text{resumption}, i}$：<strong>注意力重聚焦延遲（Attention Resumption Lag / Attention Residue）</strong>。當視線從高刺激的手機螢幕移回黑板時，大腦殘留剛才的社群資訊（注意力殘留），重新接上老師講課邏輯所需的恢復時間（平均需 $2 \sim 5$ 分鐘，複雜數理推導甚至超過 $10$ 分鐘）。</li>
+      <li>$\alpha_{\text{presence}} \in [0, 0.25]$：<strong>手機在場懲罰係數（Brain Drain Factor）</strong>。手機放桌上時 $\alpha_{\text{presence}} \approx 0.15 \sim 0.20$；手機放入教室前方收納袋或書包底層時 $\alpha_{\text{presence}} \to 0$。</li>
+      <li>$\eta$：教學設計互動係數（主動式學習 $\eta$ 高，單向照本宣科 $\eta$ 低）。</li>
+    </ul>
+
+    <div class="alert-box alert-important">
+      <strong>❗ 公式啟示（為什麼偷看幾眼就會考不好）：</strong><br/>
+      一名學生在一堂 50 分鐘的課只要偷看手機 <strong>5 次</strong>（每次 30 秒，每次花 3 分鐘重新接回課堂思緒），加上手機放桌上的分心效應，其整堂課的<strong>實質有效學習時間將從 50 分鐘暴跌至不足 26 分鐘（損失近 50% 學習成效）</strong>！因此，解決方案必須同時降低干擾頻率 $N$、消除在場係數 $\alpha_{\text{presence}}$，並提升教學互動度 $\eta$。
+    </div>
+
+    <h2>🛠️ 2. 實作與應用範例 (Practical Examples)</h2>
+
+    <h3>2.1 六大解決方案全景決策架構</h3>
+    <div class="mermaid-box">
+      <div class="mermaid">
+flowchart TD
+    Problem["課堂問題：學生上課一直滑手機"] --> Stage1{"第一層：環境與制度設定<br/>(課前預防)"}
+    
+    Stage1 --> Method1["方法 1：校規與班規法制化<br/>依教育部原則訂定民主班規"]
+    Stage1 --> Method2["方法 2：物理環境隔離法<br/>手機旅館(收納袋)/養機場/鎖定袋"]
+    Stage1 --> Method3["方法 3：課堂紅綠燈分級制<br/>(Traffic-Light Policy)<br/>紅燈收起 / 黃燈備用 / 綠燈互動"]
+
+    Method1 & Method2 & Method3 --> Stage2{"第二層：課中教學與科技引導<br/>(課中轉化)"}
+
+    Stage2 --> Method4["方法 4：正向行為支持 (PBIS)<br/>團體集點、專注植樹(Forest)、榮譽獎勵"]
+    Stage2 --> Method5["方法 5：主動學習與 BYOD 轉化<br/>分段教學(Chunking)、把手機變搶答器"]
+    Stage2 --> Method6["方法 6：數位載具監控與管理<br/>MDM/課堂廣播鎖屏、視覺化計時看板"]
+
+    Method4 & Method5 & Method6 --> Stage3{"第三層：個別違規與成癮輔導<br/>(課後介入)"}
+    Stage3 --> Step3["溫和提醒 → 暫時保管 → 親師協同與輔導室介入"]
+      </div>
+    </div>
+
+    <h3>2.2 方法一：政策與法規制度法（建立具正當性的管教底線）</h3>
+    <p>教師在處理手機問題時，最忌諱「臨時起意、標準不一」或「直接搶奪手機」。必須依據官方規範建立透明且具民主正當性的程序：</p>
+    <ol>
+      <li><strong>法規依據</strong>：
+        <ul>
+          <li>依據教育部 <strong>《高級中等以下學校校園行動載具使用原則》</strong>（臺教資(四)字第1080060697號函）：明定行動載具<strong>「除教師引導學習或緊急必要聯繫時使用外，其餘時間應以關機（或靜音收妥）為原則」</strong>。</li>
+          <li>依據教育部 <strong>《學校訂定教師輔導與管教學生辦法注意事項》</strong>：教師得對妨礙教學秩序之物品進行「暫時保管」，惟應明確規範保管期限（通常為當節下課或當日放學領回）與保管責任。</li>
+        </ul>
+      </li>
+      <li><strong>開學第一週「民主班規契約」三步驟</strong>：
+        <ul>
+          <li><strong>步驟 1（共同討論）</strong>：在學期第一堂課或班會課，先與學生討論：「大家覺得上課滑手機對自己和旁邊同學有什麼影響？什麼情況下可以用手機？」</li>
+          <li><strong>步驟 2（明定三階處置）</strong>：
+            <ul>
+              <li><strong>第一次違規</strong>：老師口頭或手勢溫和提醒（給予台階下，立即收入書包免罰）。</li>
+              <li><strong>第二次違規</strong>：學生須自行將手機關機並放到講台「手機休息盒」，該節下課領回。</li>
+              <li><strong>第三次（累犯）</strong>：交由導師或學務處依校規保管至放學，並通知家長協同輔導。</li>
+            </ul>
+          </li>
+          <li><strong>步驟 3（親師共識）</strong>：於班親會及家長群組明確告知班級手機規範，並<strong>懇請家長「切勿在上課時段傳 LINE 或打電話給孩子」</strong>（若有急事請撥打學校辦公室或導師電話），堵住學生「我是回媽媽訊息」的常見藉口。</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h3>2.3 方法二：物理環境隔離法（消除「大腦榨乾效應」）</h3>
+    <p>根據 Ward et al. (2017) 的研究，解決滑手機最有效的方式是<strong>「物理上眼不見為淨（Out of Sight, Out of Mind）」</strong>：</p>
+    <ul>
+      <li><strong>「手機旅館（Phone Hotel / 教室養機場）」掛袋或收納箱</strong>：在教室前方或後方牆面懸掛 30～40 格透明編號布袋（或帶泡棉隔板的木盒），對應學生座號。<strong>升級技巧</strong>：將收納袋設為「點名依據」（進教室把手機放入自己座號袋中即算出席），或在旁提供多孔 USB 充電座，讓學生覺得「把手機交出去還能免費充電」。</li>
+      <li><strong>桌角「手機停車格（Phone Parking Lot）」</strong>：若課程偶爾需要查資料，可在每位學生書桌左上角貼一張色紙框，規定上課鐘響後手機必須<strong>「靜音、螢幕朝下停在停車格內（或放入書包底層）」</strong>。</li>
+      <li><strong>磁扣鎖定袋（Yondr Pouch 模式）</strong>：學生進教室時將手機放入個人專屬的磁扣布袋中鎖上，手機仍由學生自己保管（免除老師保管賠償風險），下課走出教室時在門口磁鐵感應座解鎖。</li>
+    </ul>
+
+    <h3>2.4 方法三：「紅綠燈（Traffic-Light）」課堂載具分級管理法</h3>
+    <p>在推動 BYOD（自攜載具）或「生生用平板」的現代教室中，國際教育科技協會（ISTE）與 TCEA 推薦採用<strong>「紅綠燈視覺化管理（Traffic-Light Classroom Policy）」</strong>：</p>
+    <table>
+      <thead>
+        <tr>
+          <th>燈號狀態</th>
+          <th>代表意義</th>
+          <th>載具擺放位置與學生行為規範</th>
+          <th>適用課堂階段</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>🔴 紅燈區<br/>(Red Light)</strong></td>
+          <td><strong>完全無載具</strong><br/>(Device-Free Zone)</td>
+          <td>手機必須置於書包內或「手機旅館」，桌面淨空。任何滑手機行為直接視為違規。</td>
+          <td>核心觀念講解、紙筆測驗、深度閱讀、同儕敏感議題討論。</td>
+        </tr>
+        <tr>
+          <td><strong>🟡 黃燈區<br/>(Yellow Light)</strong></td>
+          <td><strong>待命／條件式使用</strong><br/>(Conditional / Standby)</td>
+          <td>手機螢幕朝下置於桌角「停車格」。僅可在老師指定任務（如查單字、拍黑板筆記、計算機）時拿起，用畢立即蓋回。</td>
+          <td>小組專題討論、自主練習、實驗數據紀錄。</td>
+        </tr>
+        <tr>
+          <td><strong>🟢 綠燈區<br/>(Green Light)</strong></td>
+          <td><strong>主動學習互動</strong><br/>(Active BYOD Mode)</td>
+          <td>開放拿起手機掃描 QR Code 參與即時搶答、投票、共筆或資料檢索。</td>
+          <td>課堂破冰、Kahoot! 搶答、Slido 提問、Padlet 腦力激盪。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="alert-box alert-tip">
+      <strong>💡 關鍵心法：給予「60 秒合法科技喘息（Tech Break）」</strong><br/>
+      面對連堂課（如 90～100 分鐘）或高年級學生，教師可在課堂中段完成一個段落後，主動宣布：「現在開啟 60 秒綠燈休息時間，大家可以看一下訊息或伸展，倒數歸零後我們切回紅燈繼續！」這能大幅消除學生的 FOMO 焦慮，減少私下偷滑的衝動。
+    </div>
+
+    <h3>2.5 方法四：正向行為支持（PBIS）與遊戲化同儕激勵法</h3>
+    <ul>
+      <li><strong>全班集體專注種樹（Forest 專注森林 App 團體模式）</strong>：由老師或班長開啟 <strong>Forest App「多人一起種」</strong> 房間，邀請學生加入。在 45 分鐘課堂內，只要房間裡有任何一人跳出 App 去滑 IG、LINE 或玩遊戲，全班共同培育的樹就會枯死！完美運用青少年重視同儕壓力的心理（「不要當害全班樹死掉的豬隊友」）。</li>
+      <li><strong>小組榮譽積分與特權兌換（ClassDojo / 班級集點卡）</strong>：以「小組」為單位，只要該組整節課全組皆遵守紅綠燈規範且積極發言，全組獲得 1 點專注積分，累積可兌換學習特權。</li>
+    </ul>
+
+    <h3>2.6 方法五：主動式教學設計與 BYOD 課堂轉化法（化敵為友）</h3>
+    <ul>
+      <li><strong>「10-20-10」分段教學法（Instructional Chunking）</strong>：青少年對單向講述的專注力極限約為 10～15 分鐘。將 50 分鐘切分為：前 5 分鐘破冰提問 → 15 分鐘核心精講（紅燈） → 15 分鐘小組實作或白板解題（黃燈） → 10 分鐘即時互動搶答與總結（綠燈）。</li>
+      <li><strong>將手機轉化為「課堂搶答器與生產力工具」</strong>：
+        <ul>
+          <li><strong>遊戲化即時搶答</strong>：<a href="https://kahoot.com/" target="_blank">Kahoot!</a>、<a href="https://quizizz.com/" target="_blank">Quizizz</a>、<a href="https://www.blooket.com/" target="_blank">Blooket</a>。</li>
+          <li><strong>匿名即時提問與文字雲投票</strong>：<a href="https://www.sli.do/" target="_blank">Slido</a>、<a href="https://www.mentimeter.com/" target="_blank">Mentimeter</a>（讓內向學生也能用手機發聲）。</li>
+          <li><strong>視覺化數位黑板共筆</strong>：<a href="https://padlet.com/" target="_blank">Padlet</a>（拍下小組討論成果上傳互評）。</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h3>2.7 方法六：數位工具輔助管理與「課堂紅綠燈＆專注互動看板」程式實作</h3>
+    <p>除了在學校平板安裝 MDM（行動裝置管理）或 Apple Classroom 遠端鎖屏外，針對一般教室大螢幕投影需求，下方提供一套<strong>網頁內嵌互動預覽版看板</strong>，以及可獨立執行的 Python <code>tkinter</code> 桌面應用程式（<a href="./classroom_focus_dashboard.py"><code>classroom_focus_dashboard.py</code></a>）。</p>
+
+    <!-- 網頁版即時互動預覽看板 -->
+    <div class="live-widget">
+      <div id="w-banner" class="widget-banner">
+        <h3 id="w-title">🔴 紅燈模式：無載具專注區 (Device-Free Zone)</h3>
+        <p id="w-desc">【行為規範】手機請關機或靜音放入「手機旅館／書包底層」，桌面保持淨空，專注聽講與思考！</p>
+      </div>
+      <div class="widget-body">
+        <div class="widget-card">
+          <h4>🚦 1. 課堂紅綠燈狀態切換（點擊實測）</h4>
+          <div class="light-btn-group">
+            <button class="light-btn" style="background:#ef4444" onclick="setWidgetMode('RED')">🔴 紅燈禁用</button>
+            <button class="light-btn" style="background:#f59e0b" onclick="setWidgetMode('YELLOW')">🟡 黃燈待命</button>
+            <button class="light-btn" style="background:#10b981" onclick="setWidgetMode('GREEN')">🟢 綠燈互動</button>
+          </div>
+          <h4 style="margin-top:1.2rem;">🎲 2. 防分心隨機座號抽籤</h4>
+          <div style="display:flex; gap:0.5rem; align-items:center; margin-top:0.5rem;">
+            <button class="light-btn" style="background:#4f46e5" onclick="pickStudent()">🎯 隨機抽一位同學（1~35號）</button>
+          </div>
+          <p id="w-picked" style="margin-top:0.6rem; font-weight:700; color:#312e81; text-align:center; background:#eef2ff; padding:0.4rem; border-radius:6px;">等待抽籤...</p>
+        </div>
+        <div class="widget-card">
+          <h4>⏱️ 3. 分段教學與 60秒 Tech Break 計時器</h4>
+          <div id="w-timer" class="timer-display">15:00</div>
+          <div class="light-btn-group">
+            <button class="light-btn" style="background:#334155" onclick="setWidgetTimer(900, 'RED')">15分 精講</button>
+            <button class="light-btn" style="background:#334155" onclick="setWidgetTimer(300, 'YELLOW')">5分 討論</button>
+            <button class="light-btn" style="background:#0284c7" onclick="setWidgetTimer(60, 'GREEN')">60秒 喘息</button>
+            <button id="w-toggle" class="light-btn" style="background:#2563eb" onclick="toggleWidgetTimer()">▶ 開始</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h4>📊 程式邏輯流程圖 (Mermaid)</h4>
+    <div class="mermaid-box">
+      <div class="mermaid">
+flowchart LR
+    Start["啟動課堂專注管理看板<br/>(ClassroomFocusDashboard)"] --> UI["初始化雙欄式大螢幕 GUI"]
+    
+    UI --> LightPanel["左側：紅綠燈載具狀態切換<br/>🔴 紅燈：完全收起<br/>🟡 黃燈：桌面待命<br/>🟢 綠燈：開放互動"]
+    UI --> TimerPanel["中段：課堂階段倒數計時器<br/>支援 15分講述 / 5分討論 / 1分Tech Break"]
+    UI --> ScorePicker["右側：小組專注積分榜 &<br/>隨機抽籤提問器 (防止神遊)"]
+    
+    LightPanel --> UpdateBanner["即時更新頂部巨型警示橫幅<br/>與學生行為規範提示"]
+    TimerPanel --> Countdown["每秒更新 MM:SS 並於歸零時<br/>發出視覺閃爍提醒"]
+    ScorePicker --> ExportLog["一鍵匯出本節課堂專注紀錄 (.txt)"]
+      </div>
+    </div>
+
+    <h4>💻 Python 實作程式碼：<code>classroom_focus_dashboard.py</code></h4>
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span>python — pbl2/classroom_focus_dashboard.py</span>
+        <button class="btn-copy" onclick="copyCode(this)">📋 複製程式碼</button>
+      </div>
+      <pre><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+課堂載具紅綠燈與專注力管理看板 (Classroom Smartphone Traffic-Light &amp; Focus Dashboard)
+功能：
+1. 視覺化切換「紅燈(禁用) / 黃燈(待命) / 綠燈(互動)」三種載具使用狀態，投影於教室大螢幕。
+2. 內建分段教學計時器（15分鐘講述、5分鐘小組任務、60秒合法看手機喘息 Tech Break）。
+3. 內建隨機座號抽籤器（保持學生適度警覺，減少低頭滑手機機率）。
+4. 內建小組專注榮譽加分板，並支援匯出課堂紀錄檔 (.txt)。
+"""
+
+import ctypes
+import random
+import datetime
+import tkinter as tk
+from tkinter import messagebox, filedialog
+
+
+class ClassroomFocusDashboard:
+    """課堂手機管理與專注力互動看板主類別"""
+
+    # 定義紅綠燈三種狀態的視覺與行為規範設定
+    MODES = {
+        "RED": {
+            "title": "🔴 紅燈模式：無載具專注區 (Device-Free Zone)",
+            "desc": "【行為規範】手機請關機或靜音放入「手機旅館／書包底層」，桌面保持淨空，專注聽講與思考！",
+            "bg": "#dc2626",
+            "panel_bg": "#fef2f2",
+            "text_color": "#991b1b"
+        },
+        "YELLOW": {
+            "title": "🟡 黃燈模式：條件式待命區 (Standby / Conditional Use)",
+            "desc": "【行為規範】手機請螢幕朝下置於桌角「停車格」，僅在老師指定查資料或紀錄時拿起，用畢立即蓋回。",
+            "bg": "#d97706",
+            "panel_bg": "#fffbeb",
+            "text_color": "#92400e"
+        },
+        "GREEN": {
+            "title": "🟢 綠燈模式：數位互動學習區 (Active BYOD Mode)",
+            "desc": "【行為規範】請拿起手機參與課堂即時互動（Kahoot! / Slido / 查資料），嚴禁切換至無關遊戲或社群軟體！",
+            "bg": "#059669",
+            "panel_bg": "#ecfdf5",
+            "text_color": "#065f46"
+        }
+    }
+
+    def __init__(self, root: tk.Tk):
+        self.root = root
+        self.root.title("📱 課堂載具紅綠燈與專注力管理看板 (Classroom Focus Dashboard)")
+        self.root.geometry("1080x720")
+        self.root.configure(bg="#f8fafc")
+
+        # 狀態變數初始化
+        self.current_mode = "RED"
+        self.remaining_seconds = 15 * 60  # 預設 15 分鐘分段講述
+        self.timer_running = False
+        self.timer_job = None
+        self.group_scores = {f"第 {i} 組": 0 for i in range(1, 7)}
+        self.action_logs = []
+
+        self._build_ui()
+        self.set_mode("RED")
+        self._log_event("系統啟動：預設進入【紅燈模式（無載具專注區）】")
+        self.root.after(100, self._force_foreground_window)
+
+    def _force_foreground_window(self):
+        """
+        強制將 Tkinter 視窗顯示於最上層（解決由背景無視窗終端機啟動時，
+        Windows STARTUPINFO 預設繼承 SW_HIDE 導致視窗隱藏或在背景的問題）
+        """
+        self.root.update_idletasks()
+        self.root.deiconify()
+        self.root.state("normal")
+        self.root.lift()
+        self.root.attributes("-topmost", True)
+        self.root.focus_force()
+        try:
+            hwnd = ctypes.windll.user32.GetParent(self.root.winfo_id()) or self.root.winfo_id()
+            ctypes.windll.user32.ShowWindow(hwnd, 1)  # SW_SHOWNORMAL
+            ctypes.windll.user32.ShowWindow(hwnd, 9)  # SW_RESTORE
+            ctypes.windll.user32.SetForegroundWindow(hwnd)
+        except Exception:
+            pass
+        self.root.after(1500, lambda: self.root.attributes("-topmost", False))
+
+    def _build_ui(self):
+        """建立大螢幕投影最佳化的圖形介面"""
+        # 1. 頂部巨型狀態橫幅 (Banner)
+        self.banner_frame = tk.Frame(self.root, bg="#dc2626", pady=18, padx=20)
+        self.banner_frame.pack(fill=tk.X)
+
+        self.lbl_mode_title = tk.Label(
+            self.banner_frame, text="", font=("Microsoft JhengHei", 24, "bold"), fg="white", bg="#dc2626"
+        )
+        self.lbl_mode_title.pack()
+
+        self.lbl_mode_desc = tk.Label(
+            self.banner_frame, text="", font=("Microsoft JhengHei", 13), fg="#fef2f2", bg="#dc2626", pady=6
+        )
+        self.lbl_mode_desc.pack()
+
+        # 2. 主內容區（左：紅綠燈與計時器；右：抽籤與小組專注積分）
+        main_frame = tk.Frame(self.root, bg="#f8fafc", padx=20, pady=15)
+        main_frame.pack(fill=tk.BOTH, expand=True)
+
+        left_col = tk.Frame(main_frame, bg="#ffffff", bd=1, relief=tk.SOLID, padx=20, pady=15)
+        left_col.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 10))
+
+        right_col = tk.Frame(main_frame, bg="#ffffff", bd=1, relief=tk.SOLID, padx=20, pady=15)
+        right_col.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=(10, 0))
+
+        # --- 左欄：紅綠燈切換按鈕區 ---
+        tk.Label(
+            left_col, text="🚦 1. 切換課堂載具紅綠燈狀態",
+            font=("Microsoft JhengHei", 15, "bold"), bg="white", fg="#1e293b"
+        ).pack(anchor="w", pady=(0, 10))
+
+        btn_frame = tk.Frame(left_col, bg="white")
+        btn_frame.pack(fill=tk.X, pady=5)
+
+        tk.Button(
+            btn_frame, text="🔴 紅燈：完全收起", font=("Microsoft JhengHei", 12, "bold"),
+            bg="#ef4444", fg="white", padx=12, pady=8, command=lambda: self.set_mode("RED")
+        ).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=4)
+
+        tk.Button(
+            btn_frame, text="🟡 黃燈：桌角待命", font=("Microsoft JhengHei", 12, "bold"),
+            bg="#f59e0b", fg="white", padx=12, pady=8, command=lambda: self.set_mode("YELLOW")
+        ).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=4)
+
+        tk.Button(
+            btn_frame, text="🟢 綠燈：開放互動", font=("Microsoft JhengHei", 12, "bold"),
+            bg="#10b981", fg="white", padx=12, pady=8, command=lambda: self.set_mode("GREEN")
+        ).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=4)
+
+        # --- 左欄：課堂節奏與專注倒數計時器 ---
+        tk.Label(
+            left_col, text="⏱️ 2. 分段教學與科技喘息計時器 (Chunking Timer)",
+            font=("Microsoft JhengHei", 15, "bold"), bg="white", fg="#1e293b"
+        ).pack(anchor="w", pady=(25, 5))
+
+        self.lbl_timer = tk.Label(
+            left_col, text="15:00", font=("Consolas", 56, "bold"), bg="#f1f5f9", fg="#0f172a", pady=10
+        )
+        self.lbl_timer.pack(fill=tk.X, pady=8)
+
+        preset_frame = tk.Frame(left_col, bg="white")
+        preset_frame.pack(fill=tk.X, pady=4)
+
+        tk.Button(
+            preset_frame, text="📖 15分 精講(紅燈)", font=("Microsoft JhengHei", 10),
+            command=lambda: self.set_preset_timer(15 * 60, "RED")
+        ).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=2)
+
+        tk.Button(
+            preset_frame, text="💬 5分 討論(黃燈)", font=("Microsoft JhengHei", 10),
+            command=lambda: self.set_preset_timer(5 * 60, "YELLOW")
+        ).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=2)
+
+        tk.Button(
+            preset_frame, text="🎮 3分 搶答(綠燈)", font=("Microsoft JhengHei", 10),
+            command=lambda: self.set_preset_timer(3 * 60, "GREEN")
+        ).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=2)
+
+        tk.Button(
+            preset_frame, text="☕ 60秒 Tech Break", font=("Microsoft JhengHei", 10, "bold"),
+            fg="#0369a1", command=lambda: self.set_preset_timer(60, "GREEN")
+        ).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=2)
+
+        ctrl_frame = tk.Frame(left_col, bg="white")
+        ctrl_frame.pack(fill=tk.X, pady=10)
+
+        self.btn_start_pause = tk.Button(
+            ctrl_frame, text="▶ 開始計時", font=("Microsoft JhengHei", 12, "bold"),
+            bg="#2563eb", fg="white", pady=6, command=self.toggle_timer
+        )
+        self.btn_start_pause.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=4)
+
+        tk.Button(
+            ctrl_frame, text="↺ 重設為 10:00", font=("Microsoft JhengHei", 12),
+            bg="#e2e8f0", fg="#334155", pady=6, command=lambda: self.set_preset_timer(600, self.current_mode)
+        ).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=4)
+
+        # --- 右欄：防分心隨機座號抽籤器 ---
+        tk.Label(
+            right_col, text="🎲 3. 課堂隨機互動抽籤（保持專注警覺）",
+            font=("Microsoft JhengHei", 15, "bold"), bg="white", fg="#1e293b"
+        ).pack(anchor="w", pady=(0, 8))
+
+        picker_frame = tk.Frame(right_col, bg="#eff6ff", padx=12, pady=10)
+        picker_frame.pack(fill=tk.X, pady=5)
+
+        tk.Label(picker_frame, text="班級總人數：", font=("Microsoft JhengHei", 11), bg="#eff6ff").pack(side=tk.LEFT)
+        self.spin_students = tk.Spinbox(picker_frame, from_=1, to=60, width=5, font=("Consolas", 12))
+        self.spin_students.delete(0, tk.END)
+        self.spin_students.insert(0, "35")
+        self.spin_students.pack(side=tk.LEFT, padx=6)
+
+        tk.Button(
+            picker_frame, text="🎯 隨機抽一位同學回答", font=("Microsoft JhengHei", 11, "bold"),
+            bg="#4f46e5", fg="white", padx=10, pady=4, command=self.pick_random_student
+        ).pack(side=tk.LEFT, padx=10)
+
+        self.lbl_picked = tk.Label(
+            right_col, text="等待抽籤...", font=("Microsoft JhengHei", 18, "bold"),
+            bg="#eef2ff", fg="#312e81", pady=10
+        )
+        self.lbl_picked.pack(fill=tk.X, pady=6)
+
+        # --- 右欄：PBIS 小組專注榮譽加分板 ---
+        tk.Label(
+            right_col, text="🏆 4. PBIS 小組專注與零違規榮譽積分",
+            font=("Microsoft JhengHei", 15, "bold"), bg="white", fg="#1e293b"
+        ).pack(anchor="w", pady=(18, 8))
+
+        self.score_labels = {}
+        score_grid = tk.Frame(right_col, bg="white")
+        score_grid.pack(fill=tk.X)
+
+        for idx, group_name in enumerate(self.group_scores.keys()):
+            row, col = divmod(idx, 2)
+            cell = tk.Frame(score_grid, bg="#f8fafc", bd=1, relief=tk.RIDGE, padx=10, pady=8)
+            cell.grid(row=row, column=col, sticky="ew", padx=4, pady=4)
+            score_grid.grid_columnconfigure(col, weight=1)
+
+            tk.Label(cell, text=group_name, font=("Microsoft JhengHei", 12, "bold"), bg="#f8fafc").pack(side=tk.LEFT)
+            lbl_pts = tk.Label(cell, text="0 分", font=("Consolas", 14, "bold"), fg="#0d9488", bg="#f8fafc", padx=8)
+            lbl_pts.pack(side=tk.LEFT)
+            self.score_labels[group_name] = lbl_pts
+
+            tk.Button(
+                cell, text="+1 專注", font=("Microsoft JhengHei", 10, "bold"),
+                bg="#14b8a6", fg="white", command=lambda g=group_name: self.add_score(g, 1)
+            ).pack(side=tk.RIGHT, padx=2)
+
+        # 匯出課堂紀錄按鈕
+        tk.Button(
+            right_col, text="💾 匯出本節課堂專注與加分紀錄 (.txt)",
+            font=("Microsoft JhengHei", 11, "bold"), bg="#334155", fg="white", pady=8,
+            command=self.export_log
+        ).pack(fill=tk.X, pady=(18, 0))
+
+    def set_mode(self, mode_key: str):
+        """切換紅綠燈模式並更新頂部巨型橫幅顏色與說明文字"""
+        self.current_mode = mode_key
+        cfg = self.MODES[mode_key]
+        self.banner_frame.configure(bg=cfg["bg"])
+        self.lbl_mode_title.configure(text=cfg["title"], bg=cfg["bg"])
+        self.lbl_mode_desc.configure(text=cfg["desc"], bg=cfg["bg"])
+        self._log_event(f"切換載具狀態為：{cfg['title']}")
+
+    def set_preset_timer(self, seconds: int, auto_mode: str):
+        """設定快速教學階段計時並自動切換對應紅綠燈"""
+        if self.timer_running and self.timer_job:
+            self.root.after_cancel(self.timer_job)
+            self.timer_running = False
+            self.btn_start_pause.configure(text="▶ 開始計時", bg="#2563eb")
+
+        self.remaining_seconds = seconds
+        self._update_timer_display()
+        self.set_mode(auto_mode)
+
+    def toggle_timer(self):
+        """啟動或暫停倒數計時器"""
+        if self.timer_running:
+            self.timer_running = False
+            if self.timer_job:
+                self.root.after_cancel(self.timer_job)
+            self.btn_start_pause.configure(text="▶ 繼續計時", bg="#2563eb")
+        else:
+            self.timer_running = True
+            self.btn_start_pause.configure(text="⏸ 暫停計時", bg="#dc2626")
+            self._tick()
+
+    def _tick(self):
+        """每秒遞減計時器"""
+        if not self.timer_running:
+            return
+        if self.remaining_seconds &gt; 0:
+            self.remaining_seconds -= 1
+            self._update_timer_display()
+            self.timer_job = self.root.after(1000, self._tick)
+        else:
+            self.timer_running = False
+            self.btn_start_pause.configure(text="▶ 開始計時", bg="#2563eb")
+            self._log_event("計時結束！提醒學生切換課堂階段。")
+            messagebox.showinfo("時間到！", "本階段時間結束！請依老師指示切換載具狀態。")
+
+    def _update_timer_display(self):
+        """將剩餘秒數格式化為 MM:SS 顯示"""
+        mins, secs = divmod(self.remaining_seconds, 60)
+        self.lbl_timer.configure(text=f"{mins:02d}:{secs:02d}")
+
+    def pick_random_student(self):
+        """隨機抽取座號，提升課堂正向緊張感"""
+        try:
+            total = int(self.spin_students.get())
+        except ValueError:
+            total = 35
+        picked = random.randint(1, max(1, total))
+        self.lbl_picked.configure(text=f"🎉 抽中座號：【 {picked:02d} 號 】同學！")
+        self._log_event(f"課堂隨機抽籤：抽中 {picked:02d} 號同學")
+
+    def add_score(self, group_name: str, delta: int):
+        """為專注表現良好的小組加分"""
+        self.group_scores[group_name] += delta
+        new_score = self.group_scores[group_name]
+        self.score_labels[group_name].configure(text=f"{new_score} 分")
+        self._log_event(f"PBIS 正向獎勵：{group_name} 獲得 +{delta} 分（目前 {new_score} 分）")
+
+    def _log_event(self, message: str):
+        """記錄課堂事件與時間戳記"""
+        now_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.action_logs.append(f"[{now_str}] {message}")
+
+    def export_log(self):
+        """匯出本節課堂專注紀錄與各組得分至文字檔"""
+        file_path = filedialog.asksaveasfilename(
+            defaultextension=".txt",
+            initialfile=f"classroom_focus_log_{datetime.datetime.now().strftime('%Y%m%d_%H%M')}.txt",
+            filetypes=[("Text Files", "*.txt")]
+        )
+        if not file_path:
+            return
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write("=== 課堂載具管理與小組專注積分紀錄 ===\n\n")
+            f.write("【各組最終榮譽積分】\n")
+            for g, s in self.group_scores.items():
+                f.write(f"  - {g}: {s} 分\n")
+            f.write("\n【課堂歷程紀錄】\n")
+            for entry in self.action_logs:
+                f.write(f"  {entry}\n")
+        messagebox.showinfo("匯出成功", f"課堂紀錄已儲存至：\n{file_path}")
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = ClassroomFocusDashboard(root)
+    root.mainloop()</code></pre>
+    </div>
+
+    <h2>⚖️ 3. 延伸思考與進階主題 (Extensions &amp; Advanced Topics)</h2>
+
+    <h3>3.1 六大解決方案之應用場景與限制全方位比較表</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>解決方案名稱</th>
+          <th>核心機制</th>
+          <th>最佳適用場景與對象</th>
+          <th>主要優勢 (Pros)</th>
+          <th>應用限制與潛在風險 (Limitations &amp; Risks)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. 政策與法規制度法</strong><br/>(民主班規 + 輔導管教)</td>
+          <td>透過校務會議與班會建立明確賞罰階梯與親師共識</td>
+          <td>各教育階段開學第一週建制、處理屢勸不聽之累犯</td>
+          <td>具法規正當性、減少教師情緒性管教爭議、爭取家長支持</td>
+          <td>僅提供「底線」，若缺乏教學吸引與環境配合，教師仍需耗費心力抓違規</td>
+        </tr>
+        <tr>
+          <td><strong>2. 物理環境隔離法</strong><br/>(手機旅館 / 收納盒 / 鎖袋)</td>
+          <td>將手機抽離視線與觸及範圍，徹底消除「大腦榨乾效應」</td>
+          <td>國中小、高中職必修課、高強度考前複習與隨堂測驗</td>
+          <td><strong>專注力提升效果最直接顯著</strong>；徹底阻斷通知干擾與桌面偷滑</td>
+          <td>1. 學生可能交「模型機／舊備用機（Dummy Phone）」蒙混<br/>2. 集中保管若遺失或摔壞，易衍生<strong>賠償與法律責任爭議</strong><br/>3. 進退場收發手機耗費課堂 $2 \sim 3$ 分鐘</td>
+        </tr>
+        <tr>
+          <td><strong>3. 紅綠燈分級管理法</strong><br/>(Traffic-Light + Tech Break)</td>
+          <td>以紅/黃/綠三色視覺化規範何時收起、何時可用，並給予短暫喘息</td>
+          <td>高中職、大學課堂、推動 BYOD 與專題探究（PBL）之課程</td>
+          <td>兼顧「專注聽講」與「數位工具應用」；培養學生自我調節（Self-Regulation）素養</td>
+          <td>黃燈與綠燈切換回紅燈時，需要教師具備良好的課堂控場默契，否則易出現「收不回來」的拖延現象</td>
+        </tr>
+        <tr>
+          <td><strong>4. 正向行為支持 (PBIS)</strong><br/>(Forest 種樹 / 小組榮譽積分)</td>
+          <td>運用同儕正向壓力與遊戲化獎勵取代懲罰</td>
+          <td>國小高年級、國中、班級凝聚力強之高中班級</td>
+          <td>營造正向師生關係、將「老師盯學生」轉化為「同儕互相提醒」</td>
+          <td>若班級中有完全不在乎團體榮譽的極端叛逆學生，可能故意破壞團體種樹，需搭配個別輔導機制</td>
+        </tr>
+        <tr>
+          <td><strong>5. 主動式教學與 BYOD 轉化</strong><br/>(Kahoot / Slido / 分段教學)</td>
+          <td>透過 10-20-10 分段教學與即時互動，讓手機變成搶答器</td>
+          <td>所有年齡層，特別適合下午精神不濟時段或抽象概念檢核</td>
+          <td>從根源解決「上課無聊」問題；大幅提升低成就或內向學生的課堂參與感</td>
+          <td>1. <strong>數位落差（Digital Divide）</strong>：部分學生手機沒電、無網路流量或機型老舊<br/>2. 學生可能在 Kahoot 搶答空檔秒切回 IG/LINE<br/>3. 教師備課成本較高</td>
+        </tr>
+        <tr>
+          <td><strong>6. 數位監控與科技管理法</strong><br/>(MDM / 課堂廣播鎖屏 / 看板)</td>
+          <td>透過系統權限遠端鎖定螢幕、限制可用 App 清單或視覺化控場</td>
+          <td>「生生用平板」數位教室、電腦教室、投影設備完善之教室</td>
+          <td>教師可一鍵掌控全班學校載具畫面，精準阻擋遊戲與無關網頁</td>
+          <td>僅對「學校配發之平板/電腦」具備強制鎖屏權限；<strong>無法強制安裝監控軟體於學生的私人手機</strong>（涉及個人隱私權）</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>3.2 不同教育階段（國小／國中／高中／大學）差異化適配策略</h3>
+    <div class="mermaid-box">
+      <div class="mermaid">
+flowchart LR
+    subgraph Elem["👶 國小階段 (重他律與習慣養成)"]
+        E_Pol["原則：到校關機集中保管<br/>教學用載具由學校提供平板(MDM控管)"]
+    end
+    subgraph JHS["🧑 國中階段 (重物理隔離與同儕激勵)"]
+        J_Pol["原則：進教室入『手機旅館』<br/>搭配 PBIS 小組積分與高頻互動教學"]
+    end
+    subgraph SHS["🎓 高中職階段 (重半自律與紅綠燈轉化)"]
+        S_Pol["原則：紅綠燈三色管理 + BYOD 互動<br/>結合 Forest 團體種樹與民主班規"]
+    end
+    subgraph Univ["🏛️ 大學階段 (重成人契約與教學設計)"]
+        U_Pol["原則：不強制沒收，改用 Slido/Mentimeter<br/>提高平時互動佔比 + 60秒 Tech Break"]
+    end
+    Elem --> JHS --> SHS --> Univ
+      </div>
+    </div>
+
+    <h3>3.3 常見邊界條件與棘手情境處理對策 (Edge Cases &amp; Troubleshooting)</h3>
+    <ol>
+      <li><strong>情境 A：學生交出「模型機／舊廢機（Dummy Phone）」，真機藏在身上繼續滑</strong>
+        <ul>
+          <li><strong>對策</strong>：改採<strong>「桌面淨空 + 高頻走動式教學（Management by Walking Around, MBWA）」</strong>。教師手持簡報筆在走道間穿梭講課，並約定：「只要在紅燈時段於座位上被看到滑手機（無論袋子裡有沒有交手機），直接啟動班規第二階處置。」</li>
+        </ul>
+      </li>
+      <li><strong>情境 B：學生拒絕交出手機，情緒激動甚至發生口角</strong>
+        <ul>
+          <li><strong>對策</strong>：<strong>絕對不要動手硬搶學生手中的手機！</strong> 採用「選擇權交還話術」：「老師現在不跟你搶，但你已違反全班共同訂定的紅燈規範。我給你兩個選擇：第一，現在自己關機放回書包最底層，我們繼續上課；第二，下課後我們去學務處請生教組長與家長一起協助處理。」</li>
+        </ul>
+      </li>
+      <li><strong>情境 C：暫時保管手機期間，手機不慎遺失或螢幕破裂誰負責？</strong>
+        <ul>
+          <li><strong>對策</strong>：集中收納盒應置於教室前方「全班視線可及且有監視器或上鎖」之處，並由<strong>學生親自放入與取出</strong>，教師不直接經手觸碰高價手機；當節違規暫時保管建議請學生自行放入講台透明泡棉盒，下課當場領回，避免隔夜保管。</li>
+        </ul>
+      </li>
+      <li><strong>情境 D：特殊需求學生（如第一型糖尿病需手機連線連續血糖監測 CGM、或家庭緊急變故）</strong>
+        <ul>
+          <li><strong>對策</strong>：依據 IEP 或家長事前書面申請給予「醫療／緊急白名單通行證」，允許其手機靜音置於桌面或口袋，兼顧公平與人文關懷。</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h3>3.4 專題反思：針對 <code>pbl2/AGENTS.md</code> 規範之通用化診斷與修正改善建議</h3>
+    <p>在執行 PBL 專題（包含 <code>pbl</code> 的技術開發與 <code>pbl2</code> 的教育議題探究）過程中，檢視原始 <a href="./AGENTS.bak"><code>pbl2/AGENTS.bak</code></a> 的四條精簡原則，若規範寫得過於簡略，執行品質容易不一；但若寫入過多單一領域詞彙或多餘說明，又會失去跨領域通用性並佔用 AI Context。因此，我們將完整說明版另存為範本 <a href="./AGENTS_template.md"><code>pbl2/AGENTS_template.md</code></a>，而將實際生效的 <a href="./AGENTS.md"><code>pbl2/AGENTS.md</code></a> 保持<strong>「只列精簡規則、不加多餘說明」</strong>的實用設計：</p>
+    <table>
+      <thead>
+        <tr>
+          <th>原始 <code>AGENTS.bak</code> 條文</th>
+          <th>實務執行發現之痛點與不足</th>
+          <th>跨領域通用版 <code>AGENTS.md</code> 修正設計（同時適用議題探究與技術開發）</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>第 1 條</strong>：根據關鍵字進行搜尋，尋找各種可能解決的方法</td>
+          <td>僅要求「搜尋」，未規範<strong>關鍵字拆解深度與解決方案光譜</strong>，易流於表面單一解法。</td>
+          <td><strong>多維度關鍵字拆解</strong>：要求同時檢索中英文關鍵字，並涵蓋三個通用層次：① 底層原理／成因機制、② 低門檻／現成方案（內建功能、現成工具或制度 SOP）、③ 進階技術／自動化與客製化方案。</td>
+        </tr>
+        <tr>
+          <td><strong>第 2 條</strong>：搜尋到的網站資訊如果有使用，需紀錄並列在參考資料列表，並加入取得日期</td>
+          <td>搜尋引擎 API 常回傳重導向暫時網址（Redirect URL），且未統一引用格式。</td>
+          <td><strong>真實網址與可追溯性</strong>：要求記錄目標網站之真實原始網址（Canonical URL），並統一包含「來源名稱／作者、標題、網址、取得日期 (YYYY-MM-DD)」。</td>
+        </tr>
+        <tr>
+          <td><strong>第 3 條</strong>：根據搜尋結果的內容整理成文件，並比較各種方法的應用與限制</td>
+          <td>未定義比較表的<strong>通用評估欄位</strong>與<strong>情境選型工具</strong>，且未區分「技術問題」與「議題問題」的實作呈現方式。</td>
+          <td><strong>結構化比較與雙軌實作</strong>：<br/>1. 必含 Mermaid <strong>方案選型決策流程圖</strong>。<br/>2. 比較表固定五欄：<strong>方案名稱、核心原理／作法、最佳適用場景、主要優勢、應用限制與風險</strong>。<br/>3. 技術類問題提供含註解之程式碼；議題類問題提供具體執行步驟或輕量輔助工具。</td>
+        </tr>
+        <tr>
+          <td><strong>第 4 條</strong>：每次更新文件都需要把 prompt 依序附加在檔案最後並標記時間</td>
+          <td>未定義時間格式，且容易漏記「延伸追問、執行驗證或修正」回合的 Prompt。</td>
+          <td><strong>全探究歷程紀錄</strong>：所有對話回合（新建、補充、工具執行與修正）之 Prompt 原文皆以 <code>Append</code> 方式記錄於文末，標註 <code>YYYY-MM-DD HH:mm:ss (UTC+8)</code>，並繼承根目錄雙格式（<code>.md</code> + <code>.html</code>）與索引自動更新規範。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>📚 4. 參考資料列表 (References)</h2>
+    <ol>
+      <li><strong>中華民國教育部 —《高級中等以下學校校園行動載具使用原則》</strong>（臺教資(四)字第1080060697號函）與校園行動載具管理規範相關公告。<br/>
+        網址：<a href="https://www.edu.tw/" target="_blank">https://www.edu.tw/</a> ｜ 取得日期：2026-11-11</li>
+      <li><strong>中華民國教育部 —《學校訂定教師輔導與管教學生辦法注意事項》</strong>（校園物品暫時保管與民主班規程序依據）。<br/>
+        網址：<a href="https://edu.law.moe.gov.tw/" target="_blank">https://edu.law.moe.gov.tw/</a> ｜ 取得日期：2026-11-11</li>
+      <li><strong>UNESCO (2023) — <em>Global Education Monitoring Report 2023: Technology in education: A tool on whose terms?</em></strong>（聯合國教科文組織全球教育監測報告）。<br/>
+        網址：<a href="https://www.unesco.org/gem-report/en/technology" target="_blank">https://www.unesco.org/gem-report/en/technology</a> ｜ 取得日期：2026-11-11</li>
+      <li><strong>Ward, A. F., Duke, K., Gneezy, A., &amp; Bos, M. W. (2017) — <em>Brain Drain: The Mere Presence of One's Own Smartphone Reduces Available Cognitive Capacity</em></strong>, <em>Journal of the Association for Consumer Research</em>, 2(2), 140–154.<br/>
+        網址：<a href="https://www.journals.uchicago.edu/doi/10.1086/691462" target="_blank">https://www.journals.uchicago.edu/doi/10.1086/691462</a> ｜ 取得日期：2026-11-11</li>
+      <li><strong>TCEA (Texas Computer Education Association) — <em>Cell Phone Policies and BYOD Classroom Management Strategies</em></strong>。<br/>
+        網址：<a href="https://blog.tcea.org/" target="_blank">https://blog.tcea.org/</a> ｜ 取得日期：2026-11-11</li>
+      <li><strong>親子天下／翻轉教育 — 班級經營與解決學生上課滑手機實務策略專題</strong>。<br/>
+        網址：<a href="https://flipedu.parenting.com.tw/" target="_blank">https://flipedu.parenting.com.tw/</a> ｜ 取得日期：2026-11-11</li>
+      <li><strong>Kahoot! Official Website</strong> — 遊戲化即時課堂搶答與評量平台。<br/>
+        網址：<a href="https://kahoot.com/" target="_blank">https://kahoot.com/</a> ｜ 取得日期：2026-11-11</li>
+      <li><strong>Slido &amp; Mentimeter Official Websites</strong> — 即時課堂匿名提問、投票與文字雲互動工具。<br/>
+        網址：<a href="https://www.sli.do/" target="_blank">https://www.sli.do/</a> / <a href="https://www.mentimeter.com/" target="_blank">https://www.mentimeter.com/</a> ｜ 取得日期：2026-11-11</li>
+      <li><strong>Classroomscreen Official Website</strong> — 視覺化教室秩序管理面板。<br/>
+        網址：<a href="https://classroomscreen.com/" target="_blank">https://classroomscreen.com/</a> ｜ 取得日期：2026-11-11</li>
+      <li><strong>Forest 專注森林 (Seekrtech)</strong> — 遊戲化番茄鐘與多人共同種樹專注工具。<br/>
+        網址：<a href="https://www.forestapp.cc/" target="_blank">https://www.forestapp.cc/</a> ｜ 取得日期：2026-11-11</li>
+    </ol>
+
+    <div class="prompt-archive">
+      <h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+      <h3>🔹 [2026-11-11 09:16:00] [Gemini 4 Argon (Medium) / Antigravity] 變更紀錄</h3>
+      <ul>
+        <li><strong>模型/Agent</strong>: Gemini 4 Argon (Medium) / Antigravity</li>
+        <li><strong>Prompt 原文</strong>:
+          <pre><code>如何解決學生上課一直滑手機的問題</code></pre>
+        </li>
+        <li><strong>變更摘要</strong>: 依 <code>pbl2/AGENTS.md</code> 與工作區核心規範，透過關鍵字檢索國內外教育政策（教育部《高級中等以下學校校園行動載具使用原則》、UNESCO 2023 報告）、認知心理學研究（Ward et al. 2017「大腦榨乾效應」、Sweller 認知負荷理論、多巴胺變動比率強化與任務切換成本公式）及教學實務，系統化整理六大解決方案（政策法規制度法、物理環境隔離法、紅綠燈分級管理法、PBIS 正向行為支持與遊戲化激勵、主動式教學與 BYOD 轉化、數位監控與控場工具）；包含 Mermaid 流程圖、可實際執行的 Python <code>classroom_focus_dashboard.py</code> 課堂紅綠燈與專注力管理看板程式（含完整註解與複製按鈕）、六大方案應用與限制比較表、各教育階段適配策略與棘手情境 SOP，並附上標註取得日期（2026-11-11）之參考資料列表，同步產出 <code>.md</code> 與 <code>.html</code> 雙格式檔案。</li>
+      </ul>
+      <h3>🔹 [2026-11-11 09:28:00] [Gemini 4 Argon (Medium) / Antigravity] 變更紀錄</h3>
+      <ul>
+        <li><strong>模型/Agent</strong>: Gemini 4 Argon (Medium) / Antigravity</li>
+        <li><strong>Prompt 原文</strong>:
+          <pre><code>執行看板工具</code></pre>
+        </li>
+        <li><strong>變更摘要</strong>: 實際啟動執行 <code>pbl2/classroom_focus_dashboard.py</code>（課堂載具紅綠燈與專注力管理看板 Tkinter 桌面視窗工具），並依規範同步更新 <code>.md</code> 與 <code>.html</code> 文件之時間戳記與提示詞歷史紀錄。</li>
+      </ul>
+      <h3>🔹 [2026-11-11 09:30:30] [Gemini 4 Argon (Medium) / Antigravity] 變更紀錄</h3>
+      <ul>
+        <li><strong>模型/Agent</strong>: Gemini 4 Argon (Medium) / Antigravity</li>
+        <li><strong>Prompt 原文</strong>:
+          <pre><code>沒有看到彈出的視窗</code></pre>
+        </li>
+        <li><strong>變更摘要</strong>: 排查發現由背景無頭（Headless）PowerShell 啟動子程序時，Windows <code>STARTUPINFO.wShowWindow</code> 預設繼承 <code>SW_HIDE (0)</code> 導致 Tkinter 視窗被隱藏。已於 <code>classroom_focus_dashboard.py</code> 新增 <code>_force_foreground_window()</code> 方法（透過 <code>ctypes.windll.user32.ShowWindow</code>、<code>SetForegroundWindow</code> 與 <code>-topmost</code> 強制將視窗喚醒至桌面最上層），並改用 <code>Start-Process pythonw.exe -WindowStyle Normal</code> 啟動，確認視窗控制代碼（<code>MainWindowHandle: 461656</code>）已正常彈出顯示；同步更新 <code>.md</code> 與 <code>.html</code> 檔案。</li>
+      </ul>
+      <h3>🔹 [2026-11-11 09:36:00] [Gemini 4 Argon (Medium) / Antigravity] 變更紀錄</h3>
+      <ul>
+        <li><strong>模型/Agent</strong>: Gemini 4 Argon (Medium) / Antigravity</li>
+        <li><strong>Prompt 原文</strong>:
+          <pre><code>根據目前AGNETS.md 提出修正的改善建議</code></pre>
+        </li>
+        <li><strong>變更摘要</strong>: 檢視 <code>pbl2/AGENTS.md</code> 現行四條規範並結合實務執行經驗，於文件新增第 3.4 節「針對 <code>pbl2/AGENTS.md</code> 規範之診斷與修正改善建議」（涵蓋多維度關鍵字拆解、參考資料真實網址與分類格式、結構化五欄比較表與決策樹、全對話 Prompt 追蹤、雙格式與網頁互動預覽繼承、以及 Windows GUI 視窗防隱藏喚醒規範），並同步更新 <code>.md</code> 與 <code>.html</code> 提示詞紀錄。</li>
+      </ul>
+      <h3>🔹 [2026-11-11 09:47:00] [Gemini 4 Argon (Medium) / Antigravity] 變更紀錄</h3>
+      <ul>
+        <li><strong>模型/Agent</strong>: Gemini 4 Argon (Medium) / Antigravity</li>
+        <li><strong>Prompt 原文</strong>:
+          <pre><code>備份原始檔案後更新</code></pre>
+        </li>
+        <li><strong>變更摘要</strong>: 將原始 <code>pbl2/AGENTS.md</code> 備份至 <a href="./AGENTS.bak"><code>pbl2/AGENTS.bak</code></a>，並將修正改善建議正式更新至 <a href="./AGENTS.md"><code>pbl2/AGENTS.md</code></a>；同步附加本次 Prompt 紀錄至 <code>.md</code> 與 <code>.html</code> 並更新全站索引。</li>
+      </ul>
+      <h3>🔹 [2026-11-11 09:51:30] [Gemini 4 Argon (Medium) / Antigravity] 變更紀錄</h3>
+      <ul>
+        <li><strong>模型/Agent</strong>: Gemini 4 Argon (Medium) / Antigravity</li>
+        <li><strong>Prompt 原文</strong>:
+          <pre><code>但是目前這個新版的agnets.md變成不夠通用，原始的目標希望是通用類似PBL探究問題解決，包含各種議題與技術</code></pre>
+        </li>
+        <li><strong>變更摘要</strong>: 重新調整 <a href="./AGENTS.md"><code>pbl2/AGENTS.md</code></a> 與本文第 3.4 節，移除偏向單一領域（如特定教育法規或特定作業系統 GUI API）的限制性字眼，收斂為四大跨領域通用的「PBL 問題探究與解決方案通用規範」，使其同時適用於「技術與程式開發類問題」與「社會／教育／科學議題探究類問題」；同步更新 <code>.md</code>、<code>.html</code> 與全站索引。</li>
+      </ul>
+      <h3>🔹 [2026-11-11 09:58:00] [Gemini 4 Argon (Medium) / Antigravity] 變更紀錄</h3>
+      <ul>
+        <li><strong>模型/Agent</strong>: Gemini 4 Argon (Medium) / Antigravity</li>
+        <li><strong>Prompt 原文</strong>:
+          <pre><code>將修正的agents.md變更為範本,實際版本 基於實用省去多餘的說明 只列規則</code></pre>
+        </li>
+        <li><strong>變更摘要</strong>: 將含詳細說明與歷史紀錄的修正版另存為範本 <a href="./AGENTS_template.md"><code>pbl2/AGENTS_template.md</code></a>，並將實際生效的 <a href="./AGENTS.md"><code>pbl2/AGENTS.md</code></a> 精簡為純規則列表（僅保留 4 條核心通用規則，省去多餘說明文字）；同步更新 <code>.md</code>、<code>.html</code> 與全站索引。</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function copyCode(btn) {
+      const code = btn.closest('.code-wrapper').querySelector('code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const orig = btn.innerText;
+        btn.innerText = '✅ 已複製！';
+        setTimeout(() => { btn.innerText = orig; }, 2000);
+      });
+    }
+
+    const W_MODES = {
+      RED: {
+        title: '🔴 紅燈模式：無載具專注區 (Device-Free Zone)',
+        desc: '【行為規範】手機請關機或靜音放入「手機旅館／書包底層」，桌面保持淨空，專注聽講與思考！',
+        bg: '#dc2626'
+      },
+      YELLOW: {
+        title: '🟡 黃燈模式：條件式待命區 (Standby / Conditional Use)',
+        desc: '【行為規範】手機請螢幕朝下置於桌角「停車格」，僅在老師指定查資料或紀錄時拿起，用畢立即蓋回。',
+        bg: '#d97706'
+      },
+      GREEN: {
+        title: '🟢 綠燈模式：數位互動學習區 (Active BYOD Mode)',
+        desc: '【行為規範】請拿起手機參與課堂即時互動（Kahoot! / Slido / 查資料），嚴禁切換至無關遊戲或社群軟體！',
+        bg: '#059669'
+      }
+    };
+
+    let wSeconds = 900;
+    let wInterval = null;
+
+    function setWidgetMode(mode) {
+      const cfg = W_MODES[mode];
+      document.getElementById('w-banner').style.background = cfg.bg;
+      document.getElementById('w-title').innerText = cfg.title;
+      document.getElementById('w-desc').innerText = cfg.desc;
+    }
+
+    function updateWidgetTimerDisplay() {
+      const m = String(Math.floor(wSeconds / 60)).padStart(2, '0');
+      const s = String(wSeconds % 60).padStart(2, '0');
+      document.getElementById('w-timer').innerText = `${m}:${s}`;
+    }
+
+    function setWidgetTimer(sec, mode) {
+      if (wInterval) {
+        clearInterval(wInterval);
+        wInterval = null;
+        document.getElementById('w-toggle').innerText = '▶ 開始';
+      }
+      wSeconds = sec;
+      updateWidgetTimerDisplay();
+      setWidgetMode(mode);
+    }
+
+    function toggleWidgetTimer() {
+      const btn = document.getElementById('w-toggle');
+      if (wInterval) {
+        clearInterval(wInterval);
+        wInterval = null;
+        btn.innerText = '▶ 繼續';
+      } else {
+        btn.innerText = '⏸ 暫停';
+        wInterval = setInterval(() => {
+          if (wSeconds > 0) {
+            wSeconds--;
+            updateWidgetTimerDisplay();
+          } else {
+            clearInterval(wInterval);
+            wInterval = null;
+            btn.innerText = '▶ 開始';
+          }
+        }, 1000);
+      }
+    }
+
+    function pickStudent() {
+      const n = Math.floor(Math.random() * 35) + 1;
+      document.getElementById('w-picked').innerText = `🎉 抽中座號：【 ${String(n).padStart(2, '0')} 號 】同學！`;
+    }
+  </script>
+</body>
+</html>

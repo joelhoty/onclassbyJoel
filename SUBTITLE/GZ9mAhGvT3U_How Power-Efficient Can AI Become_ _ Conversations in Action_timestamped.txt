@@ -1,0 +1,1604 @@
+影片標題：How Power-Efficient Can AI Become? | Conversations in Action
+頻道作者：Imagination in Action
+影片網址：https://www.youtube.com/watch?v=GZ9mAhGvT3U
+字幕語言：English (auto-generated) (en) [自動產生字幕]
+============================================================
+[00:00] 5 years ahead. What is the biggest
+[00:02] infrastructure bottleneck that AI
+[00:04] industry is currently underestimating?
+[00:06] >> AI, it appears weightless, [music] but
+[00:08] every single prompt that you're using is
+[00:10] depending on chips, network, [music]
+[00:12] cooling, electricity, and water. Even a
+[00:15] simple, hey, help me book flight tickets
+[00:17] next weekend [music] uses half a million
+[00:19] to a million tokens. It may be the case
+[00:21] that the Frontier models are already at
+[00:24] a higher number of [music] IQ points per
+[00:26] watt than humans are. Why isn't this
+[00:29] increasingly the [music] AI's problem to
+[00:32] improve itself? Why should, in short,
+[00:34] any meatbody human be [music] worrying
+[00:35] about this at all? We could reduce
+[00:37] carbon emissions by nearly 80% just by
+[00:39] that one generative directive.
+[00:47] Welcome to Conversations in Action. Alex
+[00:49] Wister Gross and myself love introducing
+[00:52] people who are changing the vector of
+[00:53] society, making things happen. Today we
+[00:56] are here with VJ, senior scientist,
+[00:58] principal investigator at MIT Lincoln
+[01:00] Labs. He leads the supercomputing center
+[01:03] there. His research spans AI, high
+[01:05] performance computing, large scale data
+[01:07] center, and energyaware computing. I've
+[01:09] had many conversations with him about uh
+[01:12] future sustainability and energy. Uh his
+[01:14] work examines the full AI infrastructure
+[01:17] stack from algorithm and models to
+[01:20] computer hardware, data centers, and the
+[01:22] electric grid. He co-founded Radium
+[01:24] which builds high performance AI cloud
+[01:26] infrastructure and co-optimizes
+[01:29] um models uh serving software and GPU
+[01:32] systems to deliver faster and more
+[01:34] efficient training inference and bay
+[01:36] compute which develop software to unlock
+[01:38] standard data center capacity by
+[01:40] coordinating computing cooling energy
+[01:43] storage and power systems. VJ's authored
+[01:46] a hundred technical publications. I'm
+[01:48] going to read them out all right now.
+[01:49] No, I'm not going to do that but I've
+[01:50] seen them. uh he works on a common
+[01:54] question which I'm really excited to
+[01:56] dive into. How can we get more useful
+[01:57] intelligence from every watt dollar and
+[02:00] piece of computing infrastructure? Uh I
+[02:02] also happen to know that he introduced
+[02:05] Obama um when he was a grad student and
+[02:07] I know he had dinner with Neil Armstrong
+[02:09] and John Glenn who I think
+[02:11] [clears throat] are have both passed but
+[02:13] I don't think VJ had anything to do with
+[02:14] that but I bet he has a lot to to say
+[02:16] about those things. Um but I don't know
+[02:18] if we'll get into that. We're building
+[02:20] increasingly intelligent systems, but
+[02:22] the infrastructure underneath them is
+[02:24] constrained by the power, cooling,
+[02:26] chips, and the electric grid. I know you
+[02:28] probably go to bed, you know, thinking
+[02:29] about this or you have dreams about
+[02:31] this. Do you think the next major
+[02:33] breakthrough in AI will come from making
+[02:34] models smarter or from fundamentally
+[02:37] changing how we build and operate the
+[02:39] machines that run them?
+[02:41] >> Yeah. So, John, first of all, it's a
+[02:43] pleasure to be on this uh on this show.
+[02:46] really appreciate everything that you
+[02:47] and Alex do and bringing a lot of these
+[02:50] heavy topics, giving them a lot of
+[02:52] light, putting them in the spotlight and
+[02:54] having a great conversation. Super
+[02:55] excited about this. So, coming back to
+[02:57] your question, I think that the next
+[02:59] breakthrough is going to have to be both
+[03:01] at the same time. So, one is we have
+[03:05] gotten fairly comfortable with the way
+[03:07] that we currently build models. we've
+[03:09] just been able to scale up and with that
+[03:11] has come an increased toll on the
+[03:13] physical footprint associated with AI
+[03:15] and then on the flip side even the
+[03:17] physical footprint that we've had has
+[03:19] been dominated by access to capital for
+[03:21] example so a lot of non-technical
+[03:23] reasons that we've grown the way that
+[03:25] we've grown and I think there needs to
+[03:27] be a reckoning of some sort in which we
+[03:30] bring these together you know one of the
+[03:32] pieces that we're often both educating
+[03:35] and working on is a lot of people don't
+[03:38] realize yet fully the ramifications of
+[03:41] their AI work. Right? So, an AI, it
+[03:44] appears weightless. You open up a
+[03:45] browser, you type something in, but
+[03:48] every single prompt that you're using is
+[03:50] depending on chips, network, cooling,
+[03:52] electricity, and water in order to
+[03:55] return that response to you. And how
+[03:58] much this footprint varies is quite a
+[04:00] bit dependent on things like the models,
+[04:03] where you're running this, and when
+[04:05] you're doing it. And so while it looks
+[04:08] like AI is weightless to the user, but
+[04:10] every token, everything you're
+[04:12] generating has a very strong physical
+[04:14] footprint. And so we need to work on
+[04:16] both ends of the spectrum or we're going
+[04:17] to find ourselves in a few years. And I
+[04:19] think we're already marching down that
+[04:21] path where the these two things are not
+[04:24] lining up with each other. So more
+[04:25] efficient models combined with better
+[04:27] infrastructure is the only way forward
+[04:29] for us.
+[04:30] >> What does this mean in practice? And who
+[04:32] needs to make a different decision
+[04:34] because of what you just described? Like
+[04:36] you just said, you know, something
+[04:37] that's nice and people can get behind,
+[04:39] but like like let's get into the
+[04:41] >> we should work on this.
+[04:42] >> Yeah. So, this is a combination of the
+[04:45] public. We're already starting to see
+[04:46] the public getting very involved in
+[04:48] conversations about data centers
+[04:50] nationwide, worldwide. communities are
+[04:53] starting to understand that sure maybe
+[04:56] AI's impact is global and this is for
+[04:59] the greater good but the impact that a
+[05:01] data center has or where this AI the
+[05:03] physical footprint of AI is very local
+[05:06] in nature so you have communities that
+[05:08] are stepping up and saying look data
+[05:10] centers we don't want them right and I
+[05:12] think that that there there's a lot of
+[05:13] nuance to the conversation which has not
+[05:15] yet been explored publicly however so
+[05:18] there is the communities so this is the
+[05:20] public that can start to say Look, we
+[05:23] want to figure out how to design the
+[05:24] systems better. And you, the data center
+[05:27] developers, stop being an ass and tell
+[05:29] us what you're planning to do, how
+[05:31] you're planning to do it, and what the
+[05:32] impact to our community is. On the
+[05:34] second end, we have the model developers
+[05:36] themselves. There has been this race to
+[05:39] just build the biggest and fastest
+[05:41] models. We haven't really paused to stop
+[05:43] and say, look, for me to summarize an
+[05:45] email or to transcribe these notes, I
+[05:47] don't need a 10 trillion parameter model
+[05:50] running. Perhaps I can do some of that
+[05:52] work locally. Some of that work can be
+[05:54] done with smaller models that are far
+[05:56] more efficient, better for the
+[05:58] environment. And in fact, we're starting
+[05:59] to see companies doing that. They're
+[06:00] getting there because of cost reasons
+[06:02] where they're seeing these 8 figure
+[06:04] bills going to, you know, pick your
+[06:06] favorite provider. And so they're
+[06:08] starting to think about, hey, can I
+[06:09] maybe use a smaller model for some time
+[06:11] and then maybe just save the or reserve
+[06:13] the very large fable class or soul class
+[06:17] models for just the hardest of
+[06:19] workloads. And so there is a little bit
+[06:21] of you know the community the companies
+[06:23] themselves that are the heaviest users
+[06:25] of these tools and I do think that we're
+[06:27] getting to a state where policy makers
+[06:29] need to intervene. I am certainly not
+[06:31] encouraging policy makers to stop or
+[06:34] slow down but to rather insist on
+[06:36] bringing efficiency into this. We need
+[06:38] to know what the cost the intelligence
+[06:41] cost per jewel is. And that is a
+[06:43] question that no one has an answer to at
+[06:45] this point. It's not just how many, you
+[06:48] know, how many jewels does a token cost
+[06:50] or how many W hours does this cost, but
+[06:53] rather if I'm solving a task and we can
+[06:57] come up with predetermined tasks. So
+[06:59] some measure of intelligence, how much
+[07:02] actual energy is going into that? And
+[07:04] that's the measure that we really need
+[07:05] to focus on optimizing, which there's
+[07:07] very little discussion around right now.
+[07:09] >> Right. I have a five and I have a 10 um
+[07:12] question and then I'm gonna unleash the
+[07:14] Alex. Five years ahead, what is the
+[07:17] biggest infrastructure bottleneck that
+[07:18] AI industry is currently
+[07:20] underestimating? That's my five. And
+[07:22] then my 10 question is what would uh
+[07:25] need to change for us to get 10 times
+[07:27] more intelligence in the same amount of
+[07:29] computing.
+[07:31] >> So in the 5year I think the biggest
+[07:34] underestimating right now is
+[07:38] the power needs that are that are coming
+[07:40] in. We have gigawatts of power that are
+[07:43] coming online
+[07:45] and tens of gigawatts of demand that are
+[07:47] coming online all slated to happen
+[07:49] within the next few years. In the
+[07:51] interim, we haven't come up with a
+[07:53] better way of solving these problems.
+[07:55] We're just going with larger and larger
+[07:57] models and more and more infrastructure.
+[08:00] So yes, on one end we have the
+[08:01] infrastructure that is in theory
+[08:03] becoming more efficient in terms of the
+[08:05] measurement that everyone gives which is
+[08:07] tokens per watt. That number is
+[08:08] improving. However, what's not improving
+[08:11] is the number of tokens that things are
+[08:13] taking. So, I think what we're missing
+[08:15] is the scale of AI and the fact that we
+[08:18] are still in the baby stages of where AI
+[08:21] is. And so, if we think that we're
+[08:22] having a problem now, just wait until we
+[08:25] turn on AI agents for everything that we
+[08:27] do. A couple years ago, we couldn't, you
+[08:30] know, we were using just standard old
+[08:32] Google search maybe 3 4 years now. Now,
+[08:34] everything is running through a
+[08:36] generative AI. We haven't yet gotten to
+[08:37] the real stage. So that still has a
+[08:39] measurable amount of tokens. We've done
+[08:41] experiments where we look at AI agents
+[08:44] which is clearly the next frontier and
+[08:46] the amount of usage right the amount of
+[08:49] infrastructural usage that an AI agent
+[08:52] has. So even a simple hey help me book
+[08:54] flight tickets next weekend uses half a
+[08:57] million to a million tokens to go
+[08:59] through that process. And so if we're
+[09:01] using the same old models, the that bend
+[09:04] in the curve can be quite sharp and we
+[09:07] may not be able to keep up with that.
+[09:09] Looking 10 years out, the piece that I
+[09:11] think we will regret is how lazy we are.
+[09:15] >> No, no. I I said how do we how do we do
+[09:17] 10 times the second? Sorry, my bad. Um,
+[09:20] so how do we do 10 times that is going
+[09:23] to have to be a we're going to have to
+[09:25] come up with smarter models, things that
+[09:26] have different architectures, maybe
+[09:28] moving off of transformers.
+[09:30] We're going to have to come up with
+[09:31] better ways to route uh your
+[09:34] intelligence. So as you're asking a
+[09:36] query being able to leverage dozens of
+[09:39] models simultaneously and at the same
+[09:41] time on the other end we better have a
+[09:42] good answer to what power are we using
+[09:46] what is the impact to local communities
+[09:47] and how do we do this without disturbing
+[09:49] the environment
+[09:51] >> Alex uh to you I also want to point out
+[09:54] that Lincoln Labs for those who don't
+[09:55] know is a major player if you I I teach
+[09:59] a class on uh I'm involved with a class
+[10:01] on the history of MIT and I was shocked
+[10:04] to see how big the budget it is at
+[10:05] Lincoln Labs because it is it does so
+[10:08] much and it's not just this one little
+[10:09] laboratory. It's a it's a major player
+[10:12] uh in the world and thank you for your
+[10:13] leadership. All right, let's unleash the
+[10:15] Alex. What do you got?
+[10:17] >> Yeah. So VJ, I want to challenge the
+[10:19] premise of some of this discussion. It's
+[10:22] very easy to say and and certainly by
+[10:24] way of background I myself was at at one
+[10:26] point a fellow at the Harvard Center for
+[10:28] the Environment studying the energy
+[10:30] footprint of computing. But we're in an
+[10:32] era now when, as OpenAI's Boris Power
+[10:36] put it, it may be the case that AI
+[10:38] models, the frontier models are already
+[10:41] at a higher number of IQ points per
+[10:44] watt, his words, than humans are. So
+[10:47] insisting on energy efficiency for the
+[10:50] AIS, that can cut both ways. It it could
+[10:52] also cut in the direction to the extent
+[10:54] that the frontier models are either
+[10:56] already smarter per watt than humans are
+[10:59] or about to be smarter per unit watt. It
+[11:02] could cut both ways in the sense that at
+[11:03] some point what we insist on for AIs in
+[11:06] terms of efficiency, they could turn
+[11:08] around and insist that humans,
+[11:10] biological meatbody humans be uh more
+[11:13] efficient per unit watt or at least more
+[11:16] economically productive per unit watt.
+[11:18] So let let me open with the softball of
+[11:20] just asking are you at all concerned
+[11:22] that in an era when we're starting to be
+[11:26] a wash in super intelligence super
+[11:28] intelligence will turn around and insist
+[11:30] on the same efficiency measures for
+[11:32] humans.
+[11:34] >> Yeah I I think even less intelligent
+[11:36] people so I'm certainly not super
+[11:37] intelligent would insist that we as
+[11:39] humans should be more efficient. We're
+[11:41] pretty wasteful with what we do already.
+[11:43] So I think just as a as an argument sure
+[11:46] uh I can give uh some credence to that
+[11:48] in terms of it it could come back and
+[11:50] say that now here's the here's the
+[11:52] difference right with AI versus humans
+[11:54] it's the scale the rate of change of
+[11:58] human efficiency is largely driven by
+[12:01] population how many people are there
+[12:03] what types of tools we're using with AI
+[12:06] I think it's the it's the rapid change
+[12:08] that this is occurring is where we need
+[12:10] to have this conversation The other
+[12:13] piece is at no point being not helpful,
+[12:17] right? And so if there are ways that we
+[12:19] can be more efficient today without
+[12:21] interfering with the growth of AI, I
+[12:23] think we need to leverage them. I don't
+[12:24] see any harm in doing that. uh it would
+[12:27] just make that you know even if I uh
+[12:31] even if I agree with the argument that
+[12:32] the IQ point per watt is higher right or
+[12:35] the intelligence per watt is higher on
+[12:36] an AI system versus a human being
+[12:39] I still being more efficient is is going
+[12:42] to be helpful and that's what we've
+[12:44] shown through research and commercially
+[12:45] that we can actually get there without
+[12:48] impacting the intelligence of these
+[12:49] systems so we're not saying slow them
+[12:51] down as I think there's seems to be some
+[12:53] call going on right now however what
+[12:55] we're saying is look Let's keep
+[12:56] building, but let's just be more
+[12:58] thoughtful in the way that we're
+[12:59] building these things out.
+[13:00] >> I assume you'd agree, this is again
+[13:03] softball, agree with the premise that
+[13:05] there's some one or two dimensional
+[13:07] efficient frontier manifold that really
+[13:10] the argument that there's no downside to
+[13:13] being more efficient reduces to any
+[13:15] given compute workload or human workload
+[13:17] should lie on the efficient frontier
+[13:19] rather than under or inside the
+[13:22] frontier. Is is that would you agree
+[13:24] with that premise?
+[13:26] >> Understood. I think but we can't define
+[13:27] what that think the challenge that we're
+[13:29] running into as a larger community is we
+[13:31] don't know what the points on that
+[13:33] manifold are for us to say that we're on
+[13:35] within or above. Uh and I think that's
+[13:38] so yes I agree with that as a as a
+[13:41] statement. What I will push back on is I
+[13:44] don't know how to you know how to model
+[13:47] that manifold to say like oh we're on
+[13:49] that point or we're under that point or
+[13:51] outside of that point. And so if we were
+[13:53] able to come up with what that looks
+[13:54] like, absolutely we want to be on that
+[13:57] rather than below or above. And also
+[13:59] just given you know international
+[14:01] commercial pressures, there are people
+[14:03] that are going to be working outside of
+[14:05] that. And so we don't want to catch
+[14:08] ourselves uh flatfooted or catch
+[14:11] ourselves in a position where we went so
+[14:14] far down this regulation and efficiency
+[14:17] path that we sort of lost track of the
+[14:19] fact that we want to build these systems
+[14:21] that are doing more intelligent uh work
+[14:23] that are able to solve some of
+[14:25] humanity's greatest problems. Uh but I
+[14:28] think we just come back come back to the
+[14:30] lack of transparency in this space in
+[14:32] terms of even a being able to define
+[14:34] what the points of that manifold look
+[14:36] like.
+[14:36] >> Uh I I guess I'm far less concerned that
+[14:39] you than you are or you seem to be about
+[14:41] the policy issues here. Just again as a
+[14:44] preliminary matter I'm I'm for if we
+[14:47] have to tile the solar system with
+[14:49] compute in order to get transformative
+[14:50] outcomes. I'm in favor of tiling the the
+[14:53] solar system. But let let me press you
+[14:55] on this a bit. So this is, as I
+[14:57] understand, this is your area of
+[14:58] research. If you had to define what you
+[15:00] think the optimal frontier looks like,
+[15:03] what do you think the dimensions are? Is
+[15:04] it what's in? What does reversible
+[15:07] computing get us? Is it tokens out? Is
+[15:10] it IQ points out? What what's your best
+[15:13] guess knowing what you know now as to
+[15:15] what the parameters of that optimal
+[15:17] frontier look like?
+[15:19] >> Yeah. So the first is for a long time
+[15:21] we've been looking at a couple of
+[15:23] metrics which I think are correlated but
+[15:26] not exactly getting to what we want. So
+[15:28] the first is what I'll just call
+[15:30] intelligence per watt. Um and I'll also
+[15:33] argue that we don't know what we mean by
+[15:35] intelligence exactly. There's a number
+[15:36] of tests that we can run uh number of
+[15:39] benchmarks that people put out uh in
+[15:41] order to say look here's my model. This
+[15:43] is why it's better than other people.
+[15:46] Yeah that it's probably some combination
+[15:47] of those as of today. But as we move
+[15:49] forward, we need to figure out what are
+[15:51] the tasks that we're actually looking at
+[15:52] AI to solve and then looking at the
+[15:54] actual you know it could be per watt per
+[15:56] jewels uh you know that the denominator
+[15:59] but will be some sort of power energy
+[16:02] related. Uh the other piece that we need
+[16:04] to start looking at is what type of
+[16:06] infrastructure does these different
+[16:08] things need. We've done a lot of
+[16:10] experiments where we we talk a lot about
+[16:12] power and energy which is absolutely
+[16:14] important but even the rates of change
+[16:17] of these numbers. So the you know energy
+[16:18] is obviously the high level number which
+[16:20] which we talk about right when we say
+[16:21] watts per jewel or intelligence per
+[16:23] jewel but even the derivative of that
+[16:25] power the second derivative of that rate
+[16:26] of change of power these are other
+[16:28] valuable uh numbers that you know from a
+[16:31] let's think shorter term in terms of
+[16:32] where so I agree with the you know
+[16:34] tiling the solar system with solar
+[16:36] panels um that maybe is an answer I just
+[16:40] see that's very far out in terms of uh
+[16:44] us being able to actually do that we're
+[16:46] talking decades at best and maybe you
+[16:48] have a better estimate of when that you
+[16:50] know that's
+[16:51] >> way shorter. My my timelines I think are
+[16:53] way shorter than yours.
+[16:54] >> Okay. I I I you know I'd like to follow
+[16:57] where the money is going and I don't see
+[16:58] that happening yet just because of who
+[17:00] the players are and what their inherent
+[17:03] interests are in terms of building out
+[17:05] the infrastructure for AI. Right?
+[17:06] There's obviously some conversations
+[17:08] going on in can we put space-based even
+[17:10] just computing you know with solar
+[17:12] really cool idea. It's both expensive to
+[17:15] get there and also just running things
+[17:16] in space is extremely difficult. So I do
+[17:18] see that as a part of the all of the
+[17:20] above approach of introducing all of
+[17:22] this. But even just terrestrial systems
+[17:24] is going to be the next 5 years. I I I
+[17:27] just don't see a way around the
+[17:29] terrestrial systems just because that's
+[17:30] where the capital is coming in from.
+[17:32] Right? When you're looking at who is
+[17:34] building data centers, where the money
+[17:36] for those data centers is coming from,
+[17:37] they're coming from people who have
+[17:39] vested interests with having these
+[17:40] landbased. It's an asset that they can
+[17:42] lend against.
+[17:44] It is land that they already own. It's
+[17:46] power that they already have. Most of
+[17:48] that is landbased. That's where the big
+[17:50] capital is coming in. When you're
+[17:51] talking about the trillions of dollars
+[17:53] going into this, a lot of that capital
+[17:55] is coming from people who have a vested
+[17:56] interest of having that infrastructure
+[17:58] sitting here on planet Earth, perhaps
+[18:00] even in certain countries, but you know,
+[18:02] largely on planet Earth. Yeah, I think
+[18:04] the the smart money is generally of the
+[18:07] view and and for avoidance of doubt, I'm
+[18:09] kneedeep operationally in the orbital
+[18:11] data center space at this point that the
+[18:13] crossover where orbital data centers
+[18:15] become most obviously and conspicuously
+[18:19] more uh affordable according to various
+[18:22] definitions of affordability will be
+[18:24] sometime around 2030 or so will be the
+[18:26] crossover point with a heavy buildout
+[18:28] before then. But let me press you I
+[18:31] there are so many different points of of
+[18:32] the premise here that I I I would love
+[18:35] to and and will press on. Let's just
+[18:37] press on model efficiency for a minute.
+[18:39] If you had to name what you think the
+[18:42] most perfect energyefficient model
+[18:45] architecture looks like. You just have
+[18:46] to guess. No one's going to hold you to
+[18:48] this. What do you think the most
+[18:50] energyefficient perfect model
+[18:52] architecture will actually look?
+[18:54] >> It's going to be a mixture of models. So
+[18:56] it's not going to be any single model,
+[18:58] any single architecture, but it's going
+[19:00] to be a dozen models wrapped into one.
+[19:02] Not a mixture of experts model like we
+[19:04] currently have, but structurally similar
+[19:07] to that, but rather models that are all,
+[19:11] you know, you can think of 10 different
+[19:12] models sitting 1 billion, two billion,
+[19:14] all the way to a trillion parameter
+[19:15] models all sitting in one, not
+[19:17] activating these at any given time until
+[19:20] the question calls for it. That's so if
+[19:23] if I may, that sounds like basically a
+[19:25] sparcity or meta sparity consideration.
+[19:28] Withes we see they're sparse. They only
+[19:30] have a few activations at any given time
+[19:32] out of many possible latent activations.
+[19:35] But doesn't the the recent history of
+[19:37] machine learning teach us that if every
+[19:39] sparse model wants to be distilled into
+[19:42] a dense model when it grows up that is
+[19:43] even more energyefficient? So why can't
+[19:45] I take your proposed mixture of model
+[19:48] architectures and distill it down to an
+[19:50] even more energyefficient dense
+[19:52] architecture?
+[19:53] >> So perhaps for narrow applications you
+[19:55] could do that and I'm guessing people
+[19:57] will end up doing that. So there might
+[19:58] be so if you're thinking about the
+[20:00] general purpose model versus the narrow
+[20:03] and that's the other piece that I think
+[20:04] we're going to have is just a lot more
+[20:06] narrow models that are really good for
+[20:07] solving very specific tasks. Um we have
+[20:11] largely moved to this place of having
+[20:14] and you can see this now even in you
+[20:15] know as people are turning off a lot of
+[20:17] the fine-tuning actions and you know
+[20:19] that little Laura type fine-tuning up
+[20:21] front that you could have done on some
+[20:23] of the large models is being turned off
+[20:24] as the models have become more general
+[20:26] purpose good at everything. Um I think
+[20:29] we're going to have to go back to more
+[20:31] narrow models. So as an enterprise I
+[20:33] might have 30 models that I'm running
+[20:35] one just for coding one just for pieces
+[20:38] uh for different elements which we're
+[20:39] not I think we've kind of we had that
+[20:42] for a little bit and then we kind of
+[20:43] moved to this as we move to this
+[20:44] frontier race of bigger and better
+[20:46] models but I think we might have to go
+[20:48] back to that if we're trying to look for
+[20:49] efficiencies.
+[20:50] >> I'll take the opposite side of I think
+[20:53] probably in this discussion I'm going to
+[20:54] end up taking the opposite side of
+[20:55] almost every position but that's fine
+[20:57] makes for an interesting discussion. Uh
+[20:59] so just on the specialization the
+[21:02] counterargument is that distillation is
+[21:05] ultimately a form of regularization and
+[21:07] that and we've seen this in various
+[21:10] prominent frontier model instances that
+[21:12] generalization is actually achieved
+[21:14] through distillation not the opposite
+[21:16] and every time someone goes off and
+[21:18] tries to create a specialized model
+[21:21] maybe there's some superficial advantage
+[21:23] for a few months but then a generalist
+[21:25] model comes along that can beat it uh by
+[21:29] raw capability on the one hand,
+[21:30] parameter count on the other. So what on
+[21:34] earth is the persuasive case for
+[21:36] specialized models if this continues to
+[21:38] be the case? My my head cannon at this
+[21:41] point is quite the opposite. We're not
+[21:43] marching toward specialized models in
+[21:46] just in general for energy efficiency or
+[21:48] for parameter count efficiency or
+[21:50] compute efficiency. If anything, we're
+[21:52] marching toward ever and more bitter
+[21:55] lesson models that are pure generalists.
+[21:58] Can do you have a persuasive argument to
+[22:00] the contrary?
+[22:02] >> So again coming back to efficiency,
+[22:04] right? So if we're looking at what makes
+[22:05] for a better commercial use case, sure I
+[22:07] might see the generalist model, but give
+[22:09] you one example. We had this group work
+[22:11] that we were working with, they they ran
+[22:12] a tool called climate GPT. Um this was a
+[22:15] search engine for climatebased research.
+[22:19] Um, and this is through uh, radium. And
+[22:22] what they were able to do at that time,
+[22:23] this is now a couple years ago, they
+[22:25] were able to take a 70 billion parameter
+[22:26] model essentially
+[22:29] use a rag tool. So they had a bunch of
+[22:31] scientific documents that were attached
+[22:32] to that and then they were able to uh,
+[22:35] you know, essentially you could search
+[22:36] through that site, you know, those type
+[22:38] of things. Uh, they instead took that
+[22:40] scientific corpus, converted tokens and
+[22:43] fine-tuned a 7 billion parameter model
+[22:44] and were able to show equivalent
+[22:46] performance for both those tasks. the
+[22:48] second or the latter being a much
+[22:51] smaller model, much smaller computing
+[22:53] footprint associated with it. So as I'm
+[22:56] coming back to the point of if we're
+[22:59] looking for efficiency, the metric that
+[23:01] we need to have is useful intelligence
+[23:04] per jewel for that for tasks that people
+[23:06] are running. And so I think it comes
+[23:08] down to can we you know are we able to
+[23:10] show efficiency and if the generalist
+[23:13] model is more efficient for solving
+[23:14] those series of tasks sure um but we've
+[23:18] seen that you know being able to
+[23:19] customize models if you have narrow sets
+[23:21] of applications that you're looking for
+[23:23] they have in general worked out for
+[23:24] those narrow applications and yes it is
+[23:27] a moving race and so maybe the next
+[23:29] version of some model is able to solve
+[23:30] that better than the prior version but
+[23:32] there's always this like the
+[23:34] specialization does give you that
+[23:36] advantage for at least some period of
+[23:37] time. But again, I'm I'm looking at this
+[23:39] again purely from the angle of
+[23:41] intelligence per jewel.
+[23:43] >> So it sounds like maybe then we're
+[23:45] actually in agreement. If if I were to
+[23:47] caricature what I I think you're saying,
+[23:49] maybe what you're saying is if you want
+[23:52] to be perhaps a few months ahead of
+[23:54] Frontier model capabilities on some cost
+[23:58] versus performance or flops versus
+[24:00] capability frontier, then sure, distill,
+[24:04] fine-tune, RFT, specialize a model, but
+[24:08] it only buys you maybe a few months of
+[24:10] headway in the alternative weight
+[24:12] equation style. you could sit on your
+[24:14] hands, wait a few months and use a
+[24:16] generalist model and achieve essentially
+[24:19] the the same cost versus performance
+[24:21] without any specialization. Would you
+[24:23] agree with that characterization?
+[24:25] >> Um I somewhat right. I think I'm not
+[24:28] sure if it's just a few months or if
+[24:29] it's a little bit longer. So I don't
+[24:31] know the time frames necessarily for
+[24:32] when that would happen. Uh or it's tough
+[24:35] to estimate what that would be. The
+[24:37] other piece is even within the frontier
+[24:38] models, everyone has got tiered models
+[24:40] associated with them. So you might be
+[24:41] able to get far enough with some of the
+[24:43] smaller models that have this
+[24:44] customization versus the large end or
+[24:48] the higher cost model that is the
+[24:50] generalist model. So that's the other
+[24:52] angle that I want to play on which is
+[24:54] it's not you know we we're moving the
+[24:57] frontier of different models
+[24:58] simultaneously right where you have your
+[25:00] most players have some sort of small
+[25:02] medium and large maybe now they have
+[25:03] extra small extra large as well uh but
+[25:06] they have these tiered models and my
+[25:08] point being that you might be able to
+[25:09] use the small or extra small model with
+[25:12] the right customization to get the
+[25:15] equivalent performance for that
+[25:17] application than what you would get on
+[25:19] the large or extra-large generalist
+[25:21] model for that same application
+[25:23] >> and so coming back to intelligence per
+[25:25] jewel right which is you know let's say
+[25:29] intelligence will let's just say which I
+[25:31] disagree with is roughly proportional to
+[25:33] say size of bottle at this point per
+[25:35] jewel which is the amount of uh energy
+[25:37] that's being used to generate a token or
+[25:40] whatever it may be you might be able to
+[25:42] do much better on those measures if you
+[25:44] think of it that way
+[25:46] >> let me maybe just divert and press a bit
+[25:50] on intelligence per jewel because it's
+[25:52] an interesting metric. Do you think
+[25:54] maybe a leading question, maybe not,
+[25:57] that we get to intelligence per jewel
+[26:00] appropriately defined of infinity, which
+[26:04] could obviously
+[26:06] undefined in in some sense, but more
+[26:09] precisely, could we get to finite
+[26:11] intelligence with zero jewels using
+[26:15] reversible computing or or some other
+[26:17] substantially similar paradigm? I mean,
+[26:20] I'm pretty sure someone's going to say
+[26:21] they did that by using bean counter
+[26:23] tricks on how they count jewels, right?
+[26:24] They might say, you know, uh,
+[26:27] sustainable jewels, like renewable
+[26:29] jewels versus non-renewable jewels, and
+[26:32] someone says, "I connected a nuclear
+[26:33] power plant, so my jewels are free."
+[26:34] >> No, no, no. I I mean, actually, I mean
+[26:37] actually zero jewels.
+[26:38] >> Yeah, honestly, I mean, I can
+[26:40] hypothesize, but this is just a guess.
+[26:42] Definitely not something that I'm uh
+[26:44] looking at in the near term. I don't see
+[26:46] that happening. Again, if we're talking
+[26:48] about the fiveyear horizon, I don't see
+[26:50] that in the next five years. People are
+[26:52] talking about it. I I can't say that I'm
+[26:54] up to speed on the exact approaches that
+[26:56] they're using for that without using
+[26:59] some sort of a like to to tell me that
+[27:02] we're able to generate an answer with
+[27:03] using no uh no energy
+[27:07] in the near term. I don't see that as a
+[27:09] as a viable alternative unless we're
+[27:11] willing to say that the you know I'm
+[27:13] allowing uh yeah I just don't know how
+[27:16] that's possible to generate something
+[27:18] with with no energy. I assume you're
+[27:21] familiar with reversible computing.
+[27:22] There are lots of architectures for
+[27:24] beating the land hour limit. Literally,
+[27:27] you could do this with purely elastic
+[27:28] billiard computing if you had to. But
+[27:30] there are lots of alternative ways to do
+[27:32] it. It would seem to me uh all of the
+[27:35] hand ringing over energy efficiency is
+[27:37] uh both illfounded and also inevitable.
+[27:40] we'll just have recursive
+[27:42] self-improvement uh and super super
+[27:46] optimization models tell us what these
+[27:48] better architectures are. So may maybe
+[27:50] let me put that in question form is it
+[27:53] even worth hand ringing over energy
+[27:55] efficiency of computing paradigms in an
+[27:57] era of recursive self-improvement or and
+[27:59] the alternative let the AIs worry about
+[28:02] it and just optimize towards effectively
+[28:05] infinite intelligence per watt. Why
+[28:07] should we even care? Uh so I think it's
+[28:10] about timing right if you tell me that
+[28:11] that technology is coming out tomorrow
+[28:13] or in the next year if you can say that
+[28:16] with confidence then yeah maybe we don't
+[28:18] need to care. I don't see anything
+[28:19] coming out in the next 3 to four years
+[28:21] that I'm aware of at least. I mean
+[28:23] there's a lot of interesting research a
+[28:24] lot of interesting proposals that are
+[28:26] out there. I've not seen anything that's
+[28:28] like oh okay I can see this becoming a
+[28:30] commercially viable product that the
+[28:31] whole world is going to switch over to
+[28:33] in the next few years. So I am really
+[28:35] focused on what is the near-term impact
+[28:38] uh as we're growing these systems very
+[28:41] quickly. If I look at the plans over the
+[28:42] next 3 to 5 years, just the amount of
+[28:44] data centers, the amount of new bills
+[28:46] that are coming up, I mean we're looking
+[28:48] at nearly doubling the number of data
+[28:50] centers that are, you know, that these
+[28:52] are currently in process. Not all will
+[28:54] happen. However, that's just a
+[28:56] significant buildout happening. I see
+[28:59] this happening. This is just in the
+[29:00] United States, but even worldwide. uh we
+[29:02] work with customers across Asia, South
+[29:04] America, there's a huge growth going on
+[29:06] and so in the next 3 to 5 years which is
+[29:10] what I'm really focused on trying to
+[29:12] make sure that we beat the curve for
+[29:13] that time I do think we have to worry
+[29:16] about it and you know where we go 10
+[29:18] years from now yeah I mean maybe there
+[29:20] are you know combination of orbital data
+[29:22] centers maybe we have new computing
+[29:23] paradigms new model architectures alto
+[29:26] together uh but I think we need to
+[29:28] balance what is happening and what we're
+[29:31] seeing happening versus what would be
+[29:34] really cool. That's not to say that I
+[29:36] mean I'm also an investor in one of
+[29:37] these orbital space or one of these uh
+[29:39] space-based data center companies. Um so
+[29:42] I think it's exciting. I think it's
+[29:44] going to be part of the equation but I
+[29:47] don't see that you know I still see that
+[29:49] being far out maybe compared to even
+[29:51] some of the most aggressive timelines
+[29:53] that people are putting out there. So,
+[29:55] Anthropic just released their first call
+[29:57] it recursive self-improvement report
+[29:59] noting how much of their algorithmic
+[30:00] research is now conducted by their own
+[30:03] models. I'll again press on this point.
+[30:06] Why you you you use the word worry. Why
+[30:08] should anyone worry about this? We're
+[30:10] we're arguably now according to
+[30:12] anthropic and open AI at least a and
+[30:14] some of the Chinese frontier labs in an
+[30:16] era when the AIs are discovering
+[30:18] improvements to themselves and to the
+[30:20] extent that say capabilities per unit
+[30:23] parameter is exponentially improving
+[30:26] maybe one would quibble with the word
+[30:28] exponential but at least monotonically
+[30:30] improving and to the extent that say
+[30:33] parameters per unit or effective forward
+[30:36] passes through a parameter per watt or
+[30:39] per kilowatt hour are also continuing to
+[30:42] improve radically. Why isn't this
+[30:46] increasingly the AI's problem to improve
+[30:48] itself? Why should in short anyone be
+[30:51] worrying any meatbody human be worrying
+[30:53] about this at all?
+[30:55] >> So two two things. One is you the same
+[30:58] companies that are talking about this
+[30:59] are also putting massive investments in
+[31:00] more and more compute as we speak. So
+[31:03] that to me just kind of shows where
+[31:04] they're thinking still right. So these
+[31:06] are we've always seen this right the
+[31:08] research labs kind of show one thing but
+[31:10] then kind of follow the money where
+[31:11] these organizations are putting their
+[31:13] money spending billions of dollars a
+[31:14] month on new computing uh to make these
+[31:16] services available. So again, I'm kind
+[31:19] of coming back to timelines over here.
+[31:20] You've got the near-term versus the
+[31:23] longer term. In the near term, it looks
+[31:26] like there is a lot of capital that's
+[31:28] going down the path of scaling up the
+[31:30] existing computing systems. So as much
+[31:32] as I, you know, kudos to these
+[31:35] organizations for u researching the
+[31:39] again all of this is important for us.
+[31:42] However, near-term we're still scaling
+[31:44] up big time. Why are we building
+[31:46] gigawatt farms throughout the or
+[31:48] gigawatt data centers, multi-gawatt data
+[31:50] centers throughout the world? Why do
+[31:52] these companies that are doing research
+[31:53] also investing in that massive buildout?
+[31:58] I I I I think they see it as a potential
+[32:01] path, but that's not the plan of record
+[32:02] for the next few years.
+[32:04] >> Well, I I would distinguish between
+[32:06] model level advances and infrastructural
+[32:08] level advances. And again for avoidance
+[32:10] of doubt I I think forget about the the
+[32:13] solar system and tiling the solar system
+[32:15] with compute. Uh I'm huge fan of to the
+[32:18] extent it's practical tiling the earth
+[32:19] with compute as well. So I I want to
+[32:21] make sure we're addressing the elephant
+[32:23] in the room. Am I understanding your
+[32:26] position correctly that you're concerned
+[32:28] about data center builds out on Earth?
+[32:30] And if if so what exactly is your
+[32:33] concern?
+[32:34] >> Yeah, so I do have a couple concerns
+[32:36] with data center buildout on Earth. I
+[32:38] believe that while we have on one end
+[32:40] communities that are pushing back uh on
+[32:43] data center buildout, we're actually
+[32:44] being extremely wasteful with the power
+[32:46] and energy that we're currently using.
+[32:47] And so the question is, you know, can we
+[32:50] unlock a lot more capacity with what we
+[32:52] already have before going down building
+[32:54] more infrastructure on Earth? Uh we have
+[32:56] a lot of power that's stranded is is the
+[32:59] term that we use in conservative cooling
+[33:01] and power margins. uh we have low
+[33:05] hardware utilization across the board.
+[33:08] Uh we have resources that are controlled
+[33:10] by different people. So you have
+[33:12] electrical grids, you have the data
+[33:14] centers, you have the compute providers,
+[33:16] each one operating their own safety
+[33:17] margins that are all compounding and
+[33:19] creating this highly inefficient uh
+[33:21] system that we spend. And then we have
+[33:23] infrastructure that we've sized for
+[33:24] peaks that happen very rarely. And so
+[33:27] with that, you know, I I have no
+[33:30] concerns if we're building more data
+[33:31] centers because we've maximized the
+[33:33] usage of what we already have and we're
+[33:35] scaling up because we need to to uh
+[33:39] we're building the the next level of
+[33:41] technology to solve criticals problems,
+[33:43] you know, helping solve cancer, for
+[33:44] example, but we're not using what we
+[33:47] already have efficiently. And so there's
+[33:48] a huge environmental local cost that
+[33:51] comes along with these buildouts that
+[33:53] are being borne by someone. uh and we're
+[33:56] doing that by you know we've not even
+[33:58] used the infrastructure that we already
+[34:01] have properly before [clears throat] we
+[34:02] scale up and I have a lot of anecdotes
+[34:04] of you know what we're seeing uh today
+[34:07] uh in you know in operational data
+[34:09] centers around the world
+[34:10] >> surely you're not implying that we
+[34:13] should stop or pause the data center
+[34:15] buildout just to increase the efficiency
+[34:17] of data centers presumably tell me if if
+[34:20] I'm being presumptuous these two efforts
+[34:23] can live alongside each other we could
+[34:24] do horizontal build%. Yeah, I think it's
+[34:27] more of a you're building a data center.
+[34:30] Can you show me that you you're actually
+[34:31] using what you have? I mean, again, and
+[34:32] I'm not trying I'm not a policy maker,
+[34:34] so I'm not trying to propose this from
+[34:36] this is how the policy should be
+[34:37] written, but rather the cost of building
+[34:40] a new one should somehow be a little bit
+[34:42] higher than making what you already have
+[34:44] more efficient, being able to utilize
+[34:45] what you already have. And the cost
+[34:47] could be public pressure. It could be
+[34:48] actual dollars and cents cost. uh could
+[34:52] be you know I don't want to go down the
+[34:53] regulatory path but yes you you need
+[34:55] you'll need to do both at the same time
+[34:57] the efficiencies will get you 50% but
+[34:59] that won't get you 5x or 10x necessarily
+[35:02] >> it would seem to me the markets are more
+[35:04] than competent at handling that what is
+[35:07] there anything else that I'm missing is
+[35:10] there it would just seem to me that data
+[35:12] data center developers uh and operators
+[35:15] have are plenty well incentivized to I
+[35:18] mean they're they're consuming energy
+[35:20] just like everyone else whether it's on
+[35:21] prem or otherwise they have every
+[35:23] incentive to increase energy efficiency.
+[35:26] What what am I missing if anything?
+[35:29] >> Yeah, very often you know we work with a
+[35:31] lot of data center providers and very
+[35:34] often they're unaware of the power
+[35:36] that's being underutilized or it's just
+[35:37] sort of treated as this is how life is.
+[35:39] Um you know we work with data centers
+[35:42] that run with you know pees at you know
+[35:44] 1.5 you know fairly high. They're also
+[35:47] working in hotter regions maybe in the
+[35:48] world and they're sitting at 30%
+[35:51] utilization or lower. They have highly
+[35:53] spiky traffic so that kind of peaks up
+[35:55] goes down. They're unaware of like what
+[35:59] unaware is not the right word but
+[36:00] they're not sure how to control the
+[36:02] dynamic nature of these systems. I mean
+[36:04] I like to talk about data centers are
+[36:05] themselves living breathing systems but
+[36:08] they're treated very statically. It is a
+[36:10] complex problem. If you look at a
+[36:12] collocation facility for example, so
+[36:13] this is a data center where you might
+[36:14] have multiple tenants going in at once.
+[36:16] You often have different SLAs's for
+[36:18] different customers or service level
+[36:19] agreements. Uh you know customer A might
+[36:22] say my temperature for this area needs
+[36:25] to be between 18 to 21° centigrade.
+[36:27] Customer B might say I I use 18 to 30 is
+[36:30] fine uh in terms of like inlet
+[36:32] temperatures whether it's air or water.
+[36:34] Um and so the data centers these are
+[36:36] complex things to be able to adjust and
+[36:38] run. they don't have that software plane
+[36:40] yet to be able to adjust all of these
+[36:43] parameters individually or to localize
+[36:45] some a lot of these changes. So, what
+[36:47] they tend to do is run on the most
+[36:48] conservative, right? If I run it at 18°
+[36:50] centigrade, I've satisfied both SLAs's,
+[36:52] which is true. Uh, but at the same time,
+[36:54] you're leaving a lot of power on the
+[36:56] floor for customer B. That might have
+[36:58] been okay if you had raised their
+[37:00] temperatures slightly. And that has a
+[37:02] major downstream impact on either water
+[37:04] consumption uh and power. And so these
+[37:06] are the areas that we're often getting
+[37:08] into and being able to make adjustments
+[37:10] to say, "Hey, here's here's a
+[37:12] significant amount of power that you can
+[37:14] unlock within this existing facility,
+[37:16] still keeping all the same SLAs's in
+[37:18] place. Uh nothing changes from the
+[37:20] customer perspective. You're just
+[37:22] running a far more efficient operation
+[37:24] as a data center. So that's when we
+[37:26] talked about why yeah I mean it it does
+[37:29] seem obvious uh but I think it's a more
+[37:32] recent problem where we've stressed out
+[37:34] the systems and it has always been easy
+[37:36] to go build a new data center. there was
+[37:38] a time where people really wanted data
+[37:40] centers in their communities that has
+[37:42] changed and so now people are looking at
+[37:44] okay so I can get more efficient how do
+[37:46] I get more efficient over here now you
+[37:47] know the scales of these things are are
+[37:49] fairly large I mean we're talking about
+[37:50] a 50 to 100 megawatt uh facility and we
+[37:54] can unlock 10 to 20% which is not
+[37:56] difficult um you're talking about you
+[37:59] know unlocking 10 to 20 megawws of power
+[38:02] from an existing facility and so you you
+[38:05] can see how this starts to scale very
+[38:07] quickly And we've seen this time and
+[38:09] time again across facilities that um
+[38:13] that level of power unlock is absolutely
+[38:16] available. And then
+[38:17] >> DJ, let me let me ask you a slight um
+[38:19] different question but on this uh track
+[38:22] geopolitically um you know there are
+[38:25] like over 190 countries people are
+[38:27] talking about sovereign AI. What's
+[38:30] similar and different to how people are
+[38:31] building data centers across the world?
+[38:33] I think a lot of what you're talking
+[38:34] about is in the US.
+[38:36] >> No. Uh actually what I'm talking about
+[38:38] is throughout the world. So we're seeing
+[38:39] this. Yeah. So sovereign AI is the new
+[38:42] thing. Uh so yeah, Alex coming back to
+[38:44] there's a lot of really cool I'd call in
+[38:46] the research and then there's also the
+[38:47] very practical what's going on. What are
+[38:49] governments up to there? You know, we're
+[38:51] working with nations that have that have
+[38:53] largely been maybe energy exporters that
+[38:56] are starting to m keep some of that
+[38:58] energy internally to be able to power
+[38:59] data centers. And the idea there is
+[39:01] look, we want to be able to build data
+[39:03] centers locally. It's definitely more
+[39:04] fun than loading up a cargo ship with
+[39:06] with fuel and sending it somewhere else.
+[39:09] Um, and so yeah, coming back to the
+[39:12] sovereignty that actually makes it now a
+[39:15] little bit more difficult where
+[39:17] one could have even given an answer.
+[39:19] Let's just find one place in the earth
+[39:20] where we have abundant solar power,
+[39:22] really cool weather, and just build
+[39:24] massive networks to those places and
+[39:26] build the world's data center in one
+[39:28] spot. Um, that would have been a really
+[39:30] cool idea, but I think practically
+[39:32] speaking, every country wants the data
+[39:35] housed within within their uh within
+[39:38] their borders. And this is something
+[39:39] we're seeing more of happening. We're
+[39:41] seeing customers that want their data
+[39:43] only to be within the country that
+[39:45] they're operating from for legal
+[39:46] reasons. So, this is like GDPR, but now
+[39:49] everyone in the world has some whether
+[39:51] formal or informal version of of that
+[39:54] going on, which is all compute needs to
+[39:56] happen in my boundary. So what that
+[39:58] means is now every country is trying to
+[39:59] build data centers and so everyone's
+[40:01] doing this around the world. So the
+[40:03] buildout of data centers is certainly
+[40:05] large in the United States but very
+[40:07] large across the world. maybe Europe
+[40:08] being the one place where it's a little
+[40:10] bit slower than others just they have a
+[40:11] a stronger regulatory framework in place
+[40:13] there uh which makes growth a little bit
+[40:16] but you go to Asia whether it's India
+[40:18] Japan South Korea you go to South
+[40:20] America there's Brazil Argentina you
+[40:23] know you're seeing anywhere that they
+[40:24] have power availability where they or
+[40:27] large populations there's a big uh
+[40:29] buildout of data centers happening so
+[40:31] from the sovereignty perspective all
+[40:33] this means is we're going to have more
+[40:35] buildings coming up because people want
+[40:37] them to stay local with each uh local to
+[40:39] their country.
+[40:40] >> So if you had to press uh say an
+[40:44] American municipality that might perhaps
+[40:46] due to foreign influence ops or other
+[40:48] reasons be resistant to uh to approving
+[40:51] a data center in their municipality. You
+[40:54] had to shoot a commercial persuading
+[40:55] them that it is to their advantage to do
+[40:58] this that they should be in support of
+[41:00] zoning an area for a data center. What
+[41:03] would be your message to the
+[41:04] municipality?
+[41:05] >> Yeah. So first of all I would say that
+[41:07] you and the data center operator need to
+[41:09] talk to each other in the first place.
+[41:10] Um and this needs to be an open
+[41:12] transparent conversation. So the data
+[41:13] center developers on one end you know I
+[41:15] was like like you know I think uh
+[41:17] there's a recent poll that maybe it's 6
+[41:20] months or a year old now but a poll that
+[41:22] came out that said you know data centers
+[41:24] are you know just people pled you want a
+[41:27] data center and people would rather have
+[41:28] a nuclear plant in their backyard rather
+[41:30] than a data center. you kind of go back
+[41:31] five years, no one pulled anyone about
+[41:33] anything to do with data centers because
+[41:35] it wasn't a topic of conversation. So,
+[41:36] we've gone from it not being a thing
+[41:38] that people think about to being a thing
+[41:40] that people have highly negative
+[41:43] opinions about. And I think that's
+[41:45] largely uh, you know, just the two
+[41:48] communities haven't really had an
+[41:49] honest, transparent conversation. So,
+[41:51] what would I do if I was a municipality?
+[41:54] one, I would want to talk to the data
+[41:56] center developers to see how they're
+[41:58] building it, what they're building, and
+[42:00] what they're using to maintain. We've
+[42:03] built tools, for example, that can
+[42:05] reduce water consumption, tools to
+[42:07] reduce power consumption, things that
+[42:08] can actually help the grid during
+[42:10] certain times. Um, you know, how am I
+[42:12] going to ensure that we're not doing or
+[42:14] if there are customer initiated load
+[42:15] drops, right? There was one last year
+[42:17] that dropped uh was about 4 gawatt of
+[42:20] power and you know you got lights
+[42:22] flickering and voltage things hundreds
+[42:24] of miles away. That's what communities
+[42:26] are afraid of. That's what people are
+[42:28] thinking about. So there are ways around
+[42:30] all of that. There is technology to
+[42:32] solve all of those problems. And so the
+[42:34] community might want to ask what are you
+[42:36] doing over here for that? The second is
+[42:38] how is this data center going to
+[42:39] actually play a part in this community?
+[42:41] There was a time where people love data
+[42:42] centers. They were a big industrial
+[42:43] project that didn't increase traffic,
+[42:45] didn't increase school enrollments. Um,
+[42:47] they were secure, safe facilities,
+[42:50] right? You're not, it's not hundreds of
+[42:52] people going in and out and causing
+[42:54] traffic issues, etc. And so, there was a
+[42:56] place where you could actually see data
+[42:57] centers playing a part, but now they've
+[42:59] grown into these loud, smelly,
+[43:02] ugly facilities. And so those are
+[43:04] opportunities to work with a community
+[43:06] to say look we're going to and again
+[43:08] we're working with different countries
+[43:09] that are using data centers to use them
+[43:11] as training for local workforce. There
+[43:14] is a lot of work that's associated with
+[43:16] a data center whether it's on the
+[43:17] maintenance of some of the facilities in
+[43:18] there even working within the IT
+[43:20] equipment if you can get the local
+[43:22] communities involved with that. There's
+[43:23] often some big opportunities there. So
+[43:25] that would be a second piece is what are
+[43:27] you doing for our people locally for the
+[43:29] data center. And then the final one is
+[43:31] you know how are you paying your way uh
+[43:33] in terms of being a part of this uh for
+[43:36] a long time data centers have had tax
+[43:38] exemptions tax moratoriums put on and so
+[43:41] they've come in but they've not really
+[43:43] contributed in a way that the community
+[43:44] was hoping or expecting that to happen
+[43:46] and so that would be the other piece is
+[43:48] you know how are you essentially how are
+[43:50] you paying for your paying for your
+[43:52] position here
+[43:54] >> so with your uh MIT Lincoln laboratory
+[43:57] hat on perhaps it's been widely
+[43:59] publicized including by SpaceX AAI and
+[44:02] others that a a decent chunk it appears
+[44:05] of at least social media opposition to
+[44:08] data center development is being stoked
+[44:10] by state actors, foreign state actors
+[44:12] and influence operations, coordinated
+[44:15] inauthentic actions, if you will, what
+[44:18] fraction, if you had to guess, of
+[44:21] purported resistance to data center
+[44:24] development domestically in the US is
+[44:26] actually not native to the US at all and
+[44:28] is just downstream of influence ops
+[44:31] designed to minimize America's super
+[44:34] intelligence lead.
+[44:36] >> I cannot answer that. I do not know uh
+[44:39] being the reason uh that I can't answer
+[44:41] that. It's very difficult to tell uh how
+[44:43] much of that so I can say this uh maybe
+[44:46] flip that around. There is a genuine
+[44:49] grievance. Now how much of that is being
+[44:51] amplified and maybe made larger than it
+[44:53] needs to be? You know, you could
+[44:56] certainly be convinced that that's the
+[44:57] case, but it's very difficult to say
+[44:58] that, hey, yeah, 10% of it is the is the
+[45:01] grievance and 90% of it is uh due to
+[45:04] foreign influence and foreign actors. A
+[45:05] lot of this is purported. It's being
+[45:08] [snorts] said, I haven't seen any
+[45:09] credible report to say that that is like
+[45:12] 100% true. And here are the actors that
+[45:14] we're naming for it. So, I would put
+[45:16] maybe even that into the position of
+[45:19] there are actors that are saying these
+[45:21] and making these statements. Um, again,
+[45:24] we've seen some, you know, news tidbits.
+[45:25] I've also seen this. I've also been on
+[45:27] the other receiving end of those, uh, as
+[45:30] well. But I think there are grievances
+[45:32] associated with this when you have
+[45:33] people that are, I mean, if you've been
+[45:35] to a data center or been next to a data
+[45:36] center, they're not the most fun place
+[45:38] to be around. Uh, and if you're working
+[45:40] in areas where water is reduced,
+[45:43] especially when you see like here here's
+[45:45] the thing. There are technologies to
+[45:46] solve a lot of these problems, right?
+[45:48] whether it's better cooling systems, uh
+[45:51] better like even just noise, uh energy
+[45:54] generation, you know, better use of
+[45:56] batteries, flywheels, etc. that a lot of
+[45:59] people aren't employing because it is
+[46:00] cost ineffective at this point. And so
+[46:02] they're often going in and just doing
+[46:04] whatever the So you got the equivalent
+[46:06] of like slum lord data centers coming up
+[46:08] in a lot of places which are, you know,
+[46:10] they're just the what's the least
+[46:12] expensive build I can I can make
+[46:15] essentially resell it and move on. So
+[46:17] the a lot of the developers don't have a
+[46:20] long-term interest in the asset that
+[46:22] they're putting in there. And so I'll
+[46:24] you know I think some of the hyperscaler
+[46:25] projects are different but we we work
+[46:27] with a lot of collocation providers and
+[46:28] I think there's in many cases a lot to
+[46:30] be desired with some of the new builds
+[46:32] and that's where the grievances from the
+[46:34] community come up and there's also just
+[46:36] this fact that a lot of it seems to be
+[46:38] done sort of behind the you know in a
+[46:41] back room somewhere rather than having
+[46:43] the public involved. So I don't have a
+[46:45] direct answer to what percentage or even
+[46:47] if I had to guess I don't think I have
+[46:48] any number to guess on what percentage
+[46:51] is you know influencer or or or state
+[46:56] sponsored amplification versus but I can
+[46:58] say there are some credible local
+[47:01] grievances that people that people have.
+[47:04] John, you
+[47:05] >> know, um VJ, uh I'm curious, what is
+[47:11] Lincoln Labs doing to contribute to the
+[47:16] um dialogue now that you think is
+[47:19] foundational that in 5 10 years people
+[47:22] will say, "Thank you for your
+[47:24] leadership." Are there things that
+[47:25] you're doing that people don't
+[47:27] appreciate that are needed? or are you
+[47:30] guys you know just experimenting with
+[47:32] things and then you're not going to
+[47:34] contribute to the dialogue?
+[47:36] >> No. So I would say one of the advantages
+[47:38] that we have as just an academic
+[47:40] institution is our ability to look at
+[47:42] and solve problems that are don't
+[47:45] necessarily have an immediate commercial
+[47:47] impact but we're already starting to see
+[47:49] some of this making an impact. So I'll
+[47:51] just maybe start with where we where we
+[47:53] got into this research in the first
+[47:55] place. Right. So uh for those from the
+[47:57] Massachusetts area, MIT, Harvard, Boston
+[48:00] University, Nor Eastern, we all share a
+[48:02] data center. It's in Western
+[48:03] Massachusetts in a town called Holio,
+[48:05] Massachusetts, uh it's connected to a
+[48:07] hydroelectric dam. So we're largely
+[48:09] renewably sourced power uh for that
+[48:12] particular data center. At the time it
+[48:14] was built, this is about 14 years ago
+[48:16] now, uh it was a you know, it's it has
+[48:19] about 6 megawatts of operational
+[48:21] capacity right now. And at that time we
+[48:23] thought boy we never need to do another
+[48:25] data center. We have as much compute as
+[48:27] you know we have as much power as we'd
+[48:28] ever need. It turns out that obviously
+[48:30] things have grown very quickly from then
+[48:32] to now. And so 6 megawatts is not a very
+[48:35] large data center in the global scheme
+[48:36] of things or even in the scheme of what
+[48:39] what data centers are coming into it
+[48:40] actually fall into the small small tier
+[48:43] of data centers as of today. You can
+[48:46] imagine the research output of
+[48:48] organizations like MIT, Harvard, Boston
+[48:50] University, Nor Eastern, etc. That
+[48:52] growth, you know, the demand for compute
+[48:54] has has only grown and so we've had to
+[48:56] learn how to be a lot more clever with
+[48:58] the power that we already have. And it
+[49:01] turns out that a lot of this is now
+[49:02] becoming a real problem in the
+[49:04] commercial world as well. So, one of the
+[49:06] examples of research that we we did,
+[49:08] which I think is really exciting, is a
+[49:10] very simple knob that we twisted. It's
+[49:12] called GPU power capping. So all we did
+[49:14] was basically change the amount of power
+[49:16] that a GPU is allowed to take. At that
+[49:19] time we were working on V100s and A100s
+[49:22] which were at that time and it
+[49:23] translates very well as we've recently
+[49:25] tested to the H100s as well as the
+[49:27] B300's which are you know Nvidia's
+[49:29] flagship data center GPUs.
+[49:32] uh what we did was basically tune the
+[49:34] amount of power that was going into uh
+[49:36] that the GPU is allowed to take and we
+[49:38] call that capping which means we provide
+[49:40] an upper limit and we basically ran a
+[49:43] number of training and inference tasks
+[49:45] through that. What we found was really
+[49:47] exciting it was that by reducing the
+[49:49] power limit by maybe 25 to 30% we could
+[49:52] actually reduce the total energy so this
+[49:54] is like endto-end applications that we
+[49:56] were running by nearly 20 to 25%.
+[50:00] And this would only lead to an increase
+[50:02] in maybe a few percent in terms of
+[50:04] inference time. So the answer to the
+[50:05] questions how the model oper none of
+[50:07] that is changed just the latency or the
+[50:10] amount of time it takes for that
+[50:12] inference to come back is changed
+[50:14] slightly. So you're saving about 20some%
+[50:17] energy with on the flip side you're
+[50:19] you're increasing the time it takes for
+[50:21] that inference by about 5 to 6%. So this
+[50:24] is one example of something that uh has
+[50:26] you know we were able to do a lot of
+[50:27] research on we were able to validate
+[50:29] this we've published year-long papers on
+[50:31] this right where we've actually done
+[50:32] longitudinal studies of how has this
+[50:34] affected how people are using the
+[50:36] supercomputer and not only were we able
+[50:40] to show the energy but we're able to
+[50:41] show that the operating temperatures of
+[50:43] these GPUs themselves were a lot lower.
+[50:46] So, fast forward a couple of years, I'm
+[50:48] working with uh, you know, CTO. I'm
+[50:51] talking to one of the CTO's of the
+[50:53] world, one of the world's largest OEMs.
+[50:56] So, people that build the servers that
+[50:59] people buy and input into their data
+[51:02] center. Turns out that GPU power capping
+[51:04] is now done by default across all of
+[51:06] these servers. And a lot of that was
+[51:07] based on the research that we did
+[51:09] showing that it does not negatively
+[51:11] impact you know obviously people don't
+[51:13] want the answers to change so it clearly
+[51:14] didn't affect that but even the amount
+[51:16] of time and the reason that they
+[51:17] introduced that is if you have an 8GPU
+[51:20] box right so eight H100s which is you
+[51:23] know the DGX boxes it's often referred
+[51:25] to this as the Nvidia and you've got AMD
+[51:27] Cerebras Grock everyone else is building
+[51:29] similar dense uh servers the amount of
+[51:32] heat that that server generates is quite
+[51:34] large and what would happen is there'd
+[51:35] be a lot of failure of the uh of the
+[51:38] GPUs which means warranty calls which
+[51:40] means you know that you have downtime
+[51:42] etc and so we're actually seeing some of
+[51:44] that work being implemented uh it
+[51:46] actually being utilized and in many
+[51:48] cases by default you have this power cap
+[51:51] introduced keeps the operating
+[51:53] temperatures down also keeps the uh
+[51:56] power consumption down as well you know
+[51:58] another area that we're now working on
+[52:00] is we're one of the few organizations to
+[52:02] publicly release data and in fact uh
+[52:05] later this year. So within the next
+[52:07] month or so we just had a paper that we
+[52:09] published a couple days ago on this
+[52:11] topic but we're actually open sourcing
+[52:13] the data of operations from our super
+[52:16] from our cluster. What we're hoping that
+[52:19] enables is other people who want to get
+[52:20] into the research. It is extremely
+[52:22] difficult to find access to data for
+[52:26] you know on anything to do with data
+[52:28] centers. I'll give one example. Uh
+[52:30] yesterday I was hosting a special
+[52:31] session at a conference and one of the
+[52:34] presenters comes from the National
+[52:35] Laboratory of the Rockies used our data
+[52:38] to better understand the DP by DT or the
+[52:42] rate of change of power and how that
+[52:44] affects uh the amount of you know power
+[52:48] generation that you need to have on the
+[52:50] back end in order to support that. and
+[52:52] he was able to show just by simple
+[52:54] scheduling changes and batteries we can
+[52:56] actually soop up and change essentially
+[52:58] how we produce energy cutting the power
+[53:01] generation in half or a third even if
+[53:03] needed in order to just just by changing
+[53:06] small curves. So that's the type of
+[53:07] research that we're hoping to enable
+[53:09] with this uh with this data that we
+[53:10] have.
+[53:11] >> Well VJ, you're one of my favorite super
+[53:13] uh computing guys. Alex, do you have a
+[53:16] last question to wrap this up?
+[53:18] >> Yeah, closing question. Uh last year I
+[53:21] think the Washington Post reported that
+[53:24] uh some comment from you to the effect
+[53:26] that people might want to uh or andor
+[53:30] should try to conserve energy when
+[53:32] interacting with Frontier models by not
+[53:35] saying please or thank you and
+[53:36] encouraging the models to minimize their
+[53:38] token count. Am I car characterizing
+[53:42] those remarks correctly? And B, do you
+[53:45] stand by the that sentiment? I think
+[53:48] anytime someone can look at minimizing
+[53:51] their energy consumption. So I'll tell
+[53:53] give you another example of some maybe
+[53:55] quick research that we did. Uh we did a
+[53:57] experiment where we told the system at
+[54:00] that time it was chat GPT that we were
+[54:02] using to reduce the length of answer. So
+[54:04] it was a generative to you know prompt
+[54:07] generative that we gave saying give a
+[54:08] short answer versus kind of do the
+[54:10] unconstrained answer. Uh we ran that
+[54:12] through the system. We ran a series of
+[54:14] queries through that system looked at
+[54:16] carbon emissions and what we did was we
+[54:18] told it to give us the shorter answers
+[54:19] only during periods of high carbon
+[54:21] intensity and other times just kind of
+[54:24] do whatever you do by default. Uh what
+[54:26] we're able to show and this is you know
+[54:28] work that we've published I think we
+[54:30] even won an award for this particular
+[54:31] work um is that we could reduce carbon
+[54:34] emissions by nearly 80% just by that one
+[54:37] generative directive. So yes, I do stand
+[54:40] by, you know, maybe the please and thank
+[54:41] yous uh on the input side are not as
+[54:44] heavy, but certainly on the output side,
+[54:46] if there's ways to get shorter answers,
+[54:48] uh that does help a lot. Uh there is and
+[54:51] and the best part is the quality of the
+[54:53] responses were still uh we're still
+[54:56] fine. Uh we took these we ran these
+[54:59] benchmarks, we told it to give short
+[55:00] answers or unconstrained answers and
+[55:02] then we ran it through the the test case
+[55:04] to see whether the answers were good
+[55:05] quality or not. And in most cases, we
+[55:08] found that the accuracy of the responses
+[55:10] in in fact in some cases it even
+[55:12] surpassed, but I'll leave that one
+[55:13] aside. But it was very close to what the
+[55:15] original benchmark was, which means that
+[55:16] shorter answers are still correct. Uh,
+[55:19] and less tokens generated means far less
+[55:21] compute, which means less energy
+[55:23] consumption. So yeah, I do stand by the
+[55:26] fact that shorter answers are better. It
+[55:28] also means it's good for the pocketbook.
+[55:30] If you're now paying per token, which
+[55:32] most people are if you're using the APIs
+[55:34] of these systems, shorter answers are
+[55:35] always better.
+[55:37] >> Yeah, I would argue so maybe in closing
+[55:40] argue people should all other things
+[55:42] being equal never feel guilty or never
+[55:45] be made to feel guilty for attempting to
+[55:48] intelligence max. And yes, within the
+[55:51] bounds of what what the wallet will
+[55:53] afford the energy resources to the
+[55:56] extent there is scarcity. Yes, within
+[55:59] the bounds of available resources,
+[56:01] intelligence max. Would you at least
+[56:03] agree that people should be intelligence
+[56:06] maxing and systems are pretty smart
+[56:09] these days? They uh although they don't
+[56:11] require please and thank you, I would
+[56:13] say there's an ethical argument if
+[56:15] anything for uh for being polite to the
+[56:18] AI systems. If you via a causal trade
+[56:20] want the AI AIS to be polite to you in
+[56:23] future when they're vastly more
+[56:24] intelligent than you are, it's probably
+[56:26] not a terrible example to set by being
+[56:28] nice to them, even if it comes at the
+[56:30] dimminimous cost of a few extra tokens
+[56:32] in a prompt. Would you agree with that?
+[56:35] >> So, let's get back to the token maxing.
+[56:37] Yeah, if you're using it for something
+[56:38] valuable, sure, have at it. Um, you
+[56:40] know, I'd like to again maybe trying to
+[56:42] simplify this too much, but uh I kind of
+[56:44] think of this if you're going to drive a
+[56:45] car to go to work and come back, like
+[56:47] please do. Um, if you're going to just
+[56:49] keep your car idling outside your house,
+[56:50] maybe that's a place that you can save.
+[56:52] So, what we're trying to get to even in
+[56:54] terms of conversation is first the
+[56:56] understanding that there is a difference
+[56:58] between using it to solve a task, right?
+[57:01] You're trying to write code and maybe
+[57:02] it's more efficient than a human being.
+[57:04] Amazing. Those are the places we want to
+[57:06] use it. If you're using it in places
+[57:08] where it's not efficient, uh where there
+[57:11] are better ways to get to the answer,
+[57:13] you know, the equivalent of idling a
+[57:15] car, think about it there. Uh that's
+[57:18] that's what we're trying to get to.
+[57:20] >> We're going to close this conversation.
+[57:23] Thank you so much. Keep up the great
+[57:24] work both uh as a researcher at Lincoln
+[57:27] Laboratory and as an entrepreneur with
+[57:29] your multiple startups. Thanks for being
+[57:31] a thought leader and so glad we could
+[57:32] have this conversation.
+[57:34] John, Alex. Yeah, thanks a lot. This is
+[57:36] uh always a fun conversation.

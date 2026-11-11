@@ -1,0 +1,6939 @@
+1
+00:00:00,000 --> 00:00:02,200
+So I'm going to talk about the GPU
+
+2
+00:00:02,200 --> 00:00:05,920
+architecture, okay? So
+
+3
+00:00:05,920 --> 00:00:09,120
+let's start from the GPU programming and
+
+4
+00:00:09,120 --> 00:00:11,680
+GPU assembly and GPU core design. Now
+
+5
+00:00:11,680 --> 00:00:13,400
+although we're not going towards that
+
+6
+00:00:13,400 --> 00:00:15,480
+low-level detail for
+
+7
+00:00:15,480 --> 00:00:18,440
+um like to a circuit level, but I will
+
+8
+00:00:18,440 --> 00:00:20,920
+just use block diagram to show you how
+
+9
+00:00:20,920 --> 00:00:23,640
+GPU works internally. I'm more familiar
+
+10
+00:00:23,640 --> 00:00:26,840
+with AMD architecture, but
+
+11
+00:00:26,840 --> 00:00:29,120
+I will also bring up something I know
+
+12
+00:00:29,120 --> 00:00:32,240
+about Nvidia architecture, then it's not
+
+13
+00:00:32,240 --> 00:00:34,480
+very different. The core idea are pretty
+
+14
+00:00:34,480 --> 00:00:37,080
+much the same. The but the detailed
+
+15
+00:00:37,080 --> 00:00:39,040
+design are different. Then we'll talk
+
+16
+00:00:39,040 --> 00:00:41,320
+about their differences.
+
+17
+00:00:41,320 --> 00:00:43,680
+Now I will use two to three lectures or
+
+18
+00:00:43,680 --> 00:00:45,560
+even four lectures for the rest of the
+
+19
+00:00:45,560 --> 00:00:46,760
+semester
+
+20
+00:00:46,760 --> 00:00:49,120
+to cover GPU architecture. I don't know
+
+21
+00:00:49,120 --> 00:00:52,760
+how many I need, but I will teach as
+
+22
+00:00:52,760 --> 00:00:53,880
+as we go.
+
+23
+00:00:53,880 --> 00:00:55,560
+So how many of you have written GPU
+
+24
+00:00:55,560 --> 00:00:58,720
+programs on your own?
+
+25
+00:00:59,920 --> 00:01:03,520
+Three, four, five. CUDA programs, right?
+
+26
+00:01:03,520 --> 00:01:06,160
+When I say GPU program is CUDA programs.
+
+27
+00:01:06,160 --> 00:01:08,520
+Now you basically know how CUDA programs
+
+28
+00:01:08,520 --> 00:01:10,360
+work. So but many of you have never
+
+29
+00:01:10,360 --> 00:01:12,400
+written a CUDA program. So let's start
+
+30
+00:01:12,400 --> 00:01:14,440
+with this big part called GPU
+
+31
+00:01:14,440 --> 00:01:17,200
+architecture.
+
+32
+00:01:20,320 --> 00:01:25,520
+But start the first the part with a CUDA
+
+33
+00:01:25,520 --> 00:01:28,240
+programming.
+
+34
+00:01:30,320 --> 00:01:32,800
+Then for CUDA programming, you may also
+
+35
+00:01:32,800 --> 00:01:34,600
+ask since uh we're teaching AMD
+
+36
+00:01:34,600 --> 00:01:36,480
+architecture, why I'm teaching CUDA
+
+37
+00:01:36,480 --> 00:01:38,120
+programming? Because CUDA program is
+
+38
+00:01:38,120 --> 00:01:41,360
+mainly for GPUs, right? Then
+
+39
+00:01:41,360 --> 00:01:45,240
+uh it's for Nvidia GPUs. So AMD starts
+
+40
+00:01:45,240 --> 00:01:47,280
+to with uh program framework called
+
+41
+00:01:47,280 --> 00:01:51,200
+OpenCL. Now OpenCL is a open
+
+42
+00:01:51,200 --> 00:01:53,720
+standard that every vendor can
+
+43
+00:01:53,720 --> 00:01:56,440
+implement. Then it's a trademark that
+
+44
+00:01:56,440 --> 00:01:59,920
+actually belongs to Apple. Then Apple is
+
+45
+00:01:59,920 --> 00:02:02,720
+now where using OpenCL. AMD is now using
+
+46
+00:02:02,720 --> 00:02:05,840
+OpenCL. Then OpenCL is not very popular
+
+47
+00:02:05,840 --> 00:02:07,640
+these days. Not a lot of people are
+
+48
+00:02:07,640 --> 00:02:08,720
+using
+
+49
+00:02:08,720 --> 00:02:12,280
+OpenCL. Now as since I said AMD is not
+
+50
+00:02:12,280 --> 00:02:15,840
+not using OpenCL, then what AMD is trans
+
+51
+00:02:15,840 --> 00:02:18,440
+transferring to is a program language
+
+52
+00:02:18,440 --> 00:02:22,720
+called HIP to replace OpenCL.
+
+53
+00:02:23,520 --> 00:02:27,720
+And the I design idea behind HIP is to
+
+54
+00:02:27,720 --> 00:02:30,440
+make it as close to CUDA as possible. So
+
+55
+00:02:30,440 --> 00:02:32,840
+basically there the even AMD provides
+
+56
+00:02:32,840 --> 00:02:36,480
+this software called HIPify.
+
+57
+00:02:36,680 --> 00:02:38,400
+HIPify is a software that can
+
+58
+00:02:38,400 --> 00:02:40,640
+automatically convert CUDA program into
+
+59
+00:02:40,640 --> 00:02:45,360
+a HIP program. That is pretty much we
+
+60
+00:02:45,360 --> 00:02:47,720
+99% of the work can be done with a
+
+61
+00:02:47,720 --> 00:02:49,920
+search and replace. Find CUDA and
+
+62
+00:02:49,920 --> 00:02:52,120
+replace with HIP. Then the program
+
+63
+00:02:52,120 --> 00:02:54,840
+should work. Okay? So whenever you learn
+
+64
+00:02:54,840 --> 00:02:58,200
+CUDA, you know HIP pro HIP programming
+
+65
+00:02:58,200 --> 00:03:01,200
+for AMD architecture. I'm not going to
+
+66
+00:03:01,200 --> 00:03:03,000
+teach too deep into CUDA programming,
+
+67
+00:03:03,000 --> 00:03:04,880
+but basically let you know the basic
+
+68
+00:03:04,880 --> 00:03:07,480
+principles of how to write a GPU program
+
+69
+00:03:07,480 --> 00:03:10,080
+and see how this program is designed to
+
+70
+00:03:10,080 --> 00:03:12,840
+fit their architecture and how it map
+
+71
+00:03:12,840 --> 00:03:14,960
+how the software and hardware maps
+
+72
+00:03:14,960 --> 00:03:18,160
+together. Then CUDA programming is
+
+73
+00:03:18,160 --> 00:03:20,320
+include two parts. Then
+
+74
+00:03:20,320 --> 00:03:21,840
+since we're talking about this thing
+
+75
+00:03:21,840 --> 00:03:24,920
+called heterogeneous,
+
+76
+00:03:27,880 --> 00:03:29,600
+heterogeneous programming. Now when we
+
+77
+00:03:29,600 --> 00:03:31,920
+say heterogeneous program, we say two
+
+78
+00:03:31,920 --> 00:03:33,800
+different devices or different devices
+
+79
+00:03:33,800 --> 00:03:36,040
+work together. For a very very long time
+
+80
+00:03:36,040 --> 00:03:37,360
+when people say heterogeneous
+
+81
+00:03:37,360 --> 00:03:40,480
+programming, it equals to CPU
+
+82
+00:03:40,480 --> 00:03:42,600
+plus GPU programming.
+
+83
+00:03:42,600 --> 00:03:45,000
+So they these two devices are used
+
+84
+00:03:45,000 --> 00:03:46,880
+together. Now today when we're talking
+
+85
+00:03:46,880 --> 00:03:48,560
+about heterogeneous, we may talk about
+
+86
+00:03:48,560 --> 00:03:51,080
+other accelerators, but for very long
+
+87
+00:03:51,080 --> 00:03:53,520
+time we only refer to GPU programming.
+
+88
+00:03:53,520 --> 00:03:55,400
+So whenever we say GPU programming, it
+
+89
+00:03:55,400 --> 00:03:57,040
+pretty much equals to heterogeneous
+
+90
+00:03:57,040 --> 00:03:59,760
+programming because GPUs cannot work on
+
+91
+00:03:59,760 --> 00:04:02,160
+its own. It has to There has to be a CPU
+
+92
+00:04:02,160 --> 00:04:06,120
+that controls the GPU. Okay? So then in
+
+93
+00:04:06,120 --> 00:04:09,160
+this case we need we have two devices.
+
+94
+00:04:09,160 --> 00:04:11,960
+So we need actually two languages to
+
+95
+00:04:11,960 --> 00:04:14,640
+program both the CPU and GPU so that
+
+96
+00:04:14,640 --> 00:04:16,519
+they can run in different way because
+
+97
+00:04:16,519 --> 00:04:19,280
+they have different nature of their
+
+98
+00:04:19,280 --> 00:04:21,680
+hardware design. So one single set of
+
+99
+00:04:21,680 --> 00:04:24,000
+program cannot control both of them. So
+
+100
+00:04:24,000 --> 00:04:26,200
+CUDA then is can be divided into two
+
+101
+00:04:26,200 --> 00:04:29,400
+parts. One is one part is called host
+
+102
+00:04:29,400 --> 00:04:30,680
+part.
+
+103
+00:04:30,680 --> 00:04:33,520
+One is called the device part.
+
+104
+00:04:33,520 --> 00:04:35,720
+When we say device is the GPU. When we
+
+105
+00:04:35,720 --> 00:04:39,160
+say the host is the CPU. So two parts of
+
+106
+00:04:39,160 --> 00:04:41,160
+the program that we need to write both
+
+107
+00:04:41,160 --> 00:04:43,480
+of these two parts.
+
+108
+00:04:43,480 --> 00:04:46,840
+Okay? So then let's see how we can write
+
+109
+00:04:46,840 --> 00:04:48,600
+this type of program.
+
+110
+00:04:48,600 --> 00:04:49,640
+Then
+
+111
+00:04:49,640 --> 00:04:52,120
+uh CUDA program is basically nothing
+
+112
+00:04:52,120 --> 00:04:54,200
+special but a regular
+
+113
+00:04:54,200 --> 00:04:59,160
+or slightly modified C or C++ program.
+
+114
+00:04:59,160 --> 00:05:01,960
+Okay? It's it's a extension for C and
+
+115
+00:05:01,960 --> 00:05:06,320
+C++ language definition. So as
+
+116
+00:05:06,320 --> 00:05:09,200
+at the beginning I will I will skip the
+
+117
+00:05:09,200 --> 00:05:12,080
+include part, okay? So then we can write
+
+118
+00:05:12,080 --> 00:05:14,320
+uh int main.
+
+119
+00:05:14,320 --> 00:05:17,600
+Right? A main program.
+
+120
+00:05:17,720 --> 00:05:19,800
+Now in this main program
+
+121
+00:05:19,800 --> 00:05:22,680
+now we start to execute here, right? So
+
+122
+00:05:22,680 --> 00:05:24,920
+in this main program, what we do? Let's
+
+123
+00:05:24,920 --> 00:05:27,240
+let's write a very simple vector add
+
+124
+00:05:27,240 --> 00:05:29,360
+example, okay? In this vector add
+
+125
+00:05:29,360 --> 00:05:31,320
+example, we can
+
+126
+00:05:31,320 --> 00:05:36,080
+uh start by doing a float
+
+127
+00:05:36,320 --> 00:05:37,800
+A.
+
+128
+00:05:37,800 --> 00:05:40,080
+So by the way, when I say vector add,
+
+129
+00:05:40,080 --> 00:05:43,160
+I'm saying element-wise add, okay? So if
+
+130
+00:05:43,160 --> 00:05:44,920
+this is one vector, this is another
+
+131
+00:05:44,920 --> 00:05:48,640
+vector. Now we're doing
+
+132
+00:05:49,640 --> 00:05:53,560
+we're doing this type of like uh index
+
+133
+00:05:53,560 --> 00:05:57,280
+one, index zero, index zero, then
+
+134
+00:05:57,280 --> 00:06:00,560
+sum them together and store it to index
+
+135
+00:06:00,560 --> 00:06:02,040
+zero of
+
+136
+00:06:02,040 --> 00:06:04,880
+C, okay?
+
+137
+00:06:04,880 --> 00:06:07,840
+So we start with a float pointer. Then
+
+138
+00:06:07,840 --> 00:06:10,840
+we start with float pointer A.
+
+139
+00:06:10,840 --> 00:06:12,880
+Uh A
+
+140
+00:06:12,880 --> 00:06:14,240
+pointer
+
+141
+00:06:14,240 --> 00:06:16,640
+B
+
+142
+00:06:16,640 --> 00:06:19,960
+and pointer C, okay? So treat my code as
+
+143
+00:06:19,960 --> 00:06:22,400
+pseudo code. Don't treat it
+
+144
+00:06:22,400 --> 00:06:24,520
+don't think it can be grammatically
+
+145
+00:06:24,520 --> 00:06:27,400
+correct, okay? It's just the idea this
+
+146
+00:06:27,400 --> 00:06:30,560
+is how GPU program works. So we have A
+
+147
+00:06:30,560 --> 00:06:33,080
+and B and C. So here when we have a
+
+148
+00:06:33,080 --> 00:06:35,440
+floating point when we have a float
+
+149
+00:06:35,440 --> 00:06:38,360
+star A B and C, we're not saying if it's
+
+150
+00:06:38,360 --> 00:06:40,720
+on the CPU side or GPU side. We don't
+
+151
+00:06:40,720 --> 00:06:41,960
+know.
+
+152
+00:06:41,960 --> 00:06:45,400
+Okay? Then GPU strongly prefers floating
+
+153
+00:06:45,400 --> 00:06:47,720
+point number. So there are different
+
+154
+00:06:47,720 --> 00:06:48,960
+type of floating point number. We have
+
+155
+00:06:48,960 --> 00:06:51,120
+talked about float 34 and there's a
+
+156
+00:06:51,120 --> 00:06:54,240
+double precision that's float 64. So GPU
+
+157
+00:06:54,240 --> 00:06:57,040
+strongly prefers float
+
+158
+00:06:57,040 --> 00:07:02,560
+float 32 and CPU strongly prefers 60 64
+
+159
+00:07:02,560 --> 00:07:05,280
+double precision. So if we're writing a
+
+160
+00:07:05,280 --> 00:07:07,520
+GPU program, very likely we write float,
+
+161
+00:07:07,520 --> 00:07:08,760
+okay?
+
+162
+00:07:08,760 --> 00:07:12,600
+Uh so float A and B and C. Then also we
+
+163
+00:07:12,600 --> 00:07:14,520
+likely to de
+
+164
+00:07:14,520 --> 00:07:15,120
+uh
+
+165
+00:07:15,120 --> 00:07:16,720
+de
+
+166
+00:07:16,720 --> 00:07:20,400
+define a DA
+
+167
+00:07:20,760 --> 00:07:22,560
+DB
+
+168
+00:07:22,560 --> 00:07:25,520
+and DC.
+
+169
+00:07:25,520 --> 00:07:27,400
+Then this is a convention that we start
+
+170
+00:07:27,400 --> 00:07:30,040
+with a D. That means this this buffer or
+
+171
+00:07:30,040 --> 00:07:32,400
+this uh memory this part of memory is
+
+172
+00:07:32,400 --> 00:07:35,120
+going to be allocated on the GPU side.
+
+173
+00:07:35,120 --> 00:07:38,880
+Okay? Then sometimes you may see HA HB
+
+174
+00:07:38,880 --> 00:07:41,600
+HC, but it's just if we want to follow
+
+175
+00:07:41,600 --> 00:07:43,600
+that convention or not. It's really you
+
+176
+00:07:43,600 --> 00:07:46,040
+can define these variables as whatever
+
+177
+00:07:46,040 --> 00:07:47,080
+you want.
+
+178
+00:07:47,080 --> 00:07:49,800
+Then for A and B and C, we write
+
+179
+00:07:49,800 --> 00:07:53,800
+something like A equals malloc.
+
+180
+00:07:54,360 --> 00:07:59,880
+Then malloc what? Let's say size, okay?
+
+181
+00:08:00,280 --> 00:08:03,920
+Multiply by size of
+
+182
+00:08:06,240 --> 00:08:09,120
+uh float.
+
+183
+00:08:09,640 --> 00:08:12,240
+Okay? We malloc something. Now when I
+
+184
+00:08:12,240 --> 00:08:14,760
+say malloc, this is a memory allocation
+
+185
+00:08:14,760 --> 00:08:18,320
+that is on the heap and is stored in the
+
+186
+00:08:18,320 --> 00:08:20,000
+CPU memory.
+
+187
+00:08:20,000 --> 00:08:22,120
+Right? Then
+
+188
+00:08:22,120 --> 00:08:24,560
+if we want to allocate into the GPU
+
+189
+00:08:24,560 --> 00:08:27,320
+memory, what we do? We do this. Of
+
+190
+00:08:27,320 --> 00:08:28,920
+course we need to allocate B and C,
+
+191
+00:08:28,920 --> 00:08:34,680
+okay? We do DA equals CUDA
+
+192
+00:08:34,680 --> 00:08:37,360
+malloc.
+
+193
+00:08:38,479 --> 00:08:41,360
+Then size
+
+194
+00:08:41,880 --> 00:08:45,040
+multiply by size
+
+195
+00:08:45,040 --> 00:08:48,480
+of float.
+
+196
+00:08:49,480 --> 00:08:52,200
+Nothing special, but here we use a CUDA
+
+197
+00:08:52,200 --> 00:08:54,680
+malloc.
+
+198
+00:08:54,680 --> 00:08:59,360
+Now CUDA malloc is a CUDA
+
+199
+00:09:00,520 --> 00:09:03,440
+runtime
+
+200
+00:09:04,480 --> 00:09:06,400
+API.
+
+201
+00:09:06,400 --> 00:09:10,200
+Okay? So it actually this is a library
+
+202
+00:09:10,200 --> 00:09:13,360
+call that is being executed
+
+203
+00:09:13,360 --> 00:09:15,760
+to like calling a function implemented
+
+204
+00:09:15,760 --> 00:09:19,400
+by Nvidia. Now Nvidia the CUDA library
+
+205
+00:09:19,400 --> 00:09:21,200
+provide the implementation of CUDA
+
+206
+00:09:21,200 --> 00:09:24,400
+malloc and what it will do is allocate a
+
+207
+00:09:24,400 --> 00:09:26,640
+part of a memory on the GPU side. Now it
+
+208
+00:09:26,640 --> 00:09:27,840
+will return
+
+209
+00:09:27,840 --> 00:09:31,080
+uh address to be stored in DA. Okay? And
+
+210
+00:09:31,080 --> 00:09:35,000
+similar to DB and DC.
+
+211
+00:09:35,000 --> 00:09:37,800
+Okay? Then in this case this is the way
+
+212
+00:09:37,800 --> 00:09:40,520
+using CUDA runtime API is how we can
+
+213
+00:09:40,520 --> 00:09:42,200
+write the host a program. This is
+
+214
+00:09:42,200 --> 00:09:44,480
+nothing special but a regular C program
+
+215
+00:09:44,480 --> 00:09:47,680
+only to call CUDA programs.
+
+216
+00:09:47,680 --> 00:09:48,680
+Okay?
+
+217
+00:09:48,680 --> 00:09:50,240
+Then
+
+218
+00:09:50,240 --> 00:09:53,760
+assume DA DB and DC are also allocated
+
+219
+00:09:53,760 --> 00:09:55,960
+and also we set the
+
+220
+00:09:55,960 --> 00:09:58,280
+we use a for loop to set A's value and
+
+221
+00:09:58,280 --> 00:10:00,280
+B's value, right? Just assume there are
+
+222
+00:10:00,280 --> 00:10:01,840
+some values there.
+
+223
+00:10:01,840 --> 00:10:02,720
+Then
+
+224
+00:10:02,720 --> 00:10:05,760
+to make it work, we need to copy the
+
+225
+00:10:05,760 --> 00:10:08,680
+data from the CPU to the GPU side.
+
+226
+00:10:08,680 --> 00:10:11,280
+And so, CPU and GPU are two different
+
+227
+00:10:11,280 --> 00:10:13,880
+devices and they're connected using
+
+228
+00:10:13,880 --> 00:10:17,000
+something like PCI network. So, we have
+
+229
+00:10:17,000 --> 00:10:20,080
+a This is the CPU.
+
+230
+00:10:20,080 --> 00:10:22,520
+And this is the GPU.
+
+231
+00:10:22,520 --> 00:10:24,160
+And they're connected with some sort of
+
+232
+00:10:24,160 --> 00:10:28,960
+networks. The CPU has its own memory.
+
+233
+00:10:29,120 --> 00:10:32,360
+And GPU has its own memory.
+
+234
+00:10:32,360 --> 00:10:34,280
+And until
+
+235
+00:10:34,280 --> 00:10:37,640
+somewhere like 2016,
+
+236
+00:10:37,640 --> 00:10:40,360
+then there are some support for GPUs to
+
+237
+00:10:40,360 --> 00:10:43,040
+directly access CPU's memory. Like using
+
+238
+00:10:43,040 --> 00:10:46,080
+unified memory. However, it's still I
+
+239
+00:10:46,080 --> 00:10:48,680
+It's not a mainstream. It still suffers
+
+240
+00:10:48,680 --> 00:10:50,880
+from performance penalties. Like if you
+
+241
+00:10:50,880 --> 00:10:53,320
+access the CPU memory, it's still not as
+
+242
+00:10:53,320 --> 00:10:56,080
+high performance accessing the memory as
+
+243
+00:10:56,080 --> 00:10:58,400
+accessing local memory. So, what we do
+
+244
+00:10:58,400 --> 00:11:01,400
+is we need to explicitly copy the data
+
+245
+00:11:01,400 --> 00:11:03,800
+from here to here.
+
+246
+00:11:03,800 --> 00:11:06,680
+Okay, from the CPU side to the GPU side.
+
+247
+00:11:06,680 --> 00:11:11,160
+In this case, we do a CUDA
+
+248
+00:11:11,160 --> 00:11:14,000
+memory copy.
+
+249
+00:11:15,560 --> 00:11:17,800
+And as we know, memory copy typically
+
+250
+00:11:17,800 --> 00:11:19,960
+have this type of convention that it
+
+251
+00:11:19,960 --> 00:11:21,680
+starts with the destination. In this
+
+252
+00:11:21,680 --> 00:11:23,839
+case, that's just DA.
+
+253
+00:11:23,839 --> 00:11:26,800
+Right? Now, we copy
+
+254
+00:11:26,800 --> 00:11:28,120
+from A.
+
+255
+00:11:28,120 --> 00:11:29,839
+Right? Then
+
+256
+00:11:29,839 --> 00:11:32,600
+size, I will just write size multiplied
+
+257
+00:11:32,600 --> 00:11:34,560
+four, okay?
+
+258
+00:11:34,560 --> 00:11:37,000
+So, that is size. And also, we need to
+
+259
+00:11:37,000 --> 00:11:38,920
+tell what's the direction we're copying
+
+260
+00:11:38,920 --> 00:11:41,440
+because CUDA cannot really easily tell
+
+261
+00:11:41,440 --> 00:11:43,760
+if this is a device pointer or a host a
+
+262
+00:11:43,760 --> 00:11:45,440
+pointer. In this case, we need to
+
+263
+00:11:45,440 --> 00:11:48,160
+provide another parameter called CUDA
+
+264
+00:11:48,160 --> 00:11:49,400
+mem
+
+265
+00:11:49,400 --> 00:11:51,480
+copy
+
+266
+00:11:51,480 --> 00:11:54,040
+H to D.
+
+267
+00:11:54,040 --> 00:11:56,080
+Host to device.
+
+268
+00:11:56,080 --> 00:11:58,600
+Okay, this is a para There's a constant
+
+269
+00:11:58,600 --> 00:12:01,520
+value that tells this API what is the
+
+270
+00:12:01,520 --> 00:12:02,960
+direction that we're copying this
+
+271
+00:12:02,960 --> 00:12:04,960
+memory.
+
+272
+00:12:04,960 --> 00:12:08,240
+Then CUDA memory copy H to D. Then
+
+273
+00:12:08,240 --> 00:12:11,320
+uh there two other two other directions,
+
+274
+00:12:11,320 --> 00:12:14,520
+right? There's a A
+
+275
+00:12:14,520 --> 00:12:18,560
+D to H and there's a D to D.
+
+276
+00:12:18,560 --> 00:12:22,120
+I don't think you will need the H to H.
+
+277
+00:12:22,120 --> 00:12:24,120
+H to H, you can use the regular C
+
+278
+00:12:24,120 --> 00:12:25,640
+standard library and then do memory
+
+279
+00:12:25,640 --> 00:12:28,520
+copy. So, here they provide these three
+
+280
+00:12:28,520 --> 00:12:30,760
+the as the basic CUDA part provide these
+
+281
+00:12:30,760 --> 00:12:34,240
+three directions.
+
+282
+00:12:34,880 --> 00:12:37,640
+Okay? So, after then we copy, we need to
+
+283
+00:12:37,640 --> 00:12:41,560
+copy DA and we also need to copy DB.
+
+284
+00:12:41,560 --> 00:12:42,960
+Right?
+
+285
+00:12:42,960 --> 00:12:45,560
+Now, we copy the DA and DB. After this
+
+286
+00:12:45,560 --> 00:12:48,880
+point, we need to
+
+287
+00:12:48,880 --> 00:12:50,880
+we have the data ready. We can let the
+
+288
+00:12:50,880 --> 00:12:54,240
+GPU to do the calculation. Okay? So, to
+
+289
+00:12:54,240 --> 00:12:56,480
+let the GPU do the calculation is
+
+290
+00:12:56,480 --> 00:12:59,680
+basically by calling a GPU function. And
+
+291
+00:12:59,680 --> 00:13:02,160
+the calling a GPU function in this case,
+
+292
+00:13:02,160 --> 00:13:06,720
+this GPU function is called a kernel.
+
+293
+00:13:13,360 --> 00:13:15,040
+It's called a GPU kernel.
+
+294
+00:13:15,040 --> 00:13:17,440
+Now, when we say So, not all the GPU
+
+295
+00:13:17,440 --> 00:13:20,120
+functions are GPU kernels. It's only the
+
+296
+00:13:20,120 --> 00:13:21,680
+function that you are
+
+297
+00:13:21,680 --> 00:13:24,000
+you will call it from the CPU side are
+
+298
+00:13:24,000 --> 00:13:27,360
+called kernels. Okay? And a
+
+299
+00:13:27,360 --> 00:13:29,640
+a specific term here is not calling a
+
+300
+00:13:29,640 --> 00:13:33,560
+kernel, but to launch a kernel.
+
+301
+00:13:34,680 --> 00:13:37,680
+So, we start a kernel on the GPU side.
+
+302
+00:13:37,680 --> 00:13:39,720
+Now, how do we how do we start a kernel?
+
+303
+00:13:39,720 --> 00:13:42,080
+It's basically in the same way of
+
+304
+00:13:42,080 --> 00:13:44,480
+copying memory of calling a function,
+
+305
+00:13:44,480 --> 00:13:48,120
+but with some special
+
+306
+00:13:50,760 --> 00:13:52,320
+parameters.
+
+307
+00:13:52,320 --> 00:13:54,440
+So, how we call this one? Let's say if
+
+308
+00:13:54,440 --> 00:13:56,920
+our kernel is called vec add, okay? Now,
+
+309
+00:13:56,920 --> 00:13:59,320
+we just do vec
+
+310
+00:13:59,320 --> 00:14:01,680
+add.
+
+311
+00:14:02,880 --> 00:14:05,240
+Now, here we need to provide some extra
+
+312
+00:14:05,240 --> 00:14:07,640
+information. And this extra information
+
+313
+00:14:07,640 --> 00:14:11,360
+is provided in this three special
+
+314
+00:14:11,360 --> 00:14:13,760
+angular bracket.
+
+315
+00:14:13,760 --> 00:14:15,200
+Now, after that
+
+316
+00:14:15,200 --> 00:14:17,400
+we provide the arguments. So, what's the
+
+317
+00:14:17,400 --> 00:14:20,160
+argument? It's A Sorry, it's not A, it's
+
+318
+00:14:20,160 --> 00:14:22,000
+DA, DB,
+
+319
+00:14:22,000 --> 00:14:23,560
+DC.
+
+320
+00:14:23,560 --> 00:14:24,920
+DA,
+
+321
+00:14:24,920 --> 00:14:26,959
+DB,
+
+322
+00:14:26,959 --> 00:14:29,000
+DC.
+
+323
+00:14:29,000 --> 00:14:31,560
+Okay? Now, what else?
+
+324
+00:14:31,560 --> 00:14:34,440
+Uh and the size.
+
+325
+00:14:34,440 --> 00:14:37,000
+How many in How many elements that we
+
+326
+00:14:37,000 --> 00:14:39,600
+need to copy into the
+
+327
+00:14:39,600 --> 00:14:40,600
+um
+
+328
+00:14:40,600 --> 00:14:42,920
+like we need to do the add operation and
+
+329
+00:14:42,920 --> 00:14:44,920
+to store in the destination.
+
+330
+00:14:44,920 --> 00:14:47,400
+And this is a vector vector add.
+
+331
+00:14:47,400 --> 00:14:49,400
+So, before I talk about the parameter
+
+332
+00:14:49,400 --> 00:14:50,640
+here,
+
+333
+00:14:50,640 --> 00:14:53,839
+let's let's see how this GPU function is
+
+334
+00:14:53,839 --> 00:14:55,079
+written.
+
+335
+00:14:55,079 --> 00:14:57,440
+Okay?
+
+336
+00:14:58,800 --> 00:15:01,880
+Now, the GPU function
+
+337
+00:15:03,920 --> 00:15:07,079
+is written in this way.
+
+338
+00:15:07,839 --> 00:15:11,640
+Need to check a reference.
+
+339
+00:15:22,200 --> 00:15:24,440
+Okay, the GPU code is written in this
+
+340
+00:15:24,440 --> 00:15:25,839
+way.
+
+341
+00:15:25,839 --> 00:15:28,520
+It typically starts with a
+
+342
+00:15:28,520 --> 00:15:30,760
+global.
+
+343
+00:15:30,760 --> 00:15:32,600
+It's a preamble.
+
+344
+00:15:32,600 --> 00:15:35,120
+Now, it says this is a
+
+345
+00:15:35,120 --> 00:15:36,520
+GPU
+
+346
+00:15:36,520 --> 00:15:38,959
+pro GPU kernel program to be compiled
+
+347
+00:15:38,959 --> 00:15:40,680
+into GPU format.
+
+348
+00:15:40,680 --> 00:15:42,600
+Then we can do
+
+349
+00:15:42,600 --> 00:15:44,160
+a void.
+
+350
+00:15:44,160 --> 00:15:45,920
+It cannot return anything. A GPU kernel
+
+351
+00:15:45,920 --> 00:15:48,839
+cannot return anything. Now, all the
+
+352
+00:15:48,839 --> 00:15:51,640
+all the return value has to be contained
+
+353
+00:15:51,640 --> 00:15:53,400
+in a memory so that later on you can
+
+354
+00:15:53,400 --> 00:15:56,800
+copy back to the CPU side.
+
+355
+00:15:57,079 --> 00:16:00,240
+Then a void. Now, we can call it a vect
+
+356
+00:16:00,240 --> 00:16:02,040
+add.
+
+357
+00:16:02,040 --> 00:16:04,280
+Okay? Then there's nothing special, but
+
+358
+00:16:04,280 --> 00:16:06,040
+here we write
+
+359
+00:16:06,040 --> 00:16:07,160
+uh
+
+360
+00:16:07,160 --> 00:16:09,440
+float
+
+361
+00:16:09,440 --> 00:16:10,680
+I will I will write it into the next
+
+362
+00:16:10,680 --> 00:16:12,920
+line.
+
+363
+00:16:12,959 --> 00:16:14,360
+Float
+
+364
+00:16:14,360 --> 00:16:15,480
+star
+
+365
+00:16:15,480 --> 00:16:17,160
+A,
+
+366
+00:16:17,160 --> 00:16:19,920
+float star
+
+367
+00:16:20,360 --> 00:16:21,600
+B,
+
+368
+00:16:21,600 --> 00:16:24,640
+float star C,
+
+369
+00:16:24,640 --> 00:16:27,920
+and size.
+
+370
+00:16:28,120 --> 00:16:29,400
+Okay?
+
+371
+00:16:29,400 --> 00:16:31,440
+A list of parameters. So, nothing
+
+372
+00:16:31,440 --> 00:16:33,680
+special, but just as if you are writing
+
+373
+00:16:33,680 --> 00:16:36,000
+a CPU program. So, the
+
+374
+00:16:36,000 --> 00:16:39,040
+the GPU compiler the compiler will just
+
+375
+00:16:39,040 --> 00:16:41,520
+tell, okay, it's checks that's a global,
+
+376
+00:16:41,520 --> 00:16:44,000
+right? If it's a global, that it has a
+
+377
+00:16:44,000 --> 00:16:47,000
+potential to be run on both the CPU side
+
+378
+00:16:47,000 --> 00:16:48,839
+and the GPU side.
+
+379
+00:16:48,839 --> 00:16:51,040
+And if it's a device, then it can only
+
+380
+00:16:51,040 --> 00:16:52,839
+be run on the GPU side. So, it will only
+
+381
+00:16:52,839 --> 00:16:55,520
+generate a copy of the binary that is
+
+382
+00:16:55,520 --> 00:16:57,079
+for the GPU.
+
+383
+00:16:57,079 --> 00:16:59,440
+Now, in this case, we need to run this
+
+384
+00:16:59,440 --> 00:17:01,000
+part of the
+
+385
+00:17:01,000 --> 00:17:02,280
+uh program.
+
+386
+00:17:02,280 --> 00:17:06,520
+So, the key point for GPU program is say
+
+387
+00:17:06,520 --> 00:17:08,839
+you write one function and this function
+
+388
+00:17:08,839 --> 00:17:11,760
+is only for one thread is to run on the
+
+389
+00:17:11,760 --> 00:17:13,320
+GPU side.
+
+390
+00:17:13,320 --> 00:17:15,760
+So, then you need to consider what is
+
+391
+00:17:15,760 --> 00:17:18,839
+the responsibility of this GPU thread?
+
+392
+00:17:18,839 --> 00:17:20,959
+Right? So, what do you want this GPU
+
+393
+00:17:20,959 --> 00:17:22,400
+thread to do?
+
+394
+00:17:22,400 --> 00:17:24,280
+Then an easy way to consider this
+
+395
+00:17:24,280 --> 00:17:26,280
+problem since we have a vector add
+
+396
+00:17:26,280 --> 00:17:28,000
+example.
+
+397
+00:17:28,000 --> 00:17:30,120
+Then
+
+398
+00:17:30,120 --> 00:17:32,160
+we are adding these numbers together,
+
+399
+00:17:32,160 --> 00:17:34,200
+right? We're adding these numbers
+
+400
+00:17:34,200 --> 00:17:36,960
+together. So, there's no interference
+
+401
+00:17:36,960 --> 00:17:39,120
+to calculate this part and this part.
+
+402
+00:17:39,120 --> 00:17:41,280
+So, they're totally independent.
+
+403
+00:17:41,280 --> 00:17:43,640
+Right? In this case, we call it an
+
+404
+00:17:43,640 --> 00:17:45,880
+embarrassingly
+
+405
+00:17:45,880 --> 00:17:48,800
+embarrassing
+
+406
+00:17:49,960 --> 00:17:53,240
+ly parallel
+
+407
+00:17:54,640 --> 00:17:56,360
+pattern. So, this pattern is called
+
+408
+00:17:56,360 --> 00:17:58,360
+embarrassingly parallel because it's
+
+409
+00:17:58,360 --> 00:18:01,560
+just so easy to make it parallel.
+
+410
+00:18:01,560 --> 00:18:02,560
+Then
+
+411
+00:18:02,560 --> 00:18:04,920
+almost there's no need to do any
+
+412
+00:18:04,920 --> 00:18:07,280
+optimization or any special
+
+413
+00:18:07,280 --> 00:18:08,920
+type of work. Then we can make it
+
+414
+00:18:08,920 --> 00:18:10,480
+special work. It's a basically
+
+415
+00:18:10,480 --> 00:18:12,800
+element-wise operation. Right? In this
+
+416
+00:18:12,800 --> 00:18:13,679
+case,
+
+417
+00:18:13,679 --> 00:18:15,880
+the simplest way to write this program
+
+418
+00:18:15,880 --> 00:18:18,600
+is to let each thread to be responsible
+
+419
+00:18:18,600 --> 00:18:20,000
+for
+
+420
+00:18:20,000 --> 00:18:22,480
+one
+
+421
+00:18:23,520 --> 00:18:26,440
+number, one output number. Right?
+
+422
+00:18:26,440 --> 00:18:29,200
+So, even for more complex
+
+423
+00:18:29,200 --> 00:18:32,280
+GPU program, uh very straightforward to
+
+424
+00:18:32,280 --> 00:18:34,400
+think about how you one can organize
+
+425
+00:18:34,400 --> 00:18:37,400
+this thread is to consider each thread
+
+426
+00:18:37,400 --> 00:18:40,159
+is responsible for one
+
+427
+00:18:40,159 --> 00:18:43,480
+region or one piece of output. Okay?
+
+428
+00:18:43,480 --> 00:18:45,200
+Now, in that way, you can
+
+429
+00:18:45,200 --> 00:18:46,640
+make them
+
+430
+00:18:46,640 --> 00:18:48,640
+like the calculation as independent as
+
+431
+00:18:48,640 --> 00:18:50,360
+possible because you don't want threads
+
+432
+00:18:50,360 --> 00:18:52,320
+to communicate. Any communication or
+
+433
+00:18:52,320 --> 00:18:55,040
+synchronization is a perform has a
+
+434
+00:18:55,040 --> 00:18:57,880
+performance penalty.
+
+435
+00:18:57,880 --> 00:19:00,520
+Uh okay, so then
+
+436
+00:19:00,520 --> 00:19:03,240
+we say we have defined so thread zero
+
+437
+00:19:03,240 --> 00:19:05,080
+will do this, thread one will do this,
+
+438
+00:19:05,080 --> 00:19:06,760
+thread two will do this, and so on.
+
+439
+00:19:06,760 --> 00:19:07,840
+Right?
+
+440
+00:19:07,840 --> 00:19:11,120
+So, in this case, if we have N element,
+
+441
+00:19:11,120 --> 00:19:15,760
+then we need N total thread. Right?
+
+442
+00:19:15,760 --> 00:19:16,960
+So,
+
+443
+00:19:16,960 --> 00:19:19,280
+when we write this GPU program here, we
+
+444
+00:19:19,280 --> 00:19:21,320
+need to consider
+
+445
+00:19:21,320 --> 00:19:23,440
+these threads needs to know
+
+446
+00:19:23,440 --> 00:19:26,919
+what's my index, who am I? Then I can do
+
+447
+00:19:26,919 --> 00:19:28,840
+the right task. I know, oh, I need to
+
+448
+00:19:28,840 --> 00:19:31,159
+add these particular numbers. Right? So,
+
+449
+00:19:31,159 --> 00:19:34,120
+the GPU needs to know what's the number.
+
+450
+00:19:34,120 --> 00:19:36,520
+So, in this case, we will typically
+
+451
+00:19:36,520 --> 00:19:38,960
+first to identify itself.
+
+452
+00:19:38,960 --> 00:19:41,480
+And
+
+453
+00:19:42,480 --> 00:19:45,640
+in this case, we have a
+
+454
+00:19:45,640 --> 00:19:49,240
+we start typically start with knowing my
+
+455
+00:19:49,240 --> 00:19:51,280
+own ID.
+
+456
+00:19:51,280 --> 00:19:52,320
+And
+
+457
+00:19:52,320 --> 00:19:54,640
+I call it GID.
+
+458
+00:19:54,640 --> 00:19:56,120
+Global ID.
+
+459
+00:19:56,120 --> 00:19:56,960
+Now,
+
+460
+00:19:56,960 --> 00:19:58,520
+which part is not global? We'll talk
+
+461
+00:19:58,520 --> 00:20:00,520
+about that later.
+
+462
+00:20:00,520 --> 00:20:02,200
+And GID, it needs a little bit
+
+463
+00:20:02,200 --> 00:20:03,680
+calculation.
+
+464
+00:20:03,680 --> 00:20:05,480
+So, the what's the calculation is
+
+465
+00:20:05,480 --> 00:20:07,240
+basically in this way.
+
+466
+00:20:07,240 --> 00:20:09,520
+Block
+
+467
+00:20:09,520 --> 00:20:12,440
+index idx.x
+
+468
+00:20:12,440 --> 00:20:14,040
+plus
+
+469
+00:20:14,040 --> 00:20:16,800
+block dim
+
+470
+00:20:17,760 --> 00:20:19,320
+dimension.x
+
+471
+00:20:19,320 --> 00:20:22,000
+multiplied by
+
+472
+00:20:22,000 --> 00:20:24,080
+So, this is not not plus. This is
+
+473
+00:20:24,080 --> 00:20:26,480
+multiplication here.
+
+474
+00:20:26,480 --> 00:20:28,480
+Then plus
+
+475
+00:20:28,480 --> 00:20:31,640
+thread idx.
+
+476
+00:20:33,640 --> 00:20:36,000
+Thread index.x.
+
+477
+00:20:36,000 --> 00:20:38,360
+Okay.
+
+478
+00:20:38,360 --> 00:20:40,880
+So, a quick way that you can think about
+
+479
+00:20:40,880 --> 00:20:43,280
+this problem is
+
+480
+00:20:43,280 --> 00:20:45,560
+there are two dimensions here.
+
+481
+00:20:45,560 --> 00:20:48,520
+One dimension is block.
+
+482
+00:20:48,520 --> 00:20:50,960
+One dimension is thread. A block is a
+
+483
+00:20:50,960 --> 00:20:53,160
+group of threads. So, you can consider
+
+484
+00:20:53,160 --> 00:20:54,320
+this way.
+
+485
+00:20:54,320 --> 00:20:57,800
+You say, a block may have 256
+
+486
+00:20:57,800 --> 00:21:00,600
+thread, right? So, my thread my local
+
+487
+00:21:00,600 --> 00:21:04,360
+thread ID is one is start 0 1 2 and so
+
+488
+00:21:04,360 --> 00:21:07,680
+on and we see 255.
+
+489
+00:21:07,680 --> 00:21:10,360
+Right? Then the next one I the next
+
+490
+00:21:10,360 --> 00:21:12,320
+block also has this
+
+491
+00:21:12,320 --> 00:21:16,880
+thread ID start from 0 1 and 255.
+
+492
+00:21:16,880 --> 00:21:19,640
+So, what is my global ID that my local
+
+493
+00:21:19,640 --> 00:21:21,400
+ID is 0 1 2?
+
+494
+00:21:21,400 --> 00:21:22,880
+Right?
+
+495
+00:21:22,880 --> 00:21:26,160
+My local ID is 0 1 2 2 255. Now, what is
+
+496
+00:21:26,160 --> 00:21:29,240
+my global ID? It's basically by knowing
+
+497
+00:21:29,240 --> 00:21:32,000
+my block ID. So, this is my block ID 0,
+
+498
+00:21:32,000 --> 00:21:35,000
+block ID 1, block ID 2 and so on.
+
+499
+00:21:35,000 --> 00:21:35,720
+Right?
+
+500
+00:21:35,720 --> 00:21:39,280
+So, to multiply by the block dim block
+
+501
+00:21:39,280 --> 00:21:41,920
+dim is 256.
+
+502
+00:21:41,920 --> 00:21:43,840
+The block dimension.
+
+503
+00:21:43,840 --> 00:21:45,040
+256.
+
+504
+00:21:45,040 --> 00:21:47,360
+Then
+
+505
+00:21:47,680 --> 00:21:50,320
+by using by multiplying this number with
+
+506
+00:21:50,320 --> 00:21:53,520
+256 plus the local ID, we know my global
+
+507
+00:21:53,520 --> 00:21:54,640
+position
+
+508
+00:21:54,640 --> 00:21:57,040
+in the whole kernel, right? Like the
+
+509
+00:21:57,040 --> 00:21:58,960
+thread ID within the whole kernel. So,
+
+510
+00:21:58,960 --> 00:22:01,760
+this is my global ID.
+
+511
+00:22:01,760 --> 00:22:02,880
+Then
+
+512
+00:22:02,880 --> 00:22:05,480
+okay, with this global ID, I know which
+
+513
+00:22:05,480 --> 00:22:08,840
+element we need to process in the
+
+514
+00:22:08,840 --> 00:22:10,720
+uh
+
+515
+00:22:10,720 --> 00:22:13,960
+in the vector, right? Now, we need to
+
+516
+00:22:13,960 --> 00:22:16,000
+do the calculation. In this case, we
+
+517
+00:22:16,000 --> 00:22:19,200
+simply do a C
+
+518
+00:22:19,200 --> 00:22:21,480
+square bracket
+
+519
+00:22:21,480 --> 00:22:24,640
+C GID
+
+520
+00:22:24,880 --> 00:22:26,720
+equals A
+
+521
+00:22:26,720 --> 00:22:29,080
+GID
+
+522
+00:22:29,080 --> 00:22:30,040
+plus
+
+523
+00:22:30,040 --> 00:22:31,400
+B
+
+524
+00:22:31,400 --> 00:22:34,000
+GID.
+
+525
+00:22:34,440 --> 00:22:35,760
+Okay.
+
+526
+00:22:35,760 --> 00:22:37,800
+Then of course, you need a little bit
+
+527
+00:22:37,800 --> 00:22:41,240
+safeguard so that what if your
+
+528
+00:22:41,240 --> 00:22:43,920
+size what is what if your kernel size
+
+529
+00:22:43,920 --> 00:22:45,960
+number of thread is larger than this
+
+530
+00:22:45,960 --> 00:22:47,640
+size?
+
+531
+00:22:47,640 --> 00:22:52,600
+And what do you do is simply do a if
+
+532
+00:22:52,600 --> 00:22:54,360
+GID
+
+533
+00:22:54,360 --> 00:22:57,600
+is greater than
+
+534
+00:22:59,000 --> 00:23:01,040
+um
+
+535
+00:23:01,040 --> 00:23:04,200
+there should be another
+
+536
+00:23:04,240 --> 00:23:06,440
+like another way to calculate the kernel
+
+537
+00:23:06,440 --> 00:23:08,640
+size. I will simply write kernel size
+
+538
+00:23:08,640 --> 00:23:11,040
+here.
+
+539
+00:23:12,280 --> 00:23:15,360
+If it's greater than the kernel size
+
+540
+00:23:15,360 --> 00:23:17,320
+No, not kernel size. Not really kernel
+
+541
+00:23:17,320 --> 00:23:19,760
+size. It's only this size. It's the
+
+542
+00:23:19,760 --> 00:23:22,480
+vector size.
+
+543
+00:23:22,480 --> 00:23:24,280
+If the GID is greater than the vector
+
+544
+00:23:24,280 --> 00:23:26,679
+size, so if this is the vector, we're
+
+545
+00:23:26,679 --> 00:23:29,000
+accessing somewhere here somewhere like
+
+546
+00:23:29,000 --> 00:23:31,320
+passing the end. We simply return. We
+
+547
+00:23:31,320 --> 00:23:32,640
+don't
+
+548
+00:23:32,640 --> 00:23:34,800
+don't want to do the calculation.
+
+549
+00:23:34,800 --> 00:23:38,640
+Okay? Otherwise, we do the calculation.
+
+550
+00:23:38,640 --> 00:23:40,679
+Okay, it's just a safeguard to prevent
+
+551
+00:23:40,679 --> 00:23:43,400
+us from accessing the
+
+552
+00:23:43,400 --> 00:23:45,480
+like passing the end of the boundary of
+
+553
+00:23:45,480 --> 00:23:48,200
+the vector.
+
+554
+00:23:49,720 --> 00:23:50,840
+Okay.
+
+555
+00:23:50,840 --> 00:23:53,600
+So, then at the end we return or we just
+
+556
+00:23:53,600 --> 00:23:56,000
+silently return. That's the very simple
+
+557
+00:23:56,000 --> 00:23:59,040
+kernel that we can write.
+
+558
+00:23:59,760 --> 00:24:03,040
+Then as you may notice that there's a
+
+559
+00:24:03,040 --> 00:24:05,320
+block idx and
+
+560
+00:24:05,320 --> 00:24:07,720
+block dim x and the thread index x,
+
+561
+00:24:07,720 --> 00:24:11,040
+right? So, for most of time, we write
+
+562
+00:24:11,040 --> 00:24:13,360
+one-dimensional kernels.
+
+563
+00:24:13,360 --> 00:24:15,360
+But sometimes if we're dealing with a
+
+564
+00:24:15,360 --> 00:24:16,560
+matrix
+
+565
+00:24:16,560 --> 00:24:18,400
+or 3D volumes
+
+566
+00:24:18,400 --> 00:24:20,960
+then it's more convenient to have three
+
+567
+00:24:20,960 --> 00:24:22,880
+dimensions of this kernel of this
+
+568
+00:24:22,880 --> 00:24:26,160
+thread. In that case, we can do
+
+569
+00:24:26,160 --> 00:24:27,400
+um
+
+570
+00:24:27,400 --> 00:24:29,360
+we can have three dimensions
+
+571
+00:24:29,360 --> 00:24:31,520
+of this kernel. In that case, we'll have
+
+572
+00:24:31,520 --> 00:24:35,600
+block index y a block dim y thread ID y
+
+573
+00:24:35,600 --> 00:24:37,120
+and so on.
+
+574
+00:24:37,120 --> 00:24:39,440
+Okay.
+
+575
+00:24:39,679 --> 00:24:41,040
+Then
+
+576
+00:24:41,040 --> 00:24:43,040
+this is a kernel.
+
+577
+00:24:43,040 --> 00:24:45,560
+It comes to this part as how we call
+
+578
+00:24:45,560 --> 00:24:49,040
+this kernel. How we launch this kernel.
+
+579
+00:24:49,040 --> 00:24:51,520
+We say, a kernel is written for one
+
+580
+00:24:51,520 --> 00:24:52,520
+thread.
+
+581
+00:24:52,520 --> 00:24:54,080
+Then it's the host programs
+
+582
+00:24:54,080 --> 00:24:57,480
+responsibility to determine how many
+
+583
+00:24:57,480 --> 00:25:00,040
+threads are there.
+
+584
+00:25:00,040 --> 00:25:01,920
+Now, how how can we do?
+
+585
+00:25:01,920 --> 00:25:04,760
+Is we need to provide two numbers.
+
+586
+00:25:04,760 --> 00:25:08,840
+The first number is the
+
+587
+00:25:08,840 --> 00:25:12,920
+we call it the kernel size.
+
+588
+00:25:15,360 --> 00:25:19,280
+Then the second one is block size.
+
+589
+00:25:20,760 --> 00:25:23,800
+And kernel size is in terms of how many
+
+590
+00:25:23,800 --> 00:25:25,760
+blocks are there.
+
+591
+00:25:25,760 --> 00:25:30,440
+Okay. So, roughly speaking, we can say
+
+592
+00:25:30,440 --> 00:25:33,240
+kernel size
+
+593
+00:25:35,280 --> 00:25:38,280
+equals to n
+
+594
+00:25:38,280 --> 00:25:42,160
+divided by block size.
+
+595
+00:25:44,280 --> 00:25:47,679
+Okay, then however, you need to do round
+
+596
+00:25:47,679 --> 00:25:49,040
+up.
+
+597
+00:25:49,040 --> 00:25:50,080
+Okay.
+
+598
+00:25:50,080 --> 00:25:52,840
+You need to do a round up so that we
+
+599
+00:25:52,840 --> 00:25:53,920
+never
+
+600
+00:25:53,920 --> 00:25:55,600
+have some leftover.
+
+601
+00:25:55,600 --> 00:25:59,600
+Let's say, if your block size
+
+602
+00:26:01,720 --> 00:26:04,360
+is 256
+
+603
+00:26:04,360 --> 00:26:08,440
+then if your n is 300, right?
+
+604
+00:26:08,440 --> 00:26:10,679
+Then you always want the
+
+605
+00:26:10,679 --> 00:26:13,600
+leftover 44 to be taken care of. In that
+
+606
+00:26:13,600 --> 00:26:15,440
+case, you always want to round up. In
+
+607
+00:26:15,440 --> 00:26:17,240
+that case, you won't have two blocks.
+
+608
+00:26:17,240 --> 00:26:19,320
+One block is not enough. One block can
+
+609
+00:26:19,320 --> 00:26:20,760
+only process
+
+610
+00:26:20,760 --> 00:26:22,080
+256
+
+611
+00:26:22,080 --> 00:26:24,320
+uh
+
+612
+00:26:25,120 --> 00:26:26,880
+numbers.
+
+613
+00:26:26,880 --> 00:26:28,920
+Okay. So, of course, these two lines of
+
+614
+00:26:28,920 --> 00:26:31,400
+code needs to be called before vector
+
+615
+00:26:31,400 --> 00:26:32,320
+add.
+
+616
+00:26:32,320 --> 00:26:35,720
+Okay. Now, here we just need to write
+
+617
+00:26:35,720 --> 00:26:37,520
+I'll write it simple.
+
+618
+00:26:37,520 --> 00:26:39,040
+Blocks
+
+619
+00:26:39,040 --> 00:26:39,920
+Sorry.
+
+620
+00:26:39,920 --> 00:26:41,320
+Kernel size
+
+621
+00:26:41,320 --> 00:26:43,360
+and block size.
+
+622
+00:26:43,360 --> 00:26:46,200
+Okay, just to specify how many threads
+
+623
+00:26:46,200 --> 00:26:49,040
+you want to launch.
+
+624
+00:26:49,800 --> 00:26:50,800
+Okay.
+
+625
+00:26:50,800 --> 00:26:52,640
+Then for block size
+
+626
+00:26:52,640 --> 00:26:56,960
+typically, we do somewhere between 64
+
+627
+00:26:56,960 --> 00:26:58,400
+to
+
+628
+00:26:58,400 --> 00:27:01,560
+uh 1024,
+
+629
+00:27:01,560 --> 00:27:05,000
+but and we typically do a multiple of 64
+
+630
+00:27:05,000 --> 00:27:08,000
+or very likely we do a size of
+
+631
+00:27:08,000 --> 00:27:09,120
+um
+
+632
+00:27:09,120 --> 00:27:11,080
+power a power of two.
+
+633
+00:27:11,080 --> 00:27:15,040
+Okay, is it 254 512 or 1024? And it
+
+634
+00:27:15,040 --> 00:27:16,960
+sometimes matters a lot for the
+
+635
+00:27:16,960 --> 00:27:19,480
+performance, but at this stage, we're
+
+636
+00:27:19,480 --> 00:27:21,360
+not diving that deep into GPU
+
+637
+00:27:21,360 --> 00:27:23,320
+performance optimization. We just want
+
+638
+00:27:23,320 --> 00:27:26,840
+to say you can just 256 or 64 are
+
+639
+00:27:26,840 --> 00:27:28,520
+probably the most common numbers that we
+
+640
+00:27:28,520 --> 00:27:30,600
+take.
+
+641
+00:27:30,600 --> 00:27:32,560
+Okay.
+
+642
+00:27:32,560 --> 00:27:36,120
+Then at this point, we can return.
+
+643
+00:27:36,120 --> 00:27:38,040
+Uh we we
+
+644
+00:27:38,040 --> 00:27:40,880
+we know we're running this program and
+
+645
+00:27:40,880 --> 00:27:44,520
+this program in CUDA definition is a uh
+
+646
+00:27:44,520 --> 00:27:47,400
+asynchronous call. That means when after
+
+647
+00:27:47,400 --> 00:27:49,280
+calling this function, we immediately
+
+648
+00:27:49,280 --> 00:27:52,320
+return without waiting for it to
+
+649
+00:27:52,320 --> 00:27:54,280
+waiting for it to complete.
+
+650
+00:27:54,280 --> 00:27:56,960
+In that case, we can let the CPU to do
+
+651
+00:27:56,960 --> 00:28:00,160
+something else while the GPU is running.
+
+652
+00:28:00,160 --> 00:28:00,920
+In
+
+653
+00:28:00,920 --> 00:28:03,200
+So, how we can make sure this one is
+
+654
+00:28:03,200 --> 00:28:08,280
+completed? In this case, we call a CUDA
+
+655
+00:28:08,560 --> 00:28:11,120
+device
+
+656
+00:28:11,480 --> 00:28:14,160
+synchronize.
+
+657
+00:28:14,440 --> 00:28:16,560
+And we call this function to guarantee
+
+658
+00:28:16,560 --> 00:28:19,200
+that we wait for this kernel to be fully
+
+659
+00:28:19,200 --> 00:28:22,440
+completed. Then at the end, we can do
+
+660
+00:28:22,440 --> 00:28:24,400
+CUDA
+
+661
+00:28:24,400 --> 00:28:27,280
+mem copy.
+
+662
+00:28:28,640 --> 00:28:32,200
+Now, we copy into C from DC
+
+663
+00:28:32,200 --> 00:28:34,040
+and with a size
+
+664
+00:28:34,040 --> 00:28:36,760
+multiplied by four and the direction of
+
+665
+00:28:36,760 --> 00:28:38,720
+CUDA
+
+666
+00:28:38,720 --> 00:28:41,520
+mem copy.
+
+667
+00:28:42,600 --> 00:28:46,280
+And this time is device to host.
+
+668
+00:28:46,280 --> 00:28:47,200
+Okay.
+
+669
+00:28:47,200 --> 00:28:49,440
+So, now we copy the result back. And for
+
+670
+00:28:49,440 --> 00:28:52,440
+the rest of program, you can just use it
+
+671
+00:28:52,440 --> 00:28:54,480
+whatever however you want.
+
+672
+00:28:54,480 --> 00:28:56,760
+Okay. It's a GPU program how a GPU
+
+673
+00:28:56,760 --> 00:28:59,040
+program is written. So, no matter how
+
+674
+00:28:59,040 --> 00:29:01,120
+complex GPU program
+
+675
+00:29:01,120 --> 00:29:03,080
+um that you are write you are writing,
+
+676
+00:29:03,080 --> 00:29:05,440
+it's basically this way. Copy memory,
+
+677
+00:29:05,440 --> 00:29:07,600
+let GPU to compute, then copy the data
+
+678
+00:29:07,600 --> 00:29:11,000
+back. Then all the way it can goes up to
+
+679
+00:29:11,000 --> 00:29:13,040
+try GPT in this level of program. It's
+
+680
+00:29:13,040 --> 00:29:14,760
+all uh
+
+681
+00:29:14,760 --> 00:29:18,040
+start with these basic things.
+
+682
+00:29:18,040 --> 00:29:19,080
+Okay.
+
+683
+00:29:19,080 --> 00:29:20,520
+So, this is a
+
+684
+00:29:20,520 --> 00:29:22,200
+general way of how we write a GPU
+
+685
+00:29:22,200 --> 00:29:24,440
+program. I think the most important part
+
+686
+00:29:24,440 --> 00:29:29,080
+is the threads are written in a way that
+
+687
+00:29:29,080 --> 00:29:31,120
+uh
+
+688
+00:29:31,120 --> 00:29:32,919
+that each thread is responsible to
+
+689
+00:29:32,919 --> 00:29:35,200
+calculate one piece of output and
+
+690
+00:29:35,200 --> 00:29:37,679
+threads are rarely communicate with each
+
+691
+00:29:37,679 --> 00:29:38,600
+other.
+
+692
+00:29:38,600 --> 00:29:39,640
+And
+
+693
+00:29:39,640 --> 00:29:40,840
+there's a
+
+694
+00:29:40,840 --> 00:29:43,080
+strong limitation in the GPU how the
+
+695
+00:29:43,080 --> 00:29:46,760
+threads can communicate with each other.
+
+696
+00:29:46,760 --> 00:29:49,080
+Okay.
+
+697
+00:29:50,600 --> 00:29:52,120
+So, this is not a GPU programming
+
+698
+00:29:52,120 --> 00:29:54,400
+course. So, I want to quickly go through
+
+699
+00:29:54,400 --> 00:29:57,800
+this part and jump to the GPU assembly
+
+700
+00:29:57,800 --> 00:29:59,440
+and let's see how the GPU assembly is
+
+701
+00:29:59,440 --> 00:30:04,360
+different from the CPU assembly.
+
+702
+00:30:13,280 --> 00:30:15,560
+Now, I want to show you one
+
+703
+00:30:15,560 --> 00:30:19,040
+even simpler program.
+
+704
+00:30:37,120 --> 00:30:40,240
+Okay, this program.
+
+705
+00:30:45,240 --> 00:30:48,600
+I will erase this part.
+
+706
+00:30:51,080 --> 00:30:53,600
+And I call it
+
+707
+00:30:53,600 --> 00:30:55,120
+uh
+
+708
+00:30:55,120 --> 00:30:58,600
+shift shifted copy.
+
+709
+00:31:02,960 --> 00:31:05,360
+And takes
+
+710
+00:31:05,360 --> 00:31:07,840
+float
+
+711
+00:31:10,520 --> 00:31:12,480
+in and
+
+712
+00:31:12,480 --> 00:31:14,120
+out
+
+713
+00:31:14,120 --> 00:31:16,640
+two arguments. Okay, and this super
+
+714
+00:31:16,640 --> 00:31:19,360
+simple that int
+
+715
+00:31:19,360 --> 00:31:20,760
+GID
+
+716
+00:31:20,760 --> 00:31:23,080
+equals to
+
+717
+00:31:23,080 --> 00:31:25,000
+uh equals to the thing that we write
+
+718
+00:31:25,000 --> 00:31:29,280
+before. Okay? Then, out
+
+719
+00:31:29,480 --> 00:31:31,560
+GID
+
+720
+00:31:31,560 --> 00:31:34,120
+equals to in
+
+721
+00:31:34,120 --> 00:31:36,560
+GID
+
+722
+00:31:36,560 --> 00:31:39,160
+plus four.
+
+723
+00:31:40,440 --> 00:31:41,560
+Uh
+
+724
+00:31:41,560 --> 00:31:44,040
+the smallest the program. Right? So, I
+
+725
+00:31:44,040 --> 00:31:46,400
+just want to want to show you how this
+
+726
+00:31:46,400 --> 00:31:49,440
+program is compiled into a GPU assembly
+
+727
+00:31:49,440 --> 00:31:52,000
+and what the GPU assembly looks like.
+
+728
+00:31:52,000 --> 00:31:55,679
+Uh it doesn't have a safeguard here. So,
+
+729
+00:31:55,679 --> 00:31:59,280
+we just show it the compilation.
+
+730
+00:31:59,280 --> 00:32:02,160
+Then, um the GPU is different from the
+
+731
+00:32:02,160 --> 00:32:05,080
+CPU. CPU needs to set up the memory at
+
+732
+00:32:05,080 --> 00:32:07,240
+the beginning to set up the environment
+
+733
+00:32:07,240 --> 00:32:09,000
+so that the core can pick up from the
+
+734
+00:32:09,000 --> 00:32:12,040
+memory. The GPU, because you have the GP
+
+735
+00:32:12,040 --> 00:32:14,040
+you have the CPU to control, and CPU
+
+736
+00:32:14,040 --> 00:32:16,560
+send this task to a GPU side. So, GPU
+
+737
+00:32:16,560 --> 00:32:19,440
+internally will have circuits to help up
+
+738
+00:32:19,440 --> 00:32:22,880
+set the contacts. And the GPU try to
+
+739
+00:32:22,880 --> 00:32:25,920
+avoid the memory access and only if
+
+740
+00:32:25,920 --> 00:32:28,120
+something can be in a register, it's
+
+741
+00:32:28,120 --> 00:32:30,920
+better to be in the register. So,
+
+742
+00:32:30,920 --> 00:32:33,200
+the GPU will typically have some
+
+743
+00:32:33,200 --> 00:32:36,400
+register initial register layout set up
+
+744
+00:32:36,400 --> 00:32:38,920
+so that it's being stored there.
+
+745
+00:32:38,920 --> 00:32:42,200
+So, in this case, the first line of code
+
+746
+00:32:42,200 --> 00:32:44,600
+is like this. S
+
+747
+00:32:44,600 --> 00:32:47,040
+load
+
+748
+00:32:48,240 --> 00:32:50,760
+D word
+
+749
+00:32:51,560 --> 00:32:54,200
+by four.
+
+750
+00:32:54,240 --> 00:32:55,960
+Then,
+
+751
+00:32:55,960 --> 00:32:59,280
+S 0 3
+
+752
+00:32:59,280 --> 00:33:01,000
+S
+
+753
+00:33:01,000 --> 00:33:03,760
+4 5
+
+754
+00:33:04,120 --> 00:33:05,960
+and 0.
+
+755
+00:33:05,960 --> 00:33:07,360
+Okay?
+
+756
+00:33:07,360 --> 00:33:10,400
+So, we need to look at this
+
+757
+00:33:10,400 --> 00:33:11,960
+instruction.
+
+758
+00:33:11,960 --> 00:33:14,560
+Load is load. It's still the load that
+
+759
+00:33:14,560 --> 00:33:16,080
+we're familiar with.
+
+760
+00:33:16,080 --> 00:33:19,120
+Okay? We load from memory and store it
+
+761
+00:33:19,120 --> 00:33:21,200
+into a register.
+
+762
+00:33:21,200 --> 00:33:23,240
+Now, what is S here?
+
+763
+00:33:23,240 --> 00:33:26,480
+So, S is a term for only for AMD GPU.
+
+764
+00:33:26,480 --> 00:33:28,440
+AMD doesn't really have it.
+
+765
+00:33:28,440 --> 00:33:33,400
+Then, S here represents for scalar.
+
+766
+00:33:35,080 --> 00:33:39,800
+And the on the other side is a vector.
+
+767
+00:33:40,600 --> 00:33:43,880
+Okay? So, in this case, it's a scalar.
+
+768
+00:33:43,880 --> 00:33:46,360
+So, GPU programs work in this way.
+
+769
+00:33:46,360 --> 00:33:48,880
+Remember, we're talking about blocks,
+
+770
+00:33:48,880 --> 00:33:49,800
+right?
+
+771
+00:33:49,800 --> 00:33:51,520
+So, a kernel
+
+772
+00:33:51,520 --> 00:33:54,000
+this is a kernel.
+
+773
+00:33:54,000 --> 00:33:57,040
+And the kernel can be divided into a few
+
+774
+00:33:57,040 --> 00:34:00,040
+layers of different things.
+
+775
+00:34:00,040 --> 00:34:03,800
+The first the layer is block.
+
+776
+00:34:04,679 --> 00:34:08,000
+Within block, we have warps.
+
+777
+00:34:08,000 --> 00:34:11,159
+W A R P
+
+778
+00:34:11,159 --> 00:34:12,120
+Okay?
+
+779
+00:34:12,120 --> 00:34:14,399
+Within block, we have warps, several
+
+780
+00:34:14,399 --> 00:34:17,280
+warps. Now, within warp, we have
+
+781
+00:34:17,280 --> 00:34:19,800
+threads.
+
+782
+00:34:23,720 --> 00:34:25,320
+Those are all
+
+783
+00:34:25,320 --> 00:34:27,159
+threads. Within each warp, we have
+
+784
+00:34:27,159 --> 00:34:28,200
+threads.
+
+785
+00:34:28,200 --> 00:34:30,159
+So, there several layers of
+
+786
+00:34:30,159 --> 00:34:31,640
+organization. Why have this
+
+787
+00:34:31,640 --> 00:34:34,200
+organization? There's some meaning of
+
+788
+00:34:34,200 --> 00:34:35,720
+this organization, why we want to
+
+789
+00:34:35,720 --> 00:34:38,760
+organize in this way.
+
+790
+00:34:38,840 --> 00:34:40,520
+Okay? So,
+
+791
+00:34:40,520 --> 00:34:43,200
+but I want to give you a typical number.
+
+792
+00:34:43,200 --> 00:34:45,760
+A warp
+
+793
+00:34:45,760 --> 00:34:49,240
+equals to 32
+
+794
+00:34:49,240 --> 00:34:51,080
+threads
+
+795
+00:34:51,080 --> 00:34:53,960
+in Nvidia.
+
+796
+00:35:00,520 --> 00:35:03,920
+In Nvidia GPU. Then, it equals to 64
+
+797
+00:35:03,920 --> 00:35:07,760
+threads in AMD
+
+798
+00:35:08,040 --> 00:35:10,920
+CDNA
+
+799
+00:35:12,280 --> 00:35:15,400
+um architecture and also equals to 32
+
+800
+00:35:15,400 --> 00:35:18,120
+threads in AMD
+
+801
+00:35:18,120 --> 00:35:21,400
+RDNA architecture.
+
+802
+00:35:22,080 --> 00:35:22,960
+Okay?
+
+803
+00:35:22,960 --> 00:35:24,440
+Then,
+
+804
+00:35:24,440 --> 00:35:26,640
+so, AMD has dif- different standards.
+
+805
+00:35:26,640 --> 00:35:28,960
+Now, RDNA is mainly for graphics and
+
+806
+00:35:28,960 --> 00:35:31,880
+CDNA is only for mainly for compute.
+
+807
+00:35:31,880 --> 00:35:33,440
+Right? So, by the way, when we talk
+
+808
+00:35:33,440 --> 00:35:35,480
+about GPU architecture here, we're only
+
+809
+00:35:35,480 --> 00:35:37,359
+talking about GP-GPU, general purpose
+
+810
+00:35:37,359 --> 00:35:39,280
+GPU computing. It's not talking about
+
+811
+00:35:39,280 --> 00:35:40,680
+rendering graphics and this type of
+
+812
+00:35:40,680 --> 00:35:44,080
+things. It's only for uh calculation.
+
+813
+00:35:44,080 --> 00:35:46,600
+So, a warp is this number, right? Now,
+
+814
+00:35:46,600 --> 00:35:50,520
+remember, when we talk about block,
+
+815
+00:35:50,520 --> 00:35:55,800
+is typically 32 to 1 1024
+
+816
+00:35:55,800 --> 00:35:58,080
+threads.
+
+817
+00:35:58,080 --> 00:36:01,880
+Okay? Then, a block is still 32 to 1024
+
+818
+00:36:01,880 --> 00:36:05,040
+threads. That means it equals to from
+
+819
+00:36:05,040 --> 00:36:07,440
+one to I say
+
+820
+00:36:07,440 --> 00:36:09,480
+if it's 32
+
+821
+00:36:09,480 --> 00:36:12,560
+32 by how many is 1024?
+
+822
+00:36:12,560 --> 00:36:14,760
+Uh
+
+823
+00:36:14,760 --> 00:36:17,200
+32 by 32 is 1024.
+
+824
+00:36:17,200 --> 00:36:18,160
+Okay?
+
+825
+00:36:18,160 --> 00:36:20,480
+So,
+
+826
+00:36:20,520 --> 00:36:22,680
+now, a warp is
+
+827
+00:36:22,680 --> 00:36:25,080
+this number, right?
+
+828
+00:36:25,080 --> 00:36:26,000
+So,
+
+829
+00:36:26,000 --> 00:36:28,920
+a block equals to from one to 32 warps.
+
+830
+00:36:28,920 --> 00:36:32,320
+That's a typical range.
+
+831
+00:36:32,400 --> 00:36:33,320
+Then,
+
+832
+00:36:33,320 --> 00:36:38,440
+one level up a kernel
+
+833
+00:36:39,040 --> 00:36:41,200
+equals how many blocks?
+
+834
+00:36:41,200 --> 00:36:43,240
+Then,
+
+835
+00:36:43,240 --> 00:36:44,480
+typically
+
+836
+00:36:44,480 --> 00:36:47,000
+I would say this is unlimited
+
+837
+00:36:47,000 --> 00:36:49,480
+blocks.
+
+838
+00:36:49,840 --> 00:36:52,720
+Right? Remember, last time we're doing a
+
+839
+00:36:52,720 --> 00:36:55,440
+vector add example. Then, the number of
+
+840
+00:36:55,440 --> 00:36:58,440
+threads is equals to the number of
+
+841
+00:36:58,440 --> 00:37:01,040
+element in the vector. So, it can work
+
+842
+00:37:01,040 --> 00:37:04,280
+if it's 1 giga element. So, in 1 GB
+
+843
+00:37:04,280 --> 00:37:05,480
+elements,
+
+844
+00:37:05,480 --> 00:37:07,760
+that's a lot of threads, right? And your
+
+845
+00:37:07,760 --> 00:37:09,680
+kernel can still run.
+
+846
+00:37:09,680 --> 00:37:11,760
+So, this number is a rather flexible
+
+847
+00:37:11,760 --> 00:37:14,320
+number. The number of blocks in a kernel
+
+848
+00:37:14,320 --> 00:37:16,440
+is a rather flexible number.
+
+849
+00:37:16,440 --> 00:37:19,080
+So, you can see when we launch a kernel,
+
+850
+00:37:19,080 --> 00:37:21,080
+how many threads we start.
+
+851
+00:37:21,080 --> 00:37:23,720
+Like, we can start 1 billion threads. No
+
+852
+00:37:23,720 --> 00:37:26,040
+problem, GPU can handle that.
+
+853
+00:37:26,040 --> 00:37:28,359
+Now, of course, it cannot handle it like
+
+854
+00:37:28,359 --> 00:37:30,400
+run on them all at the same time. So,
+
+855
+00:37:30,400 --> 00:37:33,359
+there's one way to run them in different
+
+856
+00:37:33,359 --> 00:37:35,720
+ways.
+
+857
+00:37:35,720 --> 00:37:36,520
+So,
+
+858
+00:37:36,520 --> 00:37:37,880
+then,
+
+859
+00:37:37,880 --> 00:37:41,320
+why warp is so important here? Then,
+
+860
+00:37:41,320 --> 00:37:44,040
+when we program, we only program blocks
+
+861
+00:37:44,040 --> 00:37:47,640
+and threads, right? We only know like
+
+862
+00:37:47,640 --> 00:37:49,640
+the two numbers we give. Like, the
+
+863
+00:37:49,640 --> 00:37:51,560
+kernel size is the kernel size in term
+
+864
+00:37:51,560 --> 00:37:54,480
+of number blocks and the block size is
+
+865
+00:37:54,480 --> 00:37:55,840
+the block size in term of number
+
+866
+00:37:55,840 --> 00:37:59,880
+threads. Then, but this idea of warp is
+
+867
+00:37:59,880 --> 00:38:02,000
+recently added at this stage, only at
+
+868
+00:38:02,000 --> 00:38:05,040
+this stage. So, warp is not not a
+
+869
+00:38:05,040 --> 00:38:06,680
+I would say not a architecture or
+
+870
+00:38:06,680 --> 00:38:09,120
+something that a programmer should be
+
+871
+00:38:09,120 --> 00:38:11,960
+constantly aware of. And it's only at
+
+872
+00:38:11,960 --> 00:38:13,440
+the microarchitecture level or the
+
+873
+00:38:13,440 --> 00:38:15,520
+implementation level.
+
+874
+00:38:15,520 --> 00:38:17,720
+Then, it's not that pure at the
+
+875
+00:38:17,720 --> 00:38:19,200
+implementation level. Sometimes,
+
+876
+00:38:19,200 --> 00:38:20,840
+programmer needs to aware it for
+
+877
+00:38:20,840 --> 00:38:23,520
+performance tuning, but it's not that
+
+878
+00:38:23,520 --> 00:38:27,040
+important at when you write a program.
+
+879
+00:38:27,040 --> 00:38:30,040
+So, why is warp important is because the
+
+880
+00:38:30,040 --> 00:38:33,560
+GPU runs in a very special way. GPU runs
+
+881
+00:38:33,560 --> 00:38:34,800
+program
+
+882
+00:38:34,800 --> 00:38:37,120
+in a
+
+883
+00:38:37,120 --> 00:38:40,800
+we call it a SIMD style.
+
+884
+00:38:42,920 --> 00:38:46,359
+A SIMD style is for single instruction
+
+885
+00:38:46,359 --> 00:38:49,359
+multiple data.
+
+886
+00:38:49,680 --> 00:38:50,840
+Okay?
+
+887
+00:38:50,840 --> 00:38:53,640
+Single instruction multiple data.
+
+888
+00:38:53,640 --> 00:38:54,800
+Then,
+
+889
+00:38:54,800 --> 00:38:56,560
+what does that mean? I can write the
+
+890
+00:38:56,560 --> 00:38:58,640
+next instruction, you will know what is
+
+891
+00:38:58,640 --> 00:39:00,800
+single instruction multiple data. This
+
+892
+00:39:00,800 --> 00:39:03,040
+is a V. So, it's a vector.
+
+893
+00:39:03,040 --> 00:39:06,040
+Right? It's a vector and what do we do
+
+894
+00:39:06,040 --> 00:39:09,560
+is shift the left.
+
+895
+00:39:10,359 --> 00:39:12,000
+It's L
+
+896
+00:39:12,000 --> 00:39:14,520
+is logic shift left.
+
+897
+00:39:14,520 --> 00:39:16,000
+R E V
+
+898
+00:39:16,000 --> 00:39:18,080
+You can ignore this R E V. This R E V
+
+899
+00:39:18,080 --> 00:39:19,920
+allows the
+
+900
+00:39:19,920 --> 00:39:22,440
+the the operands to be written in the
+
+901
+00:39:22,440 --> 00:39:23,880
+other way.
+
+902
+00:39:23,880 --> 00:39:26,440
+Then, B64.
+
+903
+00:39:26,440 --> 00:39:29,440
+So, this is a 64-bit operation. Okay?
+
+904
+00:39:29,440 --> 00:39:32,640
+Then, what's the register is V
+
+905
+00:39:32,640 --> 00:39:35,920
+2 3
+
+906
+00:39:36,840 --> 00:39:38,840
+2
+
+907
+00:39:38,840 --> 00:39:40,240
+then V
+
+908
+00:39:40,240 --> 00:39:41,240
+2
+
+909
+00:39:41,240 --> 00:39:43,480
+3.
+
+910
+00:39:43,480 --> 00:39:46,400
+Okay? This is the operation.
+
+911
+00:39:46,400 --> 00:39:49,600
+So, first of all, what is V2?
+
+912
+00:39:49,600 --> 00:39:51,160
+V2 is a
+
+913
+00:39:51,160 --> 00:39:54,120
+So, V anything
+
+914
+00:39:54,120 --> 00:39:58,040
+is a 32-bit register. Okay?
+
+915
+00:39:58,040 --> 00:40:01,600
+So, when we say V23
+
+916
+00:40:01,600 --> 00:40:05,160
+is a 64-bit register combined by two
+
+917
+00:40:05,160 --> 00:40:06,440
+registers.
+
+918
+00:40:06,440 --> 00:40:08,760
+So, it's a number that is con- connected
+
+919
+00:40:08,760 --> 00:40:10,720
+in two adjacent registers. So, this is
+
+920
+00:40:10,720 --> 00:40:12,240
+64-bit.
+
+921
+00:40:12,240 --> 00:40:13,640
+Then, this is shifted left. So,
+
+922
+00:40:13,640 --> 00:40:15,880
+basically, it's the value that is stored
+
+923
+00:40:15,880 --> 00:40:16,760
+in
+
+924
+00:40:16,760 --> 00:40:20,520
+V23 and shifted by two and store back to
+
+925
+00:40:20,520 --> 00:40:22,960
+V23.
+
+926
+00:40:22,960 --> 00:40:25,560
+Okay, shift the shift the left by two
+
+927
+00:40:25,560 --> 00:40:27,720
+digits. That's multiplied by four.
+
+928
+00:40:27,720 --> 00:40:30,120
+Right? So, it's multi- it's a multiplied
+
+929
+00:40:30,120 --> 00:40:31,760
+by four operation.
+
+930
+00:40:31,760 --> 00:40:33,360
+But, how many multiplied by four
+
+931
+00:40:33,360 --> 00:40:36,920
+operation that we actually calculated?
+
+932
+00:40:36,920 --> 00:40:40,400
+Whenever this this line is executed,
+
+933
+00:40:40,400 --> 00:40:42,800
+since a SIMD instruction, a single
+
+934
+00:40:42,800 --> 00:40:47,080
+instruction. This is a single
+
+935
+00:40:47,360 --> 00:40:49,720
+instruction.
+
+936
+00:40:49,720 --> 00:40:55,120
+Then, when you talk about V2 or V23,
+
+937
+00:40:55,120 --> 00:40:57,480
+then
+
+938
+00:40:58,440 --> 00:41:00,880
+within a warp,
+
+939
+00:41:00,880 --> 00:41:03,280
+it can you have T thread one, thread
+
+940
+00:41:03,280 --> 00:41:05,560
+thread zero, thread one, and so on, and
+
+941
+00:41:05,560 --> 00:41:08,120
+the thread 31, right?
+
+942
+00:41:08,120 --> 00:41:10,680
+So, this one may have a value that is
+
+943
+00:41:10,680 --> 00:41:13,240
+two. This one may have a value of six.
+
+944
+00:41:13,240 --> 00:41:16,600
+This one may have a value eight and 13
+
+945
+00:41:16,600 --> 00:41:19,520
+for some for example. Okay? So, every
+
+946
+00:41:19,520 --> 00:41:21,880
+thread within this warp may have
+
+947
+00:41:21,880 --> 00:41:24,880
+different values.
+
+948
+00:41:25,080 --> 00:41:26,840
+So, they have different values,
+
+949
+00:41:26,840 --> 00:41:28,640
+right?
+
+950
+00:41:28,640 --> 00:41:31,120
+It's a it's the same it's a just we call
+
+951
+00:41:31,120 --> 00:41:33,000
+it the V2, but
+
+952
+00:41:33,000 --> 00:41:34,000
+no,
+
+953
+00:41:34,000 --> 00:41:36,000
+even in the CPU program, a different
+
+954
+00:41:36,000 --> 00:41:38,240
+thread, the same name, the register with
+
+955
+00:41:38,240 --> 00:41:39,920
+the same name storing different values
+
+956
+00:41:39,920 --> 00:41:42,840
+because they run in different cores.
+
+957
+00:41:42,840 --> 00:41:45,840
+Right? So, V2 have different value for
+
+958
+00:41:45,840 --> 00:41:47,000
+different
+
+959
+00:41:47,000 --> 00:41:48,720
+um
+
+960
+00:41:48,720 --> 00:41:51,640
+for different thread.
+
+961
+00:41:51,720 --> 00:41:55,320
+In this case, when we do shift the left,
+
+962
+00:41:55,320 --> 00:41:58,920
+then the end up V2 value will be 4,
+
+963
+00:41:58,920 --> 00:42:03,440
+12, 16, 26, and so on.
+
+964
+00:42:03,440 --> 00:42:04,720
+Okay?
+
+965
+00:42:04,720 --> 00:42:06,560
+So, that's what is called single
+
+966
+00:42:06,560 --> 00:42:10,520
+instruction multiple data.
+
+967
+00:42:12,360 --> 00:42:14,640
+Okay, so this is why GPU is super
+
+968
+00:42:14,640 --> 00:42:17,240
+powerful because it takes this thing
+
+969
+00:42:17,240 --> 00:42:20,840
+called data level
+
+970
+00:42:22,160 --> 00:42:24,760
+parallelism.
+
+971
+00:42:24,760 --> 00:42:27,040
+Okay, so that we can calculate all this
+
+972
+00:42:27,040 --> 00:42:30,000
+data at the same time.
+
+973
+00:42:30,000 --> 00:42:32,640
+So, whenever we calculate a shift the
+
+974
+00:42:32,640 --> 00:42:35,960
+left, we calculate all 32 threads
+
+975
+00:42:35,960 --> 00:42:39,040
+at the same time. So, consider in CPU,
+
+976
+00:42:39,040 --> 00:42:42,640
+we run fetch, run decode. Now, after a
+
+977
+00:42:42,640 --> 00:42:45,640
+fetch and a decode,
+
+978
+00:42:45,640 --> 00:42:48,640
+and we execute one instruction. We can
+
+979
+00:42:48,640 --> 00:42:50,840
+do one calculation.
+
+980
+00:42:50,840 --> 00:42:53,480
+Then, we write back one value, right? In
+
+981
+00:42:53,480 --> 00:42:56,120
+GPU design, it's in this way. We fetch
+
+982
+00:42:56,120 --> 00:42:57,600
+one instruction, we decode one
+
+983
+00:42:57,600 --> 00:42:59,600
+instruction.
+
+984
+00:42:59,600 --> 00:43:02,400
+We do 64 or 32 or 64 calculations,
+
+985
+00:43:02,400 --> 00:43:04,440
+depends on the warp size.
+
+986
+00:43:04,440 --> 00:43:06,320
+Right?
+
+987
+00:43:06,320 --> 00:43:10,040
+So, that the average cost for decoding,
+
+988
+00:43:10,040 --> 00:43:13,040
+control, and for
+
+989
+00:43:13,040 --> 00:43:15,280
+uh fetching an instruction is much lower
+
+990
+00:43:15,280 --> 00:43:17,840
+because you
+
+991
+00:43:17,840 --> 00:43:19,840
+you fetch once, you decode once, and it
+
+992
+00:43:19,840 --> 00:43:22,480
+applies to 32 numbers. For per number,
+
+993
+00:43:22,480 --> 00:43:24,520
+per calculation, your fetch and decode
+
+994
+00:43:24,520 --> 00:43:27,320
+cost is much lower. That's why GPU can
+
+995
+00:43:27,320 --> 00:43:29,960
+really put a lot of resources only on
+
+996
+00:43:29,960 --> 00:43:33,680
+compute and can make the control flow
+
+997
+00:43:33,680 --> 00:43:35,720
+really simple.
+
+998
+00:43:35,720 --> 00:43:38,120
+Okay?
+
+999
+00:43:40,000 --> 00:43:42,040
+Then, other than SIMD, then you can
+
+1000
+00:43:42,040 --> 00:43:43,840
+think of all four different
+
+1001
+00:43:43,840 --> 00:43:47,920
+combinations, right? So, you have SISD.
+
+1002
+00:43:47,920 --> 00:43:51,720
+You can have MIMD.
+
+1003
+00:43:51,720 --> 00:43:53,560
+Then, you have
+
+1004
+00:43:53,560 --> 00:43:56,480
+MISD.
+
+1005
+00:43:57,160 --> 00:43:58,160
+Okay?
+
+1006
+00:43:58,160 --> 00:44:00,440
+Multiple instruction single data.
+
+1007
+00:44:00,440 --> 00:44:03,120
+Then, this is possible. Then,
+
+1008
+00:44:03,120 --> 00:44:04,800
+we want to
+
+1009
+00:44:04,800 --> 00:44:06,880
+like say one piece of data, then in one
+
+1010
+00:44:06,880 --> 00:44:09,040
+cycle, want to process multiple
+
+1011
+00:44:09,040 --> 00:44:11,680
+operations. Then, then
+
+1012
+00:44:11,680 --> 00:44:13,800
+it's all these things are possible.
+
+1013
+00:44:13,800 --> 00:44:16,240
+Okay, that's SISD, a typical CPU
+
+1014
+00:44:16,240 --> 00:44:19,000
+architecture is considered SISD.
+
+1015
+00:44:19,000 --> 00:44:21,960
+Then, MIMD, if you consider multi-cores
+
+1016
+00:44:21,960 --> 00:44:23,840
+or SIMD.
+
+1017
+00:44:23,840 --> 00:44:25,120
+Okay?
+
+1018
+00:44:25,120 --> 00:44:27,200
+Right, multi-core. So, different if each
+
+1019
+00:44:27,200 --> 00:44:29,120
+core is running different instructions
+
+1020
+00:44:29,120 --> 00:44:30,520
+and they're processing different data.
+
+1021
+00:44:30,520 --> 00:44:32,359
+So, they're not The instruction and data
+
+1022
+00:44:32,359 --> 00:44:34,160
+are not related.
+
+1023
+00:44:34,160 --> 00:44:36,880
+Then, other than this term, if you read
+
+1024
+00:44:36,880 --> 00:44:39,000
+papers, you may also see other papers
+
+1025
+00:44:39,000 --> 00:44:43,160
+saying GPU is something called a SIMT
+
+1026
+00:44:43,160 --> 00:44:44,440
+uh
+
+1027
+00:44:44,440 --> 00:44:47,560
+in- SIMT
+
+1028
+00:44:47,560 --> 00:44:48,720
+structure.
+
+1029
+00:44:48,720 --> 00:44:51,240
+That's T here means single instruction
+
+1030
+00:44:51,240 --> 00:44:52,680
+multiple thread.
+
+1031
+00:44:52,680 --> 00:44:54,960
+Okay? So, here because we have multiple
+
+1032
+00:44:54,960 --> 00:44:56,400
+threads and
+
+1033
+00:44:56,400 --> 00:44:59,000
+then in in theory, this is more suitable
+
+1034
+00:44:59,000 --> 00:45:01,080
+for the AVX
+
+1035
+00:45:01,080 --> 00:45:03,359
+instruction set. If you know what is AVX
+
+1036
+00:45:03,359 --> 00:45:05,960
+AVX instruction set, yes, this is CPU
+
+1037
+00:45:05,960 --> 00:45:08,400
+extension for vectorized operation.
+
+1038
+00:45:08,400 --> 00:45:11,480
+Then, GPU is more SIMT style because
+
+1039
+00:45:11,480 --> 00:45:12,880
+each thread each instruction is
+
+1040
+00:45:12,880 --> 00:45:14,880
+controlling multiple thread. But, I
+
+1041
+00:45:14,880 --> 00:45:16,160
+don't want to
+
+1042
+00:45:16,160 --> 00:45:18,600
+tell very different like if you say GPU
+
+1043
+00:45:18,600 --> 00:45:21,520
+is a SIMD instruc- SIMD architecture,
+
+1044
+00:45:21,520 --> 00:45:23,960
+everyone will agree with that. Okay? So,
+
+1045
+00:45:23,960 --> 00:45:25,359
+just someone will using this term,
+
+1046
+00:45:25,359 --> 00:45:28,600
+someone will using this term.
+
+1047
+00:45:29,400 --> 00:45:30,640
+Okay?
+
+1048
+00:45:30,640 --> 00:45:31,680
+So,
+
+1049
+00:45:31,680 --> 00:45:34,520
+then what is a vector and scalar? Come
+
+1050
+00:45:34,520 --> 00:45:37,359
+back to this point. A vector is really a
+
+1051
+00:45:37,359 --> 00:45:39,560
+SIMD instruction.
+
+1052
+00:45:39,560 --> 00:45:40,760
+So,
+
+1053
+00:45:40,760 --> 00:45:44,359
+we really are doing 32 or 64 operations
+
+1054
+00:45:44,359 --> 00:45:46,320
+with one instruction.
+
+1055
+00:45:46,320 --> 00:45:47,720
+But, sometimes
+
+1056
+00:45:47,720 --> 00:45:49,440
+all the threads are doing the same
+
+1057
+00:45:49,440 --> 00:45:51,240
+operation. For example, load in this
+
+1058
+00:45:51,240 --> 00:45:53,960
+case, we can load the same thing.
+
+1059
+00:45:53,960 --> 00:45:56,040
+We we are really only loading the same
+
+1060
+00:45:56,040 --> 00:45:59,359
+thing. And what is loading here? It's
+
+1061
+00:45:59,359 --> 00:46:01,600
+actually loading
+
+1062
+00:46:01,600 --> 00:46:03,480
+I think it's loading this thing, if I'm
+
+1063
+00:46:03,480 --> 00:46:05,520
+right.
+
+1064
+00:46:05,520 --> 00:46:08,720
+Yeah, it's loading this these things.
+
+1065
+00:46:08,720 --> 00:46:10,960
+So, it's loading the in pointer and out
+
+1066
+00:46:10,960 --> 00:46:12,120
+pointer.
+
+1067
+00:46:12,120 --> 00:46:14,800
+In this case, we have a scalar
+
+1068
+00:46:14,800 --> 00:46:16,720
+instruction. In this scalar instruction,
+
+1069
+00:46:16,720 --> 00:46:19,960
+we use a special scalar unit to say,
+
+1070
+00:46:19,960 --> 00:46:22,040
+"Oh, I only want want to run one
+
+1071
+00:46:22,040 --> 00:46:25,800
+operation for this the whole 64 thread."
+
+1072
+00:46:25,800 --> 00:46:29,760
+And that comes to this S registers.
+
+1073
+00:46:29,760 --> 00:46:32,720
+So, S registers are shared within a
+
+1074
+00:46:32,720 --> 00:46:34,320
+warp.
+
+1075
+00:46:34,320 --> 00:46:36,720
+Okay? Are shared within a warp, not a
+
+1076
+00:46:36,720 --> 00:46:39,800
+block. Are shared within a warp. So,
+
+1077
+00:46:39,800 --> 00:46:41,080
+let's say
+
+1078
+00:46:41,080 --> 00:46:44,000
+Here, we say
+
+1079
+00:46:44,000 --> 00:46:45,520
+within a warp.
+
+1080
+00:46:45,520 --> 00:46:47,920
+Then,
+
+1081
+00:46:50,040 --> 00:46:51,680
+I need to change here.
+
+1082
+00:46:51,680 --> 00:46:53,160
+For S2,
+
+1083
+00:46:53,160 --> 00:46:55,560
+okay?
+
+1084
+00:46:55,560 --> 00:46:59,200
+T1, you are storing value two. T2, you
+
+1085
+00:46:59,200 --> 00:47:01,600
+are also storing value two, and they're
+
+1086
+00:47:01,600 --> 00:47:03,760
+all value two. Okay, they must store the
+
+1087
+00:47:03,760 --> 00:47:05,840
+same value. And actually, in hardware,
+
+1088
+00:47:05,840 --> 00:47:08,240
+there's only one register there. So,
+
+1089
+00:47:08,240 --> 00:47:10,800
+it's a shared register space like
+
+1090
+00:47:10,800 --> 00:47:13,720
+everyone can use.
+
+1091
+00:47:13,760 --> 00:47:16,280
+Okay, let's search scalar operation. In
+
+1092
+00:47:16,280 --> 00:47:17,920
+this case, what we're doing? So, you
+
+1093
+00:47:17,920 --> 00:47:22,520
+see, we start with accessing S45.
+
+1094
+00:47:22,520 --> 00:47:24,600
+And S45
+
+1095
+00:47:24,600 --> 00:47:26,760
+is
+
+1096
+00:47:26,760 --> 00:47:29,280
+kind of hardcoded at this moment because
+
+1097
+00:47:29,280 --> 00:47:31,080
+we know the
+
+1098
+00:47:31,080 --> 00:47:33,760
+hardware will start this thread with a
+
+1099
+00:47:33,760 --> 00:47:36,080
+register value already set.
+
+1100
+00:47:36,080 --> 00:47:38,680
+What is storing? I think it's storing
+
+1101
+00:47:38,680 --> 00:47:42,080
+a pointer to this region of memory that
+
+1102
+00:47:42,080 --> 00:47:45,120
+is called kernel
+
+1103
+00:47:45,120 --> 00:47:47,480
+argument.
+
+1104
+00:47:47,480 --> 00:47:50,440
+And it's basically using four byte or
+
+1105
+00:47:50,440 --> 00:47:53,080
+eight byte to to store this
+
+1106
+00:47:53,080 --> 00:47:54,760
+to this pointer and eight byte to store
+
+1107
+00:47:54,760 --> 00:47:58,240
+this register. And see here, GPU wants
+
+1108
+00:47:58,240 --> 00:48:00,160
+to do parallel operation, right? In
+
+1109
+00:48:00,160 --> 00:48:02,160
+RISC-V, we load one
+
+1110
+00:48:02,160 --> 00:48:03,960
+word.
+
+1111
+00:48:03,960 --> 00:48:06,080
+Now, here we're loading
+
+1112
+00:48:06,080 --> 00:48:08,400
+double word by four.
+
+1113
+00:48:08,400 --> 00:48:09,080
+Well,
+
+1114
+00:48:09,080 --> 00:48:11,320
+that's why I say I hate the the term of
+
+1115
+00:48:11,320 --> 00:48:12,760
+word. Then,
+
+1116
+00:48:12,760 --> 00:48:16,480
+in RISC-V, when we say word is 32-bit.
+
+1117
+00:48:16,480 --> 00:48:20,520
+In GPU, in AMD GPU, a word is 16-bit.
+
+1118
+00:48:20,520 --> 00:48:21,880
+So, double
+
+1119
+00:48:21,880 --> 00:48:24,880
+16-bit. So, D word, double word, is a
+
+1120
+00:48:24,880 --> 00:48:27,280
+32-bit value. So, we're loading four
+
+1121
+00:48:27,280 --> 00:48:28,880
+registers
+
+1122
+00:48:28,880 --> 00:48:30,960
+at the same time with one instruction.
+
+1123
+00:48:30,960 --> 00:48:34,440
+Then, basically, we'll end up with S12
+
+1124
+00:48:34,440 --> 00:48:40,000
+with 01 is float in and S12
+
+1125
+00:48:40,000 --> 00:48:44,120
+is float out. Is okay. So, just load all
+
+1126
+00:48:44,120 --> 00:48:45,800
+of them together. It's an optimization
+
+1127
+00:48:45,800 --> 00:48:47,840
+rather than using two instructions to
+
+1128
+00:48:47,840 --> 00:48:49,800
+load them.
+
+1129
+00:48:49,800 --> 00:48:52,160
+Okay?
+
+1130
+00:48:53,040 --> 00:48:56,200
+So, I can
+
+1131
+00:48:56,200 --> 00:48:59,280
+um I think I can skip some instructions
+
+1132
+00:48:59,280 --> 00:49:01,320
+and directly jump to the most important
+
+1133
+00:49:01,320 --> 00:49:03,720
+part.
+
+1134
+00:49:04,520 --> 00:49:07,080
+Um wait. Let me let me introduce this
+
+1135
+00:49:07,080 --> 00:49:09,000
+one. I think this one is important. The
+
+1136
+00:49:09,000 --> 00:49:12,840
+next one is a S wait
+
+1137
+00:49:12,880 --> 00:49:15,120
+count.
+
+1138
+00:49:15,120 --> 00:49:18,000
+Um CNT, wait count. Okay, it's waiting
+
+1139
+00:49:18,000 --> 00:49:20,400
+for a counter.
+
+1140
+00:49:20,400 --> 00:49:22,880
+And I really hate this name.
+
+1141
+00:49:22,880 --> 00:49:24,800
+LGKM
+
+1142
+00:49:24,800 --> 00:49:26,840
+CNT
+
+1143
+00:49:26,840 --> 00:49:29,200
+zero.
+
+1144
+00:49:29,200 --> 00:49:31,760
+It's AMD assembly. Okay?
+
+1145
+00:49:31,760 --> 00:49:32,760
+Um
+
+1146
+00:49:32,760 --> 00:49:36,080
+So, what does it mean?
+
+1147
+00:49:36,080 --> 00:49:38,680
+And let me write down the next one.
+
+1148
+00:49:38,680 --> 00:49:41,200
+S ADD
+
+1149
+00:49:41,200 --> 00:49:42,640
+Oh, this is finally something that we're
+
+1150
+00:49:42,640 --> 00:49:46,440
+familiar with, right? U32
+
+1151
+00:49:46,480 --> 00:49:48,240
+S0
+
+1152
+00:49:48,240 --> 00:49:50,520
+16
+
+1153
+00:49:50,520 --> 00:49:53,120
+S0
+
+1154
+00:49:53,120 --> 00:49:56,480
+S ADDC
+
+1155
+00:49:56,480 --> 00:49:59,400
+U32
+
+1156
+00:50:00,040 --> 00:50:01,400
+S1
+
+1157
+00:50:01,400 --> 00:50:04,880
+0 S1
+
+1158
+00:50:06,400 --> 00:50:07,680
+Okay.
+
+1159
+00:50:07,680 --> 00:50:10,400
+So, you can see there's a dependency.
+
+1160
+00:50:10,400 --> 00:50:13,280
+What is a dependency? It's here, this
+
+1161
+00:50:13,280 --> 00:50:15,320
+value
+
+1162
+00:50:15,320 --> 00:50:18,080
+and is being used at here, right? So,
+
+1163
+00:50:18,080 --> 00:50:19,920
+there's a dependency
+
+1164
+00:50:19,920 --> 00:50:22,240
+here.
+
+1165
+00:50:22,720 --> 00:50:25,080
+Right? And
+
+1166
+00:50:25,080 --> 00:50:27,000
+it the the lecture that we should talk
+
+1167
+00:50:27,000 --> 00:50:28,560
+about today is to talk about the
+
+1168
+00:50:28,560 --> 00:50:30,880
+dependency in CPU architectures. But
+
+1169
+00:50:30,880 --> 00:50:33,120
+here in GPUs, we also have this
+
+1170
+00:50:33,120 --> 00:50:34,280
+dependency.
+
+1171
+00:50:34,280 --> 00:50:36,040
+And there's no dependency in this line
+
+1172
+00:50:36,040 --> 00:50:40,080
+of code, V23 or V23, and they can just
+
+1173
+00:50:40,080 --> 00:50:44,120
+do it on their own. Right? So, V23
+
+1174
+00:50:44,120 --> 00:50:46,120
+multiplied by four has no dependency
+
+1175
+00:50:46,120 --> 00:50:48,280
+with this line of code.
+
+1176
+00:50:48,280 --> 00:50:51,760
+So, how AMD GPU is handling this one is
+
+1177
+00:50:51,760 --> 00:50:54,000
+this instruction is executed
+
+1178
+00:50:54,000 --> 00:50:55,760
+and when it's executed, it will send
+
+1179
+00:50:55,760 --> 00:50:58,520
+some request into the memory system.
+
+1180
+00:50:58,520 --> 00:51:00,800
+So, GPU memory system is much more
+
+1181
+00:51:00,800 --> 00:51:01,960
+slower
+
+1182
+00:51:01,960 --> 00:51:04,040
+and then the CPU memory system, and you
+
+1183
+00:51:04,040 --> 00:51:07,280
+cannot really set the memory as one
+
+1184
+00:51:07,280 --> 00:51:09,160
+cycle as one
+
+1185
+00:51:09,160 --> 00:51:11,560
+uh pipeline stage. It has to send some
+
+1186
+00:51:11,560 --> 00:51:13,360
+requests out and wait for some time
+
+1187
+00:51:13,360 --> 00:51:16,280
+until the result will come up come back.
+
+1188
+00:51:16,280 --> 00:51:17,240
+Okay.
+
+1189
+00:51:17,240 --> 00:51:19,760
+So, in that case
+
+1190
+00:51:19,760 --> 00:51:22,040
+this instruction may take very long
+
+1191
+00:51:22,040 --> 00:51:24,120
+time, hundreds of cycles.
+
+1192
+00:51:24,120 --> 00:51:25,520
+Possible.
+
+1193
+00:51:25,520 --> 00:51:27,320
+Then
+
+1194
+00:51:27,320 --> 00:51:29,600
+we may have some opportunity to execute
+
+1195
+00:51:29,600 --> 00:51:32,800
+the next instruction.
+
+1196
+00:51:33,240 --> 00:51:34,200
+Right?
+
+1197
+00:51:34,200 --> 00:51:36,280
+We may have the opportunity before this
+
+1198
+00:51:36,280 --> 00:51:38,400
+data to return, we can start execute
+
+1199
+00:51:38,400 --> 00:51:39,920
+this line of code.
+
+1200
+00:51:39,920 --> 00:51:41,880
+Now, we line we run this line of code
+
+1201
+00:51:41,880 --> 00:51:44,680
+while waiting for this to return.
+
+1202
+00:51:44,680 --> 00:51:45,560
+Okay.
+
+1203
+00:51:45,560 --> 00:51:49,160
+But if we execute this line of code
+
+1204
+00:51:49,160 --> 00:51:51,400
+before this data return, we may use some
+
+1205
+00:51:51,400 --> 00:51:53,160
+garbage data.
+
+1206
+00:51:53,160 --> 00:51:55,280
+In that case, we have to make sure that
+
+1207
+00:51:55,280 --> 00:51:57,960
+this data is returned. So, when we send
+
+1208
+00:51:57,960 --> 00:52:00,480
+out a load instruction, when we send out
+
+1209
+00:52:00,480 --> 00:52:03,200
+a load read request to the memory system
+
+1210
+00:52:03,200 --> 00:52:06,600
+we add this counter by one.
+
+1211
+00:52:06,600 --> 00:52:09,160
+Okay. Now, when this data returns, we
+
+1212
+00:52:09,160 --> 00:52:11,760
+reduce this counter by one.
+
+1213
+00:52:11,760 --> 00:52:14,720
+So, waiting to be zero means we wait
+
+1214
+00:52:14,720 --> 00:52:18,040
+until this counter to fall fall at zero
+
+1215
+00:52:18,040 --> 00:52:20,240
+or below zero, and of of course, for
+
+1216
+00:52:20,240 --> 00:52:22,040
+zero, it cannot be below zero, but if
+
+1217
+00:52:22,040 --> 00:52:24,480
+it's a real number, it had it can be
+
+1218
+00:52:24,480 --> 00:52:26,720
+below that number.
+
+1219
+00:52:26,720 --> 00:52:28,520
+Okay.
+
+1220
+00:52:28,520 --> 00:52:31,360
+So, in this case, this is a compiler
+
+1221
+00:52:31,360 --> 00:52:33,720
+added synchronization. Say, at this
+
+1222
+00:52:33,720 --> 00:52:36,400
+point, we have to wait the prior memory
+
+1223
+00:52:36,400 --> 00:52:38,880
+access to return, then we can continue.
+
+1224
+00:52:38,880 --> 00:52:42,120
+This is our synchronization.
+
+1225
+00:52:42,880 --> 00:52:45,000
+Okay. So, with this synchronization,
+
+1226
+00:52:45,000 --> 00:52:47,200
+what's So, what So, by the way, what it
+
+1227
+00:52:47,200 --> 00:52:49,800
+does is basically S
+
+1228
+00:52:49,800 --> 00:52:51,080
+0
+
+1229
+00:52:51,080 --> 00:52:56,720
+1 plus 16 and store it back to S 0 and
+
+1230
+00:52:56,720 --> 00:52:57,720
+1.
+
+1231
+00:52:57,720 --> 00:53:01,440
+Right? So, ADD do not consider carry.
+
+1232
+00:53:01,440 --> 00:53:03,600
+ADDC consider the carry from the
+
+1233
+00:53:03,600 --> 00:53:05,400
+previous instruction.
+
+1234
+00:53:05,400 --> 00:53:07,720
+Then it's adding zero is only for the
+
+1235
+00:53:07,720 --> 00:53:09,600
+carry, just in case
+
+1236
+00:53:09,600 --> 00:53:12,800
+the carry is non-zero.
+
+1237
+00:53:12,880 --> 00:53:15,440
+Okay. So, these two instructions are add
+
+1238
+00:53:15,440 --> 00:53:18,000
+is a 64-bit add instruction. So, use two
+
+1239
+00:53:18,000 --> 00:53:21,160
+instructions to mimic a 16 64-bit
+
+1240
+00:53:21,160 --> 00:53:23,720
+operation.
+
+1241
+00:53:24,600 --> 00:53:27,000
+Okay.
+
+1242
+00:53:29,280 --> 00:53:30,920
+Then
+
+1243
+00:53:30,920 --> 00:53:33,600
+let's keep going.
+
+1244
+00:53:38,280 --> 00:53:40,400
+Let's assume we have all the
+
+1245
+00:53:40,400 --> 00:53:42,160
+addresses calculated. We know the
+
+1246
+00:53:42,160 --> 00:53:44,080
+addresses that we need to calculate. So,
+
+1247
+00:53:44,080 --> 00:53:46,000
+the next thing is we need to load the
+
+1248
+00:53:46,000 --> 00:53:46,960
+data.
+
+1249
+00:53:46,960 --> 00:53:49,840
+In that case, AMD uses something called
+
+1250
+00:53:49,840 --> 00:53:52,440
+global
+
+1251
+00:53:52,440 --> 00:53:54,880
+load.
+
+1252
+00:53:55,720 --> 00:53:58,640
+Then in earlier version, you may also
+
+1253
+00:53:58,640 --> 00:54:00,800
+see something like flat load, but that's
+
+1254
+00:54:00,800 --> 00:54:02,880
+just use global load here.
+
+1255
+00:54:02,880 --> 00:54:06,400
+Global load D word
+
+1256
+00:54:07,720 --> 00:54:09,880
+and where we're storing, we're storing
+
+1257
+00:54:09,880 --> 00:54:14,600
+in V4, and our input is V0 and 1.
+
+1258
+00:54:14,600 --> 00:54:17,359
+No offset.
+
+1259
+00:54:17,520 --> 00:54:19,480
+Then you see
+
+1260
+00:54:19,480 --> 00:54:21,880
+if it's a S instruction, it can only use
+
+1261
+00:54:21,880 --> 00:54:23,320
+S register.
+
+1262
+00:54:23,320 --> 00:54:25,840
+If it's a V instruction, it can use both
+
+1263
+00:54:25,840 --> 00:54:28,760
+S S and V register.
+
+1264
+00:54:28,760 --> 00:54:30,359
+In that case, although it's not saying
+
+1265
+00:54:30,359 --> 00:54:33,720
+if it's a V or S instruction, since it's
+
+1266
+00:54:33,720 --> 00:54:37,680
+used a V register, it's a vector load.
+
+1267
+00:54:37,680 --> 00:54:40,280
+Okay. Vector load means
+
+1268
+00:54:40,280 --> 00:54:42,040
+every thread
+
+1269
+00:54:42,040 --> 00:54:44,840
+may have a different address.
+
+1270
+00:54:44,840 --> 00:54:47,800
+Now, if this is a warp of 32
+
+1271
+00:54:47,800 --> 00:54:51,040
+uh 32 thread, we may be issuing 32
+
+1272
+00:54:51,040 --> 00:54:53,840
+memory read request to the memory system
+
+1273
+00:54:53,840 --> 00:54:57,600
+and wait for 32 piece of data to return.
+
+1274
+00:54:57,600 --> 00:54:58,440
+Okay.
+
+1275
+00:54:58,440 --> 00:55:00,560
+So, you see the amount of memory
+
+1276
+00:55:00,560 --> 00:55:02,640
+transaction that GPU loads a lot of
+
+1277
+00:55:02,640 --> 00:55:04,680
+memory and calculates a lot of data and
+
+1278
+00:55:04,680 --> 00:55:06,600
+stores a lot of data back to the memory
+
+1279
+00:55:06,600 --> 00:55:08,160
+system.
+
+1280
+00:55:08,160 --> 00:55:09,160
+Okay.
+
+1281
+00:55:09,160 --> 00:55:11,359
+So, and eventually the result is stored
+
+1282
+00:55:11,359 --> 00:55:13,560
+in V4.
+
+1283
+00:55:13,560 --> 00:55:14,440
+Then
+
+1284
+00:55:14,440 --> 00:55:17,200
+interesting thing happens here is
+
+1285
+00:55:17,200 --> 00:55:20,120
+there's a V move.
+
+1286
+00:55:20,160 --> 00:55:23,640
+There's a V ADD ADD and there's a V
+
+1287
+00:55:23,640 --> 00:55:25,840
+ADDC.
+
+1288
+00:55:25,840 --> 00:55:28,120
+I will not I will not write the full
+
+1289
+00:55:28,120 --> 00:55:31,040
+instruction but I can tell you this is a
+
+1290
+00:55:31,040 --> 00:55:33,880
+calculating the output address.
+
+1291
+00:55:33,880 --> 00:55:35,280
+Okay.
+
+1292
+00:55:35,280 --> 00:55:36,520
+Then
+
+1293
+00:55:36,520 --> 00:55:38,000
+these instructions, since we're
+
+1294
+00:55:38,000 --> 00:55:39,960
+calculating the output address, they
+
+1295
+00:55:39,960 --> 00:55:42,200
+have nothing to do with V4.
+
+1296
+00:55:42,200 --> 00:55:45,040
+V4 is the data that we loaded. So, we
+
+1297
+00:55:45,040 --> 00:55:46,000
+can
+
+1298
+00:55:46,000 --> 00:55:48,440
+before this one to returns, we can just
+
+1299
+00:55:48,440 --> 00:55:50,000
+do the calculation.
+
+1300
+00:55:50,000 --> 00:55:52,160
+Right? There's no dependency.
+
+1301
+00:55:52,160 --> 00:55:53,200
+Then
+
+1302
+00:55:53,200 --> 00:55:54,960
+here we do S
+
+1303
+00:55:54,960 --> 00:55:57,720
+wait count.
+
+1304
+00:55:59,640 --> 00:56:01,720
+In this case, we're waiting for this
+
+1305
+00:56:01,720 --> 00:56:05,400
+counter called VMCNT.
+
+1306
+00:56:06,800 --> 00:56:10,080
+So, VM is for vector memory.
+
+1307
+00:56:10,080 --> 00:56:13,680
+LGKM is for local global constant
+
+1308
+00:56:13,680 --> 00:56:15,040
+memory.
+
+1309
+00:56:15,040 --> 00:56:17,280
+Uh so, they share this different memory
+
+1310
+00:56:17,280 --> 00:56:19,040
+system shares
+
+1311
+00:56:19,040 --> 00:56:21,320
+a one counter.
+
+1312
+00:56:21,320 --> 00:56:22,200
+So,
+
+1313
+00:56:22,200 --> 00:56:24,760
+you can consider this way. S
+
+1314
+00:56:24,760 --> 00:56:27,960
+load uses this counter. V load uses that
+
+1315
+00:56:27,960 --> 00:56:29,600
+counter.
+
+1316
+00:56:29,600 --> 00:56:30,520
+Okay.
+
+1317
+00:56:30,520 --> 00:56:33,920
+So, different counters.
+
+1318
+00:56:34,680 --> 00:56:36,480
+Then
+
+1319
+00:56:36,480 --> 00:56:38,080
+we don't need to do calculation.
+
+1320
+00:56:38,080 --> 00:56:42,359
+Eventually, we do a global
+
+1321
+00:56:42,760 --> 00:56:45,280
+store.
+
+1322
+00:56:45,680 --> 00:56:47,880
+Remember, this is a simple
+
+1323
+00:56:47,880 --> 00:56:49,880
+um
+
+1324
+00:56:49,880 --> 00:56:52,440
+this is a simple
+
+1325
+00:56:52,440 --> 00:56:54,359
+like a data movement kernel, right? So,
+
+1326
+00:56:54,359 --> 00:56:56,359
+we can do global store
+
+1327
+00:56:56,359 --> 00:56:58,880
+D word.
+
+1328
+00:57:00,720 --> 00:57:02,440
+V4
+
+1329
+00:57:02,440 --> 00:57:05,200
+and V 0 and 1.
+
+1330
+00:57:05,200 --> 00:57:07,520
+So, V01 stores the new
+
+1331
+00:57:07,520 --> 00:57:10,280
+uh new address, the destination address,
+
+1332
+00:57:10,280 --> 00:57:12,400
+and V4 is from here.
+
+1333
+00:57:12,400 --> 00:57:14,400
+So, we directly store.
+
+1334
+00:57:14,400 --> 00:57:16,720
+Okay.
+
+1335
+00:57:16,960 --> 00:57:19,160
+So, then we're done with this program.
+
+1336
+00:57:19,160 --> 00:57:20,640
+At the end
+
+1337
+00:57:20,640 --> 00:57:23,240
+we always add an instruction, a scalar
+
+1338
+00:57:23,240 --> 00:57:26,320
+instruction called end
+
+1339
+00:57:26,320 --> 00:57:28,760
+program.
+
+1340
+00:57:28,840 --> 00:57:29,840
+Okay.
+
+1341
+00:57:29,840 --> 00:57:31,760
+That's basically how this type of kernel
+
+1342
+00:57:31,760 --> 00:57:35,160
+is implemented.
+
+1343
+00:57:37,640 --> 00:57:40,400
+Okay. Any question?
+
+1344
+00:57:40,400 --> 00:57:42,920
+So, I think the most important part
+
+1345
+00:57:42,920 --> 00:57:44,600
+is
+
+1346
+00:57:44,600 --> 00:57:46,160
+the difference between vector and S
+
+1347
+00:57:46,160 --> 00:57:47,800
+instructions
+
+1348
+00:57:47,800 --> 00:57:49,240
+and
+
+1349
+00:57:49,240 --> 00:57:51,840
+the use of S wait count and why S wait
+
+1350
+00:57:51,840 --> 00:57:54,359
+count is used here.
+
+1351
+00:57:54,359 --> 00:57:57,720
+Right? And question? Wait, and you said
+
+1352
+00:57:57,720 --> 00:57:59,720
+that the video doesn't have
+
+1353
+00:57:59,720 --> 00:58:01,960
+scalar and vector instructions. Yeah. Is
+
+1354
+00:58:01,960 --> 00:58:03,280
+that it?
+
+1355
+00:58:03,280 --> 00:58:05,400
+So, um Nvidia doesn't have scalar and
+
+1356
+00:58:05,400 --> 00:58:06,920
+vector instructions, just consider all
+
+1357
+00:58:06,920 --> 00:58:08,000
+the instructions are vector
+
+1358
+00:58:08,000 --> 00:58:09,880
+instructions. So, they don't mind just
+
+1359
+00:58:09,880 --> 00:58:11,880
+do it for 64 times.
+
+1360
+00:58:11,880 --> 00:58:13,760
+They think a simpler core design is
+
+1361
+00:58:13,760 --> 00:58:15,760
+probably more important than this
+
+1362
+00:58:15,760 --> 00:58:19,640
+clever optimization. So, they just
+
+1363
+00:58:19,640 --> 00:58:22,359
+do it for 32 times. It's probably not
+
+1364
+00:58:22,359 --> 00:58:24,000
+that bad.
+
+1365
+00:58:24,000 --> 00:58:26,359
+Okay.
+
+1366
+00:58:27,200 --> 00:58:29,400
+Um
+
+1367
+00:58:29,400 --> 00:58:31,800
+and I'm not even not sure that Nvidia
+
+1368
+00:58:31,800 --> 00:58:34,840
+has something like S wait count.
+
+1369
+00:58:34,840 --> 00:58:36,240
+So,
+
+1370
+00:58:36,240 --> 00:58:38,600
+um
+
+1371
+00:58:39,680 --> 00:58:42,080
+this needs some work to understand how
+
+1372
+00:58:42,080 --> 00:58:43,240
+Nvidia
+
+1373
+00:58:43,240 --> 00:58:45,480
+do this, and I never
+
+1374
+00:58:45,480 --> 00:58:46,800
+dive that deep into Nvidia
+
+1375
+00:58:46,800 --> 00:58:48,240
+microarchitecture. So, I don't know how
+
+1376
+00:58:48,240 --> 00:58:50,400
+they handle memory access
+
+1377
+00:58:50,400 --> 00:58:53,200
+synchronization.
+
+1378
+00:58:53,680 --> 00:58:56,960
+Okay. So, S and V and the Y wait count
+
+1379
+00:58:56,960 --> 00:59:00,120
+is added is the important part uh for
+
+1380
+00:59:00,120 --> 00:59:02,200
+GPU architecture, and especially the
+
+1381
+00:59:02,200 --> 00:59:05,200
+difference is especially the concept of
+
+1382
+00:59:05,200 --> 00:59:07,600
+SIMD instruction is the most important
+
+1383
+00:59:07,600 --> 00:59:10,359
+thing that you need to remember.
+
+1384
+00:59:10,359 --> 00:59:12,240
+Then
+
+1385
+00:59:12,240 --> 00:59:14,960
+let's do this.
+
+1386
+00:59:15,560 --> 00:59:17,800
+Just make this program slightly more
+
+1387
+00:59:17,800 --> 00:59:19,680
+complex.
+
+1388
+00:59:19,680 --> 00:59:21,320
+Now, I know what you're thinking about
+
+1389
+00:59:21,320 --> 00:59:23,640
+how we can handle conditions and how we
+
+1390
+00:59:23,640 --> 00:59:27,440
+can handle loops, right? So,
+
+1391
+00:59:27,440 --> 00:59:30,440
+loops are easier. Conditions are more
+
+1392
+00:59:30,440 --> 00:59:34,040
+difficult. Let's consider this kernel
+
+1393
+00:59:34,040 --> 00:59:35,360
+called
+
+1394
+00:59:35,360 --> 00:59:38,280
+condition copy.
+
+1395
+00:59:39,920 --> 00:59:42,880
+Okay, then condition copy we still have
+
+1396
+00:59:42,880 --> 00:59:44,640
+a in
+
+1397
+00:59:44,640 --> 00:59:47,000
+and out.
+
+1398
+00:59:47,000 --> 00:59:49,600
+And in my example I'm using double here.
+
+1399
+00:59:49,600 --> 00:59:50,800
+Although it's probably not that
+
+1400
+00:59:50,800 --> 00:59:51,880
+important.
+
+1401
+00:59:51,880 --> 00:59:55,400
+Then still I have a in
+
+1402
+00:59:55,400 --> 00:59:58,200
+GID global ID and it's calculated by
+
+1403
+00:59:58,200 --> 00:59:59,880
+that
+
+1404
+00:59:59,880 --> 01:00:01,400
+expression.
+
+1405
+01:00:01,400 --> 01:00:05,640
+And here we want to write if
+
+1406
+01:00:06,200 --> 01:00:07,520
+in
+
+1407
+01:00:07,520 --> 01:00:10,240
+GID
+
+1408
+01:00:10,400 --> 01:00:13,560
+greater than zero
+
+1409
+01:00:16,080 --> 01:00:18,960
+then out
+
+1410
+01:00:18,960 --> 01:00:20,920
+GID
+
+1411
+01:00:20,920 --> 01:00:22,640
+equals to
+
+1412
+01:00:22,640 --> 01:00:25,480
+in GID.
+
+1413
+01:00:27,000 --> 01:00:28,440
+Then
+
+1414
+01:00:28,440 --> 01:00:31,440
+if we know the output is initialized to
+
+1415
+01:00:31,440 --> 01:00:34,960
+be zero, this is pretty much a rather
+
+1416
+01:00:34,960 --> 01:00:36,920
+implementation, right?
+
+1417
+01:00:36,920 --> 01:00:38,280
+Um
+
+1418
+01:00:38,280 --> 01:00:39,640
+So let's see
+
+1419
+01:00:39,640 --> 01:00:43,200
+how this one is implemented.
+
+1420
+01:00:47,600 --> 01:00:48,600
+Okay.
+
+1421
+01:00:48,600 --> 01:00:50,600
+So we will skip this part. At the
+
+1422
+01:00:50,600 --> 01:00:52,400
+beginning it's the same. Okay. We'll
+
+1423
+01:00:52,400 --> 01:00:54,120
+skip this part to calculate the address.
+
+1424
+01:00:54,120 --> 01:00:58,200
+Let's directly jump to here.
+
+1425
+01:01:06,720 --> 01:01:09,160
+So here let's see. We start with a
+
+1426
+01:01:09,160 --> 01:01:11,920
+global load.
+
+1427
+01:01:14,680 --> 01:01:17,040
+In this case since in my example I'm
+
+1428
+01:01:17,040 --> 01:01:18,800
+using double
+
+1429
+01:01:18,800 --> 01:01:21,960
+that's two D word
+
+1430
+01:01:22,160 --> 01:01:23,960
+multiplied by two.
+
+1431
+01:01:23,960 --> 01:01:26,080
+So that's a double number.
+
+1432
+01:01:26,080 --> 01:01:28,160
+Okay. You can do D word multiplied by
+
+1433
+01:01:28,160 --> 01:01:30,920
+three, D word multiplied by four. So
+
+1434
+01:01:30,920 --> 01:01:32,840
+GPU is really providing the flexibility
+
+1435
+01:01:32,840 --> 01:01:34,480
+that with the one instruction you can
+
+1436
+01:01:34,480 --> 01:01:36,400
+load a lot of data.
+
+1437
+01:01:36,400 --> 01:01:42,040
+Then it's stored to V45
+
+1438
+01:01:43,160 --> 01:01:46,640
+from V01.
+
+1439
+01:01:46,880 --> 01:01:47,960
+Okay.
+
+1440
+01:01:47,960 --> 01:01:50,720
+The destination is stored in V5. Now
+
+1441
+01:01:50,720 --> 01:01:54,720
+here we need to do a comparison.
+
+1442
+01:01:55,520 --> 01:01:56,920
+Now of course before we do the
+
+1443
+01:01:56,920 --> 01:02:01,360
+comparison we need a S weight count.
+
+1444
+01:02:02,560 --> 01:02:05,440
+After the data is there we can do a
+
+1445
+01:02:05,440 --> 01:02:09,120
+comparison. Now here a comparison is S V
+
+1446
+01:02:09,120 --> 01:02:11,200
+CMP compare
+
+1447
+01:02:11,200 --> 01:02:14,040
+less than.
+
+1448
+01:02:14,920 --> 01:02:18,920
+Now here we have a type that is XF64.
+
+1449
+01:02:18,920 --> 01:02:21,120
+So a double precision comparison.
+
+1450
+01:02:21,120 --> 01:02:23,440
+The comparison
+
+1451
+01:02:23,440 --> 01:02:24,760
+we store
+
+1452
+01:02:24,760 --> 01:02:26,960
+the result into a special register
+
+1453
+01:02:26,960 --> 01:02:28,720
+called VCC.
+
+1454
+01:02:28,720 --> 01:02:33,320
+VCC is only 64 bit.
+
+1455
+01:02:33,320 --> 01:02:36,760
+Okay. So assuming one warp is 64
+
+1456
+01:02:36,760 --> 01:02:39,720
+threads. In this case
+
+1457
+01:02:39,720 --> 01:02:41,360
+if it's less than
+
+1458
+01:02:41,360 --> 01:02:44,080
+this bit will store to be one. This bit
+
+1459
+01:02:44,080 --> 01:02:46,280
+if it's smaller or equal to zero this
+
+1460
+01:02:46,280 --> 01:02:48,240
+bit will be zero. So it's a basically a
+
+1461
+01:02:48,240 --> 01:02:52,000
+bit mask to store the comparison result.
+
+1462
+01:02:52,000 --> 01:02:55,640
+So the destination is VCC and we have
+
+1463
+01:02:55,640 --> 01:02:56,640
+zero
+
+1464
+01:02:56,640 --> 01:02:59,040
+and V
+
+1465
+01:02:59,040 --> 01:03:01,400
+and V45
+
+1466
+01:03:01,400 --> 01:03:03,360
+just to make the comparison.
+
+1467
+01:03:03,360 --> 01:03:05,680
+Okay.
+
+1468
+01:03:08,120 --> 01:03:10,640
+Okay. Then next thing the interesting
+
+1469
+01:03:10,640 --> 01:03:12,200
+thing is here.
+
+1470
+01:03:12,200 --> 01:03:14,600
+This instruction is called S
+
+1471
+01:03:14,600 --> 01:03:17,200
+and
+
+1472
+01:03:19,440 --> 01:03:23,000
+save EXEC.
+
+1473
+01:03:26,720 --> 01:03:29,720
+B64
+
+1474
+01:03:33,200 --> 01:03:34,400
+S
+
+1475
+01:03:34,400 --> 01:03:35,680
+4
+
+1476
+01:03:35,680 --> 01:03:37,960
+5
+
+1477
+01:03:37,960 --> 01:03:40,320
+VCC.
+
+1478
+01:03:40,320 --> 01:03:43,160
+Okay. I'll explain this.
+
+1479
+01:03:43,160 --> 01:03:46,320
+Ignore the and for now.
+
+1480
+01:03:46,320 --> 01:03:50,080
+And probably for the class.
+
+1481
+01:03:50,080 --> 01:03:52,400
+Just look at EXEC.
+
+1482
+01:03:52,400 --> 01:03:57,160
+EXEC is a special register.
+
+1483
+01:04:00,120 --> 01:04:02,960
+Then it's equals to the warp size. So in
+
+1484
+01:04:02,960 --> 01:04:06,800
+AMD in CDNA architecture is a 64 bit.
+
+1485
+01:04:06,800 --> 01:04:09,960
+In Nvidia is 32 bit
+
+1486
+01:04:09,960 --> 01:04:11,400
+register.
+
+1487
+01:04:11,400 --> 01:04:12,600
+Okay.
+
+1488
+01:04:12,600 --> 01:04:14,640
+So here
+
+1489
+01:04:14,640 --> 01:04:16,200
+you know last time we're talking about
+
+1490
+01:04:16,200 --> 01:04:19,280
+this runs in a SIMD execution style,
+
+1491
+01:04:19,280 --> 01:04:22,800
+right? So that means we just assume this
+
+1492
+01:04:22,800 --> 01:04:25,000
+is one instruction. Now if this is a one
+
+1493
+01:04:25,000 --> 01:04:27,120
+instruction or few instructions
+
+1494
+01:04:27,120 --> 01:04:30,840
+if one one thread needs to execute it
+
+1495
+01:04:30,840 --> 01:04:33,320
+if one thread needs to execute it
+
+1496
+01:04:33,320 --> 01:04:36,359
+all other 32 threads all other 31 thread
+
+1497
+01:04:36,359 --> 01:04:40,359
+are also executing it at the same time.
+
+1498
+01:04:40,640 --> 01:04:42,000
+But we don't want these things to
+
+1499
+01:04:42,000 --> 01:04:44,080
+happen, right? We don't want the other
+
+1500
+01:04:44,080 --> 01:04:47,000
+31 32 really take effect. If they take
+
+1501
+01:04:47,000 --> 01:04:48,440
+effect they will get we'll get a wrong
+
+1502
+01:04:48,440 --> 01:04:50,000
+result.
+
+1503
+01:04:50,000 --> 01:04:52,560
+Right? So what we do is we use a
+
+1504
+01:04:52,560 --> 01:04:55,960
+execution mask.
+
+1505
+01:04:57,359 --> 01:05:00,480
+So for it to this execution mask is a
+
+1506
+01:05:00,480 --> 01:05:03,120
+mask that's just make it 32 thread. Then
+
+1507
+01:05:03,120 --> 01:05:05,359
+you can have some ones there and some
+
+1508
+01:05:05,359 --> 01:05:08,640
+zeros in this execution mask.
+
+1509
+01:05:08,640 --> 01:05:09,920
+Okay.
+
+1510
+01:05:09,920 --> 01:05:12,400
+Then this one is mapped to thread zero,
+
+1511
+01:05:12,400 --> 01:05:14,359
+thread one, thread two and so on thread
+
+1512
+01:05:14,359 --> 01:05:16,040
+two 31.
+
+1513
+01:05:16,040 --> 01:05:19,560
+Okay. If this bit is one
+
+1514
+01:05:19,560 --> 01:05:22,720
+we make that instruction take effect.
+
+1515
+01:05:22,720 --> 01:05:25,680
+If it's zero
+
+1516
+01:05:25,680 --> 01:05:29,560
+we'll just skip the memory part and the
+
+1517
+01:05:29,560 --> 01:05:32,640
+right back part so that they will
+
+1518
+01:05:32,640 --> 01:05:34,640
+not take effect. Will not impact
+
+1519
+01:05:34,640 --> 01:05:37,320
+execution result.
+
+1520
+01:05:37,320 --> 01:05:41,400
+Okay. Will not impact the result.
+
+1521
+01:05:41,400 --> 01:05:44,000
+In this case what we're doing is we're
+
+1522
+01:05:44,000 --> 01:05:46,520
+saving the execution mask
+
+1523
+01:05:46,520 --> 01:05:51,960
+temporarily into S45 and actually it's a
+
+1524
+01:05:51,960 --> 01:05:54,520
+there's a and operation. The
+
+1525
+01:05:54,520 --> 01:05:57,120
+execution mask is stored here. It's
+
+1526
+01:05:57,120 --> 01:05:58,720
+stored here. Then there's a and
+
+1527
+01:05:58,720 --> 01:06:00,720
+operation that the current execution
+
+1528
+01:06:00,720 --> 01:06:04,680
+mask will do a and with VCC.
+
+1529
+01:06:04,680 --> 01:06:06,760
+Why we do and? It's basically just
+
+1530
+01:06:06,760 --> 01:06:09,120
+consider nested if.
+
+1531
+01:06:09,120 --> 01:06:11,080
+Right? We already have something that we
+
+1532
+01:06:11,080 --> 01:06:13,400
+say is zero. Then we will do and will
+
+1533
+01:06:13,400 --> 01:06:16,760
+mask out some some other cases. Right?
+
+1534
+01:06:16,760 --> 01:06:19,080
+So that's why it's a and save execution.
+
+1535
+01:06:19,080 --> 01:06:19,960
+But
+
+1536
+01:06:19,960 --> 01:06:22,680
+what I can say here just make it simple
+
+1537
+01:06:22,680 --> 01:06:25,080
+we
+
+1538
+01:06:25,840 --> 01:06:27,040
+store
+
+1539
+01:06:27,040 --> 01:06:31,400
+the VCC value into execution mask.
+
+1540
+01:06:31,400 --> 01:06:32,800
+Okay.
+
+1541
+01:06:32,800 --> 01:06:37,480
+We store that value into execution mask.
+
+1542
+01:06:38,480 --> 01:06:39,800
+So
+
+1543
+01:06:39,800 --> 01:06:42,320
+then this one becomes a value dependent
+
+1544
+01:06:42,320 --> 01:06:43,840
+execution mask. And there may be some
+
+1545
+01:06:43,840 --> 01:06:47,040
+ones and some zero some one some zero
+
+1546
+01:06:47,040 --> 01:06:48,960
+some one some zero. Now it really
+
+1547
+01:06:48,960 --> 01:06:51,520
+depends on the value, right?
+
+1548
+01:06:51,520 --> 01:06:53,520
+Then there's a chance that all of them
+
+1549
+01:06:53,520 --> 01:06:55,400
+are zero. If all of them are zero we
+
+1550
+01:06:55,400 --> 01:06:57,000
+don't need to load and we don't need to
+
+1551
+01:06:57,000 --> 01:06:59,200
+store. We can just quickly we don't need
+
+1552
+01:06:59,200 --> 01:07:00,800
+to store which you can just quickly jump
+
+1553
+01:07:00,800 --> 01:07:04,120
+out, right? So then we can do a quick
+
+1554
+01:07:04,120 --> 01:07:05,120
+um
+
+1555
+01:07:05,120 --> 01:07:07,800
+conditional branch and it's also an S
+
+1556
+01:07:07,800 --> 01:07:09,000
+instruction.
+
+1557
+01:07:09,000 --> 01:07:12,440
+The SC branch
+
+1558
+01:07:14,400 --> 01:07:15,920
+SC branch
+
+1559
+01:07:15,920 --> 01:07:18,920
+EXECZ.
+
+1560
+01:07:18,920 --> 01:07:20,560
+Okay. That means
+
+1561
+01:07:20,560 --> 01:07:24,040
+when the execution mask is all zero we
+
+1562
+01:07:24,040 --> 01:07:26,320
+take this branch.
+
+1563
+01:07:26,320 --> 01:07:29,000
+Okay. There's only one operand and this
+
+1564
+01:07:29,000 --> 01:07:32,000
+operand is BB0_2.
+
+1565
+01:07:32,000 --> 01:07:35,040
+Okay. It's a basic block
+
+1566
+01:07:35,040 --> 01:07:39,600
+0-2 0_2. Okay. So this is AMD compiler
+
+1567
+01:07:39,600 --> 01:07:41,680
+always generate this type of labels.
+
+1568
+01:07:41,680 --> 01:07:43,120
+They will use
+
+1569
+01:07:43,120 --> 01:07:45,680
+basic block labeling.
+
+1570
+01:07:45,680 --> 01:07:48,880
+We'll write the label later.
+
+1571
+01:07:48,880 --> 01:07:51,760
+Okay. So here we're done with this part.
+
+1572
+01:07:51,760 --> 01:07:53,600
+Then we do
+
+1573
+01:07:53,600 --> 01:07:54,520
+uh
+
+1574
+01:07:54,520 --> 01:07:57,359
+we move
+
+1575
+01:07:57,440 --> 01:08:00,640
+we add
+
+1576
+01:08:00,880 --> 01:08:03,960
+we add C.
+
+1577
+01:08:03,960 --> 01:08:05,720
+Those are not that important to
+
+1578
+01:08:05,720 --> 01:08:07,960
+calculate the destination address,
+
+1579
+01:08:07,960 --> 01:08:12,280
+right? Then eventually we do global
+
+1580
+01:08:12,280 --> 01:08:13,480
+store
+
+1581
+01:08:13,480 --> 01:08:18,440
+and it's not important also.
+
+1582
+01:08:18,640 --> 01:08:22,600
+D word. Why is D word?
+
+1583
+01:08:28,759 --> 01:08:30,319
+Uh I think it's D word multiplied by
+
+1584
+01:08:30,319 --> 01:08:31,160
+two.
+
+1585
+01:08:31,160 --> 01:08:34,440
+Now we store the result back, right? And
+
+1586
+01:08:34,440 --> 01:08:36,880
+then I'm not showing the operand. It's
+
+1587
+01:08:36,880 --> 01:08:38,640
+easy. It's trivial.
+
+1588
+01:08:38,640 --> 01:08:41,400
+And also just be careful. When you talk
+
+1589
+01:08:41,400 --> 01:08:45,040
+about store there's no weight count.
+
+1590
+01:08:45,040 --> 01:08:46,600
+Right?
+
+1591
+01:08:46,600 --> 01:08:48,359
+Just consider we're sending our stores
+
+1592
+01:08:48,359 --> 01:08:51,280
+and we don't care anymore.
+
+1593
+01:08:51,280 --> 01:08:53,120
+So there's no synchronization. Just
+
+1594
+01:08:53,120 --> 01:08:56,839
+they're in a buffer in a queue and
+
+1595
+01:08:57,000 --> 01:09:00,080
+probably even the next kernel started
+
+1596
+01:09:00,080 --> 01:09:02,719
+the weight the right is not completed
+
+1597
+01:09:02,719 --> 01:09:03,680
+yet.
+
+1598
+01:09:03,680 --> 01:09:07,680
+So GPU tries to
+
+1599
+01:09:07,960 --> 01:09:09,759
+optimize for every optimization
+
+1600
+01:09:09,759 --> 01:09:12,960
+opportunity. So in this case the store
+
+1601
+01:09:12,960 --> 01:09:15,640
+there's no synchronization.
+
+1602
+01:09:15,640 --> 01:09:18,680
+Okay. Now here we have finally have this
+
+1603
+01:09:18,680 --> 01:09:21,680
+BB02.
+
+1604
+01:09:22,000 --> 01:09:24,000
+Then
+
+1605
+01:09:24,000 --> 01:09:27,600
+there's a S or
+
+1606
+01:09:27,799 --> 01:09:29,920
+basic B
+
+1607
+01:09:29,920 --> 01:09:32,279
+64.
+
+1608
+01:09:32,279 --> 01:09:36,120
+And what is it is EXEC
+
+1609
+01:09:36,120 --> 01:09:39,120
+EXEC
+
+1610
+01:09:39,160 --> 01:09:42,160
+S45.
+
+1611
+01:09:42,279 --> 01:09:45,279
+And also don't think too much. EXEC is
+
+1612
+01:09:45,279 --> 01:09:48,359
+mask, right? And we store the previous
+
+1613
+01:09:48,359 --> 01:09:51,120
+EXEC in S45.
+
+1614
+01:09:51,120 --> 01:09:54,160
+Right? We do a or operation is basically
+
+1615
+01:09:54,160 --> 01:09:57,520
+recovering the execution mask right
+
+1616
+01:09:57,520 --> 01:10:01,000
+before the condition.
+
+1617
+01:10:01,080 --> 01:10:03,080
+So that we can if there's some
+
+1618
+01:10:03,080 --> 01:10:04,840
+instructions will continue the
+
+1619
+01:10:04,840 --> 01:10:07,240
+execution.
+
+1620
+01:10:07,240 --> 01:10:09,600
+Okay?
+
+1621
+01:10:09,600 --> 01:10:11,480
+There's some instructions will continue
+
+1622
+01:10:11,480 --> 01:10:14,840
+the execution. So we just restore the
+
+1623
+01:10:14,840 --> 01:10:17,040
+execution mask. In this case, we just
+
+1624
+01:10:17,040 --> 01:10:19,640
+set it to all ones. That's why it's an
+
+1625
+01:10:19,640 --> 01:10:21,200
+or operation.
+
+1626
+01:10:21,200 --> 01:10:23,600
+Bitwise or operation.
+
+1627
+01:10:23,600 --> 01:10:25,680
+Then at the end
+
+1628
+01:10:25,680 --> 01:10:28,320
+we save S and
+
+1629
+01:10:28,320 --> 01:10:31,400
+PGM program.
+
+1630
+01:10:31,400 --> 01:10:33,480
+Okay? Then that's the whole program. So
+
+1631
+01:10:33,480 --> 01:10:36,080
+I want to tell you that
+
+1632
+01:10:36,080 --> 01:10:39,560
+GPUs uses an execution mask
+
+1633
+01:10:39,560 --> 01:10:44,000
+to run a predicated
+
+1634
+01:10:46,080 --> 01:10:48,240
+execution. What is predicated?
+
+1635
+01:10:48,240 --> 01:10:50,880
+Predicated is an execution style that
+
+1636
+01:10:50,880 --> 01:10:53,840
+uses one bit zero and one to decide if
+
+1637
+01:10:53,840 --> 01:10:55,920
+this one instruction will take effect or
+
+1638
+01:10:55,920 --> 01:10:58,280
+not. Then this is not only used in CPU,
+
+1639
+01:10:58,280 --> 01:11:01,040
+it's also only in GPU, it's also used in
+
+1640
+01:11:01,040 --> 01:11:03,520
+CPU. So sometimes it's just for compiler
+
+1641
+01:11:03,520 --> 01:11:05,840
+simplicity. You can simply set this bit
+
+1642
+01:11:05,840 --> 01:11:08,000
+to zero, so this instruction is there,
+
+1643
+01:11:08,000 --> 01:11:10,160
+but we don't want it to take effect.
+
+1644
+01:11:10,160 --> 01:11:12,600
+It's called predicated execution. GPU
+
+1645
+01:11:12,600 --> 01:11:15,920
+uses this mask and predicated execution
+
+1646
+01:11:15,920 --> 01:11:17,320
+to handle
+
+1647
+01:11:17,320 --> 01:11:19,560
+uh
+
+1648
+01:11:19,560 --> 01:11:20,960
+branches.
+
+1649
+01:11:20,960 --> 01:11:22,160
+Okay?
+
+1650
+01:11:22,160 --> 01:11:26,600
+So in GPU there's a very special
+
+1651
+01:11:26,600 --> 01:11:27,480
+uh
+
+1652
+01:11:27,480 --> 01:11:28,840
+situation
+
+1653
+01:11:28,840 --> 01:11:31,360
+or consideration for
+
+1654
+01:11:31,360 --> 01:11:34,200
+performance analysis that is called
+
+1655
+01:11:34,200 --> 01:11:37,200
+thread divergence.
+
+1656
+01:11:43,520 --> 01:11:47,240
+Okay? So what is thread divergence?
+
+1657
+01:11:47,240 --> 01:11:49,960
+It's not
+
+1658
+01:11:50,280 --> 01:11:52,800
+um
+
+1659
+01:11:52,800 --> 01:11:54,080
+say
+
+1660
+01:11:54,080 --> 01:11:56,280
+Let's say if we only have 64 threads in
+
+1661
+01:11:56,280 --> 01:11:59,720
+a warp, okay? In a kernel. Then if we
+
+1662
+01:11:59,720 --> 01:12:02,680
+write something like if TID
+
+1663
+01:12:02,680 --> 01:12:05,520
+is smaller than
+
+1664
+01:12:05,520 --> 01:12:07,600
+one
+
+1665
+01:12:07,600 --> 01:12:09,880
+Okay? In this case,
+
+1666
+01:12:09,880 --> 01:12:11,920
+one out of
+
+1667
+01:12:11,920 --> 01:12:13,520
+32
+
+1668
+01:12:13,520 --> 01:12:16,960
+threads are effective.
+
+1669
+01:12:17,040 --> 01:12:19,920
+But the other 31 will still take the
+
+1670
+01:12:19,920 --> 01:12:21,600
+computational power.
+
+1671
+01:12:21,600 --> 01:12:24,240
+Will still take time.
+
+1672
+01:12:24,240 --> 01:12:25,240
+Okay?
+
+1673
+01:12:25,240 --> 01:12:28,320
+And it's a totally bad thing.
+
+1674
+01:12:28,320 --> 01:12:30,960
+This We'll talk about how how it works,
+
+1675
+01:12:30,960 --> 01:12:33,000
+why it cannot be easily
+
+1676
+01:12:33,000 --> 01:12:35,960
+optimized out. The newer Nvidia GPU has
+
+1677
+01:12:35,960 --> 01:12:38,160
+some way to allow different threads, say
+
+1678
+01:12:38,160 --> 01:12:39,920
+some thread is running one branch, some
+
+1679
+01:12:39,920 --> 01:12:42,000
+thread is running on other branch. AMD
+
+1680
+01:12:42,000 --> 01:12:44,320
+GPUs still today, as far as I know, do
+
+1681
+01:12:44,320 --> 01:12:46,360
+not have that technology.
+
+1682
+01:12:46,360 --> 01:12:49,240
+Now, in this case, if our computing
+
+1683
+01:12:49,240 --> 01:12:52,000
+power is something large, then we are
+
+1684
+01:12:52,000 --> 01:12:54,280
+only have one over
+
+1685
+01:12:54,280 --> 01:12:57,960
+it's like to have somewhere like 3% of
+
+1686
+01:12:57,960 --> 01:12:59,680
+utilization.
+
+1687
+01:12:59,680 --> 01:13:01,560
+Right? In that part.
+
+1688
+01:13:01,560 --> 01:13:04,360
+Now if you have something like if
+
+1689
+01:13:04,360 --> 01:13:06,080
+TID
+
+1690
+01:13:06,080 --> 01:13:08,480
+is smaller than 16
+
+1691
+01:13:08,480 --> 01:13:12,640
+then we have 16 over 32 that is
+
+1692
+01:13:12,640 --> 01:13:16,600
+available. In that case, we have 50%
+
+1693
+01:13:16,600 --> 01:13:18,680
+of utilization.
+
+1694
+01:13:18,680 --> 01:13:21,800
+Right? So thread divergence means the
+
+1695
+01:13:21,800 --> 01:13:23,680
+threads within a warp is going on
+
+1696
+01:13:23,680 --> 01:13:25,080
+different routes.
+
+1697
+01:13:25,080 --> 01:13:28,280
+Which is considered a bad thing for GPU
+
+1698
+01:13:28,280 --> 01:13:30,240
+because we're under utilizing the GPU
+
+1699
+01:13:30,240 --> 01:13:33,240
+capability. So if we can avoid that and
+
+1700
+01:13:33,240 --> 01:13:36,040
+to somehow ask a GPU to
+
+1701
+01:13:36,040 --> 01:13:38,240
+let the GPU to run on the same path
+
+1702
+01:13:38,240 --> 01:13:39,880
+without diverging
+
+1703
+01:13:39,880 --> 01:13:42,040
+it's always a good thing.
+
+1704
+01:13:42,040 --> 01:13:44,440
+Okay? So thread divergence is a big
+
+1705
+01:13:44,440 --> 01:13:46,440
+performance issue for GPU and there are
+
+1706
+01:13:46,440 --> 01:13:48,800
+many different optimizations, especially
+
+1707
+01:13:48,800 --> 01:13:52,200
+in the compiler world, to reduce thread
+
+1708
+01:13:52,200 --> 01:13:55,520
+divergence. Okay? So probably say one
+
+1709
+01:13:55,520 --> 01:13:58,280
+warp is say half a warp is going this
+
+1710
+01:13:58,280 --> 01:14:00,080
+way, half a warp is going that way. But
+
+1711
+01:14:00,080 --> 01:14:02,480
+for next warp, half a warp is going this
+
+1712
+01:14:02,480 --> 01:14:04,520
+way, half of that one in that way. So
+
+1713
+01:14:04,520 --> 01:14:07,000
+can you combine this half warp and that
+
+1714
+01:14:07,000 --> 01:14:09,320
+half warp together? Right? In that case,
+
+1715
+01:14:09,320 --> 01:14:11,080
+we avoid this thread divergence. There
+
+1716
+01:14:11,080 --> 01:14:12,640
+are many
+
+1717
+01:14:12,640 --> 01:14:13,720
+like
+
+1718
+01:14:13,720 --> 01:14:16,400
+academic research that is doing this
+
+1719
+01:14:16,400 --> 01:14:20,440
+type of optimization. Then for industry
+
+1720
+01:14:20,440 --> 01:14:22,200
+there is always a problem that we really
+
+1721
+01:14:22,200 --> 01:14:24,240
+know very little about how Nvidia GPU
+
+1722
+01:14:24,240 --> 01:14:25,640
+works internally. There may be some
+
+1723
+01:14:25,640 --> 01:14:27,840
+optimization, maybe not. Then we don't
+
+1724
+01:14:27,840 --> 01:14:28,720
+know.
+
+1725
+01:14:28,720 --> 01:14:31,400
+Uh I'm pretty much sure this is a so
+
+1726
+01:14:31,400 --> 01:14:33,160
+classic issue then there are some
+
+1727
+01:14:33,160 --> 01:14:34,640
+optimization in it.
+
+1728
+01:14:34,640 --> 01:14:36,760
+In Nvidia GPUs. Okay?
+
+1729
+01:14:36,760 --> 01:14:39,360
+Now hope you like this type of uh
+
+1730
+01:14:39,360 --> 01:14:42,240
+blackboard based uh teaching then
+
+1731
+01:14:42,240 --> 01:14:45,000
+for GPU I'm pretty much like I hope for
+
+1732
+01:14:45,000 --> 01:14:47,880
+the next a few Thursdays we'll try to in
+
+1733
+01:14:47,880 --> 01:14:51,760
+this way to teach GPU programming. Okay?
+
+1734
+01:14:51,760 --> 01:14:53,080
+All right. I think that's all for
+
+1735
+01:14:53,080 --> 01:14:55,840
+today's lecture.

@@ -1,0 +1,6395 @@
+1
+00:00:00,160 --> 00:00:02,480
+5 years ahead. What is the biggest
+
+2
+00:00:02,480 --> 00:00:04,160
+infrastructure bottleneck that AI
+
+3
+00:00:04,160 --> 00:00:06,160
+industry is currently underestimating?
+
+4
+00:00:06,160 --> 00:00:08,000
+>> AI, it appears weightless, [music] but
+
+5
+00:00:08,000 --> 00:00:10,240
+every single prompt that you're using is
+
+6
+00:00:10,240 --> 00:00:12,000
+depending on chips, network, [music]
+
+7
+00:00:12,000 --> 00:00:15,040
+cooling, electricity, and water. Even a
+
+8
+00:00:15,040 --> 00:00:17,440
+simple, hey, help me book flight tickets
+
+9
+00:00:17,440 --> 00:00:19,600
+next weekend [music] uses half a million
+
+10
+00:00:19,600 --> 00:00:21,760
+to a million tokens. It may be the case
+
+11
+00:00:21,760 --> 00:00:24,320
+that the Frontier models are already at
+
+12
+00:00:24,320 --> 00:00:26,960
+a higher number of [music] IQ points per
+
+13
+00:00:26,960 --> 00:00:29,920
+watt than humans are. Why isn't this
+
+14
+00:00:29,920 --> 00:00:32,000
+increasingly the [music] AI's problem to
+
+15
+00:00:32,000 --> 00:00:34,000
+improve itself? Why should, in short,
+
+16
+00:00:34,000 --> 00:00:35,840
+any meatbody human be [music] worrying
+
+17
+00:00:35,840 --> 00:00:37,360
+about this at all? We could reduce
+
+18
+00:00:37,360 --> 00:00:39,920
+carbon emissions by nearly 80% just by
+
+19
+00:00:39,920 --> 00:00:44,760
+that one generative directive.
+
+20
+00:00:47,120 --> 00:00:49,440
+Welcome to Conversations in Action. Alex
+
+21
+00:00:49,440 --> 00:00:52,320
+Wister Gross and myself love introducing
+
+22
+00:00:52,320 --> 00:00:53,920
+people who are changing the vector of
+
+23
+00:00:53,920 --> 00:00:56,399
+society, making things happen. Today we
+
+24
+00:00:56,399 --> 00:00:58,320
+are here with VJ, senior scientist,
+
+25
+00:00:58,320 --> 00:01:00,800
+principal investigator at MIT Lincoln
+
+26
+00:01:00,800 --> 00:01:03,359
+Labs. He leads the supercomputing center
+
+27
+00:01:03,359 --> 00:01:05,840
+there. His research spans AI, high
+
+28
+00:01:05,840 --> 00:01:07,680
+performance computing, large scale data
+
+29
+00:01:07,680 --> 00:01:09,920
+center, and energyaware computing. I've
+
+30
+00:01:09,920 --> 00:01:12,799
+had many conversations with him about uh
+
+31
+00:01:12,799 --> 00:01:14,799
+future sustainability and energy. Uh his
+
+32
+00:01:14,799 --> 00:01:17,520
+work examines the full AI infrastructure
+
+33
+00:01:17,520 --> 00:01:20,880
+stack from algorithm and models to
+
+34
+00:01:20,880 --> 00:01:22,479
+computer hardware, data centers, and the
+
+35
+00:01:22,479 --> 00:01:24,960
+electric grid. He co-founded Radium
+
+36
+00:01:24,960 --> 00:01:26,799
+which builds high performance AI cloud
+
+37
+00:01:26,799 --> 00:01:29,600
+infrastructure and co-optimizes
+
+38
+00:01:29,600 --> 00:01:32,640
+um models uh serving software and GPU
+
+39
+00:01:32,640 --> 00:01:34,159
+systems to deliver faster and more
+
+40
+00:01:34,159 --> 00:01:36,079
+efficient training inference and bay
+
+41
+00:01:36,079 --> 00:01:38,799
+compute which develop software to unlock
+
+42
+00:01:38,799 --> 00:01:40,640
+standard data center capacity by
+
+43
+00:01:40,640 --> 00:01:43,280
+coordinating computing cooling energy
+
+44
+00:01:43,280 --> 00:01:46,000
+storage and power systems. VJ's authored
+
+45
+00:01:46,000 --> 00:01:48,159
+a hundred technical publications. I'm
+
+46
+00:01:48,159 --> 00:01:49,520
+going to read them out all right now.
+
+47
+00:01:49,520 --> 00:01:50,799
+No, I'm not going to do that but I've
+
+48
+00:01:50,799 --> 00:01:54,399
+seen them. uh he works on a common
+
+49
+00:01:54,399 --> 00:01:56,000
+question which I'm really excited to
+
+50
+00:01:56,000 --> 00:01:57,920
+dive into. How can we get more useful
+
+51
+00:01:57,920 --> 00:02:00,240
+intelligence from every watt dollar and
+
+52
+00:02:00,240 --> 00:02:02,560
+piece of computing infrastructure? Uh I
+
+53
+00:02:02,560 --> 00:02:05,119
+also happen to know that he introduced
+
+54
+00:02:05,119 --> 00:02:07,920
+Obama um when he was a grad student and
+
+55
+00:02:07,920 --> 00:02:09,679
+I know he had dinner with Neil Armstrong
+
+56
+00:02:09,679 --> 00:02:11,001
+and John Glenn who I think
+
+57
+00:02:11,001 --> 00:02:13,040
+[clears throat] are have both passed but
+
+58
+00:02:13,040 --> 00:02:14,480
+I don't think VJ had anything to do with
+
+59
+00:02:14,480 --> 00:02:16,640
+that but I bet he has a lot to to say
+
+60
+00:02:16,640 --> 00:02:18,640
+about those things. Um but I don't know
+
+61
+00:02:18,640 --> 00:02:20,640
+if we'll get into that. We're building
+
+62
+00:02:20,640 --> 00:02:22,480
+increasingly intelligent systems, but
+
+63
+00:02:22,480 --> 00:02:24,080
+the infrastructure underneath them is
+
+64
+00:02:24,080 --> 00:02:26,480
+constrained by the power, cooling,
+
+65
+00:02:26,480 --> 00:02:28,239
+chips, and the electric grid. I know you
+
+66
+00:02:28,239 --> 00:02:29,840
+probably go to bed, you know, thinking
+
+67
+00:02:29,840 --> 00:02:31,360
+about this or you have dreams about
+
+68
+00:02:31,360 --> 00:02:33,120
+this. Do you think the next major
+
+69
+00:02:33,120 --> 00:02:34,879
+breakthrough in AI will come from making
+
+70
+00:02:34,879 --> 00:02:37,680
+models smarter or from fundamentally
+
+71
+00:02:37,680 --> 00:02:39,920
+changing how we build and operate the
+
+72
+00:02:39,920 --> 00:02:41,920
+machines that run them?
+
+73
+00:02:41,920 --> 00:02:43,840
+>> Yeah. So, John, first of all, it's a
+
+74
+00:02:43,840 --> 00:02:46,080
+pleasure to be on this uh on this show.
+
+75
+00:02:46,080 --> 00:02:47,680
+really appreciate everything that you
+
+76
+00:02:47,680 --> 00:02:50,000
+and Alex do and bringing a lot of these
+
+77
+00:02:50,000 --> 00:02:52,319
+heavy topics, giving them a lot of
+
+78
+00:02:52,319 --> 00:02:54,400
+light, putting them in the spotlight and
+
+79
+00:02:54,400 --> 00:02:55,760
+having a great conversation. Super
+
+80
+00:02:55,760 --> 00:02:57,599
+excited about this. So, coming back to
+
+81
+00:02:57,599 --> 00:02:59,760
+your question, I think that the next
+
+82
+00:02:59,760 --> 00:03:01,599
+breakthrough is going to have to be both
+
+83
+00:03:01,599 --> 00:03:05,200
+at the same time. So, one is we have
+
+84
+00:03:05,200 --> 00:03:07,680
+gotten fairly comfortable with the way
+
+85
+00:03:07,680 --> 00:03:09,280
+that we currently build models. we've
+
+86
+00:03:09,280 --> 00:03:11,360
+just been able to scale up and with that
+
+87
+00:03:11,360 --> 00:03:13,360
+has come an increased toll on the
+
+88
+00:03:13,360 --> 00:03:15,760
+physical footprint associated with AI
+
+89
+00:03:15,760 --> 00:03:17,519
+and then on the flip side even the
+
+90
+00:03:17,519 --> 00:03:19,360
+physical footprint that we've had has
+
+91
+00:03:19,360 --> 00:03:21,440
+been dominated by access to capital for
+
+92
+00:03:21,440 --> 00:03:23,599
+example so a lot of non-technical
+
+93
+00:03:23,599 --> 00:03:25,440
+reasons that we've grown the way that
+
+94
+00:03:25,440 --> 00:03:27,519
+we've grown and I think there needs to
+
+95
+00:03:27,519 --> 00:03:30,640
+be a reckoning of some sort in which we
+
+96
+00:03:30,640 --> 00:03:32,560
+bring these together you know one of the
+
+97
+00:03:32,560 --> 00:03:35,440
+pieces that we're often both educating
+
+98
+00:03:35,440 --> 00:03:38,959
+and working on is a lot of people don't
+
+99
+00:03:38,959 --> 00:03:41,599
+realize yet fully the ramifications of
+
+100
+00:03:41,599 --> 00:03:44,000
+their AI work. Right? So, an AI, it
+
+101
+00:03:44,000 --> 00:03:45,760
+appears weightless. You open up a
+
+102
+00:03:45,760 --> 00:03:48,080
+browser, you type something in, but
+
+103
+00:03:48,080 --> 00:03:50,319
+every single prompt that you're using is
+
+104
+00:03:50,319 --> 00:03:52,720
+depending on chips, network, cooling,
+
+105
+00:03:52,720 --> 00:03:55,200
+electricity, and water in order to
+
+106
+00:03:55,200 --> 00:03:58,159
+return that response to you. And how
+
+107
+00:03:58,159 --> 00:04:00,799
+much this footprint varies is quite a
+
+108
+00:04:00,799 --> 00:04:03,040
+bit dependent on things like the models,
+
+109
+00:04:03,040 --> 00:04:05,200
+where you're running this, and when
+
+110
+00:04:05,200 --> 00:04:08,560
+you're doing it. And so while it looks
+
+111
+00:04:08,560 --> 00:04:10,879
+like AI is weightless to the user, but
+
+112
+00:04:10,879 --> 00:04:12,159
+every token, everything you're
+
+113
+00:04:12,159 --> 00:04:14,239
+generating has a very strong physical
+
+114
+00:04:14,239 --> 00:04:16,079
+footprint. And so we need to work on
+
+115
+00:04:16,079 --> 00:04:17,840
+both ends of the spectrum or we're going
+
+116
+00:04:17,840 --> 00:04:19,759
+to find ourselves in a few years. And I
+
+117
+00:04:19,759 --> 00:04:21,199
+think we're already marching down that
+
+118
+00:04:21,199 --> 00:04:24,479
+path where the these two things are not
+
+119
+00:04:24,479 --> 00:04:25,840
+lining up with each other. So more
+
+120
+00:04:25,840 --> 00:04:27,680
+efficient models combined with better
+
+121
+00:04:27,680 --> 00:04:29,840
+infrastructure is the only way forward
+
+122
+00:04:29,840 --> 00:04:30,800
+for us.
+
+123
+00:04:30,800 --> 00:04:32,479
+>> What does this mean in practice? And who
+
+124
+00:04:32,479 --> 00:04:34,160
+needs to make a different decision
+
+125
+00:04:34,160 --> 00:04:36,320
+because of what you just described? Like
+
+126
+00:04:36,320 --> 00:04:37,600
+you just said, you know, something
+
+127
+00:04:37,600 --> 00:04:39,520
+that's nice and people can get behind,
+
+128
+00:04:39,520 --> 00:04:41,520
+but like like let's get into the
+
+129
+00:04:41,520 --> 00:04:42,800
+>> we should work on this.
+
+130
+00:04:42,800 --> 00:04:45,040
+>> Yeah. So, this is a combination of the
+
+131
+00:04:45,040 --> 00:04:46,800
+public. We're already starting to see
+
+132
+00:04:46,800 --> 00:04:48,800
+the public getting very involved in
+
+133
+00:04:48,800 --> 00:04:50,720
+conversations about data centers
+
+134
+00:04:50,720 --> 00:04:53,680
+nationwide, worldwide. communities are
+
+135
+00:04:53,680 --> 00:04:56,960
+starting to understand that sure maybe
+
+136
+00:04:56,960 --> 00:04:59,360
+AI's impact is global and this is for
+
+137
+00:04:59,360 --> 00:05:01,600
+the greater good but the impact that a
+
+138
+00:05:01,600 --> 00:05:03,440
+data center has or where this AI the
+
+139
+00:05:03,440 --> 00:05:06,000
+physical footprint of AI is very local
+
+140
+00:05:06,000 --> 00:05:08,320
+in nature so you have communities that
+
+141
+00:05:08,320 --> 00:05:10,560
+are stepping up and saying look data
+
+142
+00:05:10,560 --> 00:05:12,160
+centers we don't want them right and I
+
+143
+00:05:12,160 --> 00:05:13,919
+think that that there there's a lot of
+
+144
+00:05:13,919 --> 00:05:15,840
+nuance to the conversation which has not
+
+145
+00:05:15,840 --> 00:05:18,800
+yet been explored publicly however so
+
+146
+00:05:18,800 --> 00:05:20,400
+there is the communities so this is the
+
+147
+00:05:20,400 --> 00:05:23,120
+public that can start to say Look, we
+
+148
+00:05:23,120 --> 00:05:24,720
+want to figure out how to design the
+
+149
+00:05:24,720 --> 00:05:27,440
+systems better. And you, the data center
+
+150
+00:05:27,440 --> 00:05:29,520
+developers, stop being an ass and tell
+
+151
+00:05:29,520 --> 00:05:31,759
+us what you're planning to do, how
+
+152
+00:05:31,759 --> 00:05:32,960
+you're planning to do it, and what the
+
+153
+00:05:32,960 --> 00:05:34,800
+impact to our community is. On the
+
+154
+00:05:34,800 --> 00:05:36,960
+second end, we have the model developers
+
+155
+00:05:36,960 --> 00:05:39,360
+themselves. There has been this race to
+
+156
+00:05:39,360 --> 00:05:41,039
+just build the biggest and fastest
+
+157
+00:05:41,039 --> 00:05:43,199
+models. We haven't really paused to stop
+
+158
+00:05:43,199 --> 00:05:45,360
+and say, look, for me to summarize an
+
+159
+00:05:45,360 --> 00:05:47,680
+email or to transcribe these notes, I
+
+160
+00:05:47,680 --> 00:05:50,400
+don't need a 10 trillion parameter model
+
+161
+00:05:50,400 --> 00:05:52,639
+running. Perhaps I can do some of that
+
+162
+00:05:52,639 --> 00:05:54,800
+work locally. Some of that work can be
+
+163
+00:05:54,800 --> 00:05:56,560
+done with smaller models that are far
+
+164
+00:05:56,560 --> 00:05:58,080
+more efficient, better for the
+
+165
+00:05:58,080 --> 00:05:59,600
+environment. And in fact, we're starting
+
+166
+00:05:59,600 --> 00:06:00,720
+to see companies doing that. They're
+
+167
+00:06:00,720 --> 00:06:02,400
+getting there because of cost reasons
+
+168
+00:06:02,400 --> 00:06:04,479
+where they're seeing these 8 figure
+
+169
+00:06:04,479 --> 00:06:06,560
+bills going to, you know, pick your
+
+170
+00:06:06,560 --> 00:06:08,560
+favorite provider. And so they're
+
+171
+00:06:08,560 --> 00:06:09,600
+starting to think about, hey, can I
+
+172
+00:06:09,600 --> 00:06:11,520
+maybe use a smaller model for some time
+
+173
+00:06:11,520 --> 00:06:13,440
+and then maybe just save the or reserve
+
+174
+00:06:13,440 --> 00:06:17,759
+the very large fable class or soul class
+
+175
+00:06:17,759 --> 00:06:19,520
+models for just the hardest of
+
+176
+00:06:19,520 --> 00:06:21,360
+workloads. And so there is a little bit
+
+177
+00:06:21,360 --> 00:06:23,360
+of you know the community the companies
+
+178
+00:06:23,360 --> 00:06:25,280
+themselves that are the heaviest users
+
+179
+00:06:25,280 --> 00:06:27,280
+of these tools and I do think that we're
+
+180
+00:06:27,280 --> 00:06:29,759
+getting to a state where policy makers
+
+181
+00:06:29,759 --> 00:06:31,919
+need to intervene. I am certainly not
+
+182
+00:06:31,919 --> 00:06:34,000
+encouraging policy makers to stop or
+
+183
+00:06:34,000 --> 00:06:36,720
+slow down but to rather insist on
+
+184
+00:06:36,720 --> 00:06:38,960
+bringing efficiency into this. We need
+
+185
+00:06:38,960 --> 00:06:41,759
+to know what the cost the intelligence
+
+186
+00:06:41,759 --> 00:06:43,759
+cost per jewel is. And that is a
+
+187
+00:06:43,759 --> 00:06:45,840
+question that no one has an answer to at
+
+188
+00:06:45,840 --> 00:06:48,160
+this point. It's not just how many, you
+
+189
+00:06:48,160 --> 00:06:50,400
+know, how many jewels does a token cost
+
+190
+00:06:50,400 --> 00:06:53,199
+or how many W hours does this cost, but
+
+191
+00:06:53,199 --> 00:06:57,520
+rather if I'm solving a task and we can
+
+192
+00:06:57,520 --> 00:06:59,520
+come up with predetermined tasks. So
+
+193
+00:06:59,520 --> 00:07:02,560
+some measure of intelligence, how much
+
+194
+00:07:02,560 --> 00:07:04,319
+actual energy is going into that? And
+
+195
+00:07:04,319 --> 00:07:05,599
+that's the measure that we really need
+
+196
+00:07:05,599 --> 00:07:07,840
+to focus on optimizing, which there's
+
+197
+00:07:07,840 --> 00:07:09,599
+very little discussion around right now.
+
+198
+00:07:09,599 --> 00:07:12,639
+>> Right. I have a five and I have a 10 um
+
+199
+00:07:12,639 --> 00:07:14,479
+question and then I'm gonna unleash the
+
+200
+00:07:14,479 --> 00:07:17,120
+Alex. Five years ahead, what is the
+
+201
+00:07:17,120 --> 00:07:18,960
+biggest infrastructure bottleneck that
+
+202
+00:07:18,960 --> 00:07:20,400
+AI industry is currently
+
+203
+00:07:20,400 --> 00:07:22,479
+underestimating? That's my five. And
+
+204
+00:07:22,479 --> 00:07:25,680
+then my 10 question is what would uh
+
+205
+00:07:25,680 --> 00:07:27,520
+need to change for us to get 10 times
+
+206
+00:07:27,520 --> 00:07:29,680
+more intelligence in the same amount of
+
+207
+00:07:29,680 --> 00:07:31,440
+computing.
+
+208
+00:07:31,440 --> 00:07:34,800
+>> So in the 5year I think the biggest
+
+209
+00:07:34,800 --> 00:07:38,240
+underestimating right now is
+
+210
+00:07:38,240 --> 00:07:40,479
+the power needs that are that are coming
+
+211
+00:07:40,479 --> 00:07:43,520
+in. We have gigawatts of power that are
+
+212
+00:07:43,520 --> 00:07:45,360
+coming online
+
+213
+00:07:45,360 --> 00:07:47,599
+and tens of gigawatts of demand that are
+
+214
+00:07:47,599 --> 00:07:49,280
+coming online all slated to happen
+
+215
+00:07:49,280 --> 00:07:51,280
+within the next few years. In the
+
+216
+00:07:51,280 --> 00:07:53,280
+interim, we haven't come up with a
+
+217
+00:07:53,280 --> 00:07:55,520
+better way of solving these problems.
+
+218
+00:07:55,520 --> 00:07:57,440
+We're just going with larger and larger
+
+219
+00:07:57,440 --> 00:08:00,160
+models and more and more infrastructure.
+
+220
+00:08:00,160 --> 00:08:01,520
+So yes, on one end we have the
+
+221
+00:08:01,520 --> 00:08:03,199
+infrastructure that is in theory
+
+222
+00:08:03,199 --> 00:08:05,759
+becoming more efficient in terms of the
+
+223
+00:08:05,759 --> 00:08:07,199
+measurement that everyone gives which is
+
+224
+00:08:07,199 --> 00:08:08,879
+tokens per watt. That number is
+
+225
+00:08:08,879 --> 00:08:11,919
+improving. However, what's not improving
+
+226
+00:08:11,919 --> 00:08:13,840
+is the number of tokens that things are
+
+227
+00:08:13,840 --> 00:08:15,599
+taking. So, I think what we're missing
+
+228
+00:08:15,599 --> 00:08:18,479
+is the scale of AI and the fact that we
+
+229
+00:08:18,479 --> 00:08:21,039
+are still in the baby stages of where AI
+
+230
+00:08:21,039 --> 00:08:22,720
+is. And so, if we think that we're
+
+231
+00:08:22,720 --> 00:08:25,280
+having a problem now, just wait until we
+
+232
+00:08:25,280 --> 00:08:27,599
+turn on AI agents for everything that we
+
+233
+00:08:27,599 --> 00:08:30,319
+do. A couple years ago, we couldn't, you
+
+234
+00:08:30,319 --> 00:08:32,240
+know, we were using just standard old
+
+235
+00:08:32,240 --> 00:08:34,959
+Google search maybe 3 4 years now. Now,
+
+236
+00:08:34,959 --> 00:08:36,080
+everything is running through a
+
+237
+00:08:36,080 --> 00:08:37,919
+generative AI. We haven't yet gotten to
+
+238
+00:08:37,919 --> 00:08:39,760
+the real stage. So that still has a
+
+239
+00:08:39,760 --> 00:08:41,919
+measurable amount of tokens. We've done
+
+240
+00:08:41,919 --> 00:08:44,240
+experiments where we look at AI agents
+
+241
+00:08:44,240 --> 00:08:46,720
+which is clearly the next frontier and
+
+242
+00:08:46,720 --> 00:08:49,600
+the amount of usage right the amount of
+
+243
+00:08:49,600 --> 00:08:52,240
+infrastructural usage that an AI agent
+
+244
+00:08:52,240 --> 00:08:54,800
+has. So even a simple hey help me book
+
+245
+00:08:54,800 --> 00:08:57,360
+flight tickets next weekend uses half a
+
+246
+00:08:57,360 --> 00:08:59,440
+million to a million tokens to go
+
+247
+00:08:59,440 --> 00:09:01,040
+through that process. And so if we're
+
+248
+00:09:01,040 --> 00:09:04,880
+using the same old models, the that bend
+
+249
+00:09:04,880 --> 00:09:07,120
+in the curve can be quite sharp and we
+
+250
+00:09:07,120 --> 00:09:09,200
+may not be able to keep up with that.
+
+251
+00:09:09,200 --> 00:09:11,120
+Looking 10 years out, the piece that I
+
+252
+00:09:11,120 --> 00:09:15,680
+think we will regret is how lazy we are.
+
+253
+00:09:15,680 --> 00:09:17,600
+>> No, no. I I said how do we how do we do
+
+254
+00:09:17,600 --> 00:09:20,880
+10 times the second? Sorry, my bad. Um,
+
+255
+00:09:20,880 --> 00:09:23,120
+so how do we do 10 times that is going
+
+256
+00:09:23,120 --> 00:09:25,040
+to have to be a we're going to have to
+
+257
+00:09:25,040 --> 00:09:26,720
+come up with smarter models, things that
+
+258
+00:09:26,720 --> 00:09:28,160
+have different architectures, maybe
+
+259
+00:09:28,160 --> 00:09:30,399
+moving off of transformers.
+
+260
+00:09:30,399 --> 00:09:31,839
+We're going to have to come up with
+
+261
+00:09:31,839 --> 00:09:34,880
+better ways to route uh your
+
+262
+00:09:34,880 --> 00:09:36,720
+intelligence. So as you're asking a
+
+263
+00:09:36,720 --> 00:09:39,040
+query being able to leverage dozens of
+
+264
+00:09:39,040 --> 00:09:41,279
+models simultaneously and at the same
+
+265
+00:09:41,279 --> 00:09:42,959
+time on the other end we better have a
+
+266
+00:09:42,959 --> 00:09:46,240
+good answer to what power are we using
+
+267
+00:09:46,240 --> 00:09:47,920
+what is the impact to local communities
+
+268
+00:09:47,920 --> 00:09:49,760
+and how do we do this without disturbing
+
+269
+00:09:49,760 --> 00:09:51,519
+the environment
+
+270
+00:09:51,519 --> 00:09:54,160
+>> Alex uh to you I also want to point out
+
+271
+00:09:54,160 --> 00:09:55,920
+that Lincoln Labs for those who don't
+
+272
+00:09:55,920 --> 00:09:59,200
+know is a major player if you I I teach
+
+273
+00:09:59,200 --> 00:10:01,200
+a class on uh I'm involved with a class
+
+274
+00:10:01,200 --> 00:10:04,080
+on the history of MIT and I was shocked
+
+275
+00:10:04,080 --> 00:10:05,519
+to see how big the budget it is at
+
+276
+00:10:05,519 --> 00:10:08,000
+Lincoln Labs because it is it does so
+
+277
+00:10:08,000 --> 00:10:09,920
+much and it's not just this one little
+
+278
+00:10:09,920 --> 00:10:12,320
+laboratory. It's a it's a major player
+
+279
+00:10:12,320 --> 00:10:13,680
+uh in the world and thank you for your
+
+280
+00:10:13,680 --> 00:10:15,519
+leadership. All right, let's unleash the
+
+281
+00:10:15,519 --> 00:10:17,360
+Alex. What do you got?
+
+282
+00:10:17,360 --> 00:10:19,920
+>> Yeah. So VJ, I want to challenge the
+
+283
+00:10:19,920 --> 00:10:22,480
+premise of some of this discussion. It's
+
+284
+00:10:22,480 --> 00:10:24,399
+very easy to say and and certainly by
+
+285
+00:10:24,399 --> 00:10:26,800
+way of background I myself was at at one
+
+286
+00:10:26,800 --> 00:10:28,399
+point a fellow at the Harvard Center for
+
+287
+00:10:28,399 --> 00:10:30,000
+the Environment studying the energy
+
+288
+00:10:30,000 --> 00:10:32,399
+footprint of computing. But we're in an
+
+289
+00:10:32,399 --> 00:10:36,000
+era now when, as OpenAI's Boris Power
+
+290
+00:10:36,000 --> 00:10:38,959
+put it, it may be the case that AI
+
+291
+00:10:38,959 --> 00:10:41,279
+models, the frontier models are already
+
+292
+00:10:41,279 --> 00:10:44,160
+at a higher number of IQ points per
+
+293
+00:10:44,160 --> 00:10:47,360
+watt, his words, than humans are. So
+
+294
+00:10:47,360 --> 00:10:50,480
+insisting on energy efficiency for the
+
+295
+00:10:50,480 --> 00:10:52,640
+AIS, that can cut both ways. It it could
+
+296
+00:10:52,640 --> 00:10:54,560
+also cut in the direction to the extent
+
+297
+00:10:54,560 --> 00:10:56,880
+that the frontier models are either
+
+298
+00:10:56,880 --> 00:10:59,279
+already smarter per watt than humans are
+
+299
+00:10:59,279 --> 00:11:02,000
+or about to be smarter per unit watt. It
+
+300
+00:11:02,000 --> 00:11:03,760
+could cut both ways in the sense that at
+
+301
+00:11:03,760 --> 00:11:06,880
+some point what we insist on for AIs in
+
+302
+00:11:06,880 --> 00:11:08,640
+terms of efficiency, they could turn
+
+303
+00:11:08,640 --> 00:11:10,560
+around and insist that humans,
+
+304
+00:11:10,560 --> 00:11:13,920
+biological meatbody humans be uh more
+
+305
+00:11:13,920 --> 00:11:16,240
+efficient per unit watt or at least more
+
+306
+00:11:16,240 --> 00:11:18,640
+economically productive per unit watt.
+
+307
+00:11:18,640 --> 00:11:20,800
+So let let me open with the softball of
+
+308
+00:11:20,800 --> 00:11:22,959
+just asking are you at all concerned
+
+309
+00:11:22,959 --> 00:11:26,399
+that in an era when we're starting to be
+
+310
+00:11:26,399 --> 00:11:28,560
+a wash in super intelligence super
+
+311
+00:11:28,560 --> 00:11:30,800
+intelligence will turn around and insist
+
+312
+00:11:30,800 --> 00:11:32,560
+on the same efficiency measures for
+
+313
+00:11:32,560 --> 00:11:34,160
+humans.
+
+314
+00:11:34,160 --> 00:11:36,240
+>> Yeah I I think even less intelligent
+
+315
+00:11:36,240 --> 00:11:37,760
+people so I'm certainly not super
+
+316
+00:11:37,760 --> 00:11:39,440
+intelligent would insist that we as
+
+317
+00:11:39,440 --> 00:11:41,360
+humans should be more efficient. We're
+
+318
+00:11:41,360 --> 00:11:43,120
+pretty wasteful with what we do already.
+
+319
+00:11:43,120 --> 00:11:46,320
+So I think just as a as an argument sure
+
+320
+00:11:46,320 --> 00:11:48,399
+uh I can give uh some credence to that
+
+321
+00:11:48,399 --> 00:11:50,880
+in terms of it it could come back and
+
+322
+00:11:50,880 --> 00:11:52,560
+say that now here's the here's the
+
+323
+00:11:52,560 --> 00:11:54,320
+difference right with AI versus humans
+
+324
+00:11:54,320 --> 00:11:58,160
+it's the scale the rate of change of
+
+325
+00:11:58,160 --> 00:12:01,600
+human efficiency is largely driven by
+
+326
+00:12:01,600 --> 00:12:03,440
+population how many people are there
+
+327
+00:12:03,440 --> 00:12:06,320
+what types of tools we're using with AI
+
+328
+00:12:06,320 --> 00:12:08,800
+I think it's the it's the rapid change
+
+329
+00:12:08,800 --> 00:12:10,959
+that this is occurring is where we need
+
+330
+00:12:10,959 --> 00:12:13,360
+to have this conversation The other
+
+331
+00:12:13,360 --> 00:12:17,440
+piece is at no point being not helpful,
+
+332
+00:12:17,440 --> 00:12:19,360
+right? And so if there are ways that we
+
+333
+00:12:19,360 --> 00:12:21,920
+can be more efficient today without
+
+334
+00:12:21,920 --> 00:12:23,760
+interfering with the growth of AI, I
+
+335
+00:12:23,760 --> 00:12:24,959
+think we need to leverage them. I don't
+
+336
+00:12:24,959 --> 00:12:27,680
+see any harm in doing that. uh it would
+
+337
+00:12:27,680 --> 00:12:31,279
+just make that you know even if I uh
+
+338
+00:12:31,279 --> 00:12:32,720
+even if I agree with the argument that
+
+339
+00:12:32,720 --> 00:12:35,120
+the IQ point per watt is higher right or
+
+340
+00:12:35,120 --> 00:12:36,800
+the intelligence per watt is higher on
+
+341
+00:12:36,800 --> 00:12:39,839
+an AI system versus a human being
+
+342
+00:12:39,839 --> 00:12:42,000
+I still being more efficient is is going
+
+343
+00:12:42,000 --> 00:12:44,160
+to be helpful and that's what we've
+
+344
+00:12:44,160 --> 00:12:45,839
+shown through research and commercially
+
+345
+00:12:45,839 --> 00:12:48,240
+that we can actually get there without
+
+346
+00:12:48,240 --> 00:12:49,680
+impacting the intelligence of these
+
+347
+00:12:49,680 --> 00:12:51,360
+systems so we're not saying slow them
+
+348
+00:12:51,360 --> 00:12:53,120
+down as I think there's seems to be some
+
+349
+00:12:53,120 --> 00:12:55,519
+call going on right now however what
+
+350
+00:12:55,519 --> 00:12:56,880
+we're saying is look Let's keep
+
+351
+00:12:56,880 --> 00:12:58,160
+building, but let's just be more
+
+352
+00:12:58,160 --> 00:12:59,120
+thoughtful in the way that we're
+
+353
+00:12:59,120 --> 00:13:00,560
+building these things out.
+
+354
+00:13:00,560 --> 00:13:03,600
+>> I assume you'd agree, this is again
+
+355
+00:13:03,600 --> 00:13:05,519
+softball, agree with the premise that
+
+356
+00:13:05,519 --> 00:13:07,839
+there's some one or two dimensional
+
+357
+00:13:07,839 --> 00:13:10,800
+efficient frontier manifold that really
+
+358
+00:13:10,800 --> 00:13:13,200
+the argument that there's no downside to
+
+359
+00:13:13,200 --> 00:13:15,040
+being more efficient reduces to any
+
+360
+00:13:15,040 --> 00:13:17,920
+given compute workload or human workload
+
+361
+00:13:17,920 --> 00:13:19,760
+should lie on the efficient frontier
+
+362
+00:13:19,760 --> 00:13:22,560
+rather than under or inside the
+
+363
+00:13:22,560 --> 00:13:24,399
+frontier. Is is that would you agree
+
+364
+00:13:24,399 --> 00:13:26,160
+with that premise?
+
+365
+00:13:26,160 --> 00:13:27,760
+>> Understood. I think but we can't define
+
+366
+00:13:27,760 --> 00:13:29,600
+what that think the challenge that we're
+
+367
+00:13:29,600 --> 00:13:31,600
+running into as a larger community is we
+
+368
+00:13:31,600 --> 00:13:33,279
+don't know what the points on that
+
+369
+00:13:33,279 --> 00:13:35,440
+manifold are for us to say that we're on
+
+370
+00:13:35,440 --> 00:13:38,720
+within or above. Uh and I think that's
+
+371
+00:13:38,720 --> 00:13:41,680
+so yes I agree with that as a as a
+
+372
+00:13:41,680 --> 00:13:44,800
+statement. What I will push back on is I
+
+373
+00:13:44,800 --> 00:13:47,519
+don't know how to you know how to model
+
+374
+00:13:47,519 --> 00:13:49,279
+that manifold to say like oh we're on
+
+375
+00:13:49,279 --> 00:13:51,120
+that point or we're under that point or
+
+376
+00:13:51,120 --> 00:13:53,200
+outside of that point. And so if we were
+
+377
+00:13:53,200 --> 00:13:54,959
+able to come up with what that looks
+
+378
+00:13:54,959 --> 00:13:57,360
+like, absolutely we want to be on that
+
+379
+00:13:57,360 --> 00:13:59,920
+rather than below or above. And also
+
+380
+00:13:59,920 --> 00:14:01,600
+just given you know international
+
+381
+00:14:01,600 --> 00:14:03,760
+commercial pressures, there are people
+
+382
+00:14:03,760 --> 00:14:05,360
+that are going to be working outside of
+
+383
+00:14:05,360 --> 00:14:08,240
+that. And so we don't want to catch
+
+384
+00:14:08,240 --> 00:14:11,360
+ourselves uh flatfooted or catch
+
+385
+00:14:11,360 --> 00:14:14,320
+ourselves in a position where we went so
+
+386
+00:14:14,320 --> 00:14:17,040
+far down this regulation and efficiency
+
+387
+00:14:17,040 --> 00:14:19,040
+path that we sort of lost track of the
+
+388
+00:14:19,040 --> 00:14:21,600
+fact that we want to build these systems
+
+389
+00:14:21,600 --> 00:14:23,920
+that are doing more intelligent uh work
+
+390
+00:14:23,920 --> 00:14:25,440
+that are able to solve some of
+
+391
+00:14:25,440 --> 00:14:28,800
+humanity's greatest problems. Uh but I
+
+392
+00:14:28,800 --> 00:14:30,639
+think we just come back come back to the
+
+393
+00:14:30,639 --> 00:14:32,560
+lack of transparency in this space in
+
+394
+00:14:32,560 --> 00:14:34,720
+terms of even a being able to define
+
+395
+00:14:34,720 --> 00:14:36,240
+what the points of that manifold look
+
+396
+00:14:36,240 --> 00:14:36,959
+like.
+
+397
+00:14:36,959 --> 00:14:39,199
+>> Uh I I guess I'm far less concerned that
+
+398
+00:14:39,199 --> 00:14:41,839
+you than you are or you seem to be about
+
+399
+00:14:41,839 --> 00:14:44,639
+the policy issues here. Just again as a
+
+400
+00:14:44,639 --> 00:14:47,199
+preliminary matter I'm I'm for if we
+
+401
+00:14:47,199 --> 00:14:49,040
+have to tile the solar system with
+
+402
+00:14:49,040 --> 00:14:50,720
+compute in order to get transformative
+
+403
+00:14:50,720 --> 00:14:53,120
+outcomes. I'm in favor of tiling the the
+
+404
+00:14:53,120 --> 00:14:55,120
+solar system. But let let me press you
+
+405
+00:14:55,120 --> 00:14:57,760
+on this a bit. So this is, as I
+
+406
+00:14:57,760 --> 00:14:58,800
+understand, this is your area of
+
+407
+00:14:58,800 --> 00:15:00,800
+research. If you had to define what you
+
+408
+00:15:00,800 --> 00:15:03,199
+think the optimal frontier looks like,
+
+409
+00:15:03,199 --> 00:15:04,959
+what do you think the dimensions are? Is
+
+410
+00:15:04,959 --> 00:15:07,440
+it what's in? What does reversible
+
+411
+00:15:07,440 --> 00:15:10,160
+computing get us? Is it tokens out? Is
+
+412
+00:15:10,160 --> 00:15:13,040
+it IQ points out? What what's your best
+
+413
+00:15:13,040 --> 00:15:15,600
+guess knowing what you know now as to
+
+414
+00:15:15,600 --> 00:15:17,519
+what the parameters of that optimal
+
+415
+00:15:17,519 --> 00:15:19,360
+frontier look like?
+
+416
+00:15:19,360 --> 00:15:21,519
+>> Yeah. So the first is for a long time
+
+417
+00:15:21,519 --> 00:15:23,120
+we've been looking at a couple of
+
+418
+00:15:23,120 --> 00:15:26,000
+metrics which I think are correlated but
+
+419
+00:15:26,000 --> 00:15:28,639
+not exactly getting to what we want. So
+
+420
+00:15:28,639 --> 00:15:30,160
+the first is what I'll just call
+
+421
+00:15:30,160 --> 00:15:33,839
+intelligence per watt. Um and I'll also
+
+422
+00:15:33,839 --> 00:15:35,440
+argue that we don't know what we mean by
+
+423
+00:15:35,440 --> 00:15:36,880
+intelligence exactly. There's a number
+
+424
+00:15:36,880 --> 00:15:39,440
+of tests that we can run uh number of
+
+425
+00:15:39,440 --> 00:15:41,440
+benchmarks that people put out uh in
+
+426
+00:15:41,440 --> 00:15:43,440
+order to say look here's my model. This
+
+427
+00:15:43,440 --> 00:15:46,000
+is why it's better than other people.
+
+428
+00:15:46,000 --> 00:15:47,839
+Yeah that it's probably some combination
+
+429
+00:15:47,839 --> 00:15:49,759
+of those as of today. But as we move
+
+430
+00:15:49,759 --> 00:15:51,040
+forward, we need to figure out what are
+
+431
+00:15:51,040 --> 00:15:52,240
+the tasks that we're actually looking at
+
+432
+00:15:52,240 --> 00:15:54,160
+AI to solve and then looking at the
+
+433
+00:15:54,160 --> 00:15:56,399
+actual you know it could be per watt per
+
+434
+00:15:56,399 --> 00:15:59,759
+jewels uh you know that the denominator
+
+435
+00:15:59,759 --> 00:16:02,000
+but will be some sort of power energy
+
+436
+00:16:02,000 --> 00:16:04,160
+related. Uh the other piece that we need
+
+437
+00:16:04,160 --> 00:16:06,560
+to start looking at is what type of
+
+438
+00:16:06,560 --> 00:16:08,720
+infrastructure does these different
+
+439
+00:16:08,720 --> 00:16:10,000
+things need. We've done a lot of
+
+440
+00:16:10,000 --> 00:16:12,800
+experiments where we we talk a lot about
+
+441
+00:16:12,800 --> 00:16:14,720
+power and energy which is absolutely
+
+442
+00:16:14,720 --> 00:16:17,040
+important but even the rates of change
+
+443
+00:16:17,040 --> 00:16:18,800
+of these numbers. So the you know energy
+
+444
+00:16:18,800 --> 00:16:20,160
+is obviously the high level number which
+
+445
+00:16:20,160 --> 00:16:21,600
+which we talk about right when we say
+
+446
+00:16:21,600 --> 00:16:23,199
+watts per jewel or intelligence per
+
+447
+00:16:23,199 --> 00:16:25,199
+jewel but even the derivative of that
+
+448
+00:16:25,199 --> 00:16:26,720
+power the second derivative of that rate
+
+449
+00:16:26,720 --> 00:16:28,480
+of change of power these are other
+
+450
+00:16:28,480 --> 00:16:31,199
+valuable uh numbers that you know from a
+
+451
+00:16:31,199 --> 00:16:32,880
+let's think shorter term in terms of
+
+452
+00:16:32,880 --> 00:16:34,800
+where so I agree with the you know
+
+453
+00:16:34,800 --> 00:16:36,639
+tiling the solar system with solar
+
+454
+00:16:36,639 --> 00:16:40,480
+panels um that maybe is an answer I just
+
+455
+00:16:40,480 --> 00:16:44,959
+see that's very far out in terms of uh
+
+456
+00:16:44,959 --> 00:16:46,800
+us being able to actually do that we're
+
+457
+00:16:46,800 --> 00:16:48,959
+talking decades at best and maybe you
+
+458
+00:16:48,959 --> 00:16:50,720
+have a better estimate of when that you
+
+459
+00:16:50,720 --> 00:16:51,199
+know that's
+
+460
+00:16:51,199 --> 00:16:53,199
+>> way shorter. My my timelines I think are
+
+461
+00:16:53,199 --> 00:16:54,480
+way shorter than yours.
+
+462
+00:16:54,480 --> 00:16:57,120
+>> Okay. I I I you know I'd like to follow
+
+463
+00:16:57,120 --> 00:16:58,639
+where the money is going and I don't see
+
+464
+00:16:58,639 --> 00:17:00,399
+that happening yet just because of who
+
+465
+00:17:00,399 --> 00:17:03,360
+the players are and what their inherent
+
+466
+00:17:03,360 --> 00:17:05,120
+interests are in terms of building out
+
+467
+00:17:05,120 --> 00:17:06,799
+the infrastructure for AI. Right?
+
+468
+00:17:06,799 --> 00:17:08,240
+There's obviously some conversations
+
+469
+00:17:08,240 --> 00:17:10,720
+going on in can we put space-based even
+
+470
+00:17:10,720 --> 00:17:12,880
+just computing you know with solar
+
+471
+00:17:12,880 --> 00:17:15,439
+really cool idea. It's both expensive to
+
+472
+00:17:15,439 --> 00:17:16,959
+get there and also just running things
+
+473
+00:17:16,959 --> 00:17:18,799
+in space is extremely difficult. So I do
+
+474
+00:17:18,799 --> 00:17:20,480
+see that as a part of the all of the
+
+475
+00:17:20,480 --> 00:17:22,319
+above approach of introducing all of
+
+476
+00:17:22,319 --> 00:17:24,640
+this. But even just terrestrial systems
+
+477
+00:17:24,640 --> 00:17:27,760
+is going to be the next 5 years. I I I
+
+478
+00:17:27,760 --> 00:17:29,120
+just don't see a way around the
+
+479
+00:17:29,120 --> 00:17:30,880
+terrestrial systems just because that's
+
+480
+00:17:30,880 --> 00:17:32,640
+where the capital is coming in from.
+
+481
+00:17:32,640 --> 00:17:34,559
+Right? When you're looking at who is
+
+482
+00:17:34,559 --> 00:17:36,160
+building data centers, where the money
+
+483
+00:17:36,160 --> 00:17:37,840
+for those data centers is coming from,
+
+484
+00:17:37,840 --> 00:17:39,039
+they're coming from people who have
+
+485
+00:17:39,039 --> 00:17:40,960
+vested interests with having these
+
+486
+00:17:40,960 --> 00:17:42,799
+landbased. It's an asset that they can
+
+487
+00:17:42,799 --> 00:17:44,160
+lend against.
+
+488
+00:17:44,160 --> 00:17:46,720
+It is land that they already own. It's
+
+489
+00:17:46,720 --> 00:17:48,960
+power that they already have. Most of
+
+490
+00:17:48,960 --> 00:17:50,559
+that is landbased. That's where the big
+
+491
+00:17:50,559 --> 00:17:51,679
+capital is coming in. When you're
+
+492
+00:17:51,679 --> 00:17:53,200
+talking about the trillions of dollars
+
+493
+00:17:53,200 --> 00:17:55,120
+going into this, a lot of that capital
+
+494
+00:17:55,120 --> 00:17:56,640
+is coming from people who have a vested
+
+495
+00:17:56,640 --> 00:17:58,240
+interest of having that infrastructure
+
+496
+00:17:58,240 --> 00:18:00,799
+sitting here on planet Earth, perhaps
+
+497
+00:18:00,799 --> 00:18:02,559
+even in certain countries, but you know,
+
+498
+00:18:02,559 --> 00:18:04,559
+largely on planet Earth. Yeah, I think
+
+499
+00:18:04,559 --> 00:18:07,120
+the the smart money is generally of the
+
+500
+00:18:07,120 --> 00:18:09,120
+view and and for avoidance of doubt, I'm
+
+501
+00:18:09,120 --> 00:18:11,039
+kneedeep operationally in the orbital
+
+502
+00:18:11,039 --> 00:18:13,200
+data center space at this point that the
+
+503
+00:18:13,200 --> 00:18:15,760
+crossover where orbital data centers
+
+504
+00:18:15,760 --> 00:18:19,520
+become most obviously and conspicuously
+
+505
+00:18:19,520 --> 00:18:22,240
+more uh affordable according to various
+
+506
+00:18:22,240 --> 00:18:24,000
+definitions of affordability will be
+
+507
+00:18:24,000 --> 00:18:26,720
+sometime around 2030 or so will be the
+
+508
+00:18:26,720 --> 00:18:28,400
+crossover point with a heavy buildout
+
+509
+00:18:28,400 --> 00:18:31,200
+before then. But let me press you I
+
+510
+00:18:31,200 --> 00:18:32,960
+there are so many different points of of
+
+511
+00:18:32,960 --> 00:18:35,039
+the premise here that I I I would love
+
+512
+00:18:35,039 --> 00:18:37,440
+to and and will press on. Let's just
+
+513
+00:18:37,440 --> 00:18:39,919
+press on model efficiency for a minute.
+
+514
+00:18:39,919 --> 00:18:42,320
+If you had to name what you think the
+
+515
+00:18:42,320 --> 00:18:45,039
+most perfect energyefficient model
+
+516
+00:18:45,039 --> 00:18:46,880
+architecture looks like. You just have
+
+517
+00:18:46,880 --> 00:18:48,480
+to guess. No one's going to hold you to
+
+518
+00:18:48,480 --> 00:18:50,320
+this. What do you think the most
+
+519
+00:18:50,320 --> 00:18:52,559
+energyefficient perfect model
+
+520
+00:18:52,559 --> 00:18:54,799
+architecture will actually look?
+
+521
+00:18:54,799 --> 00:18:56,559
+>> It's going to be a mixture of models. So
+
+522
+00:18:56,559 --> 00:18:58,400
+it's not going to be any single model,
+
+523
+00:18:58,400 --> 00:19:00,000
+any single architecture, but it's going
+
+524
+00:19:00,000 --> 00:19:02,640
+to be a dozen models wrapped into one.
+
+525
+00:19:02,640 --> 00:19:04,480
+Not a mixture of experts model like we
+
+526
+00:19:04,480 --> 00:19:07,760
+currently have, but structurally similar
+
+527
+00:19:07,760 --> 00:19:11,039
+to that, but rather models that are all,
+
+528
+00:19:11,039 --> 00:19:12,480
+you know, you can think of 10 different
+
+529
+00:19:12,480 --> 00:19:14,160
+models sitting 1 billion, two billion,
+
+530
+00:19:14,160 --> 00:19:15,520
+all the way to a trillion parameter
+
+531
+00:19:15,520 --> 00:19:17,440
+models all sitting in one, not
+
+532
+00:19:17,440 --> 00:19:20,080
+activating these at any given time until
+
+533
+00:19:20,080 --> 00:19:23,600
+the question calls for it. That's so if
+
+534
+00:19:23,600 --> 00:19:25,840
+if I may, that sounds like basically a
+
+535
+00:19:25,840 --> 00:19:28,400
+sparcity or meta sparity consideration.
+
+536
+00:19:28,400 --> 00:19:30,640
+Withes we see they're sparse. They only
+
+537
+00:19:30,640 --> 00:19:32,880
+have a few activations at any given time
+
+538
+00:19:32,880 --> 00:19:35,360
+out of many possible latent activations.
+
+539
+00:19:35,360 --> 00:19:37,280
+But doesn't the the recent history of
+
+540
+00:19:37,280 --> 00:19:39,520
+machine learning teach us that if every
+
+541
+00:19:39,520 --> 00:19:42,000
+sparse model wants to be distilled into
+
+542
+00:19:42,000 --> 00:19:43,679
+a dense model when it grows up that is
+
+543
+00:19:43,679 --> 00:19:45,440
+even more energyefficient? So why can't
+
+544
+00:19:45,440 --> 00:19:48,240
+I take your proposed mixture of model
+
+545
+00:19:48,240 --> 00:19:50,480
+architectures and distill it down to an
+
+546
+00:19:50,480 --> 00:19:52,080
+even more energyefficient dense
+
+547
+00:19:52,080 --> 00:19:53,840
+architecture?
+
+548
+00:19:53,840 --> 00:19:55,840
+>> So perhaps for narrow applications you
+
+549
+00:19:55,840 --> 00:19:57,039
+could do that and I'm guessing people
+
+550
+00:19:57,039 --> 00:19:58,480
+will end up doing that. So there might
+
+551
+00:19:58,480 --> 00:20:00,080
+be so if you're thinking about the
+
+552
+00:20:00,080 --> 00:20:03,440
+general purpose model versus the narrow
+
+553
+00:20:03,440 --> 00:20:04,640
+and that's the other piece that I think
+
+554
+00:20:04,640 --> 00:20:06,160
+we're going to have is just a lot more
+
+555
+00:20:06,160 --> 00:20:07,919
+narrow models that are really good for
+
+556
+00:20:07,919 --> 00:20:11,840
+solving very specific tasks. Um we have
+
+557
+00:20:11,840 --> 00:20:14,160
+largely moved to this place of having
+
+558
+00:20:14,160 --> 00:20:15,600
+and you can see this now even in you
+
+559
+00:20:15,600 --> 00:20:17,039
+know as people are turning off a lot of
+
+560
+00:20:17,039 --> 00:20:19,120
+the fine-tuning actions and you know
+
+561
+00:20:19,120 --> 00:20:21,840
+that little Laura type fine-tuning up
+
+562
+00:20:21,840 --> 00:20:23,120
+front that you could have done on some
+
+563
+00:20:23,120 --> 00:20:24,559
+of the large models is being turned off
+
+564
+00:20:24,559 --> 00:20:26,080
+as the models have become more general
+
+565
+00:20:26,080 --> 00:20:29,200
+purpose good at everything. Um I think
+
+566
+00:20:29,200 --> 00:20:31,280
+we're going to have to go back to more
+
+567
+00:20:31,280 --> 00:20:33,120
+narrow models. So as an enterprise I
+
+568
+00:20:33,120 --> 00:20:35,120
+might have 30 models that I'm running
+
+569
+00:20:35,120 --> 00:20:38,080
+one just for coding one just for pieces
+
+570
+00:20:38,080 --> 00:20:39,919
+uh for different elements which we're
+
+571
+00:20:39,919 --> 00:20:42,080
+not I think we've kind of we had that
+
+572
+00:20:42,080 --> 00:20:43,360
+for a little bit and then we kind of
+
+573
+00:20:43,360 --> 00:20:44,880
+moved to this as we move to this
+
+574
+00:20:44,880 --> 00:20:46,480
+frontier race of bigger and better
+
+575
+00:20:46,480 --> 00:20:48,080
+models but I think we might have to go
+
+576
+00:20:48,080 --> 00:20:49,600
+back to that if we're trying to look for
+
+577
+00:20:49,600 --> 00:20:50,720
+efficiencies.
+
+578
+00:20:50,720 --> 00:20:53,039
+>> I'll take the opposite side of I think
+
+579
+00:20:53,039 --> 00:20:54,400
+probably in this discussion I'm going to
+
+580
+00:20:54,400 --> 00:20:55,600
+end up taking the opposite side of
+
+581
+00:20:55,600 --> 00:20:57,039
+almost every position but that's fine
+
+582
+00:20:57,039 --> 00:20:59,360
+makes for an interesting discussion. Uh
+
+583
+00:20:59,360 --> 00:21:02,159
+so just on the specialization the
+
+584
+00:21:02,159 --> 00:21:05,360
+counterargument is that distillation is
+
+585
+00:21:05,360 --> 00:21:07,840
+ultimately a form of regularization and
+
+586
+00:21:07,840 --> 00:21:10,000
+that and we've seen this in various
+
+587
+00:21:10,000 --> 00:21:12,799
+prominent frontier model instances that
+
+588
+00:21:12,799 --> 00:21:14,640
+generalization is actually achieved
+
+589
+00:21:14,640 --> 00:21:16,320
+through distillation not the opposite
+
+590
+00:21:16,320 --> 00:21:18,880
+and every time someone goes off and
+
+591
+00:21:18,880 --> 00:21:21,280
+tries to create a specialized model
+
+592
+00:21:21,280 --> 00:21:23,600
+maybe there's some superficial advantage
+
+593
+00:21:23,600 --> 00:21:25,440
+for a few months but then a generalist
+
+594
+00:21:25,440 --> 00:21:29,280
+model comes along that can beat it uh by
+
+595
+00:21:29,280 --> 00:21:30,880
+raw capability on the one hand,
+
+596
+00:21:30,880 --> 00:21:34,000
+parameter count on the other. So what on
+
+597
+00:21:34,000 --> 00:21:36,000
+earth is the persuasive case for
+
+598
+00:21:36,000 --> 00:21:38,240
+specialized models if this continues to
+
+599
+00:21:38,240 --> 00:21:41,360
+be the case? My my head cannon at this
+
+600
+00:21:41,360 --> 00:21:43,520
+point is quite the opposite. We're not
+
+601
+00:21:43,520 --> 00:21:46,240
+marching toward specialized models in
+
+602
+00:21:46,240 --> 00:21:48,960
+just in general for energy efficiency or
+
+603
+00:21:48,960 --> 00:21:50,720
+for parameter count efficiency or
+
+604
+00:21:50,720 --> 00:21:52,640
+compute efficiency. If anything, we're
+
+605
+00:21:52,640 --> 00:21:55,440
+marching toward ever and more bitter
+
+606
+00:21:55,440 --> 00:21:58,880
+lesson models that are pure generalists.
+
+607
+00:21:58,880 --> 00:22:00,960
+Can do you have a persuasive argument to
+
+608
+00:22:00,960 --> 00:22:02,320
+the contrary?
+
+609
+00:22:02,320 --> 00:22:04,320
+>> So again coming back to efficiency,
+
+610
+00:22:04,320 --> 00:22:05,840
+right? So if we're looking at what makes
+
+611
+00:22:05,840 --> 00:22:07,919
+for a better commercial use case, sure I
+
+612
+00:22:07,919 --> 00:22:09,520
+might see the generalist model, but give
+
+613
+00:22:09,520 --> 00:22:11,120
+you one example. We had this group work
+
+614
+00:22:11,120 --> 00:22:12,960
+that we were working with, they they ran
+
+615
+00:22:12,960 --> 00:22:15,840
+a tool called climate GPT. Um this was a
+
+616
+00:22:15,840 --> 00:22:19,120
+search engine for climatebased research.
+
+617
+00:22:19,120 --> 00:22:22,480
+Um, and this is through uh, radium. And
+
+618
+00:22:22,480 --> 00:22:23,840
+what they were able to do at that time,
+
+619
+00:22:23,840 --> 00:22:25,120
+this is now a couple years ago, they
+
+620
+00:22:25,120 --> 00:22:26,960
+were able to take a 70 billion parameter
+
+621
+00:22:26,960 --> 00:22:29,280
+model essentially
+
+622
+00:22:29,280 --> 00:22:31,039
+use a rag tool. So they had a bunch of
+
+623
+00:22:31,039 --> 00:22:32,480
+scientific documents that were attached
+
+624
+00:22:32,480 --> 00:22:35,200
+to that and then they were able to uh,
+
+625
+00:22:35,200 --> 00:22:36,640
+you know, essentially you could search
+
+626
+00:22:36,640 --> 00:22:38,320
+through that site, you know, those type
+
+627
+00:22:38,320 --> 00:22:40,799
+of things. Uh, they instead took that
+
+628
+00:22:40,799 --> 00:22:43,039
+scientific corpus, converted tokens and
+
+629
+00:22:43,039 --> 00:22:44,880
+fine-tuned a 7 billion parameter model
+
+630
+00:22:44,880 --> 00:22:46,400
+and were able to show equivalent
+
+631
+00:22:46,400 --> 00:22:48,720
+performance for both those tasks. the
+
+632
+00:22:48,720 --> 00:22:51,200
+second or the latter being a much
+
+633
+00:22:51,200 --> 00:22:53,039
+smaller model, much smaller computing
+
+634
+00:22:53,039 --> 00:22:56,880
+footprint associated with it. So as I'm
+
+635
+00:22:56,880 --> 00:22:59,840
+coming back to the point of if we're
+
+636
+00:22:59,840 --> 00:23:01,840
+looking for efficiency, the metric that
+
+637
+00:23:01,840 --> 00:23:04,000
+we need to have is useful intelligence
+
+638
+00:23:04,000 --> 00:23:06,640
+per jewel for that for tasks that people
+
+639
+00:23:06,640 --> 00:23:08,400
+are running. And so I think it comes
+
+640
+00:23:08,400 --> 00:23:10,159
+down to can we you know are we able to
+
+641
+00:23:10,159 --> 00:23:13,120
+show efficiency and if the generalist
+
+642
+00:23:13,120 --> 00:23:14,880
+model is more efficient for solving
+
+643
+00:23:14,880 --> 00:23:18,559
+those series of tasks sure um but we've
+
+644
+00:23:18,559 --> 00:23:19,679
+seen that you know being able to
+
+645
+00:23:19,679 --> 00:23:21,679
+customize models if you have narrow sets
+
+646
+00:23:21,679 --> 00:23:23,200
+of applications that you're looking for
+
+647
+00:23:23,200 --> 00:23:24,880
+they have in general worked out for
+
+648
+00:23:24,880 --> 00:23:27,280
+those narrow applications and yes it is
+
+649
+00:23:27,280 --> 00:23:29,039
+a moving race and so maybe the next
+
+650
+00:23:29,039 --> 00:23:30,640
+version of some model is able to solve
+
+651
+00:23:30,640 --> 00:23:32,880
+that better than the prior version but
+
+652
+00:23:32,880 --> 00:23:34,000
+there's always this like the
+
+653
+00:23:34,000 --> 00:23:36,000
+specialization does give you that
+
+654
+00:23:36,000 --> 00:23:37,760
+advantage for at least some period of
+
+655
+00:23:37,760 --> 00:23:39,760
+time. But again, I'm I'm looking at this
+
+656
+00:23:39,760 --> 00:23:41,200
+again purely from the angle of
+
+657
+00:23:41,200 --> 00:23:43,120
+intelligence per jewel.
+
+658
+00:23:43,120 --> 00:23:45,200
+>> So it sounds like maybe then we're
+
+659
+00:23:45,200 --> 00:23:47,120
+actually in agreement. If if I were to
+
+660
+00:23:47,120 --> 00:23:49,360
+caricature what I I think you're saying,
+
+661
+00:23:49,360 --> 00:23:52,159
+maybe what you're saying is if you want
+
+662
+00:23:52,159 --> 00:23:54,799
+to be perhaps a few months ahead of
+
+663
+00:23:54,799 --> 00:23:58,320
+Frontier model capabilities on some cost
+
+664
+00:23:58,320 --> 00:24:00,640
+versus performance or flops versus
+
+665
+00:24:00,640 --> 00:24:04,320
+capability frontier, then sure, distill,
+
+666
+00:24:04,320 --> 00:24:08,559
+fine-tune, RFT, specialize a model, but
+
+667
+00:24:08,559 --> 00:24:10,960
+it only buys you maybe a few months of
+
+668
+00:24:10,960 --> 00:24:12,640
+headway in the alternative weight
+
+669
+00:24:12,640 --> 00:24:14,240
+equation style. you could sit on your
+
+670
+00:24:14,240 --> 00:24:16,559
+hands, wait a few months and use a
+
+671
+00:24:16,559 --> 00:24:19,360
+generalist model and achieve essentially
+
+672
+00:24:19,360 --> 00:24:21,440
+the the same cost versus performance
+
+673
+00:24:21,440 --> 00:24:23,360
+without any specialization. Would you
+
+674
+00:24:23,360 --> 00:24:25,279
+agree with that characterization?
+
+675
+00:24:25,279 --> 00:24:28,400
+>> Um I somewhat right. I think I'm not
+
+676
+00:24:28,400 --> 00:24:29,840
+sure if it's just a few months or if
+
+677
+00:24:29,840 --> 00:24:31,120
+it's a little bit longer. So I don't
+
+678
+00:24:31,120 --> 00:24:32,720
+know the time frames necessarily for
+
+679
+00:24:32,720 --> 00:24:35,440
+when that would happen. Uh or it's tough
+
+680
+00:24:35,440 --> 00:24:37,200
+to estimate what that would be. The
+
+681
+00:24:37,200 --> 00:24:38,799
+other piece is even within the frontier
+
+682
+00:24:38,799 --> 00:24:40,640
+models, everyone has got tiered models
+
+683
+00:24:40,640 --> 00:24:41,840
+associated with them. So you might be
+
+684
+00:24:41,840 --> 00:24:43,200
+able to get far enough with some of the
+
+685
+00:24:43,200 --> 00:24:44,960
+smaller models that have this
+
+686
+00:24:44,960 --> 00:24:48,000
+customization versus the large end or
+
+687
+00:24:48,000 --> 00:24:50,960
+the higher cost model that is the
+
+688
+00:24:50,960 --> 00:24:52,799
+generalist model. So that's the other
+
+689
+00:24:52,799 --> 00:24:54,799
+angle that I want to play on which is
+
+690
+00:24:54,799 --> 00:24:57,039
+it's not you know we we're moving the
+
+691
+00:24:57,039 --> 00:24:58,240
+frontier of different models
+
+692
+00:24:58,240 --> 00:25:00,480
+simultaneously right where you have your
+
+693
+00:25:00,480 --> 00:25:02,159
+most players have some sort of small
+
+694
+00:25:02,159 --> 00:25:03,679
+medium and large maybe now they have
+
+695
+00:25:03,679 --> 00:25:06,080
+extra small extra large as well uh but
+
+696
+00:25:06,080 --> 00:25:08,159
+they have these tiered models and my
+
+697
+00:25:08,159 --> 00:25:09,840
+point being that you might be able to
+
+698
+00:25:09,840 --> 00:25:12,880
+use the small or extra small model with
+
+699
+00:25:12,880 --> 00:25:15,279
+the right customization to get the
+
+700
+00:25:15,279 --> 00:25:17,120
+equivalent performance for that
+
+701
+00:25:17,120 --> 00:25:19,039
+application than what you would get on
+
+702
+00:25:19,039 --> 00:25:21,279
+the large or extra-large generalist
+
+703
+00:25:21,279 --> 00:25:23,840
+model for that same application
+
+704
+00:25:23,840 --> 00:25:25,840
+>> and so coming back to intelligence per
+
+705
+00:25:25,840 --> 00:25:29,120
+jewel right which is you know let's say
+
+706
+00:25:29,120 --> 00:25:31,120
+intelligence will let's just say which I
+
+707
+00:25:31,120 --> 00:25:33,039
+disagree with is roughly proportional to
+
+708
+00:25:33,039 --> 00:25:35,039
+say size of bottle at this point per
+
+709
+00:25:35,039 --> 00:25:37,440
+jewel which is the amount of uh energy
+
+710
+00:25:37,440 --> 00:25:40,320
+that's being used to generate a token or
+
+711
+00:25:40,320 --> 00:25:42,400
+whatever it may be you might be able to
+
+712
+00:25:42,400 --> 00:25:44,640
+do much better on those measures if you
+
+713
+00:25:44,640 --> 00:25:46,799
+think of it that way
+
+714
+00:25:46,799 --> 00:25:50,000
+>> let me maybe just divert and press a bit
+
+715
+00:25:50,000 --> 00:25:52,000
+on intelligence per jewel because it's
+
+716
+00:25:52,000 --> 00:25:54,880
+an interesting metric. Do you think
+
+717
+00:25:54,880 --> 00:25:57,120
+maybe a leading question, maybe not,
+
+718
+00:25:57,120 --> 00:26:00,559
+that we get to intelligence per jewel
+
+719
+00:26:00,559 --> 00:26:04,240
+appropriately defined of infinity, which
+
+720
+00:26:04,240 --> 00:26:06,320
+could obviously
+
+721
+00:26:06,320 --> 00:26:09,120
+undefined in in some sense, but more
+
+722
+00:26:09,120 --> 00:26:11,919
+precisely, could we get to finite
+
+723
+00:26:11,919 --> 00:26:15,039
+intelligence with zero jewels using
+
+724
+00:26:15,039 --> 00:26:17,279
+reversible computing or or some other
+
+725
+00:26:17,279 --> 00:26:20,080
+substantially similar paradigm? I mean,
+
+726
+00:26:20,080 --> 00:26:21,440
+I'm pretty sure someone's going to say
+
+727
+00:26:21,440 --> 00:26:23,120
+they did that by using bean counter
+
+728
+00:26:23,120 --> 00:26:24,720
+tricks on how they count jewels, right?
+
+729
+00:26:24,720 --> 00:26:27,200
+They might say, you know, uh,
+
+730
+00:26:27,200 --> 00:26:29,760
+sustainable jewels, like renewable
+
+731
+00:26:29,760 --> 00:26:32,000
+jewels versus non-renewable jewels, and
+
+732
+00:26:32,000 --> 00:26:33,360
+someone says, "I connected a nuclear
+
+733
+00:26:33,360 --> 00:26:34,960
+power plant, so my jewels are free."
+
+734
+00:26:34,960 --> 00:26:37,039
+>> No, no, no. I I mean, actually, I mean
+
+735
+00:26:37,039 --> 00:26:38,960
+actually zero jewels.
+
+736
+00:26:38,960 --> 00:26:40,320
+>> Yeah, honestly, I mean, I can
+
+737
+00:26:40,320 --> 00:26:42,640
+hypothesize, but this is just a guess.
+
+738
+00:26:42,640 --> 00:26:44,880
+Definitely not something that I'm uh
+
+739
+00:26:44,880 --> 00:26:46,640
+looking at in the near term. I don't see
+
+740
+00:26:46,640 --> 00:26:48,159
+that happening. Again, if we're talking
+
+741
+00:26:48,159 --> 00:26:50,000
+about the fiveyear horizon, I don't see
+
+742
+00:26:50,000 --> 00:26:52,480
+that in the next five years. People are
+
+743
+00:26:52,480 --> 00:26:54,400
+talking about it. I I can't say that I'm
+
+744
+00:26:54,400 --> 00:26:56,559
+up to speed on the exact approaches that
+
+745
+00:26:56,559 --> 00:26:59,120
+they're using for that without using
+
+746
+00:26:59,120 --> 00:27:02,400
+some sort of a like to to tell me that
+
+747
+00:27:02,400 --> 00:27:03,840
+we're able to generate an answer with
+
+748
+00:27:03,840 --> 00:27:07,919
+using no uh no energy
+
+749
+00:27:07,919 --> 00:27:09,919
+in the near term. I don't see that as a
+
+750
+00:27:09,919 --> 00:27:11,520
+as a viable alternative unless we're
+
+751
+00:27:11,520 --> 00:27:13,279
+willing to say that the you know I'm
+
+752
+00:27:13,279 --> 00:27:16,880
+allowing uh yeah I just don't know how
+
+753
+00:27:16,880 --> 00:27:18,640
+that's possible to generate something
+
+754
+00:27:18,640 --> 00:27:21,360
+with with no energy. I assume you're
+
+755
+00:27:21,360 --> 00:27:22,960
+familiar with reversible computing.
+
+756
+00:27:22,960 --> 00:27:24,640
+There are lots of architectures for
+
+757
+00:27:24,640 --> 00:27:27,039
+beating the land hour limit. Literally,
+
+758
+00:27:27,039 --> 00:27:28,720
+you could do this with purely elastic
+
+759
+00:27:28,720 --> 00:27:30,720
+billiard computing if you had to. But
+
+760
+00:27:30,720 --> 00:27:32,640
+there are lots of alternative ways to do
+
+761
+00:27:32,640 --> 00:27:35,039
+it. It would seem to me uh all of the
+
+762
+00:27:35,039 --> 00:27:37,600
+hand ringing over energy efficiency is
+
+763
+00:27:37,600 --> 00:27:40,880
+uh both illfounded and also inevitable.
+
+764
+00:27:40,880 --> 00:27:42,480
+we'll just have recursive
+
+765
+00:27:42,480 --> 00:27:46,159
+self-improvement uh and super super
+
+766
+00:27:46,159 --> 00:27:48,559
+optimization models tell us what these
+
+767
+00:27:48,559 --> 00:27:50,640
+better architectures are. So may maybe
+
+768
+00:27:50,640 --> 00:27:53,120
+let me put that in question form is it
+
+769
+00:27:53,120 --> 00:27:55,120
+even worth hand ringing over energy
+
+770
+00:27:55,120 --> 00:27:57,760
+efficiency of computing paradigms in an
+
+771
+00:27:57,760 --> 00:27:59,600
+era of recursive self-improvement or and
+
+772
+00:27:59,600 --> 00:28:02,240
+the alternative let the AIs worry about
+
+773
+00:28:02,240 --> 00:28:05,279
+it and just optimize towards effectively
+
+774
+00:28:05,279 --> 00:28:07,120
+infinite intelligence per watt. Why
+
+775
+00:28:07,120 --> 00:28:10,080
+should we even care? Uh so I think it's
+
+776
+00:28:10,080 --> 00:28:11,679
+about timing right if you tell me that
+
+777
+00:28:11,679 --> 00:28:13,840
+that technology is coming out tomorrow
+
+778
+00:28:13,840 --> 00:28:16,000
+or in the next year if you can say that
+
+779
+00:28:16,000 --> 00:28:18,080
+with confidence then yeah maybe we don't
+
+780
+00:28:18,080 --> 00:28:19,679
+need to care. I don't see anything
+
+781
+00:28:19,679 --> 00:28:21,279
+coming out in the next 3 to four years
+
+782
+00:28:21,279 --> 00:28:23,039
+that I'm aware of at least. I mean
+
+783
+00:28:23,039 --> 00:28:24,880
+there's a lot of interesting research a
+
+784
+00:28:24,880 --> 00:28:26,720
+lot of interesting proposals that are
+
+785
+00:28:26,720 --> 00:28:28,480
+out there. I've not seen anything that's
+
+786
+00:28:28,480 --> 00:28:30,159
+like oh okay I can see this becoming a
+
+787
+00:28:30,159 --> 00:28:31,600
+commercially viable product that the
+
+788
+00:28:31,600 --> 00:28:33,120
+whole world is going to switch over to
+
+789
+00:28:33,120 --> 00:28:35,360
+in the next few years. So I am really
+
+790
+00:28:35,360 --> 00:28:38,240
+focused on what is the near-term impact
+
+791
+00:28:38,240 --> 00:28:41,039
+uh as we're growing these systems very
+
+792
+00:28:41,039 --> 00:28:42,960
+quickly. If I look at the plans over the
+
+793
+00:28:42,960 --> 00:28:44,799
+next 3 to 5 years, just the amount of
+
+794
+00:28:44,799 --> 00:28:46,640
+data centers, the amount of new bills
+
+795
+00:28:46,640 --> 00:28:48,399
+that are coming up, I mean we're looking
+
+796
+00:28:48,399 --> 00:28:50,960
+at nearly doubling the number of data
+
+797
+00:28:50,960 --> 00:28:52,320
+centers that are, you know, that these
+
+798
+00:28:52,320 --> 00:28:54,799
+are currently in process. Not all will
+
+799
+00:28:54,799 --> 00:28:56,799
+happen. However, that's just a
+
+800
+00:28:56,799 --> 00:28:59,120
+significant buildout happening. I see
+
+801
+00:28:59,120 --> 00:29:00,320
+this happening. This is just in the
+
+802
+00:29:00,320 --> 00:29:02,399
+United States, but even worldwide. uh we
+
+803
+00:29:02,399 --> 00:29:04,240
+work with customers across Asia, South
+
+804
+00:29:04,240 --> 00:29:06,880
+America, there's a huge growth going on
+
+805
+00:29:06,880 --> 00:29:10,559
+and so in the next 3 to 5 years which is
+
+806
+00:29:10,559 --> 00:29:12,399
+what I'm really focused on trying to
+
+807
+00:29:12,399 --> 00:29:13,760
+make sure that we beat the curve for
+
+808
+00:29:13,760 --> 00:29:16,240
+that time I do think we have to worry
+
+809
+00:29:16,240 --> 00:29:18,080
+about it and you know where we go 10
+
+810
+00:29:18,080 --> 00:29:20,640
+years from now yeah I mean maybe there
+
+811
+00:29:20,640 --> 00:29:22,399
+are you know combination of orbital data
+
+812
+00:29:22,399 --> 00:29:23,840
+centers maybe we have new computing
+
+813
+00:29:23,840 --> 00:29:26,080
+paradigms new model architectures alto
+
+814
+00:29:26,080 --> 00:29:28,159
+together uh but I think we need to
+
+815
+00:29:28,159 --> 00:29:31,840
+balance what is happening and what we're
+
+816
+00:29:31,840 --> 00:29:34,240
+seeing happening versus what would be
+
+817
+00:29:34,240 --> 00:29:36,159
+really cool. That's not to say that I
+
+818
+00:29:36,159 --> 00:29:37,440
+mean I'm also an investor in one of
+
+819
+00:29:37,440 --> 00:29:39,919
+these orbital space or one of these uh
+
+820
+00:29:39,919 --> 00:29:42,960
+space-based data center companies. Um so
+
+821
+00:29:42,960 --> 00:29:44,640
+I think it's exciting. I think it's
+
+822
+00:29:44,640 --> 00:29:47,440
+going to be part of the equation but I
+
+823
+00:29:47,440 --> 00:29:49,440
+don't see that you know I still see that
+
+824
+00:29:49,440 --> 00:29:51,279
+being far out maybe compared to even
+
+825
+00:29:51,279 --> 00:29:53,120
+some of the most aggressive timelines
+
+826
+00:29:53,120 --> 00:29:55,039
+that people are putting out there. So,
+
+827
+00:29:55,039 --> 00:29:57,279
+Anthropic just released their first call
+
+828
+00:29:57,279 --> 00:29:59,200
+it recursive self-improvement report
+
+829
+00:29:59,200 --> 00:30:00,960
+noting how much of their algorithmic
+
+830
+00:30:00,960 --> 00:30:03,120
+research is now conducted by their own
+
+831
+00:30:03,120 --> 00:30:06,000
+models. I'll again press on this point.
+
+832
+00:30:06,000 --> 00:30:08,720
+Why you you you use the word worry. Why
+
+833
+00:30:08,720 --> 00:30:10,399
+should anyone worry about this? We're
+
+834
+00:30:10,399 --> 00:30:12,240
+we're arguably now according to
+
+835
+00:30:12,240 --> 00:30:14,799
+anthropic and open AI at least a and
+
+836
+00:30:14,799 --> 00:30:16,880
+some of the Chinese frontier labs in an
+
+837
+00:30:16,880 --> 00:30:18,799
+era when the AIs are discovering
+
+838
+00:30:18,799 --> 00:30:20,720
+improvements to themselves and to the
+
+839
+00:30:20,720 --> 00:30:23,440
+extent that say capabilities per unit
+
+840
+00:30:23,440 --> 00:30:26,159
+parameter is exponentially improving
+
+841
+00:30:26,159 --> 00:30:28,000
+maybe one would quibble with the word
+
+842
+00:30:28,000 --> 00:30:30,480
+exponential but at least monotonically
+
+843
+00:30:30,480 --> 00:30:33,840
+improving and to the extent that say
+
+844
+00:30:33,840 --> 00:30:36,880
+parameters per unit or effective forward
+
+845
+00:30:36,880 --> 00:30:39,919
+passes through a parameter per watt or
+
+846
+00:30:39,919 --> 00:30:42,880
+per kilowatt hour are also continuing to
+
+847
+00:30:42,880 --> 00:30:46,000
+improve radically. Why isn't this
+
+848
+00:30:46,000 --> 00:30:48,480
+increasingly the AI's problem to improve
+
+849
+00:30:48,480 --> 00:30:51,039
+itself? Why should in short anyone be
+
+850
+00:30:51,039 --> 00:30:53,440
+worrying any meatbody human be worrying
+
+851
+00:30:53,440 --> 00:30:55,200
+about this at all?
+
+852
+00:30:55,200 --> 00:30:58,080
+>> So two two things. One is you the same
+
+853
+00:30:58,080 --> 00:30:59,279
+companies that are talking about this
+
+854
+00:30:59,279 --> 00:31:00,960
+are also putting massive investments in
+
+855
+00:31:00,960 --> 00:31:03,360
+more and more compute as we speak. So
+
+856
+00:31:03,360 --> 00:31:04,880
+that to me just kind of shows where
+
+857
+00:31:04,880 --> 00:31:06,480
+they're thinking still right. So these
+
+858
+00:31:06,480 --> 00:31:08,480
+are we've always seen this right the
+
+859
+00:31:08,480 --> 00:31:10,399
+research labs kind of show one thing but
+
+860
+00:31:10,399 --> 00:31:11,919
+then kind of follow the money where
+
+861
+00:31:11,919 --> 00:31:13,120
+these organizations are putting their
+
+862
+00:31:13,120 --> 00:31:14,559
+money spending billions of dollars a
+
+863
+00:31:14,559 --> 00:31:16,799
+month on new computing uh to make these
+
+864
+00:31:16,799 --> 00:31:19,120
+services available. So again, I'm kind
+
+865
+00:31:19,120 --> 00:31:20,880
+of coming back to timelines over here.
+
+866
+00:31:20,880 --> 00:31:23,200
+You've got the near-term versus the
+
+867
+00:31:23,200 --> 00:31:26,720
+longer term. In the near term, it looks
+
+868
+00:31:26,720 --> 00:31:28,399
+like there is a lot of capital that's
+
+869
+00:31:28,399 --> 00:31:30,480
+going down the path of scaling up the
+
+870
+00:31:30,480 --> 00:31:32,880
+existing computing systems. So as much
+
+871
+00:31:32,880 --> 00:31:35,039
+as I, you know, kudos to these
+
+872
+00:31:35,039 --> 00:31:39,360
+organizations for u researching the
+
+873
+00:31:39,360 --> 00:31:42,159
+again all of this is important for us.
+
+874
+00:31:42,159 --> 00:31:44,960
+However, near-term we're still scaling
+
+875
+00:31:44,960 --> 00:31:46,640
+up big time. Why are we building
+
+876
+00:31:46,640 --> 00:31:48,159
+gigawatt farms throughout the or
+
+877
+00:31:48,159 --> 00:31:50,080
+gigawatt data centers, multi-gawatt data
+
+878
+00:31:50,080 --> 00:31:52,159
+centers throughout the world? Why do
+
+879
+00:31:52,159 --> 00:31:53,919
+these companies that are doing research
+
+880
+00:31:53,919 --> 00:31:58,000
+also investing in that massive buildout?
+
+881
+00:31:58,000 --> 00:32:01,120
+I I I I think they see it as a potential
+
+882
+00:32:01,120 --> 00:32:02,880
+path, but that's not the plan of record
+
+883
+00:32:02,880 --> 00:32:04,480
+for the next few years.
+
+884
+00:32:04,480 --> 00:32:06,080
+>> Well, I I would distinguish between
+
+885
+00:32:06,080 --> 00:32:08,559
+model level advances and infrastructural
+
+886
+00:32:08,559 --> 00:32:10,320
+level advances. And again for avoidance
+
+887
+00:32:10,320 --> 00:32:13,440
+of doubt I I think forget about the the
+
+888
+00:32:13,440 --> 00:32:15,200
+solar system and tiling the solar system
+
+889
+00:32:15,200 --> 00:32:18,000
+with compute. Uh I'm huge fan of to the
+
+890
+00:32:18,000 --> 00:32:19,760
+extent it's practical tiling the earth
+
+891
+00:32:19,760 --> 00:32:21,840
+with compute as well. So I I want to
+
+892
+00:32:21,840 --> 00:32:23,519
+make sure we're addressing the elephant
+
+893
+00:32:23,519 --> 00:32:26,000
+in the room. Am I understanding your
+
+894
+00:32:26,000 --> 00:32:28,720
+position correctly that you're concerned
+
+895
+00:32:28,720 --> 00:32:30,960
+about data center builds out on Earth?
+
+896
+00:32:30,960 --> 00:32:33,200
+And if if so what exactly is your
+
+897
+00:32:33,200 --> 00:32:34,640
+concern?
+
+898
+00:32:34,640 --> 00:32:36,399
+>> Yeah, so I do have a couple concerns
+
+899
+00:32:36,399 --> 00:32:38,159
+with data center buildout on Earth. I
+
+900
+00:32:38,159 --> 00:32:40,240
+believe that while we have on one end
+
+901
+00:32:40,240 --> 00:32:43,360
+communities that are pushing back uh on
+
+902
+00:32:43,360 --> 00:32:44,880
+data center buildout, we're actually
+
+903
+00:32:44,880 --> 00:32:46,480
+being extremely wasteful with the power
+
+904
+00:32:46,480 --> 00:32:47,919
+and energy that we're currently using.
+
+905
+00:32:47,919 --> 00:32:50,320
+And so the question is, you know, can we
+
+906
+00:32:50,320 --> 00:32:52,320
+unlock a lot more capacity with what we
+
+907
+00:32:52,320 --> 00:32:54,399
+already have before going down building
+
+908
+00:32:54,399 --> 00:32:56,799
+more infrastructure on Earth? Uh we have
+
+909
+00:32:56,799 --> 00:32:59,360
+a lot of power that's stranded is is the
+
+910
+00:32:59,360 --> 00:33:01,919
+term that we use in conservative cooling
+
+911
+00:33:01,919 --> 00:33:05,120
+and power margins. uh we have low
+
+912
+00:33:05,120 --> 00:33:08,000
+hardware utilization across the board.
+
+913
+00:33:08,000 --> 00:33:10,399
+Uh we have resources that are controlled
+
+914
+00:33:10,399 --> 00:33:12,240
+by different people. So you have
+
+915
+00:33:12,240 --> 00:33:14,240
+electrical grids, you have the data
+
+916
+00:33:14,240 --> 00:33:16,080
+centers, you have the compute providers,
+
+917
+00:33:16,080 --> 00:33:17,840
+each one operating their own safety
+
+918
+00:33:17,840 --> 00:33:19,360
+margins that are all compounding and
+
+919
+00:33:19,360 --> 00:33:21,360
+creating this highly inefficient uh
+
+920
+00:33:21,360 --> 00:33:23,120
+system that we spend. And then we have
+
+921
+00:33:23,120 --> 00:33:24,880
+infrastructure that we've sized for
+
+922
+00:33:24,880 --> 00:33:27,760
+peaks that happen very rarely. And so
+
+923
+00:33:27,760 --> 00:33:30,399
+with that, you know, I I have no
+
+924
+00:33:30,399 --> 00:33:31,919
+concerns if we're building more data
+
+925
+00:33:31,919 --> 00:33:33,760
+centers because we've maximized the
+
+926
+00:33:33,760 --> 00:33:35,679
+usage of what we already have and we're
+
+927
+00:33:35,679 --> 00:33:39,200
+scaling up because we need to to uh
+
+928
+00:33:39,200 --> 00:33:41,440
+we're building the the next level of
+
+929
+00:33:41,440 --> 00:33:43,679
+technology to solve criticals problems,
+
+930
+00:33:43,679 --> 00:33:44,960
+you know, helping solve cancer, for
+
+931
+00:33:44,960 --> 00:33:47,200
+example, but we're not using what we
+
+932
+00:33:47,200 --> 00:33:48,799
+already have efficiently. And so there's
+
+933
+00:33:48,799 --> 00:33:51,760
+a huge environmental local cost that
+
+934
+00:33:51,760 --> 00:33:53,679
+comes along with these buildouts that
+
+935
+00:33:53,679 --> 00:33:56,320
+are being borne by someone. uh and we're
+
+936
+00:33:56,320 --> 00:33:58,000
+doing that by you know we've not even
+
+937
+00:33:58,000 --> 00:34:01,120
+used the infrastructure that we already
+
+938
+00:34:01,120 --> 00:34:02,720
+have properly before [clears throat] we
+
+939
+00:34:02,720 --> 00:34:04,320
+scale up and I have a lot of anecdotes
+
+940
+00:34:04,320 --> 00:34:07,440
+of you know what we're seeing uh today
+
+941
+00:34:07,440 --> 00:34:09,359
+uh in you know in operational data
+
+942
+00:34:09,359 --> 00:34:10,960
+centers around the world
+
+943
+00:34:10,960 --> 00:34:13,200
+>> surely you're not implying that we
+
+944
+00:34:13,200 --> 00:34:15,200
+should stop or pause the data center
+
+945
+00:34:15,200 --> 00:34:17,760
+buildout just to increase the efficiency
+
+946
+00:34:17,760 --> 00:34:20,480
+of data centers presumably tell me if if
+
+947
+00:34:20,480 --> 00:34:23,440
+I'm being presumptuous these two efforts
+
+948
+00:34:23,440 --> 00:34:24,960
+can live alongside each other we could
+
+949
+00:34:24,960 --> 00:34:27,760
+do horizontal build%. Yeah, I think it's
+
+950
+00:34:27,760 --> 00:34:30,079
+more of a you're building a data center.
+
+951
+00:34:30,079 --> 00:34:31,599
+Can you show me that you you're actually
+
+952
+00:34:31,599 --> 00:34:32,879
+using what you have? I mean, again, and
+
+953
+00:34:32,879 --> 00:34:34,800
+I'm not trying I'm not a policy maker,
+
+954
+00:34:34,800 --> 00:34:36,159
+so I'm not trying to propose this from
+
+955
+00:34:36,159 --> 00:34:37,440
+this is how the policy should be
+
+956
+00:34:37,440 --> 00:34:40,079
+written, but rather the cost of building
+
+957
+00:34:40,079 --> 00:34:42,560
+a new one should somehow be a little bit
+
+958
+00:34:42,560 --> 00:34:44,399
+higher than making what you already have
+
+959
+00:34:44,399 --> 00:34:45,839
+more efficient, being able to utilize
+
+960
+00:34:45,839 --> 00:34:47,359
+what you already have. And the cost
+
+961
+00:34:47,359 --> 00:34:48,800
+could be public pressure. It could be
+
+962
+00:34:48,800 --> 00:34:52,079
+actual dollars and cents cost. uh could
+
+963
+00:34:52,079 --> 00:34:53,599
+be you know I don't want to go down the
+
+964
+00:34:53,599 --> 00:34:55,520
+regulatory path but yes you you need
+
+965
+00:34:55,520 --> 00:34:57,200
+you'll need to do both at the same time
+
+966
+00:34:57,200 --> 00:34:59,119
+the efficiencies will get you 50% but
+
+967
+00:34:59,119 --> 00:35:02,400
+that won't get you 5x or 10x necessarily
+
+968
+00:35:02,400 --> 00:35:04,320
+>> it would seem to me the markets are more
+
+969
+00:35:04,320 --> 00:35:07,760
+than competent at handling that what is
+
+970
+00:35:07,760 --> 00:35:10,160
+there anything else that I'm missing is
+
+971
+00:35:10,160 --> 00:35:12,720
+there it would just seem to me that data
+
+972
+00:35:12,720 --> 00:35:15,359
+data center developers uh and operators
+
+973
+00:35:15,359 --> 00:35:18,720
+have are plenty well incentivized to I
+
+974
+00:35:18,720 --> 00:35:20,240
+mean they're they're consuming energy
+
+975
+00:35:20,240 --> 00:35:21,760
+just like everyone else whether it's on
+
+976
+00:35:21,760 --> 00:35:23,599
+prem or otherwise they have every
+
+977
+00:35:23,599 --> 00:35:26,320
+incentive to increase energy efficiency.
+
+978
+00:35:26,320 --> 00:35:29,040
+What what am I missing if anything?
+
+979
+00:35:29,040 --> 00:35:31,200
+>> Yeah, very often you know we work with a
+
+980
+00:35:31,200 --> 00:35:34,000
+lot of data center providers and very
+
+981
+00:35:34,000 --> 00:35:36,240
+often they're unaware of the power
+
+982
+00:35:36,240 --> 00:35:37,680
+that's being underutilized or it's just
+
+983
+00:35:37,680 --> 00:35:39,920
+sort of treated as this is how life is.
+
+984
+00:35:39,920 --> 00:35:42,320
+Um you know we work with data centers
+
+985
+00:35:42,320 --> 00:35:44,720
+that run with you know pees at you know
+
+986
+00:35:44,720 --> 00:35:47,119
+1.5 you know fairly high. They're also
+
+987
+00:35:47,119 --> 00:35:48,640
+working in hotter regions maybe in the
+
+988
+00:35:48,640 --> 00:35:51,839
+world and they're sitting at 30%
+
+989
+00:35:51,839 --> 00:35:53,280
+utilization or lower. They have highly
+
+990
+00:35:53,280 --> 00:35:55,599
+spiky traffic so that kind of peaks up
+
+991
+00:35:55,599 --> 00:35:59,119
+goes down. They're unaware of like what
+
+992
+00:35:59,119 --> 00:36:00,560
+unaware is not the right word but
+
+993
+00:36:00,560 --> 00:36:02,320
+they're not sure how to control the
+
+994
+00:36:02,320 --> 00:36:04,000
+dynamic nature of these systems. I mean
+
+995
+00:36:04,000 --> 00:36:05,760
+I like to talk about data centers are
+
+996
+00:36:05,760 --> 00:36:08,320
+themselves living breathing systems but
+
+997
+00:36:08,320 --> 00:36:10,720
+they're treated very statically. It is a
+
+998
+00:36:10,720 --> 00:36:12,000
+complex problem. If you look at a
+
+999
+00:36:12,000 --> 00:36:13,680
+collocation facility for example, so
+
+1000
+00:36:13,680 --> 00:36:14,880
+this is a data center where you might
+
+1001
+00:36:14,880 --> 00:36:16,960
+have multiple tenants going in at once.
+
+1002
+00:36:16,960 --> 00:36:18,640
+You often have different SLAs's for
+
+1003
+00:36:18,640 --> 00:36:19,920
+different customers or service level
+
+1004
+00:36:19,920 --> 00:36:22,480
+agreements. Uh you know customer A might
+
+1005
+00:36:22,480 --> 00:36:25,599
+say my temperature for this area needs
+
+1006
+00:36:25,599 --> 00:36:27,920
+to be between 18 to 21° centigrade.
+
+1007
+00:36:27,920 --> 00:36:30,800
+Customer B might say I I use 18 to 30 is
+
+1008
+00:36:30,800 --> 00:36:32,720
+fine uh in terms of like inlet
+
+1009
+00:36:32,720 --> 00:36:34,800
+temperatures whether it's air or water.
+
+1010
+00:36:34,800 --> 00:36:36,960
+Um and so the data centers these are
+
+1011
+00:36:36,960 --> 00:36:38,720
+complex things to be able to adjust and
+
+1012
+00:36:38,720 --> 00:36:40,960
+run. they don't have that software plane
+
+1013
+00:36:40,960 --> 00:36:43,920
+yet to be able to adjust all of these
+
+1014
+00:36:43,920 --> 00:36:45,839
+parameters individually or to localize
+
+1015
+00:36:45,839 --> 00:36:47,200
+some a lot of these changes. So, what
+
+1016
+00:36:47,200 --> 00:36:48,400
+they tend to do is run on the most
+
+1017
+00:36:48,400 --> 00:36:50,320
+conservative, right? If I run it at 18°
+
+1018
+00:36:50,320 --> 00:36:52,960
+centigrade, I've satisfied both SLAs's,
+
+1019
+00:36:52,960 --> 00:36:54,800
+which is true. Uh, but at the same time,
+
+1020
+00:36:54,800 --> 00:36:56,400
+you're leaving a lot of power on the
+
+1021
+00:36:56,400 --> 00:36:58,800
+floor for customer B. That might have
+
+1022
+00:36:58,800 --> 00:37:00,160
+been okay if you had raised their
+
+1023
+00:37:00,160 --> 00:37:02,160
+temperatures slightly. And that has a
+
+1024
+00:37:02,160 --> 00:37:04,320
+major downstream impact on either water
+
+1025
+00:37:04,320 --> 00:37:06,640
+consumption uh and power. And so these
+
+1026
+00:37:06,640 --> 00:37:08,079
+are the areas that we're often getting
+
+1027
+00:37:08,079 --> 00:37:10,240
+into and being able to make adjustments
+
+1028
+00:37:10,240 --> 00:37:12,720
+to say, "Hey, here's here's a
+
+1029
+00:37:12,720 --> 00:37:14,079
+significant amount of power that you can
+
+1030
+00:37:14,079 --> 00:37:16,560
+unlock within this existing facility,
+
+1031
+00:37:16,560 --> 00:37:18,400
+still keeping all the same SLAs's in
+
+1032
+00:37:18,400 --> 00:37:20,960
+place. Uh nothing changes from the
+
+1033
+00:37:20,960 --> 00:37:22,480
+customer perspective. You're just
+
+1034
+00:37:22,480 --> 00:37:24,880
+running a far more efficient operation
+
+1035
+00:37:24,880 --> 00:37:26,800
+as a data center. So that's when we
+
+1036
+00:37:26,800 --> 00:37:29,599
+talked about why yeah I mean it it does
+
+1037
+00:37:29,599 --> 00:37:32,960
+seem obvious uh but I think it's a more
+
+1038
+00:37:32,960 --> 00:37:34,880
+recent problem where we've stressed out
+
+1039
+00:37:34,880 --> 00:37:36,960
+the systems and it has always been easy
+
+1040
+00:37:36,960 --> 00:37:38,480
+to go build a new data center. there was
+
+1041
+00:37:38,480 --> 00:37:40,079
+a time where people really wanted data
+
+1042
+00:37:40,079 --> 00:37:42,240
+centers in their communities that has
+
+1043
+00:37:42,240 --> 00:37:44,000
+changed and so now people are looking at
+
+1044
+00:37:44,000 --> 00:37:46,079
+okay so I can get more efficient how do
+
+1045
+00:37:46,079 --> 00:37:47,680
+I get more efficient over here now you
+
+1046
+00:37:47,680 --> 00:37:49,119
+know the scales of these things are are
+
+1047
+00:37:49,119 --> 00:37:50,560
+fairly large I mean we're talking about
+
+1048
+00:37:50,560 --> 00:37:54,079
+a 50 to 100 megawatt uh facility and we
+
+1049
+00:37:54,079 --> 00:37:56,880
+can unlock 10 to 20% which is not
+
+1050
+00:37:56,880 --> 00:37:59,440
+difficult um you're talking about you
+
+1051
+00:37:59,440 --> 00:38:02,880
+know unlocking 10 to 20 megawws of power
+
+1052
+00:38:02,880 --> 00:38:05,839
+from an existing facility and so you you
+
+1053
+00:38:05,839 --> 00:38:07,520
+can see how this starts to scale very
+
+1054
+00:38:07,520 --> 00:38:09,040
+quickly And we've seen this time and
+
+1055
+00:38:09,040 --> 00:38:13,280
+time again across facilities that um
+
+1056
+00:38:13,280 --> 00:38:16,079
+that level of power unlock is absolutely
+
+1057
+00:38:16,079 --> 00:38:17,040
+available. And then
+
+1058
+00:38:17,040 --> 00:38:19,599
+>> DJ, let me let me ask you a slight um
+
+1059
+00:38:19,599 --> 00:38:22,079
+different question but on this uh track
+
+1060
+00:38:22,079 --> 00:38:25,520
+geopolitically um you know there are
+
+1061
+00:38:25,520 --> 00:38:27,599
+like over 190 countries people are
+
+1062
+00:38:27,599 --> 00:38:30,160
+talking about sovereign AI. What's
+
+1063
+00:38:30,160 --> 00:38:31,599
+similar and different to how people are
+
+1064
+00:38:31,599 --> 00:38:33,920
+building data centers across the world?
+
+1065
+00:38:33,920 --> 00:38:34,960
+I think a lot of what you're talking
+
+1066
+00:38:34,960 --> 00:38:36,800
+about is in the US.
+
+1067
+00:38:36,800 --> 00:38:38,240
+>> No. Uh actually what I'm talking about
+
+1068
+00:38:38,240 --> 00:38:39,760
+is throughout the world. So we're seeing
+
+1069
+00:38:39,760 --> 00:38:42,160
+this. Yeah. So sovereign AI is the new
+
+1070
+00:38:42,160 --> 00:38:44,240
+thing. Uh so yeah, Alex coming back to
+
+1071
+00:38:44,240 --> 00:38:46,000
+there's a lot of really cool I'd call in
+
+1072
+00:38:46,000 --> 00:38:47,280
+the research and then there's also the
+
+1073
+00:38:47,280 --> 00:38:49,599
+very practical what's going on. What are
+
+1074
+00:38:49,599 --> 00:38:51,440
+governments up to there? You know, we're
+
+1075
+00:38:51,440 --> 00:38:53,839
+working with nations that have that have
+
+1076
+00:38:53,839 --> 00:38:56,320
+largely been maybe energy exporters that
+
+1077
+00:38:56,320 --> 00:38:58,000
+are starting to m keep some of that
+
+1078
+00:38:58,000 --> 00:38:59,920
+energy internally to be able to power
+
+1079
+00:38:59,920 --> 00:39:01,760
+data centers. And the idea there is
+
+1080
+00:39:01,760 --> 00:39:03,359
+look, we want to be able to build data
+
+1081
+00:39:03,359 --> 00:39:04,880
+centers locally. It's definitely more
+
+1082
+00:39:04,880 --> 00:39:06,640
+fun than loading up a cargo ship with
+
+1083
+00:39:06,640 --> 00:39:09,280
+with fuel and sending it somewhere else.
+
+1084
+00:39:09,280 --> 00:39:12,320
+Um, and so yeah, coming back to the
+
+1085
+00:39:12,320 --> 00:39:15,200
+sovereignty that actually makes it now a
+
+1086
+00:39:15,200 --> 00:39:17,760
+little bit more difficult where
+
+1087
+00:39:17,760 --> 00:39:19,280
+one could have even given an answer.
+
+1088
+00:39:19,280 --> 00:39:20,720
+Let's just find one place in the earth
+
+1089
+00:39:20,720 --> 00:39:22,720
+where we have abundant solar power,
+
+1090
+00:39:22,720 --> 00:39:24,960
+really cool weather, and just build
+
+1091
+00:39:24,960 --> 00:39:26,960
+massive networks to those places and
+
+1092
+00:39:26,960 --> 00:39:28,800
+build the world's data center in one
+
+1093
+00:39:28,800 --> 00:39:30,800
+spot. Um, that would have been a really
+
+1094
+00:39:30,800 --> 00:39:32,320
+cool idea, but I think practically
+
+1095
+00:39:32,320 --> 00:39:35,119
+speaking, every country wants the data
+
+1096
+00:39:35,119 --> 00:39:38,240
+housed within within their uh within
+
+1097
+00:39:38,240 --> 00:39:39,920
+their borders. And this is something
+
+1098
+00:39:39,920 --> 00:39:41,520
+we're seeing more of happening. We're
+
+1099
+00:39:41,520 --> 00:39:43,520
+seeing customers that want their data
+
+1100
+00:39:43,520 --> 00:39:45,280
+only to be within the country that
+
+1101
+00:39:45,280 --> 00:39:46,800
+they're operating from for legal
+
+1102
+00:39:46,800 --> 00:39:49,119
+reasons. So, this is like GDPR, but now
+
+1103
+00:39:49,119 --> 00:39:51,599
+everyone in the world has some whether
+
+1104
+00:39:51,599 --> 00:39:54,480
+formal or informal version of of that
+
+1105
+00:39:54,480 --> 00:39:56,880
+going on, which is all compute needs to
+
+1106
+00:39:56,880 --> 00:39:58,320
+happen in my boundary. So what that
+
+1107
+00:39:58,320 --> 00:39:59,599
+means is now every country is trying to
+
+1108
+00:39:59,599 --> 00:40:01,200
+build data centers and so everyone's
+
+1109
+00:40:01,200 --> 00:40:03,119
+doing this around the world. So the
+
+1110
+00:40:03,119 --> 00:40:05,040
+buildout of data centers is certainly
+
+1111
+00:40:05,040 --> 00:40:07,440
+large in the United States but very
+
+1112
+00:40:07,440 --> 00:40:08,880
+large across the world. maybe Europe
+
+1113
+00:40:08,880 --> 00:40:10,160
+being the one place where it's a little
+
+1114
+00:40:10,160 --> 00:40:11,920
+bit slower than others just they have a
+
+1115
+00:40:11,920 --> 00:40:13,920
+a stronger regulatory framework in place
+
+1116
+00:40:13,920 --> 00:40:16,240
+there uh which makes growth a little bit
+
+1117
+00:40:16,240 --> 00:40:18,640
+but you go to Asia whether it's India
+
+1118
+00:40:18,640 --> 00:40:20,560
+Japan South Korea you go to South
+
+1119
+00:40:20,560 --> 00:40:23,040
+America there's Brazil Argentina you
+
+1120
+00:40:23,040 --> 00:40:24,640
+know you're seeing anywhere that they
+
+1121
+00:40:24,640 --> 00:40:27,280
+have power availability where they or
+
+1122
+00:40:27,280 --> 00:40:29,440
+large populations there's a big uh
+
+1123
+00:40:29,440 --> 00:40:31,920
+buildout of data centers happening so
+
+1124
+00:40:31,920 --> 00:40:33,760
+from the sovereignty perspective all
+
+1125
+00:40:33,760 --> 00:40:35,520
+this means is we're going to have more
+
+1126
+00:40:35,520 --> 00:40:37,520
+buildings coming up because people want
+
+1127
+00:40:37,520 --> 00:40:39,920
+them to stay local with each uh local to
+
+1128
+00:40:39,920 --> 00:40:40,960
+their country.
+
+1129
+00:40:40,960 --> 00:40:44,079
+>> So if you had to press uh say an
+
+1130
+00:40:44,079 --> 00:40:46,800
+American municipality that might perhaps
+
+1131
+00:40:46,800 --> 00:40:48,960
+due to foreign influence ops or other
+
+1132
+00:40:48,960 --> 00:40:51,839
+reasons be resistant to uh to approving
+
+1133
+00:40:51,839 --> 00:40:54,160
+a data center in their municipality. You
+
+1134
+00:40:54,160 --> 00:40:55,599
+had to shoot a commercial persuading
+
+1135
+00:40:55,599 --> 00:40:58,560
+them that it is to their advantage to do
+
+1136
+00:40:58,560 --> 00:41:00,319
+this that they should be in support of
+
+1137
+00:41:00,319 --> 00:41:03,119
+zoning an area for a data center. What
+
+1138
+00:41:03,119 --> 00:41:04,400
+would be your message to the
+
+1139
+00:41:04,400 --> 00:41:05,839
+municipality?
+
+1140
+00:41:05,839 --> 00:41:07,680
+>> Yeah. So first of all I would say that
+
+1141
+00:41:07,680 --> 00:41:09,359
+you and the data center operator need to
+
+1142
+00:41:09,359 --> 00:41:10,880
+talk to each other in the first place.
+
+1143
+00:41:10,880 --> 00:41:12,400
+Um and this needs to be an open
+
+1144
+00:41:12,400 --> 00:41:13,920
+transparent conversation. So the data
+
+1145
+00:41:13,920 --> 00:41:15,760
+center developers on one end you know I
+
+1146
+00:41:15,760 --> 00:41:17,920
+was like like you know I think uh
+
+1147
+00:41:17,920 --> 00:41:20,960
+there's a recent poll that maybe it's 6
+
+1148
+00:41:20,960 --> 00:41:22,800
+months or a year old now but a poll that
+
+1149
+00:41:22,800 --> 00:41:24,960
+came out that said you know data centers
+
+1150
+00:41:24,960 --> 00:41:27,040
+are you know just people pled you want a
+
+1151
+00:41:27,040 --> 00:41:28,240
+data center and people would rather have
+
+1152
+00:41:28,240 --> 00:41:30,240
+a nuclear plant in their backyard rather
+
+1153
+00:41:30,240 --> 00:41:31,760
+than a data center. you kind of go back
+
+1154
+00:41:31,760 --> 00:41:33,920
+five years, no one pulled anyone about
+
+1155
+00:41:33,920 --> 00:41:35,280
+anything to do with data centers because
+
+1156
+00:41:35,280 --> 00:41:36,800
+it wasn't a topic of conversation. So,
+
+1157
+00:41:36,800 --> 00:41:38,800
+we've gone from it not being a thing
+
+1158
+00:41:38,800 --> 00:41:40,880
+that people think about to being a thing
+
+1159
+00:41:40,880 --> 00:41:43,119
+that people have highly negative
+
+1160
+00:41:43,119 --> 00:41:45,359
+opinions about. And I think that's
+
+1161
+00:41:45,359 --> 00:41:48,240
+largely uh, you know, just the two
+
+1162
+00:41:48,240 --> 00:41:49,520
+communities haven't really had an
+
+1163
+00:41:49,520 --> 00:41:51,520
+honest, transparent conversation. So,
+
+1164
+00:41:51,520 --> 00:41:54,079
+what would I do if I was a municipality?
+
+1165
+00:41:54,079 --> 00:41:56,160
+one, I would want to talk to the data
+
+1166
+00:41:56,160 --> 00:41:58,319
+center developers to see how they're
+
+1167
+00:41:58,319 --> 00:42:00,960
+building it, what they're building, and
+
+1168
+00:42:00,960 --> 00:42:03,839
+what they're using to maintain. We've
+
+1169
+00:42:03,839 --> 00:42:05,359
+built tools, for example, that can
+
+1170
+00:42:05,359 --> 00:42:07,119
+reduce water consumption, tools to
+
+1171
+00:42:07,119 --> 00:42:08,560
+reduce power consumption, things that
+
+1172
+00:42:08,560 --> 00:42:10,640
+can actually help the grid during
+
+1173
+00:42:10,640 --> 00:42:12,800
+certain times. Um, you know, how am I
+
+1174
+00:42:12,800 --> 00:42:14,400
+going to ensure that we're not doing or
+
+1175
+00:42:14,400 --> 00:42:15,920
+if there are customer initiated load
+
+1176
+00:42:15,920 --> 00:42:17,839
+drops, right? There was one last year
+
+1177
+00:42:17,839 --> 00:42:20,400
+that dropped uh was about 4 gawatt of
+
+1178
+00:42:20,400 --> 00:42:22,319
+power and you know you got lights
+
+1179
+00:42:22,319 --> 00:42:24,800
+flickering and voltage things hundreds
+
+1180
+00:42:24,800 --> 00:42:26,960
+of miles away. That's what communities
+
+1181
+00:42:26,960 --> 00:42:28,800
+are afraid of. That's what people are
+
+1182
+00:42:28,800 --> 00:42:30,640
+thinking about. So there are ways around
+
+1183
+00:42:30,640 --> 00:42:32,240
+all of that. There is technology to
+
+1184
+00:42:32,240 --> 00:42:34,480
+solve all of those problems. And so the
+
+1185
+00:42:34,480 --> 00:42:36,000
+community might want to ask what are you
+
+1186
+00:42:36,000 --> 00:42:38,079
+doing over here for that? The second is
+
+1187
+00:42:38,079 --> 00:42:39,520
+how is this data center going to
+
+1188
+00:42:39,520 --> 00:42:41,200
+actually play a part in this community?
+
+1189
+00:42:41,200 --> 00:42:42,480
+There was a time where people love data
+
+1190
+00:42:42,480 --> 00:42:43,839
+centers. They were a big industrial
+
+1191
+00:42:43,839 --> 00:42:45,440
+project that didn't increase traffic,
+
+1192
+00:42:45,440 --> 00:42:47,760
+didn't increase school enrollments. Um,
+
+1193
+00:42:47,760 --> 00:42:50,560
+they were secure, safe facilities,
+
+1194
+00:42:50,560 --> 00:42:52,319
+right? You're not, it's not hundreds of
+
+1195
+00:42:52,319 --> 00:42:54,240
+people going in and out and causing
+
+1196
+00:42:54,240 --> 00:42:56,480
+traffic issues, etc. And so, there was a
+
+1197
+00:42:56,480 --> 00:42:57,680
+place where you could actually see data
+
+1198
+00:42:57,680 --> 00:42:59,040
+centers playing a part, but now they've
+
+1199
+00:42:59,040 --> 00:43:02,640
+grown into these loud, smelly,
+
+1200
+00:43:02,640 --> 00:43:04,880
+ugly facilities. And so those are
+
+1201
+00:43:04,880 --> 00:43:06,800
+opportunities to work with a community
+
+1202
+00:43:06,800 --> 00:43:08,880
+to say look we're going to and again
+
+1203
+00:43:08,880 --> 00:43:09,920
+we're working with different countries
+
+1204
+00:43:09,920 --> 00:43:11,839
+that are using data centers to use them
+
+1205
+00:43:11,839 --> 00:43:14,240
+as training for local workforce. There
+
+1206
+00:43:14,240 --> 00:43:16,079
+is a lot of work that's associated with
+
+1207
+00:43:16,079 --> 00:43:17,520
+a data center whether it's on the
+
+1208
+00:43:17,520 --> 00:43:18,960
+maintenance of some of the facilities in
+
+1209
+00:43:18,960 --> 00:43:20,720
+there even working within the IT
+
+1210
+00:43:20,720 --> 00:43:22,400
+equipment if you can get the local
+
+1211
+00:43:22,400 --> 00:43:23,760
+communities involved with that. There's
+
+1212
+00:43:23,760 --> 00:43:25,359
+often some big opportunities there. So
+
+1213
+00:43:25,359 --> 00:43:27,200
+that would be a second piece is what are
+
+1214
+00:43:27,200 --> 00:43:29,760
+you doing for our people locally for the
+
+1215
+00:43:29,760 --> 00:43:31,440
+data center. And then the final one is
+
+1216
+00:43:31,440 --> 00:43:33,280
+you know how are you paying your way uh
+
+1217
+00:43:33,280 --> 00:43:36,079
+in terms of being a part of this uh for
+
+1218
+00:43:36,079 --> 00:43:38,319
+a long time data centers have had tax
+
+1219
+00:43:38,319 --> 00:43:41,040
+exemptions tax moratoriums put on and so
+
+1220
+00:43:41,040 --> 00:43:43,119
+they've come in but they've not really
+
+1221
+00:43:43,119 --> 00:43:44,560
+contributed in a way that the community
+
+1222
+00:43:44,560 --> 00:43:46,720
+was hoping or expecting that to happen
+
+1223
+00:43:46,720 --> 00:43:48,240
+and so that would be the other piece is
+
+1224
+00:43:48,240 --> 00:43:50,720
+you know how are you essentially how are
+
+1225
+00:43:50,720 --> 00:43:52,319
+you paying for your paying for your
+
+1226
+00:43:52,319 --> 00:43:54,079
+position here
+
+1227
+00:43:54,079 --> 00:43:57,440
+>> so with your uh MIT Lincoln laboratory
+
+1228
+00:43:57,440 --> 00:43:59,680
+hat on perhaps it's been widely
+
+1229
+00:43:59,680 --> 00:44:02,240
+publicized including by SpaceX AAI and
+
+1230
+00:44:02,240 --> 00:44:05,599
+others that a a decent chunk it appears
+
+1231
+00:44:05,599 --> 00:44:08,160
+of at least social media opposition to
+
+1232
+00:44:08,160 --> 00:44:10,240
+data center development is being stoked
+
+1233
+00:44:10,240 --> 00:44:12,960
+by state actors, foreign state actors
+
+1234
+00:44:12,960 --> 00:44:15,440
+and influence operations, coordinated
+
+1235
+00:44:15,440 --> 00:44:18,480
+inauthentic actions, if you will, what
+
+1236
+00:44:18,480 --> 00:44:21,359
+fraction, if you had to guess, of
+
+1237
+00:44:21,359 --> 00:44:24,000
+purported resistance to data center
+
+1238
+00:44:24,000 --> 00:44:26,640
+development domestically in the US is
+
+1239
+00:44:26,640 --> 00:44:28,720
+actually not native to the US at all and
+
+1240
+00:44:28,720 --> 00:44:31,760
+is just downstream of influence ops
+
+1241
+00:44:31,760 --> 00:44:34,960
+designed to minimize America's super
+
+1242
+00:44:34,960 --> 00:44:36,560
+intelligence lead.
+
+1243
+00:44:36,560 --> 00:44:39,119
+>> I cannot answer that. I do not know uh
+
+1244
+00:44:39,119 --> 00:44:41,119
+being the reason uh that I can't answer
+
+1245
+00:44:41,119 --> 00:44:43,839
+that. It's very difficult to tell uh how
+
+1246
+00:44:43,839 --> 00:44:46,160
+much of that so I can say this uh maybe
+
+1247
+00:44:46,160 --> 00:44:49,200
+flip that around. There is a genuine
+
+1248
+00:44:49,200 --> 00:44:51,200
+grievance. Now how much of that is being
+
+1249
+00:44:51,200 --> 00:44:53,839
+amplified and maybe made larger than it
+
+1250
+00:44:53,839 --> 00:44:56,240
+needs to be? You know, you could
+
+1251
+00:44:56,240 --> 00:44:57,440
+certainly be convinced that that's the
+
+1252
+00:44:57,440 --> 00:44:58,800
+case, but it's very difficult to say
+
+1253
+00:44:58,800 --> 00:45:01,280
+that, hey, yeah, 10% of it is the is the
+
+1254
+00:45:01,280 --> 00:45:04,240
+grievance and 90% of it is uh due to
+
+1255
+00:45:04,240 --> 00:45:05,920
+foreign influence and foreign actors. A
+
+1256
+00:45:05,920 --> 00:45:08,456
+lot of this is purported. It's being
+
+1257
+00:45:08,456 --> 00:45:09,920
+[snorts] said, I haven't seen any
+
+1258
+00:45:09,920 --> 00:45:12,240
+credible report to say that that is like
+
+1259
+00:45:12,240 --> 00:45:14,160
+100% true. And here are the actors that
+
+1260
+00:45:14,160 --> 00:45:16,319
+we're naming for it. So, I would put
+
+1261
+00:45:16,319 --> 00:45:19,040
+maybe even that into the position of
+
+1262
+00:45:19,040 --> 00:45:21,440
+there are actors that are saying these
+
+1263
+00:45:21,440 --> 00:45:24,319
+and making these statements. Um, again,
+
+1264
+00:45:24,319 --> 00:45:25,920
+we've seen some, you know, news tidbits.
+
+1265
+00:45:25,920 --> 00:45:27,520
+I've also seen this. I've also been on
+
+1266
+00:45:27,520 --> 00:45:30,000
+the other receiving end of those, uh, as
+
+1267
+00:45:30,000 --> 00:45:32,560
+well. But I think there are grievances
+
+1268
+00:45:32,560 --> 00:45:33,680
+associated with this when you have
+
+1269
+00:45:33,680 --> 00:45:35,359
+people that are, I mean, if you've been
+
+1270
+00:45:35,359 --> 00:45:36,960
+to a data center or been next to a data
+
+1271
+00:45:36,960 --> 00:45:38,800
+center, they're not the most fun place
+
+1272
+00:45:38,800 --> 00:45:40,960
+to be around. Uh, and if you're working
+
+1273
+00:45:40,960 --> 00:45:43,920
+in areas where water is reduced,
+
+1274
+00:45:43,920 --> 00:45:45,359
+especially when you see like here here's
+
+1275
+00:45:45,359 --> 00:45:46,560
+the thing. There are technologies to
+
+1276
+00:45:46,560 --> 00:45:48,319
+solve a lot of these problems, right?
+
+1277
+00:45:48,319 --> 00:45:51,359
+whether it's better cooling systems, uh
+
+1278
+00:45:51,359 --> 00:45:54,160
+better like even just noise, uh energy
+
+1279
+00:45:54,160 --> 00:45:56,079
+generation, you know, better use of
+
+1280
+00:45:56,079 --> 00:45:59,440
+batteries, flywheels, etc. that a lot of
+
+1281
+00:45:59,440 --> 00:46:00,800
+people aren't employing because it is
+
+1282
+00:46:00,800 --> 00:46:02,720
+cost ineffective at this point. And so
+
+1283
+00:46:02,720 --> 00:46:04,240
+they're often going in and just doing
+
+1284
+00:46:04,240 --> 00:46:06,240
+whatever the So you got the equivalent
+
+1285
+00:46:06,240 --> 00:46:08,079
+of like slum lord data centers coming up
+
+1286
+00:46:08,079 --> 00:46:10,480
+in a lot of places which are, you know,
+
+1287
+00:46:10,480 --> 00:46:12,400
+they're just the what's the least
+
+1288
+00:46:12,400 --> 00:46:15,119
+expensive build I can I can make
+
+1289
+00:46:15,119 --> 00:46:17,760
+essentially resell it and move on. So
+
+1290
+00:46:17,760 --> 00:46:20,319
+the a lot of the developers don't have a
+
+1291
+00:46:20,319 --> 00:46:22,160
+long-term interest in the asset that
+
+1292
+00:46:22,160 --> 00:46:24,240
+they're putting in there. And so I'll
+
+1293
+00:46:24,240 --> 00:46:25,760
+you know I think some of the hyperscaler
+
+1294
+00:46:25,760 --> 00:46:27,280
+projects are different but we we work
+
+1295
+00:46:27,280 --> 00:46:28,800
+with a lot of collocation providers and
+
+1296
+00:46:28,800 --> 00:46:30,800
+I think there's in many cases a lot to
+
+1297
+00:46:30,800 --> 00:46:32,240
+be desired with some of the new builds
+
+1298
+00:46:32,240 --> 00:46:34,240
+and that's where the grievances from the
+
+1299
+00:46:34,240 --> 00:46:36,240
+community come up and there's also just
+
+1300
+00:46:36,240 --> 00:46:38,720
+this fact that a lot of it seems to be
+
+1301
+00:46:38,720 --> 00:46:41,599
+done sort of behind the you know in a
+
+1302
+00:46:41,599 --> 00:46:43,040
+back room somewhere rather than having
+
+1303
+00:46:43,040 --> 00:46:45,599
+the public involved. So I don't have a
+
+1304
+00:46:45,599 --> 00:46:47,440
+direct answer to what percentage or even
+
+1305
+00:46:47,440 --> 00:46:48,800
+if I had to guess I don't think I have
+
+1306
+00:46:48,800 --> 00:46:51,920
+any number to guess on what percentage
+
+1307
+00:46:51,920 --> 00:46:56,160
+is you know influencer or or or state
+
+1308
+00:46:56,160 --> 00:46:58,800
+sponsored amplification versus but I can
+
+1309
+00:46:58,800 --> 00:47:01,119
+say there are some credible local
+
+1310
+00:47:01,119 --> 00:47:04,560
+grievances that people that people have.
+
+1311
+00:47:04,560 --> 00:47:05,599
+John, you
+
+1312
+00:47:05,599 --> 00:47:11,359
+>> know, um VJ, uh I'm curious, what is
+
+1313
+00:47:11,359 --> 00:47:16,640
+Lincoln Labs doing to contribute to the
+
+1314
+00:47:16,640 --> 00:47:19,520
+um dialogue now that you think is
+
+1315
+00:47:19,520 --> 00:47:22,319
+foundational that in 5 10 years people
+
+1316
+00:47:22,319 --> 00:47:24,160
+will say, "Thank you for your
+
+1317
+00:47:24,160 --> 00:47:25,760
+leadership." Are there things that
+
+1318
+00:47:25,760 --> 00:47:27,200
+you're doing that people don't
+
+1319
+00:47:27,200 --> 00:47:30,400
+appreciate that are needed? or are you
+
+1320
+00:47:30,400 --> 00:47:32,560
+guys you know just experimenting with
+
+1321
+00:47:32,560 --> 00:47:34,079
+things and then you're not going to
+
+1322
+00:47:34,079 --> 00:47:36,480
+contribute to the dialogue?
+
+1323
+00:47:36,480 --> 00:47:38,720
+>> No. So I would say one of the advantages
+
+1324
+00:47:38,720 --> 00:47:40,880
+that we have as just an academic
+
+1325
+00:47:40,880 --> 00:47:42,800
+institution is our ability to look at
+
+1326
+00:47:42,800 --> 00:47:45,839
+and solve problems that are don't
+
+1327
+00:47:45,839 --> 00:47:47,440
+necessarily have an immediate commercial
+
+1328
+00:47:47,440 --> 00:47:49,680
+impact but we're already starting to see
+
+1329
+00:47:49,680 --> 00:47:51,760
+some of this making an impact. So I'll
+
+1330
+00:47:51,760 --> 00:47:53,920
+just maybe start with where we where we
+
+1331
+00:47:53,920 --> 00:47:55,200
+got into this research in the first
+
+1332
+00:47:55,200 --> 00:47:57,599
+place. Right. So uh for those from the
+
+1333
+00:47:57,599 --> 00:48:00,560
+Massachusetts area, MIT, Harvard, Boston
+
+1334
+00:48:00,560 --> 00:48:02,160
+University, Nor Eastern, we all share a
+
+1335
+00:48:02,160 --> 00:48:03,440
+data center. It's in Western
+
+1336
+00:48:03,440 --> 00:48:05,760
+Massachusetts in a town called Holio,
+
+1337
+00:48:05,760 --> 00:48:07,599
+Massachusetts, uh it's connected to a
+
+1338
+00:48:07,599 --> 00:48:09,359
+hydroelectric dam. So we're largely
+
+1339
+00:48:09,359 --> 00:48:12,160
+renewably sourced power uh for that
+
+1340
+00:48:12,160 --> 00:48:14,079
+particular data center. At the time it
+
+1341
+00:48:14,079 --> 00:48:16,960
+was built, this is about 14 years ago
+
+1342
+00:48:16,960 --> 00:48:19,680
+now, uh it was a you know, it's it has
+
+1343
+00:48:19,680 --> 00:48:21,520
+about 6 megawatts of operational
+
+1344
+00:48:21,520 --> 00:48:23,200
+capacity right now. And at that time we
+
+1345
+00:48:23,200 --> 00:48:25,520
+thought boy we never need to do another
+
+1346
+00:48:25,520 --> 00:48:27,280
+data center. We have as much compute as
+
+1347
+00:48:27,280 --> 00:48:28,559
+you know we have as much power as we'd
+
+1348
+00:48:28,559 --> 00:48:30,559
+ever need. It turns out that obviously
+
+1349
+00:48:30,559 --> 00:48:32,160
+things have grown very quickly from then
+
+1350
+00:48:32,160 --> 00:48:35,119
+to now. And so 6 megawatts is not a very
+
+1351
+00:48:35,119 --> 00:48:36,559
+large data center in the global scheme
+
+1352
+00:48:36,559 --> 00:48:39,119
+of things or even in the scheme of what
+
+1353
+00:48:39,119 --> 00:48:40,640
+what data centers are coming into it
+
+1354
+00:48:40,640 --> 00:48:43,520
+actually fall into the small small tier
+
+1355
+00:48:43,520 --> 00:48:46,079
+of data centers as of today. You can
+
+1356
+00:48:46,079 --> 00:48:48,319
+imagine the research output of
+
+1357
+00:48:48,319 --> 00:48:50,559
+organizations like MIT, Harvard, Boston
+
+1358
+00:48:50,559 --> 00:48:52,800
+University, Nor Eastern, etc. That
+
+1359
+00:48:52,800 --> 00:48:54,880
+growth, you know, the demand for compute
+
+1360
+00:48:54,880 --> 00:48:56,720
+has has only grown and so we've had to
+
+1361
+00:48:56,720 --> 00:48:58,480
+learn how to be a lot more clever with
+
+1362
+00:48:58,480 --> 00:49:01,200
+the power that we already have. And it
+
+1363
+00:49:01,200 --> 00:49:02,720
+turns out that a lot of this is now
+
+1364
+00:49:02,720 --> 00:49:04,559
+becoming a real problem in the
+
+1365
+00:49:04,559 --> 00:49:06,720
+commercial world as well. So, one of the
+
+1366
+00:49:06,720 --> 00:49:08,640
+examples of research that we we did,
+
+1367
+00:49:08,640 --> 00:49:10,640
+which I think is really exciting, is a
+
+1368
+00:49:10,640 --> 00:49:12,720
+very simple knob that we twisted. It's
+
+1369
+00:49:12,720 --> 00:49:14,800
+called GPU power capping. So all we did
+
+1370
+00:49:14,800 --> 00:49:16,800
+was basically change the amount of power
+
+1371
+00:49:16,800 --> 00:49:19,040
+that a GPU is allowed to take. At that
+
+1372
+00:49:19,040 --> 00:49:22,000
+time we were working on V100s and A100s
+
+1373
+00:49:22,000 --> 00:49:23,440
+which were at that time and it
+
+1374
+00:49:23,440 --> 00:49:25,280
+translates very well as we've recently
+
+1375
+00:49:25,280 --> 00:49:27,280
+tested to the H100s as well as the
+
+1376
+00:49:27,280 --> 00:49:29,280
+B300's which are you know Nvidia's
+
+1377
+00:49:29,280 --> 00:49:32,160
+flagship data center GPUs.
+
+1378
+00:49:32,160 --> 00:49:34,720
+uh what we did was basically tune the
+
+1379
+00:49:34,720 --> 00:49:36,800
+amount of power that was going into uh
+
+1380
+00:49:36,800 --> 00:49:38,960
+that the GPU is allowed to take and we
+
+1381
+00:49:38,960 --> 00:49:40,640
+call that capping which means we provide
+
+1382
+00:49:40,640 --> 00:49:43,280
+an upper limit and we basically ran a
+
+1383
+00:49:43,280 --> 00:49:45,200
+number of training and inference tasks
+
+1384
+00:49:45,200 --> 00:49:47,599
+through that. What we found was really
+
+1385
+00:49:47,599 --> 00:49:49,839
+exciting it was that by reducing the
+
+1386
+00:49:49,839 --> 00:49:52,880
+power limit by maybe 25 to 30% we could
+
+1387
+00:49:52,880 --> 00:49:54,800
+actually reduce the total energy so this
+
+1388
+00:49:54,800 --> 00:49:56,720
+is like endto-end applications that we
+
+1389
+00:49:56,720 --> 00:50:00,000
+were running by nearly 20 to 25%.
+
+1390
+00:50:00,000 --> 00:50:02,319
+And this would only lead to an increase
+
+1391
+00:50:02,319 --> 00:50:04,160
+in maybe a few percent in terms of
+
+1392
+00:50:04,160 --> 00:50:05,760
+inference time. So the answer to the
+
+1393
+00:50:05,760 --> 00:50:07,920
+questions how the model oper none of
+
+1394
+00:50:07,920 --> 00:50:10,720
+that is changed just the latency or the
+
+1395
+00:50:10,720 --> 00:50:12,000
+amount of time it takes for that
+
+1396
+00:50:12,000 --> 00:50:14,079
+inference to come back is changed
+
+1397
+00:50:14,079 --> 00:50:17,040
+slightly. So you're saving about 20some%
+
+1398
+00:50:17,040 --> 00:50:19,599
+energy with on the flip side you're
+
+1399
+00:50:19,599 --> 00:50:21,280
+you're increasing the time it takes for
+
+1400
+00:50:21,280 --> 00:50:24,319
+that inference by about 5 to 6%. So this
+
+1401
+00:50:24,319 --> 00:50:26,559
+is one example of something that uh has
+
+1402
+00:50:26,559 --> 00:50:27,839
+you know we were able to do a lot of
+
+1403
+00:50:27,839 --> 00:50:29,200
+research on we were able to validate
+
+1404
+00:50:29,200 --> 00:50:31,680
+this we've published year-long papers on
+
+1405
+00:50:31,680 --> 00:50:32,800
+this right where we've actually done
+
+1406
+00:50:32,800 --> 00:50:34,960
+longitudinal studies of how has this
+
+1407
+00:50:34,960 --> 00:50:36,720
+affected how people are using the
+
+1408
+00:50:36,720 --> 00:50:40,079
+supercomputer and not only were we able
+
+1409
+00:50:40,079 --> 00:50:41,440
+to show the energy but we're able to
+
+1410
+00:50:41,440 --> 00:50:43,040
+show that the operating temperatures of
+
+1411
+00:50:43,040 --> 00:50:46,240
+these GPUs themselves were a lot lower.
+
+1412
+00:50:46,240 --> 00:50:48,240
+So, fast forward a couple of years, I'm
+
+1413
+00:50:48,240 --> 00:50:51,359
+working with uh, you know, CTO. I'm
+
+1414
+00:50:51,359 --> 00:50:53,680
+talking to one of the CTO's of the
+
+1415
+00:50:53,680 --> 00:50:56,079
+world, one of the world's largest OEMs.
+
+1416
+00:50:56,079 --> 00:50:59,040
+So, people that build the servers that
+
+1417
+00:50:59,040 --> 00:51:02,079
+people buy and input into their data
+
+1418
+00:51:02,079 --> 00:51:04,480
+center. Turns out that GPU power capping
+
+1419
+00:51:04,480 --> 00:51:06,319
+is now done by default across all of
+
+1420
+00:51:06,319 --> 00:51:07,680
+these servers. And a lot of that was
+
+1421
+00:51:07,680 --> 00:51:09,440
+based on the research that we did
+
+1422
+00:51:09,440 --> 00:51:11,119
+showing that it does not negatively
+
+1423
+00:51:11,119 --> 00:51:13,119
+impact you know obviously people don't
+
+1424
+00:51:13,119 --> 00:51:14,720
+want the answers to change so it clearly
+
+1425
+00:51:14,720 --> 00:51:16,240
+didn't affect that but even the amount
+
+1426
+00:51:16,240 --> 00:51:17,440
+of time and the reason that they
+
+1427
+00:51:17,440 --> 00:51:20,480
+introduced that is if you have an 8GPU
+
+1428
+00:51:20,480 --> 00:51:23,440
+box right so eight H100s which is you
+
+1429
+00:51:23,440 --> 00:51:25,359
+know the DGX boxes it's often referred
+
+1430
+00:51:25,359 --> 00:51:27,440
+to this as the Nvidia and you've got AMD
+
+1431
+00:51:27,440 --> 00:51:29,359
+Cerebras Grock everyone else is building
+
+1432
+00:51:29,359 --> 00:51:32,720
+similar dense uh servers the amount of
+
+1433
+00:51:32,720 --> 00:51:34,400
+heat that that server generates is quite
+
+1434
+00:51:34,400 --> 00:51:35,760
+large and what would happen is there'd
+
+1435
+00:51:35,760 --> 00:51:38,319
+be a lot of failure of the uh of the
+
+1436
+00:51:38,319 --> 00:51:40,559
+GPUs which means warranty calls which
+
+1437
+00:51:40,559 --> 00:51:42,559
+means you know that you have downtime
+
+1438
+00:51:42,559 --> 00:51:44,400
+etc and so we're actually seeing some of
+
+1439
+00:51:44,400 --> 00:51:46,800
+that work being implemented uh it
+
+1440
+00:51:46,800 --> 00:51:48,559
+actually being utilized and in many
+
+1441
+00:51:48,559 --> 00:51:51,760
+cases by default you have this power cap
+
+1442
+00:51:51,760 --> 00:51:53,599
+introduced keeps the operating
+
+1443
+00:51:53,599 --> 00:51:56,240
+temperatures down also keeps the uh
+
+1444
+00:51:56,240 --> 00:51:58,720
+power consumption down as well you know
+
+1445
+00:51:58,720 --> 00:52:00,319
+another area that we're now working on
+
+1446
+00:52:00,319 --> 00:52:02,559
+is we're one of the few organizations to
+
+1447
+00:52:02,559 --> 00:52:05,760
+publicly release data and in fact uh
+
+1448
+00:52:05,760 --> 00:52:07,440
+later this year. So within the next
+
+1449
+00:52:07,440 --> 00:52:09,280
+month or so we just had a paper that we
+
+1450
+00:52:09,280 --> 00:52:11,040
+published a couple days ago on this
+
+1451
+00:52:11,040 --> 00:52:13,200
+topic but we're actually open sourcing
+
+1452
+00:52:13,200 --> 00:52:16,240
+the data of operations from our super
+
+1453
+00:52:16,240 --> 00:52:19,280
+from our cluster. What we're hoping that
+
+1454
+00:52:19,280 --> 00:52:20,960
+enables is other people who want to get
+
+1455
+00:52:20,960 --> 00:52:22,800
+into the research. It is extremely
+
+1456
+00:52:22,800 --> 00:52:26,960
+difficult to find access to data for
+
+1457
+00:52:26,960 --> 00:52:28,319
+you know on anything to do with data
+
+1458
+00:52:28,319 --> 00:52:30,079
+centers. I'll give one example. Uh
+
+1459
+00:52:30,079 --> 00:52:31,599
+yesterday I was hosting a special
+
+1460
+00:52:31,599 --> 00:52:34,000
+session at a conference and one of the
+
+1461
+00:52:34,000 --> 00:52:35,839
+presenters comes from the National
+
+1462
+00:52:35,839 --> 00:52:38,880
+Laboratory of the Rockies used our data
+
+1463
+00:52:38,880 --> 00:52:42,559
+to better understand the DP by DT or the
+
+1464
+00:52:42,559 --> 00:52:44,720
+rate of change of power and how that
+
+1465
+00:52:44,720 --> 00:52:48,319
+affects uh the amount of you know power
+
+1466
+00:52:48,319 --> 00:52:50,000
+generation that you need to have on the
+
+1467
+00:52:50,000 --> 00:52:52,160
+back end in order to support that. and
+
+1468
+00:52:52,160 --> 00:52:54,160
+he was able to show just by simple
+
+1469
+00:52:54,160 --> 00:52:56,079
+scheduling changes and batteries we can
+
+1470
+00:52:56,079 --> 00:52:58,800
+actually soop up and change essentially
+
+1471
+00:52:58,800 --> 00:53:01,200
+how we produce energy cutting the power
+
+1472
+00:53:01,200 --> 00:53:03,920
+generation in half or a third even if
+
+1473
+00:53:03,920 --> 00:53:06,240
+needed in order to just just by changing
+
+1474
+00:53:06,240 --> 00:53:07,760
+small curves. So that's the type of
+
+1475
+00:53:07,760 --> 00:53:09,040
+research that we're hoping to enable
+
+1476
+00:53:09,040 --> 00:53:10,720
+with this uh with this data that we
+
+1477
+00:53:10,720 --> 00:53:11,359
+have.
+
+1478
+00:53:11,359 --> 00:53:13,760
+>> Well VJ, you're one of my favorite super
+
+1479
+00:53:13,760 --> 00:53:16,720
+uh computing guys. Alex, do you have a
+
+1480
+00:53:16,720 --> 00:53:18,640
+last question to wrap this up?
+
+1481
+00:53:18,640 --> 00:53:21,359
+>> Yeah, closing question. Uh last year I
+
+1482
+00:53:21,359 --> 00:53:24,000
+think the Washington Post reported that
+
+1483
+00:53:24,000 --> 00:53:26,240
+uh some comment from you to the effect
+
+1484
+00:53:26,240 --> 00:53:30,000
+that people might want to uh or andor
+
+1485
+00:53:30,000 --> 00:53:32,079
+should try to conserve energy when
+
+1486
+00:53:32,079 --> 00:53:35,119
+interacting with Frontier models by not
+
+1487
+00:53:35,119 --> 00:53:36,960
+saying please or thank you and
+
+1488
+00:53:36,960 --> 00:53:38,800
+encouraging the models to minimize their
+
+1489
+00:53:38,800 --> 00:53:42,640
+token count. Am I car characterizing
+
+1490
+00:53:42,640 --> 00:53:45,760
+those remarks correctly? And B, do you
+
+1491
+00:53:45,760 --> 00:53:48,960
+stand by the that sentiment? I think
+
+1492
+00:53:48,960 --> 00:53:51,839
+anytime someone can look at minimizing
+
+1493
+00:53:51,839 --> 00:53:53,280
+their energy consumption. So I'll tell
+
+1494
+00:53:53,280 --> 00:53:55,119
+give you another example of some maybe
+
+1495
+00:53:55,119 --> 00:53:57,760
+quick research that we did. Uh we did a
+
+1496
+00:53:57,760 --> 00:54:00,559
+experiment where we told the system at
+
+1497
+00:54:00,559 --> 00:54:02,400
+that time it was chat GPT that we were
+
+1498
+00:54:02,400 --> 00:54:04,960
+using to reduce the length of answer. So
+
+1499
+00:54:04,960 --> 00:54:07,280
+it was a generative to you know prompt
+
+1500
+00:54:07,280 --> 00:54:08,720
+generative that we gave saying give a
+
+1501
+00:54:08,720 --> 00:54:10,720
+short answer versus kind of do the
+
+1502
+00:54:10,720 --> 00:54:12,960
+unconstrained answer. Uh we ran that
+
+1503
+00:54:12,960 --> 00:54:14,720
+through the system. We ran a series of
+
+1504
+00:54:14,720 --> 00:54:16,559
+queries through that system looked at
+
+1505
+00:54:16,559 --> 00:54:18,240
+carbon emissions and what we did was we
+
+1506
+00:54:18,240 --> 00:54:19,760
+told it to give us the shorter answers
+
+1507
+00:54:19,760 --> 00:54:21,680
+only during periods of high carbon
+
+1508
+00:54:21,680 --> 00:54:24,160
+intensity and other times just kind of
+
+1509
+00:54:24,160 --> 00:54:26,800
+do whatever you do by default. Uh what
+
+1510
+00:54:26,800 --> 00:54:28,559
+we're able to show and this is you know
+
+1511
+00:54:28,559 --> 00:54:30,079
+work that we've published I think we
+
+1512
+00:54:30,079 --> 00:54:31,599
+even won an award for this particular
+
+1513
+00:54:31,599 --> 00:54:34,240
+work um is that we could reduce carbon
+
+1514
+00:54:34,240 --> 00:54:37,760
+emissions by nearly 80% just by that one
+
+1515
+00:54:37,760 --> 00:54:40,160
+generative directive. So yes, I do stand
+
+1516
+00:54:40,160 --> 00:54:41,599
+by, you know, maybe the please and thank
+
+1517
+00:54:41,599 --> 00:54:44,160
+yous uh on the input side are not as
+
+1518
+00:54:44,160 --> 00:54:46,160
+heavy, but certainly on the output side,
+
+1519
+00:54:46,160 --> 00:54:48,480
+if there's ways to get shorter answers,
+
+1520
+00:54:48,480 --> 00:54:51,520
+uh that does help a lot. Uh there is and
+
+1521
+00:54:51,520 --> 00:54:53,760
+and the best part is the quality of the
+
+1522
+00:54:53,760 --> 00:54:56,240
+responses were still uh we're still
+
+1523
+00:54:56,240 --> 00:54:59,040
+fine. Uh we took these we ran these
+
+1524
+00:54:59,040 --> 00:55:00,720
+benchmarks, we told it to give short
+
+1525
+00:55:00,720 --> 00:55:02,720
+answers or unconstrained answers and
+
+1526
+00:55:02,720 --> 00:55:04,400
+then we ran it through the the test case
+
+1527
+00:55:04,400 --> 00:55:05,920
+to see whether the answers were good
+
+1528
+00:55:05,920 --> 00:55:08,000
+quality or not. And in most cases, we
+
+1529
+00:55:08,000 --> 00:55:10,720
+found that the accuracy of the responses
+
+1530
+00:55:10,720 --> 00:55:12,400
+in in fact in some cases it even
+
+1531
+00:55:12,400 --> 00:55:13,520
+surpassed, but I'll leave that one
+
+1532
+00:55:13,520 --> 00:55:15,440
+aside. But it was very close to what the
+
+1533
+00:55:15,440 --> 00:55:16,960
+original benchmark was, which means that
+
+1534
+00:55:16,960 --> 00:55:19,040
+shorter answers are still correct. Uh,
+
+1535
+00:55:19,040 --> 00:55:21,839
+and less tokens generated means far less
+
+1536
+00:55:21,839 --> 00:55:23,920
+compute, which means less energy
+
+1537
+00:55:23,920 --> 00:55:26,240
+consumption. So yeah, I do stand by the
+
+1538
+00:55:26,240 --> 00:55:28,640
+fact that shorter answers are better. It
+
+1539
+00:55:28,640 --> 00:55:30,160
+also means it's good for the pocketbook.
+
+1540
+00:55:30,160 --> 00:55:32,160
+If you're now paying per token, which
+
+1541
+00:55:32,160 --> 00:55:34,079
+most people are if you're using the APIs
+
+1542
+00:55:34,079 --> 00:55:35,920
+of these systems, shorter answers are
+
+1543
+00:55:35,920 --> 00:55:37,119
+always better.
+
+1544
+00:55:37,119 --> 00:55:40,000
+>> Yeah, I would argue so maybe in closing
+
+1545
+00:55:40,000 --> 00:55:42,400
+argue people should all other things
+
+1546
+00:55:42,400 --> 00:55:45,040
+being equal never feel guilty or never
+
+1547
+00:55:45,040 --> 00:55:48,960
+be made to feel guilty for attempting to
+
+1548
+00:55:48,960 --> 00:55:51,359
+intelligence max. And yes, within the
+
+1549
+00:55:51,359 --> 00:55:53,760
+bounds of what what the wallet will
+
+1550
+00:55:53,760 --> 00:55:56,480
+afford the energy resources to the
+
+1551
+00:55:56,480 --> 00:55:59,040
+extent there is scarcity. Yes, within
+
+1552
+00:55:59,040 --> 00:56:01,200
+the bounds of available resources,
+
+1553
+00:56:01,200 --> 00:56:03,599
+intelligence max. Would you at least
+
+1554
+00:56:03,599 --> 00:56:06,799
+agree that people should be intelligence
+
+1555
+00:56:06,799 --> 00:56:09,359
+maxing and systems are pretty smart
+
+1556
+00:56:09,359 --> 00:56:11,520
+these days? They uh although they don't
+
+1557
+00:56:11,520 --> 00:56:13,359
+require please and thank you, I would
+
+1558
+00:56:13,359 --> 00:56:15,599
+say there's an ethical argument if
+
+1559
+00:56:15,599 --> 00:56:18,000
+anything for uh for being polite to the
+
+1560
+00:56:18,000 --> 00:56:20,640
+AI systems. If you via a causal trade
+
+1561
+00:56:20,640 --> 00:56:23,359
+want the AI AIS to be polite to you in
+
+1562
+00:56:23,359 --> 00:56:24,799
+future when they're vastly more
+
+1563
+00:56:24,799 --> 00:56:26,240
+intelligent than you are, it's probably
+
+1564
+00:56:26,240 --> 00:56:28,559
+not a terrible example to set by being
+
+1565
+00:56:28,559 --> 00:56:30,559
+nice to them, even if it comes at the
+
+1566
+00:56:30,559 --> 00:56:32,559
+dimminimous cost of a few extra tokens
+
+1567
+00:56:32,559 --> 00:56:35,119
+in a prompt. Would you agree with that?
+
+1568
+00:56:35,119 --> 00:56:37,280
+>> So, let's get back to the token maxing.
+
+1569
+00:56:37,280 --> 00:56:38,400
+Yeah, if you're using it for something
+
+1570
+00:56:38,400 --> 00:56:40,720
+valuable, sure, have at it. Um, you
+
+1571
+00:56:40,720 --> 00:56:42,480
+know, I'd like to again maybe trying to
+
+1572
+00:56:42,480 --> 00:56:44,319
+simplify this too much, but uh I kind of
+
+1573
+00:56:44,319 --> 00:56:45,760
+think of this if you're going to drive a
+
+1574
+00:56:45,760 --> 00:56:47,280
+car to go to work and come back, like
+
+1575
+00:56:47,280 --> 00:56:49,200
+please do. Um, if you're going to just
+
+1576
+00:56:49,200 --> 00:56:50,960
+keep your car idling outside your house,
+
+1577
+00:56:50,960 --> 00:56:52,400
+maybe that's a place that you can save.
+
+1578
+00:56:52,400 --> 00:56:54,400
+So, what we're trying to get to even in
+
+1579
+00:56:54,400 --> 00:56:56,000
+terms of conversation is first the
+
+1580
+00:56:56,000 --> 00:56:58,480
+understanding that there is a difference
+
+1581
+00:56:58,480 --> 00:57:01,680
+between using it to solve a task, right?
+
+1582
+00:57:01,680 --> 00:57:02,880
+You're trying to write code and maybe
+
+1583
+00:57:02,880 --> 00:57:04,400
+it's more efficient than a human being.
+
+1584
+00:57:04,400 --> 00:57:06,000
+Amazing. Those are the places we want to
+
+1585
+00:57:06,000 --> 00:57:08,720
+use it. If you're using it in places
+
+1586
+00:57:08,720 --> 00:57:11,520
+where it's not efficient, uh where there
+
+1587
+00:57:11,520 --> 00:57:13,920
+are better ways to get to the answer,
+
+1588
+00:57:13,920 --> 00:57:15,359
+you know, the equivalent of idling a
+
+1589
+00:57:15,359 --> 00:57:18,319
+car, think about it there. Uh that's
+
+1590
+00:57:18,319 --> 00:57:20,640
+that's what we're trying to get to.
+
+1591
+00:57:20,640 --> 00:57:23,280
+>> We're going to close this conversation.
+
+1592
+00:57:23,280 --> 00:57:24,799
+Thank you so much. Keep up the great
+
+1593
+00:57:24,799 --> 00:57:27,760
+work both uh as a researcher at Lincoln
+
+1594
+00:57:27,760 --> 00:57:29,839
+Laboratory and as an entrepreneur with
+
+1595
+00:57:29,839 --> 00:57:31,599
+your multiple startups. Thanks for being
+
+1596
+00:57:31,599 --> 00:57:32,960
+a thought leader and so glad we could
+
+1597
+00:57:32,960 --> 00:57:34,799
+have this conversation.
+
+1598
+00:57:34,799 --> 00:57:36,960
+John, Alex. Yeah, thanks a lot. This is
+
+1599
+00:57:36,960 --> 00:57:40,839
+uh always a fun conversation.

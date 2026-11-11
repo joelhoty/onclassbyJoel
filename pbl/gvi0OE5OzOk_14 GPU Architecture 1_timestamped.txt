@@ -1,0 +1,1740 @@
+影片標題：14 GPU Architecture 1
+頻道作者：Yifan&GPU
+影片網址：https://www.youtube.com/watch?v=gvi0OE5OzOk
+字幕語言：English (auto-generated) (en) [自動產生字幕]
+============================================================
+[00:00] So I'm going to talk about the GPU
+[00:02] architecture, okay? So
+[00:05] let's start from the GPU programming and
+[00:09] GPU assembly and GPU core design. Now
+[00:11] although we're not going towards that
+[00:13] low-level detail for
+[00:15] um like to a circuit level, but I will
+[00:18] just use block diagram to show you how
+[00:20] GPU works internally. I'm more familiar
+[00:23] with AMD architecture, but
+[00:26] I will also bring up something I know
+[00:29] about Nvidia architecture, then it's not
+[00:32] very different. The core idea are pretty
+[00:34] much the same. The but the detailed
+[00:37] design are different. Then we'll talk
+[00:39] about their differences.
+[00:41] Now I will use two to three lectures or
+[00:43] even four lectures for the rest of the
+[00:45] semester
+[00:46] to cover GPU architecture. I don't know
+[00:49] how many I need, but I will teach as
+[00:52] as we go.
+[00:53] So how many of you have written GPU
+[00:55] programs on your own?
+[00:59] Three, four, five. CUDA programs, right?
+[01:03] When I say GPU program is CUDA programs.
+[01:06] Now you basically know how CUDA programs
+[01:08] work. So but many of you have never
+[01:10] written a CUDA program. So let's start
+[01:12] with this big part called GPU
+[01:14] architecture.
+[01:20] But start the first the part with a CUDA
+[01:25] programming.
+[01:30] Then for CUDA programming, you may also
+[01:32] ask since uh we're teaching AMD
+[01:34] architecture, why I'm teaching CUDA
+[01:36] programming? Because CUDA program is
+[01:38] mainly for GPUs, right? Then
+[01:41] uh it's for Nvidia GPUs. So AMD starts
+[01:45] to with uh program framework called
+[01:47] OpenCL. Now OpenCL is a open
+[01:51] standard that every vendor can
+[01:53] implement. Then it's a trademark that
+[01:56] actually belongs to Apple. Then Apple is
+[01:59] now where using OpenCL. AMD is now using
+[02:02] OpenCL. Then OpenCL is not very popular
+[02:05] these days. Not a lot of people are
+[02:07] using
+[02:08] OpenCL. Now as since I said AMD is not
+[02:12] not using OpenCL, then what AMD is trans
+[02:15] transferring to is a program language
+[02:18] called HIP to replace OpenCL.
+[02:23] And the I design idea behind HIP is to
+[02:27] make it as close to CUDA as possible. So
+[02:30] basically there the even AMD provides
+[02:32] this software called HIPify.
+[02:36] HIPify is a software that can
+[02:38] automatically convert CUDA program into
+[02:40] a HIP program. That is pretty much we
+[02:45] 99% of the work can be done with a
+[02:47] search and replace. Find CUDA and
+[02:49] replace with HIP. Then the program
+[02:52] should work. Okay? So whenever you learn
+[02:54] CUDA, you know HIP pro HIP programming
+[02:58] for AMD architecture. I'm not going to
+[03:01] teach too deep into CUDA programming,
+[03:03] but basically let you know the basic
+[03:04] principles of how to write a GPU program
+[03:07] and see how this program is designed to
+[03:10] fit their architecture and how it map
+[03:12] how the software and hardware maps
+[03:14] together. Then CUDA programming is
+[03:18] include two parts. Then
+[03:20] since we're talking about this thing
+[03:21] called heterogeneous,
+[03:27] heterogeneous programming. Now when we
+[03:29] say heterogeneous program, we say two
+[03:31] different devices or different devices
+[03:33] work together. For a very very long time
+[03:36] when people say heterogeneous
+[03:37] programming, it equals to CPU
+[03:40] plus GPU programming.
+[03:42] So they these two devices are used
+[03:45] together. Now today when we're talking
+[03:46] about heterogeneous, we may talk about
+[03:48] other accelerators, but for very long
+[03:51] time we only refer to GPU programming.
+[03:53] So whenever we say GPU programming, it
+[03:55] pretty much equals to heterogeneous
+[03:57] programming because GPUs cannot work on
+[03:59] its own. It has to There has to be a CPU
+[04:02] that controls the GPU. Okay? So then in
+[04:06] this case we need we have two devices.
+[04:09] So we need actually two languages to
+[04:11] program both the CPU and GPU so that
+[04:14] they can run in different way because
+[04:16] they have different nature of their
+[04:19] hardware design. So one single set of
+[04:21] program cannot control both of them. So
+[04:24] CUDA then is can be divided into two
+[04:26] parts. One is one part is called host
+[04:29] part.
+[04:30] One is called the device part.
+[04:33] When we say device is the GPU. When we
+[04:35] say the host is the CPU. So two parts of
+[04:39] the program that we need to write both
+[04:41] of these two parts.
+[04:43] Okay? So then let's see how we can write
+[04:46] this type of program.
+[04:48] Then
+[04:49] uh CUDA program is basically nothing
+[04:52] special but a regular
+[04:54] or slightly modified C or C++ program.
+[04:59] Okay? It's it's a extension for C and
+[05:01] C++ language definition. So as
+[05:06] at the beginning I will I will skip the
+[05:09] include part, okay? So then we can write
+[05:12] uh int main.
+[05:14] Right? A main program.
+[05:17] Now in this main program
+[05:19] now we start to execute here, right? So
+[05:22] in this main program, what we do? Let's
+[05:24] let's write a very simple vector add
+[05:27] example, okay? In this vector add
+[05:29] example, we can
+[05:31] uh start by doing a float
+[05:36] A.
+[05:37] So by the way, when I say vector add,
+[05:40] I'm saying element-wise add, okay? So if
+[05:43] this is one vector, this is another
+[05:44] vector. Now we're doing
+[05:49] we're doing this type of like uh index
+[05:53] one, index zero, index zero, then
+[05:57] sum them together and store it to index
+[06:00] zero of
+[06:02] C, okay?
+[06:04] So we start with a float pointer. Then
+[06:07] we start with float pointer A.
+[06:10] Uh A
+[06:12] pointer
+[06:14] B
+[06:16] and pointer C, okay? So treat my code as
+[06:19] pseudo code. Don't treat it
+[06:22] don't think it can be grammatically
+[06:24] correct, okay? It's just the idea this
+[06:27] is how GPU program works. So we have A
+[06:30] and B and C. So here when we have a
+[06:33] floating point when we have a float
+[06:35] star A B and C, we're not saying if it's
+[06:38] on the CPU side or GPU side. We don't
+[06:40] know.
+[06:41] Okay? Then GPU strongly prefers floating
+[06:45] point number. So there are different
+[06:47] type of floating point number. We have
+[06:48] talked about float 34 and there's a
+[06:51] double precision that's float 64. So GPU
+[06:54] strongly prefers float
+[06:57] float 32 and CPU strongly prefers 60 64
+[07:02] double precision. So if we're writing a
+[07:05] GPU program, very likely we write float,
+[07:07] okay?
+[07:08] Uh so float A and B and C. Then also we
+[07:12] likely to de
+[07:14] uh
+[07:15] de
+[07:16] define a DA
+[07:20] DB
+[07:22] and DC.
+[07:25] Then this is a convention that we start
+[07:27] with a D. That means this this buffer or
+[07:30] this uh memory this part of memory is
+[07:32] going to be allocated on the GPU side.
+[07:35] Okay? Then sometimes you may see HA HB
+[07:38] HC, but it's just if we want to follow
+[07:41] that convention or not. It's really you
+[07:43] can define these variables as whatever
+[07:46] you want.
+[07:47] Then for A and B and C, we write
+[07:49] something like A equals malloc.
+[07:54] Then malloc what? Let's say size, okay?
+[08:00] Multiply by size of
+[08:06] uh float.
+[08:09] Okay? We malloc something. Now when I
+[08:12] say malloc, this is a memory allocation
+[08:14] that is on the heap and is stored in the
+[08:18] CPU memory.
+[08:20] Right? Then
+[08:22] if we want to allocate into the GPU
+[08:24] memory, what we do? We do this. Of
+[08:27] course we need to allocate B and C,
+[08:28] okay? We do DA equals CUDA
+[08:34] malloc.
+[08:38] Then size
+[08:41] multiply by size
+[08:45] of float.
+[08:49] Nothing special, but here we use a CUDA
+[08:52] malloc.
+[08:54] Now CUDA malloc is a CUDA
+[09:00] runtime
+[09:04] API.
+[09:06] Okay? So it actually this is a library
+[09:10] call that is being executed
+[09:13] to like calling a function implemented
+[09:15] by Nvidia. Now Nvidia the CUDA library
+[09:19] provide the implementation of CUDA
+[09:21] malloc and what it will do is allocate a
+[09:24] part of a memory on the GPU side. Now it
+[09:26] will return
+[09:27] uh address to be stored in DA. Okay? And
+[09:31] similar to DB and DC.
+[09:35] Okay? Then in this case this is the way
+[09:37] using CUDA runtime API is how we can
+[09:40] write the host a program. This is
+[09:42] nothing special but a regular C program
+[09:44] only to call CUDA programs.
+[09:47] Okay?
+[09:48] Then
+[09:50] assume DA DB and DC are also allocated
+[09:53] and also we set the
+[09:55] we use a for loop to set A's value and
+[09:58] B's value, right? Just assume there are
+[10:00] some values there.
+[10:01] Then
+[10:02] to make it work, we need to copy the
+[10:05] data from the CPU to the GPU side.
+[10:08] And so, CPU and GPU are two different
+[10:11] devices and they're connected using
+[10:13] something like PCI network. So, we have
+[10:17] a This is the CPU.
+[10:20] And this is the GPU.
+[10:22] And they're connected with some sort of
+[10:24] networks. The CPU has its own memory.
+[10:29] And GPU has its own memory.
+[10:32] And until
+[10:34] somewhere like 2016,
+[10:37] then there are some support for GPUs to
+[10:40] directly access CPU's memory. Like using
+[10:43] unified memory. However, it's still I
+[10:46] It's not a mainstream. It still suffers
+[10:48] from performance penalties. Like if you
+[10:50] access the CPU memory, it's still not as
+[10:53] high performance accessing the memory as
+[10:56] accessing local memory. So, what we do
+[10:58] is we need to explicitly copy the data
+[11:01] from here to here.
+[11:03] Okay, from the CPU side to the GPU side.
+[11:06] In this case, we do a CUDA
+[11:11] memory copy.
+[11:15] And as we know, memory copy typically
+[11:17] have this type of convention that it
+[11:19] starts with the destination. In this
+[11:21] case, that's just DA.
+[11:23] Right? Now, we copy
+[11:26] from A.
+[11:28] Right? Then
+[11:29] size, I will just write size multiplied
+[11:32] four, okay?
+[11:34] So, that is size. And also, we need to
+[11:37] tell what's the direction we're copying
+[11:38] because CUDA cannot really easily tell
+[11:41] if this is a device pointer or a host a
+[11:43] pointer. In this case, we need to
+[11:45] provide another parameter called CUDA
+[11:48] mem
+[11:49] copy
+[11:51] H to D.
+[11:54] Host to device.
+[11:56] Okay, this is a para There's a constant
+[11:58] value that tells this API what is the
+[12:01] direction that we're copying this
+[12:02] memory.
+[12:04] Then CUDA memory copy H to D. Then
+[12:08] uh there two other two other directions,
+[12:11] right? There's a A
+[12:14] D to H and there's a D to D.
+[12:18] I don't think you will need the H to H.
+[12:22] H to H, you can use the regular C
+[12:24] standard library and then do memory
+[12:25] copy. So, here they provide these three
+[12:28] the as the basic CUDA part provide these
+[12:30] three directions.
+[12:34] Okay? So, after then we copy, we need to
+[12:37] copy DA and we also need to copy DB.
+[12:41] Right?
+[12:42] Now, we copy the DA and DB. After this
+[12:45] point, we need to
+[12:48] we have the data ready. We can let the
+[12:50] GPU to do the calculation. Okay? So, to
+[12:54] let the GPU do the calculation is
+[12:56] basically by calling a GPU function. And
+[12:59] the calling a GPU function in this case,
+[13:02] this GPU function is called a kernel.
+[13:13] It's called a GPU kernel.
+[13:15] Now, when we say So, not all the GPU
+[13:17] functions are GPU kernels. It's only the
+[13:20] function that you are
+[13:21] you will call it from the CPU side are
+[13:24] called kernels. Okay? And a
+[13:27] a specific term here is not calling a
+[13:29] kernel, but to launch a kernel.
+[13:34] So, we start a kernel on the GPU side.
+[13:37] Now, how do we how do we start a kernel?
+[13:39] It's basically in the same way of
+[13:42] copying memory of calling a function,
+[13:44] but with some special
+[13:50] parameters.
+[13:52] So, how we call this one? Let's say if
+[13:54] our kernel is called vec add, okay? Now,
+[13:56] we just do vec
+[13:59] add.
+[14:02] Now, here we need to provide some extra
+[14:05] information. And this extra information
+[14:07] is provided in this three special
+[14:11] angular bracket.
+[14:13] Now, after that
+[14:15] we provide the arguments. So, what's the
+[14:17] argument? It's A Sorry, it's not A, it's
+[14:20] DA, DB,
+[14:22] DC.
+[14:23] DA,
+[14:24] DB,
+[14:26] DC.
+[14:29] Okay? Now, what else?
+[14:31] Uh and the size.
+[14:34] How many in How many elements that we
+[14:37] need to copy into the
+[14:39] um
+[14:40] like we need to do the add operation and
+[14:42] to store in the destination.
+[14:44] And this is a vector vector add.
+[14:47] So, before I talk about the parameter
+[14:49] here,
+[14:50] let's let's see how this GPU function is
+[14:53] written.
+[14:55] Okay?
+[14:58] Now, the GPU function
+[15:03] is written in this way.
+[15:07] Need to check a reference.
+[15:22] Okay, the GPU code is written in this
+[15:24] way.
+[15:25] It typically starts with a
+[15:28] global.
+[15:30] It's a preamble.
+[15:32] Now, it says this is a
+[15:35] GPU
+[15:36] pro GPU kernel program to be compiled
+[15:38] into GPU format.
+[15:40] Then we can do
+[15:42] a void.
+[15:44] It cannot return anything. A GPU kernel
+[15:45] cannot return anything. Now, all the
+[15:48] all the return value has to be contained
+[15:51] in a memory so that later on you can
+[15:53] copy back to the CPU side.
+[15:57] Then a void. Now, we can call it a vect
+[16:00] add.
+[16:02] Okay? Then there's nothing special, but
+[16:04] here we write
+[16:06] uh
+[16:07] float
+[16:09] I will I will write it into the next
+[16:10] line.
+[16:12] Float
+[16:14] star
+[16:15] A,
+[16:17] float star
+[16:20] B,
+[16:21] float star C,
+[16:24] and size.
+[16:28] Okay?
+[16:29] A list of parameters. So, nothing
+[16:31] special, but just as if you are writing
+[16:33] a CPU program. So, the
+[16:36] the GPU compiler the compiler will just
+[16:39] tell, okay, it's checks that's a global,
+[16:41] right? If it's a global, that it has a
+[16:44] potential to be run on both the CPU side
+[16:47] and the GPU side.
+[16:48] And if it's a device, then it can only
+[16:51] be run on the GPU side. So, it will only
+[16:52] generate a copy of the binary that is
+[16:55] for the GPU.
+[16:57] Now, in this case, we need to run this
+[16:59] part of the
+[17:01] uh program.
+[17:02] So, the key point for GPU program is say
+[17:06] you write one function and this function
+[17:08] is only for one thread is to run on the
+[17:11] GPU side.
+[17:13] So, then you need to consider what is
+[17:15] the responsibility of this GPU thread?
+[17:18] Right? So, what do you want this GPU
+[17:20] thread to do?
+[17:22] Then an easy way to consider this
+[17:24] problem since we have a vector add
+[17:26] example.
+[17:28] Then
+[17:30] we are adding these numbers together,
+[17:32] right? We're adding these numbers
+[17:34] together. So, there's no interference
+[17:36] to calculate this part and this part.
+[17:39] So, they're totally independent.
+[17:41] Right? In this case, we call it an
+[17:43] embarrassingly
+[17:45] embarrassing
+[17:49] ly parallel
+[17:54] pattern. So, this pattern is called
+[17:56] embarrassingly parallel because it's
+[17:58] just so easy to make it parallel.
+[18:01] Then
+[18:02] almost there's no need to do any
+[18:04] optimization or any special
+[18:07] type of work. Then we can make it
+[18:08] special work. It's a basically
+[18:10] element-wise operation. Right? In this
+[18:12] case,
+[18:13] the simplest way to write this program
+[18:15] is to let each thread to be responsible
+[18:18] for
+[18:20] one
+[18:23] number, one output number. Right?
+[18:26] So, even for more complex
+[18:29] GPU program, uh very straightforward to
+[18:32] think about how you one can organize
+[18:34] this thread is to consider each thread
+[18:37] is responsible for one
+[18:40] region or one piece of output. Okay?
+[18:43] Now, in that way, you can
+[18:45] make them
+[18:46] like the calculation as independent as
+[18:48] possible because you don't want threads
+[18:50] to communicate. Any communication or
+[18:52] synchronization is a perform has a
+[18:55] performance penalty.
+[18:57] Uh okay, so then
+[19:00] we say we have defined so thread zero
+[19:03] will do this, thread one will do this,
+[19:05] thread two will do this, and so on.
+[19:06] Right?
+[19:07] So, in this case, if we have N element,
+[19:11] then we need N total thread. Right?
+[19:15] So,
+[19:16] when we write this GPU program here, we
+[19:19] need to consider
+[19:21] these threads needs to know
+[19:23] what's my index, who am I? Then I can do
+[19:26] the right task. I know, oh, I need to
+[19:28] add these particular numbers. Right? So,
+[19:31] the GPU needs to know what's the number.
+[19:34] So, in this case, we will typically
+[19:36] first to identify itself.
+[19:38] And
+[19:42] in this case, we have a
+[19:45] we start typically start with knowing my
+[19:49] own ID.
+[19:51] And
+[19:52] I call it GID.
+[19:54] Global ID.
+[19:56] Now,
+[19:56] which part is not global? We'll talk
+[19:58] about that later.
+[20:00] And GID, it needs a little bit
+[20:02] calculation.
+[20:03] So, the what's the calculation is
+[20:05] basically in this way.
+[20:07] Block
+[20:09] index idx.x
+[20:12] plus
+[20:14] block dim
+[20:17] dimension.x
+[20:19] multiplied by
+[20:22] So, this is not not plus. This is
+[20:24] multiplication here.
+[20:26] Then plus
+[20:28] thread idx.
+[20:33] Thread index.x.
+[20:36] Okay.
+[20:38] So, a quick way that you can think about
+[20:40] this problem is
+[20:43] there are two dimensions here.
+[20:45] One dimension is block.
+[20:48] One dimension is thread. A block is a
+[20:50] group of threads. So, you can consider
+[20:53] this way.
+[20:54] You say, a block may have 256
+[20:57] thread, right? So, my thread my local
+[21:00] thread ID is one is start 0 1 2 and so
+[21:04] on and we see 255.
+[21:07] Right? Then the next one I the next
+[21:10] block also has this
+[21:12] thread ID start from 0 1 and 255.
+[21:16] So, what is my global ID that my local
+[21:19] ID is 0 1 2?
+[21:21] Right?
+[21:22] My local ID is 0 1 2 2 255. Now, what is
+[21:26] my global ID? It's basically by knowing
+[21:29] my block ID. So, this is my block ID 0,
+[21:32] block ID 1, block ID 2 and so on.
+[21:35] Right?
+[21:35] So, to multiply by the block dim block
+[21:39] dim is 256.
+[21:41] The block dimension.
+[21:43] 256.
+[21:45] Then
+[21:47] by using by multiplying this number with
+[21:50] 256 plus the local ID, we know my global
+[21:53] position
+[21:54] in the whole kernel, right? Like the
+[21:57] thread ID within the whole kernel. So,
+[21:58] this is my global ID.
+[22:01] Then
+[22:02] okay, with this global ID, I know which
+[22:05] element we need to process in the
+[22:08] uh
+[22:10] in the vector, right? Now, we need to
+[22:13] do the calculation. In this case, we
+[22:16] simply do a C
+[22:19] square bracket
+[22:21] C GID
+[22:24] equals A
+[22:26] GID
+[22:29] plus
+[22:30] B
+[22:31] GID.
+[22:34] Okay.
+[22:35] Then of course, you need a little bit
+[22:37] safeguard so that what if your
+[22:41] size what is what if your kernel size
+[22:43] number of thread is larger than this
+[22:45] size?
+[22:47] And what do you do is simply do a if
+[22:52] GID
+[22:54] is greater than
+[22:59] um
+[23:01] there should be another
+[23:04] like another way to calculate the kernel
+[23:06] size. I will simply write kernel size
+[23:08] here.
+[23:12] If it's greater than the kernel size
+[23:15] No, not kernel size. Not really kernel
+[23:17] size. It's only this size. It's the
+[23:19] vector size.
+[23:22] If the GID is greater than the vector
+[23:24] size, so if this is the vector, we're
+[23:26] accessing somewhere here somewhere like
+[23:29] passing the end. We simply return. We
+[23:31] don't
+[23:32] don't want to do the calculation.
+[23:34] Okay? Otherwise, we do the calculation.
+[23:38] Okay, it's just a safeguard to prevent
+[23:40] us from accessing the
+[23:43] like passing the end of the boundary of
+[23:45] the vector.
+[23:49] Okay.
+[23:50] So, then at the end we return or we just
+[23:53] silently return. That's the very simple
+[23:56] kernel that we can write.
+[23:59] Then as you may notice that there's a
+[24:03] block idx and
+[24:05] block dim x and the thread index x,
+[24:07] right? So, for most of time, we write
+[24:11] one-dimensional kernels.
+[24:13] But sometimes if we're dealing with a
+[24:15] matrix
+[24:16] or 3D volumes
+[24:18] then it's more convenient to have three
+[24:20] dimensions of this kernel of this
+[24:22] thread. In that case, we can do
+[24:26] um
+[24:27] we can have three dimensions
+[24:29] of this kernel. In that case, we'll have
+[24:31] block index y a block dim y thread ID y
+[24:35] and so on.
+[24:37] Okay.
+[24:39] Then
+[24:41] this is a kernel.
+[24:43] It comes to this part as how we call
+[24:45] this kernel. How we launch this kernel.
+[24:49] We say, a kernel is written for one
+[24:51] thread.
+[24:52] Then it's the host programs
+[24:54] responsibility to determine how many
+[24:57] threads are there.
+[25:00] Now, how how can we do?
+[25:01] Is we need to provide two numbers.
+[25:04] The first number is the
+[25:08] we call it the kernel size.
+[25:15] Then the second one is block size.
+[25:20] And kernel size is in terms of how many
+[25:23] blocks are there.
+[25:25] Okay. So, roughly speaking, we can say
+[25:30] kernel size
+[25:35] equals to n
+[25:38] divided by block size.
+[25:44] Okay, then however, you need to do round
+[25:47] up.
+[25:49] Okay.
+[25:50] You need to do a round up so that we
+[25:52] never
+[25:53] have some leftover.
+[25:55] Let's say, if your block size
+[26:01] is 256
+[26:04] then if your n is 300, right?
+[26:08] Then you always want the
+[26:10] leftover 44 to be taken care of. In that
+[26:13] case, you always want to round up. In
+[26:15] that case, you won't have two blocks.
+[26:17] One block is not enough. One block can
+[26:19] only process
+[26:20] 256
+[26:22] uh
+[26:25] numbers.
+[26:26] Okay. So, of course, these two lines of
+[26:28] code needs to be called before vector
+[26:31] add.
+[26:32] Okay. Now, here we just need to write
+[26:35] I'll write it simple.
+[26:37] Blocks
+[26:39] Sorry.
+[26:39] Kernel size
+[26:41] and block size.
+[26:43] Okay, just to specify how many threads
+[26:46] you want to launch.
+[26:49] Okay.
+[26:50] Then for block size
+[26:52] typically, we do somewhere between 64
+[26:56] to
+[26:58] uh 1024,
+[27:01] but and we typically do a multiple of 64
+[27:05] or very likely we do a size of
+[27:08] um
+[27:09] power a power of two.
+[27:11] Okay, is it 254 512 or 1024? And it
+[27:15] sometimes matters a lot for the
+[27:16] performance, but at this stage, we're
+[27:19] not diving that deep into GPU
+[27:21] performance optimization. We just want
+[27:23] to say you can just 256 or 64 are
+[27:26] probably the most common numbers that we
+[27:28] take.
+[27:30] Okay.
+[27:32] Then at this point, we can return.
+[27:36] Uh we we
+[27:38] we know we're running this program and
+[27:40] this program in CUDA definition is a uh
+[27:44] asynchronous call. That means when after
+[27:47] calling this function, we immediately
+[27:49] return without waiting for it to
+[27:52] waiting for it to complete.
+[27:54] In that case, we can let the CPU to do
+[27:56] something else while the GPU is running.
+[28:00] In
+[28:00] So, how we can make sure this one is
+[28:03] completed? In this case, we call a CUDA
+[28:08] device
+[28:11] synchronize.
+[28:14] And we call this function to guarantee
+[28:16] that we wait for this kernel to be fully
+[28:19] completed. Then at the end, we can do
+[28:22] CUDA
+[28:24] mem copy.
+[28:28] Now, we copy into C from DC
+[28:32] and with a size
+[28:34] multiplied by four and the direction of
+[28:36] CUDA
+[28:38] mem copy.
+[28:42] And this time is device to host.
+[28:46] Okay.
+[28:47] So, now we copy the result back. And for
+[28:49] the rest of program, you can just use it
+[28:52] whatever however you want.
+[28:54] Okay. It's a GPU program how a GPU
+[28:56] program is written. So, no matter how
+[28:59] complex GPU program
+[29:01] um that you are write you are writing,
+[29:03] it's basically this way. Copy memory,
+[29:05] let GPU to compute, then copy the data
+[29:07] back. Then all the way it can goes up to
+[29:11] try GPT in this level of program. It's
+[29:13] all uh
+[29:14] start with these basic things.
+[29:18] Okay.
+[29:19] So, this is a
+[29:20] general way of how we write a GPU
+[29:22] program. I think the most important part
+[29:24] is the threads are written in a way that
+[29:29] uh
+[29:31] that each thread is responsible to
+[29:32] calculate one piece of output and
+[29:35] threads are rarely communicate with each
+[29:37] other.
+[29:38] And
+[29:39] there's a
+[29:40] strong limitation in the GPU how the
+[29:43] threads can communicate with each other.
+[29:46] Okay.
+[29:50] So, this is not a GPU programming
+[29:52] course. So, I want to quickly go through
+[29:54] this part and jump to the GPU assembly
+[29:57] and let's see how the GPU assembly is
+[29:59] different from the CPU assembly.
+[30:13] Now, I want to show you one
+[30:15] even simpler program.
+[30:37] Okay, this program.
+[30:45] I will erase this part.
+[30:51] And I call it
+[30:53] uh
+[30:55] shift shifted copy.
+[31:02] And takes
+[31:05] float
+[31:10] in and
+[31:12] out
+[31:14] two arguments. Okay, and this super
+[31:16] simple that int
+[31:19] GID
+[31:20] equals to
+[31:23] uh equals to the thing that we write
+[31:25] before. Okay? Then, out
+[31:29] GID
+[31:31] equals to in
+[31:34] GID
+[31:36] plus four.
+[31:40] Uh
+[31:41] the smallest the program. Right? So, I
+[31:44] just want to want to show you how this
+[31:46] program is compiled into a GPU assembly
+[31:49] and what the GPU assembly looks like.
+[31:52] Uh it doesn't have a safeguard here. So,
+[31:55] we just show it the compilation.
+[31:59] Then, um the GPU is different from the
+[32:02] CPU. CPU needs to set up the memory at
+[32:05] the beginning to set up the environment
+[32:07] so that the core can pick up from the
+[32:09] memory. The GPU, because you have the GP
+[32:12] you have the CPU to control, and CPU
+[32:14] send this task to a GPU side. So, GPU
+[32:16] internally will have circuits to help up
+[32:19] set the contacts. And the GPU try to
+[32:22] avoid the memory access and only if
+[32:25] something can be in a register, it's
+[32:28] better to be in the register. So,
+[32:30] the GPU will typically have some
+[32:33] register initial register layout set up
+[32:36] so that it's being stored there.
+[32:38] So, in this case, the first line of code
+[32:42] is like this. S
+[32:44] load
+[32:48] D word
+[32:51] by four.
+[32:54] Then,
+[32:55] S 0 3
+[32:59] S
+[33:01] 4 5
+[33:04] and 0.
+[33:05] Okay?
+[33:07] So, we need to look at this
+[33:10] instruction.
+[33:11] Load is load. It's still the load that
+[33:14] we're familiar with.
+[33:16] Okay? We load from memory and store it
+[33:19] into a register.
+[33:21] Now, what is S here?
+[33:23] So, S is a term for only for AMD GPU.
+[33:26] AMD doesn't really have it.
+[33:28] Then, S here represents for scalar.
+[33:35] And the on the other side is a vector.
+[33:40] Okay? So, in this case, it's a scalar.
+[33:43] So, GPU programs work in this way.
+[33:46] Remember, we're talking about blocks,
+[33:48] right?
+[33:49] So, a kernel
+[33:51] this is a kernel.
+[33:54] And the kernel can be divided into a few
+[33:57] layers of different things.
+[34:00] The first the layer is block.
+[34:04] Within block, we have warps.
+[34:08] W A R P
+[34:11] Okay?
+[34:12] Within block, we have warps, several
+[34:14] warps. Now, within warp, we have
+[34:17] threads.
+[34:23] Those are all
+[34:25] threads. Within each warp, we have
+[34:27] threads.
+[34:28] So, there several layers of
+[34:30] organization. Why have this
+[34:31] organization? There's some meaning of
+[34:34] this organization, why we want to
+[34:35] organize in this way.
+[34:38] Okay? So,
+[34:40] but I want to give you a typical number.
+[34:43] A warp
+[34:45] equals to 32
+[34:49] threads
+[34:51] in Nvidia.
+[35:00] In Nvidia GPU. Then, it equals to 64
+[35:03] threads in AMD
+[35:08] CDNA
+[35:12] um architecture and also equals to 32
+[35:15] threads in AMD
+[35:18] RDNA architecture.
+[35:22] Okay?
+[35:22] Then,
+[35:24] so, AMD has dif- different standards.
+[35:26] Now, RDNA is mainly for graphics and
+[35:28] CDNA is only for mainly for compute.
+[35:31] Right? So, by the way, when we talk
+[35:33] about GPU architecture here, we're only
+[35:35] talking about GP-GPU, general purpose
+[35:37] GPU computing. It's not talking about
+[35:39] rendering graphics and this type of
+[35:40] things. It's only for uh calculation.
+[35:44] So, a warp is this number, right? Now,
+[35:46] remember, when we talk about block,
+[35:50] is typically 32 to 1 1024
+[35:55] threads.
+[35:58] Okay? Then, a block is still 32 to 1024
+[36:01] threads. That means it equals to from
+[36:05] one to I say
+[36:07] if it's 32
+[36:09] 32 by how many is 1024?
+[36:12] Uh
+[36:14] 32 by 32 is 1024.
+[36:17] Okay?
+[36:18] So,
+[36:20] now, a warp is
+[36:22] this number, right?
+[36:25] So,
+[36:26] a block equals to from one to 32 warps.
+[36:28] That's a typical range.
+[36:32] Then,
+[36:33] one level up a kernel
+[36:39] equals how many blocks?
+[36:41] Then,
+[36:43] typically
+[36:44] I would say this is unlimited
+[36:47] blocks.
+[36:49] Right? Remember, last time we're doing a
+[36:52] vector add example. Then, the number of
+[36:55] threads is equals to the number of
+[36:58] element in the vector. So, it can work
+[37:01] if it's 1 giga element. So, in 1 GB
+[37:04] elements,
+[37:05] that's a lot of threads, right? And your
+[37:07] kernel can still run.
+[37:09] So, this number is a rather flexible
+[37:11] number. The number of blocks in a kernel
+[37:14] is a rather flexible number.
+[37:16] So, you can see when we launch a kernel,
+[37:19] how many threads we start.
+[37:21] Like, we can start 1 billion threads. No
+[37:23] problem, GPU can handle that.
+[37:26] Now, of course, it cannot handle it like
+[37:28] run on them all at the same time. So,
+[37:30] there's one way to run them in different
+[37:33] ways.
+[37:35] So,
+[37:36] then,
+[37:37] why warp is so important here? Then,
+[37:41] when we program, we only program blocks
+[37:44] and threads, right? We only know like
+[37:47] the two numbers we give. Like, the
+[37:49] kernel size is the kernel size in term
+[37:51] of number blocks and the block size is
+[37:54] the block size in term of number
+[37:55] threads. Then, but this idea of warp is
+[37:59] recently added at this stage, only at
+[38:02] this stage. So, warp is not not a
+[38:05] I would say not a architecture or
+[38:06] something that a programmer should be
+[38:09] constantly aware of. And it's only at
+[38:11] the microarchitecture level or the
+[38:13] implementation level.
+[38:15] Then, it's not that pure at the
+[38:17] implementation level. Sometimes,
+[38:19] programmer needs to aware it for
+[38:20] performance tuning, but it's not that
+[38:23] important at when you write a program.
+[38:27] So, why is warp important is because the
+[38:30] GPU runs in a very special way. GPU runs
+[38:33] program
+[38:34] in a
+[38:37] we call it a SIMD style.
+[38:42] A SIMD style is for single instruction
+[38:46] multiple data.
+[38:49] Okay?
+[38:50] Single instruction multiple data.
+[38:53] Then,
+[38:54] what does that mean? I can write the
+[38:56] next instruction, you will know what is
+[38:58] single instruction multiple data. This
+[39:00] is a V. So, it's a vector.
+[39:03] Right? It's a vector and what do we do
+[39:06] is shift the left.
+[39:10] It's L
+[39:12] is logic shift left.
+[39:14] R E V
+[39:16] You can ignore this R E V. This R E V
+[39:18] allows the
+[39:19] the the operands to be written in the
+[39:22] other way.
+[39:23] Then, B64.
+[39:26] So, this is a 64-bit operation. Okay?
+[39:29] Then, what's the register is V
+[39:32] 2 3
+[39:36] 2
+[39:38] then V
+[39:40] 2
+[39:41] 3.
+[39:43] Okay? This is the operation.
+[39:46] So, first of all, what is V2?
+[39:49] V2 is a
+[39:51] So, V anything
+[39:54] is a 32-bit register. Okay?
+[39:58] So, when we say V23
+[40:01] is a 64-bit register combined by two
+[40:05] registers.
+[40:06] So, it's a number that is con- connected
+[40:08] in two adjacent registers. So, this is
+[40:10] 64-bit.
+[40:12] Then, this is shifted left. So,
+[40:13] basically, it's the value that is stored
+[40:15] in
+[40:16] V23 and shifted by two and store back to
+[40:20] V23.
+[40:22] Okay, shift the shift the left by two
+[40:25] digits. That's multiplied by four.
+[40:27] Right? So, it's multi- it's a multiplied
+[40:30] by four operation.
+[40:31] But, how many multiplied by four
+[40:33] operation that we actually calculated?
+[40:36] Whenever this this line is executed,
+[40:40] since a SIMD instruction, a single
+[40:42] instruction. This is a single
+[40:47] instruction.
+[40:49] Then, when you talk about V2 or V23,
+[40:55] then
+[40:58] within a warp,
+[41:00] it can you have T thread one, thread
+[41:03] thread zero, thread one, and so on, and
+[41:05] the thread 31, right?
+[41:08] So, this one may have a value that is
+[41:10] two. This one may have a value of six.
+[41:13] This one may have a value eight and 13
+[41:16] for some for example. Okay? So, every
+[41:19] thread within this warp may have
+[41:21] different values.
+[41:25] So, they have different values,
+[41:26] right?
+[41:28] It's a it's the same it's a just we call
+[41:31] it the V2, but
+[41:33] no,
+[41:34] even in the CPU program, a different
+[41:36] thread, the same name, the register with
+[41:38] the same name storing different values
+[41:39] because they run in different cores.
+[41:42] Right? So, V2 have different value for
+[41:45] different
+[41:47] um
+[41:48] for different thread.
+[41:51] In this case, when we do shift the left,
+[41:55] then the end up V2 value will be 4,
+[41:58] 12, 16, 26, and so on.
+[42:03] Okay?
+[42:04] So, that's what is called single
+[42:06] instruction multiple data.
+[42:12] Okay, so this is why GPU is super
+[42:14] powerful because it takes this thing
+[42:17] called data level
+[42:22] parallelism.
+[42:24] Okay, so that we can calculate all this
+[42:27] data at the same time.
+[42:30] So, whenever we calculate a shift the
+[42:32] left, we calculate all 32 threads
+[42:35] at the same time. So, consider in CPU,
+[42:39] we run fetch, run decode. Now, after a
+[42:42] fetch and a decode,
+[42:45] and we execute one instruction. We can
+[42:48] do one calculation.
+[42:50] Then, we write back one value, right? In
+[42:53] GPU design, it's in this way. We fetch
+[42:56] one instruction, we decode one
+[42:57] instruction.
+[42:59] We do 64 or 32 or 64 calculations,
+[43:02] depends on the warp size.
+[43:04] Right?
+[43:06] So, that the average cost for decoding,
+[43:10] control, and for
+[43:13] uh fetching an instruction is much lower
+[43:15] because you
+[43:17] you fetch once, you decode once, and it
+[43:19] applies to 32 numbers. For per number,
+[43:22] per calculation, your fetch and decode
+[43:24] cost is much lower. That's why GPU can
+[43:27] really put a lot of resources only on
+[43:29] compute and can make the control flow
+[43:33] really simple.
+[43:35] Okay?
+[43:40] Then, other than SIMD, then you can
+[43:42] think of all four different
+[43:43] combinations, right? So, you have SISD.
+[43:47] You can have MIMD.
+[43:51] Then, you have
+[43:53] MISD.
+[43:57] Okay?
+[43:58] Multiple instruction single data.
+[44:00] Then, this is possible. Then,
+[44:03] we want to
+[44:04] like say one piece of data, then in one
+[44:06] cycle, want to process multiple
+[44:09] operations. Then, then
+[44:11] it's all these things are possible.
+[44:13] Okay, that's SISD, a typical CPU
+[44:16] architecture is considered SISD.
+[44:19] Then, MIMD, if you consider multi-cores
+[44:21] or SIMD.
+[44:23] Okay?
+[44:25] Right, multi-core. So, different if each
+[44:27] core is running different instructions
+[44:29] and they're processing different data.
+[44:30] So, they're not The instruction and data
+[44:32] are not related.
+[44:34] Then, other than this term, if you read
+[44:36] papers, you may also see other papers
+[44:39] saying GPU is something called a SIMT
+[44:43] uh
+[44:44] in- SIMT
+[44:47] structure.
+[44:48] That's T here means single instruction
+[44:51] multiple thread.
+[44:52] Okay? So, here because we have multiple
+[44:54] threads and
+[44:56] then in in theory, this is more suitable
+[44:59] for the AVX
+[45:01] instruction set. If you know what is AVX
+[45:03] AVX instruction set, yes, this is CPU
+[45:05] extension for vectorized operation.
+[45:08] Then, GPU is more SIMT style because
+[45:11] each thread each instruction is
+[45:12] controlling multiple thread. But, I
+[45:14] don't want to
+[45:16] tell very different like if you say GPU
+[45:18] is a SIMD instruc- SIMD architecture,
+[45:21] everyone will agree with that. Okay? So,
+[45:23] just someone will using this term,
+[45:25] someone will using this term.
+[45:29] Okay?
+[45:30] So,
+[45:31] then what is a vector and scalar? Come
+[45:34] back to this point. A vector is really a
+[45:37] SIMD instruction.
+[45:39] So,
+[45:40] we really are doing 32 or 64 operations
+[45:44] with one instruction.
+[45:46] But, sometimes
+[45:47] all the threads are doing the same
+[45:49] operation. For example, load in this
+[45:51] case, we can load the same thing.
+[45:53] We we are really only loading the same
+[45:56] thing. And what is loading here? It's
+[45:59] actually loading
+[46:01] I think it's loading this thing, if I'm
+[46:03] right.
+[46:05] Yeah, it's loading this these things.
+[46:08] So, it's loading the in pointer and out
+[46:10] pointer.
+[46:12] In this case, we have a scalar
+[46:14] instruction. In this scalar instruction,
+[46:16] we use a special scalar unit to say,
+[46:19] "Oh, I only want want to run one
+[46:22] operation for this the whole 64 thread."
+[46:25] And that comes to this S registers.
+[46:29] So, S registers are shared within a
+[46:32] warp.
+[46:34] Okay? Are shared within a warp, not a
+[46:36] block. Are shared within a warp. So,
+[46:39] let's say
+[46:41] Here, we say
+[46:44] within a warp.
+[46:45] Then,
+[46:50] I need to change here.
+[46:51] For S2,
+[46:53] okay?
+[46:55] T1, you are storing value two. T2, you
+[46:59] are also storing value two, and they're
+[47:01] all value two. Okay, they must store the
+[47:03] same value. And actually, in hardware,
+[47:05] there's only one register there. So,
+[47:08] it's a shared register space like
+[47:10] everyone can use.
+[47:13] Okay, let's search scalar operation. In
+[47:16] this case, what we're doing? So, you
+[47:17] see, we start with accessing S45.
+[47:22] And S45
+[47:24] is
+[47:26] kind of hardcoded at this moment because
+[47:29] we know the
+[47:31] hardware will start this thread with a
+[47:33] register value already set.
+[47:36] What is storing? I think it's storing
+[47:38] a pointer to this region of memory that
+[47:42] is called kernel
+[47:45] argument.
+[47:47] And it's basically using four byte or
+[47:50] eight byte to to store this
+[47:53] to this pointer and eight byte to store
+[47:54] this register. And see here, GPU wants
+[47:58] to do parallel operation, right? In
+[48:00] RISC-V, we load one
+[48:02] word.
+[48:03] Now, here we're loading
+[48:06] double word by four.
+[48:08] Well,
+[48:09] that's why I say I hate the the term of
+[48:11] word. Then,
+[48:12] in RISC-V, when we say word is 32-bit.
+[48:16] In GPU, in AMD GPU, a word is 16-bit.
+[48:20] So, double
+[48:21] 16-bit. So, D word, double word, is a
+[48:24] 32-bit value. So, we're loading four
+[48:27] registers
+[48:28] at the same time with one instruction.
+[48:30] Then, basically, we'll end up with S12
+[48:34] with 01 is float in and S12
+[48:40] is float out. Is okay. So, just load all
+[48:44] of them together. It's an optimization
+[48:45] rather than using two instructions to
+[48:47] load them.
+[48:49] Okay?
+[48:53] So, I can
+[48:56] um I think I can skip some instructions
+[48:59] and directly jump to the most important
+[49:01] part.
+[49:04] Um wait. Let me let me introduce this
+[49:07] one. I think this one is important. The
+[49:09] next one is a S wait
+[49:12] count.
+[49:15] Um CNT, wait count. Okay, it's waiting
+[49:18] for a counter.
+[49:20] And I really hate this name.
+[49:22] LGKM
+[49:24] CNT
+[49:26] zero.
+[49:29] It's AMD assembly. Okay?
+[49:31] Um
+[49:32] So, what does it mean?
+[49:36] And let me write down the next one.
+[49:38] S ADD
+[49:41] Oh, this is finally something that we're
+[49:42] familiar with, right? U32
+[49:46] S0
+[49:48] 16
+[49:50] S0
+[49:53] S ADDC
+[49:56] U32
+[50:00] S1
+[50:01] 0 S1
+[50:06] Okay.
+[50:07] So, you can see there's a dependency.
+[50:10] What is a dependency? It's here, this
+[50:13] value
+[50:15] and is being used at here, right? So,
+[50:18] there's a dependency
+[50:19] here.
+[50:22] Right? And
+[50:25] it the the lecture that we should talk
+[50:27] about today is to talk about the
+[50:28] dependency in CPU architectures. But
+[50:30] here in GPUs, we also have this
+[50:33] dependency.
+[50:34] And there's no dependency in this line
+[50:36] of code, V23 or V23, and they can just
+[50:40] do it on their own. Right? So, V23
+[50:44] multiplied by four has no dependency
+[50:46] with this line of code.
+[50:48] So, how AMD GPU is handling this one is
+[50:51] this instruction is executed
+[50:54] and when it's executed, it will send
+[50:55] some request into the memory system.
+[50:58] So, GPU memory system is much more
+[51:00] slower
+[51:01] and then the CPU memory system, and you
+[51:04] cannot really set the memory as one
+[51:07] cycle as one
+[51:09] uh pipeline stage. It has to send some
+[51:11] requests out and wait for some time
+[51:13] until the result will come up come back.
+[51:16] Okay.
+[51:17] So, in that case
+[51:19] this instruction may take very long
+[51:22] time, hundreds of cycles.
+[51:24] Possible.
+[51:25] Then
+[51:27] we may have some opportunity to execute
+[51:29] the next instruction.
+[51:33] Right?
+[51:34] We may have the opportunity before this
+[51:36] data to return, we can start execute
+[51:38] this line of code.
+[51:39] Now, we line we run this line of code
+[51:41] while waiting for this to return.
+[51:44] Okay.
+[51:45] But if we execute this line of code
+[51:49] before this data return, we may use some
+[51:51] garbage data.
+[51:53] In that case, we have to make sure that
+[51:55] this data is returned. So, when we send
+[51:57] out a load instruction, when we send out
+[52:00] a load read request to the memory system
+[52:03] we add this counter by one.
+[52:06] Okay. Now, when this data returns, we
+[52:09] reduce this counter by one.
+[52:11] So, waiting to be zero means we wait
+[52:14] until this counter to fall fall at zero
+[52:18] or below zero, and of of course, for
+[52:20] zero, it cannot be below zero, but if
+[52:22] it's a real number, it had it can be
+[52:24] below that number.
+[52:26] Okay.
+[52:28] So, in this case, this is a compiler
+[52:31] added synchronization. Say, at this
+[52:33] point, we have to wait the prior memory
+[52:36] access to return, then we can continue.
+[52:38] This is our synchronization.
+[52:42] Okay. So, with this synchronization,
+[52:45] what's So, what So, by the way, what it
+[52:47] does is basically S
+[52:49] 0
+[52:51] 1 plus 16 and store it back to S 0 and
+[52:56] 1.
+[52:57] Right? So, ADD do not consider carry.
+[53:01] ADDC consider the carry from the
+[53:03] previous instruction.
+[53:05] Then it's adding zero is only for the
+[53:07] carry, just in case
+[53:09] the carry is non-zero.
+[53:12] Okay. So, these two instructions are add
+[53:15] is a 64-bit add instruction. So, use two
+[53:18] instructions to mimic a 16 64-bit
+[53:21] operation.
+[53:24] Okay.
+[53:29] Then
+[53:30] let's keep going.
+[53:38] Let's assume we have all the
+[53:40] addresses calculated. We know the
+[53:42] addresses that we need to calculate. So,
+[53:44] the next thing is we need to load the
+[53:46] data.
+[53:46] In that case, AMD uses something called
+[53:49] global
+[53:52] load.
+[53:55] Then in earlier version, you may also
+[53:58] see something like flat load, but that's
+[54:00] just use global load here.
+[54:02] Global load D word
+[54:07] and where we're storing, we're storing
+[54:09] in V4, and our input is V0 and 1.
+[54:14] No offset.
+[54:17] Then you see
+[54:19] if it's a S instruction, it can only use
+[54:21] S register.
+[54:23] If it's a V instruction, it can use both
+[54:25] S S and V register.
+[54:28] In that case, although it's not saying
+[54:30] if it's a V or S instruction, since it's
+[54:33] used a V register, it's a vector load.
+[54:37] Okay. Vector load means
+[54:40] every thread
+[54:42] may have a different address.
+[54:44] Now, if this is a warp of 32
+[54:47] uh 32 thread, we may be issuing 32
+[54:51] memory read request to the memory system
+[54:53] and wait for 32 piece of data to return.
+[54:57] Okay.
+[54:58] So, you see the amount of memory
+[55:00] transaction that GPU loads a lot of
+[55:02] memory and calculates a lot of data and
+[55:04] stores a lot of data back to the memory
+[55:06] system.
+[55:08] Okay.
+[55:09] So, and eventually the result is stored
+[55:11] in V4.
+[55:13] Then
+[55:14] interesting thing happens here is
+[55:17] there's a V move.
+[55:20] There's a V ADD ADD and there's a V
+[55:23] ADDC.
+[55:25] I will not I will not write the full
+[55:28] instruction but I can tell you this is a
+[55:31] calculating the output address.
+[55:33] Okay.
+[55:35] Then
+[55:36] these instructions, since we're
+[55:38] calculating the output address, they
+[55:39] have nothing to do with V4.
+[55:42] V4 is the data that we loaded. So, we
+[55:45] can
+[55:46] before this one to returns, we can just
+[55:48] do the calculation.
+[55:50] Right? There's no dependency.
+[55:52] Then
+[55:53] here we do S
+[55:54] wait count.
+[55:59] In this case, we're waiting for this
+[56:01] counter called VMCNT.
+[56:06] So, VM is for vector memory.
+[56:10] LGKM is for local global constant
+[56:13] memory.
+[56:15] Uh so, they share this different memory
+[56:17] system shares
+[56:19] a one counter.
+[56:21] So,
+[56:22] you can consider this way. S
+[56:24] load uses this counter. V load uses that
+[56:27] counter.
+[56:29] Okay.
+[56:30] So, different counters.
+[56:34] Then
+[56:36] we don't need to do calculation.
+[56:38] Eventually, we do a global
+[56:42] store.
+[56:45] Remember, this is a simple
+[56:47] um
+[56:49] this is a simple
+[56:52] like a data movement kernel, right? So,
+[56:54] we can do global store
+[56:56] D word.
+[57:00] V4
+[57:02] and V 0 and 1.
+[57:05] So, V01 stores the new
+[57:07] uh new address, the destination address,
+[57:10] and V4 is from here.
+[57:12] So, we directly store.
+[57:14] Okay.
+[57:16] So, then we're done with this program.
+[57:19] At the end
+[57:20] we always add an instruction, a scalar
+[57:23] instruction called end
+[57:26] program.
+[57:28] Okay.
+[57:29] That's basically how this type of kernel
+[57:31] is implemented.
+[57:37] Okay. Any question?
+[57:40] So, I think the most important part
+[57:42] is
+[57:44] the difference between vector and S
+[57:46] instructions
+[57:47] and
+[57:49] the use of S wait count and why S wait
+[57:51] count is used here.
+[57:54] Right? And question? Wait, and you said
+[57:57] that the video doesn't have
+[57:59] scalar and vector instructions. Yeah. Is
+[58:01] that it?
+[58:03] So, um Nvidia doesn't have scalar and
+[58:05] vector instructions, just consider all
+[58:06] the instructions are vector
+[58:08] instructions. So, they don't mind just
+[58:09] do it for 64 times.
+[58:11] They think a simpler core design is
+[58:13] probably more important than this
+[58:15] clever optimization. So, they just
+[58:19] do it for 32 times. It's probably not
+[58:22] that bad.
+[58:24] Okay.
+[58:27] Um
+[58:29] and I'm not even not sure that Nvidia
+[58:31] has something like S wait count.
+[58:34] So,
+[58:36] um
+[58:39] this needs some work to understand how
+[58:42] Nvidia
+[58:43] do this, and I never
+[58:45] dive that deep into Nvidia
+[58:46] microarchitecture. So, I don't know how
+[58:48] they handle memory access
+[58:50] synchronization.
+[58:53] Okay. So, S and V and the Y wait count
+[58:56] is added is the important part uh for
+[59:00] GPU architecture, and especially the
+[59:02] difference is especially the concept of
+[59:05] SIMD instruction is the most important
+[59:07] thing that you need to remember.
+[59:10] Then
+[59:12] let's do this.
+[59:15] Just make this program slightly more
+[59:17] complex.
+[59:19] Now, I know what you're thinking about
+[59:21] how we can handle conditions and how we
+[59:23] can handle loops, right? So,
+[59:27] loops are easier. Conditions are more
+[59:30] difficult. Let's consider this kernel
+[59:34] called
+[59:35] condition copy.
+[59:39] Okay, then condition copy we still have
+[59:42] a in
+[59:44] and out.
+[59:47] And in my example I'm using double here.
+[59:49] Although it's probably not that
+[59:50] important.
+[59:51] Then still I have a in
+[59:55] GID global ID and it's calculated by
+[59:58] that
+[59:59] expression.
+[01:00:01] And here we want to write if
+[01:00:06] in
+[01:00:07] GID
+[01:00:10] greater than zero
+[01:00:16] then out
+[01:00:18] GID
+[01:00:20] equals to
+[01:00:22] in GID.
+[01:00:27] Then
+[01:00:28] if we know the output is initialized to
+[01:00:31] be zero, this is pretty much a rather
+[01:00:34] implementation, right?
+[01:00:36] Um
+[01:00:38] So let's see
+[01:00:39] how this one is implemented.
+[01:00:47] Okay.
+[01:00:48] So we will skip this part. At the
+[01:00:50] beginning it's the same. Okay. We'll
+[01:00:52] skip this part to calculate the address.
+[01:00:54] Let's directly jump to here.
+[01:01:06] So here let's see. We start with a
+[01:01:09] global load.
+[01:01:14] In this case since in my example I'm
+[01:01:17] using double
+[01:01:18] that's two D word
+[01:01:22] multiplied by two.
+[01:01:23] So that's a double number.
+[01:01:26] Okay. You can do D word multiplied by
+[01:01:28] three, D word multiplied by four. So
+[01:01:30] GPU is really providing the flexibility
+[01:01:32] that with the one instruction you can
+[01:01:34] load a lot of data.
+[01:01:36] Then it's stored to V45
+[01:01:43] from V01.
+[01:01:46] Okay.
+[01:01:47] The destination is stored in V5. Now
+[01:01:50] here we need to do a comparison.
+[01:01:55] Now of course before we do the
+[01:01:56] comparison we need a S weight count.
+[01:02:02] After the data is there we can do a
+[01:02:05] comparison. Now here a comparison is S V
+[01:02:09] CMP compare
+[01:02:11] less than.
+[01:02:14] Now here we have a type that is XF64.
+[01:02:18] So a double precision comparison.
+[01:02:21] The comparison
+[01:02:23] we store
+[01:02:24] the result into a special register
+[01:02:26] called VCC.
+[01:02:28] VCC is only 64 bit.
+[01:02:33] Okay. So assuming one warp is 64
+[01:02:36] threads. In this case
+[01:02:39] if it's less than
+[01:02:41] this bit will store to be one. This bit
+[01:02:44] if it's smaller or equal to zero this
+[01:02:46] bit will be zero. So it's a basically a
+[01:02:48] bit mask to store the comparison result.
+[01:02:52] So the destination is VCC and we have
+[01:02:55] zero
+[01:02:56] and V
+[01:02:59] and V45
+[01:03:01] just to make the comparison.
+[01:03:03] Okay.
+[01:03:08] Okay. Then next thing the interesting
+[01:03:10] thing is here.
+[01:03:12] This instruction is called S
+[01:03:14] and
+[01:03:19] save EXEC.
+[01:03:26] B64
+[01:03:33] S
+[01:03:34] 4
+[01:03:35] 5
+[01:03:37] VCC.
+[01:03:40] Okay. I'll explain this.
+[01:03:43] Ignore the and for now.
+[01:03:46] And probably for the class.
+[01:03:50] Just look at EXEC.
+[01:03:52] EXEC is a special register.
+[01:04:00] Then it's equals to the warp size. So in
+[01:04:02] AMD in CDNA architecture is a 64 bit.
+[01:04:06] In Nvidia is 32 bit
+[01:04:09] register.
+[01:04:11] Okay.
+[01:04:12] So here
+[01:04:14] you know last time we're talking about
+[01:04:16] this runs in a SIMD execution style,
+[01:04:19] right? So that means we just assume this
+[01:04:22] is one instruction. Now if this is a one
+[01:04:25] instruction or few instructions
+[01:04:27] if one one thread needs to execute it
+[01:04:30] if one thread needs to execute it
+[01:04:33] all other 32 threads all other 31 thread
+[01:04:36] are also executing it at the same time.
+[01:04:40] But we don't want these things to
+[01:04:42] happen, right? We don't want the other
+[01:04:44] 31 32 really take effect. If they take
+[01:04:47] effect they will get we'll get a wrong
+[01:04:48] result.
+[01:04:50] Right? So what we do is we use a
+[01:04:52] execution mask.
+[01:04:57] So for it to this execution mask is a
+[01:05:00] mask that's just make it 32 thread. Then
+[01:05:03] you can have some ones there and some
+[01:05:05] zeros in this execution mask.
+[01:05:08] Okay.
+[01:05:09] Then this one is mapped to thread zero,
+[01:05:12] thread one, thread two and so on thread
+[01:05:14] two 31.
+[01:05:16] Okay. If this bit is one
+[01:05:19] we make that instruction take effect.
+[01:05:22] If it's zero
+[01:05:25] we'll just skip the memory part and the
+[01:05:29] right back part so that they will
+[01:05:32] not take effect. Will not impact
+[01:05:34] execution result.
+[01:05:37] Okay. Will not impact the result.
+[01:05:41] In this case what we're doing is we're
+[01:05:44] saving the execution mask
+[01:05:46] temporarily into S45 and actually it's a
+[01:05:51] there's a and operation. The
+[01:05:54] execution mask is stored here. It's
+[01:05:57] stored here. Then there's a and
+[01:05:58] operation that the current execution
+[01:06:00] mask will do a and with VCC.
+[01:06:04] Why we do and? It's basically just
+[01:06:06] consider nested if.
+[01:06:09] Right? We already have something that we
+[01:06:11] say is zero. Then we will do and will
+[01:06:13] mask out some some other cases. Right?
+[01:06:16] So that's why it's a and save execution.
+[01:06:19] But
+[01:06:19] what I can say here just make it simple
+[01:06:22] we
+[01:06:25] store
+[01:06:27] the VCC value into execution mask.
+[01:06:31] Okay.
+[01:06:32] We store that value into execution mask.
+[01:06:38] So
+[01:06:39] then this one becomes a value dependent
+[01:06:42] execution mask. And there may be some
+[01:06:43] ones and some zero some one some zero
+[01:06:47] some one some zero. Now it really
+[01:06:48] depends on the value, right?
+[01:06:51] Then there's a chance that all of them
+[01:06:53] are zero. If all of them are zero we
+[01:06:55] don't need to load and we don't need to
+[01:06:57] store. We can just quickly we don't need
+[01:06:59] to store which you can just quickly jump
+[01:07:00] out, right? So then we can do a quick
+[01:07:04] um
+[01:07:05] conditional branch and it's also an S
+[01:07:07] instruction.
+[01:07:09] The SC branch
+[01:07:14] SC branch
+[01:07:15] EXECZ.
+[01:07:18] Okay. That means
+[01:07:20] when the execution mask is all zero we
+[01:07:24] take this branch.
+[01:07:26] Okay. There's only one operand and this
+[01:07:29] operand is BB0_2.
+[01:07:32] Okay. It's a basic block
+[01:07:35] 0-2 0_2. Okay. So this is AMD compiler
+[01:07:39] always generate this type of labels.
+[01:07:41] They will use
+[01:07:43] basic block labeling.
+[01:07:45] We'll write the label later.
+[01:07:48] Okay. So here we're done with this part.
+[01:07:51] Then we do
+[01:07:53] uh
+[01:07:54] we move
+[01:07:57] we add
+[01:08:00] we add C.
+[01:08:03] Those are not that important to
+[01:08:05] calculate the destination address,
+[01:08:07] right? Then eventually we do global
+[01:08:12] store
+[01:08:13] and it's not important also.
+[01:08:18] D word. Why is D word?
+[01:08:28] Uh I think it's D word multiplied by
+[01:08:30] two.
+[01:08:31] Now we store the result back, right? And
+[01:08:34] then I'm not showing the operand. It's
+[01:08:36] easy. It's trivial.
+[01:08:38] And also just be careful. When you talk
+[01:08:41] about store there's no weight count.
+[01:08:45] Right?
+[01:08:46] Just consider we're sending our stores
+[01:08:48] and we don't care anymore.
+[01:08:51] So there's no synchronization. Just
+[01:08:53] they're in a buffer in a queue and
+[01:08:57] probably even the next kernel started
+[01:09:00] the weight the right is not completed
+[01:09:02] yet.
+[01:09:03] So GPU tries to
+[01:09:07] optimize for every optimization
+[01:09:09] opportunity. So in this case the store
+[01:09:12] there's no synchronization.
+[01:09:15] Okay. Now here we have finally have this
+[01:09:18] BB02.
+[01:09:22] Then
+[01:09:24] there's a S or
+[01:09:27] basic B
+[01:09:29] 64.
+[01:09:32] And what is it is EXEC
+[01:09:36] EXEC
+[01:09:39] S45.
+[01:09:42] And also don't think too much. EXEC is
+[01:09:45] mask, right? And we store the previous
+[01:09:48] EXEC in S45.
+[01:09:51] Right? We do a or operation is basically
+[01:09:54] recovering the execution mask right
+[01:09:57] before the condition.
+[01:10:01] So that we can if there's some
+[01:10:03] instructions will continue the
+[01:10:04] execution.
+[01:10:07] Okay?
+[01:10:09] There's some instructions will continue
+[01:10:11] the execution. So we just restore the
+[01:10:14] execution mask. In this case, we just
+[01:10:17] set it to all ones. That's why it's an
+[01:10:19] or operation.
+[01:10:21] Bitwise or operation.
+[01:10:23] Then at the end
+[01:10:25] we save S and
+[01:10:28] PGM program.
+[01:10:31] Okay? Then that's the whole program. So
+[01:10:33] I want to tell you that
+[01:10:36] GPUs uses an execution mask
+[01:10:39] to run a predicated
+[01:10:46] execution. What is predicated?
+[01:10:48] Predicated is an execution style that
+[01:10:50] uses one bit zero and one to decide if
+[01:10:53] this one instruction will take effect or
+[01:10:55] not. Then this is not only used in CPU,
+[01:10:58] it's also only in GPU, it's also used in
+[01:11:01] CPU. So sometimes it's just for compiler
+[01:11:03] simplicity. You can simply set this bit
+[01:11:05] to zero, so this instruction is there,
+[01:11:08] but we don't want it to take effect.
+[01:11:10] It's called predicated execution. GPU
+[01:11:12] uses this mask and predicated execution
+[01:11:15] to handle
+[01:11:17] uh
+[01:11:19] branches.
+[01:11:20] Okay?
+[01:11:22] So in GPU there's a very special
+[01:11:26] uh
+[01:11:27] situation
+[01:11:28] or consideration for
+[01:11:31] performance analysis that is called
+[01:11:34] thread divergence.
+[01:11:43] Okay? So what is thread divergence?
+[01:11:47] It's not
+[01:11:50] um
+[01:11:52] say
+[01:11:54] Let's say if we only have 64 threads in
+[01:11:56] a warp, okay? In a kernel. Then if we
+[01:11:59] write something like if TID
+[01:12:02] is smaller than
+[01:12:05] one
+[01:12:07] Okay? In this case,
+[01:12:09] one out of
+[01:12:11] 32
+[01:12:13] threads are effective.
+[01:12:17] But the other 31 will still take the
+[01:12:19] computational power.
+[01:12:21] Will still take time.
+[01:12:24] Okay?
+[01:12:25] And it's a totally bad thing.
+[01:12:28] This We'll talk about how how it works,
+[01:12:30] why it cannot be easily
+[01:12:33] optimized out. The newer Nvidia GPU has
+[01:12:35] some way to allow different threads, say
+[01:12:38] some thread is running one branch, some
+[01:12:39] thread is running on other branch. AMD
+[01:12:42] GPUs still today, as far as I know, do
+[01:12:44] not have that technology.
+[01:12:46] Now, in this case, if our computing
+[01:12:49] power is something large, then we are
+[01:12:52] only have one over
+[01:12:54] it's like to have somewhere like 3% of
+[01:12:57] utilization.
+[01:12:59] Right? In that part.
+[01:13:01] Now if you have something like if
+[01:13:04] TID
+[01:13:06] is smaller than 16
+[01:13:08] then we have 16 over 32 that is
+[01:13:12] available. In that case, we have 50%
+[01:13:16] of utilization.
+[01:13:18] Right? So thread divergence means the
+[01:13:21] threads within a warp is going on
+[01:13:23] different routes.
+[01:13:25] Which is considered a bad thing for GPU
+[01:13:28] because we're under utilizing the GPU
+[01:13:30] capability. So if we can avoid that and
+[01:13:33] to somehow ask a GPU to
+[01:13:36] let the GPU to run on the same path
+[01:13:38] without diverging
+[01:13:39] it's always a good thing.
+[01:13:42] Okay? So thread divergence is a big
+[01:13:44] performance issue for GPU and there are
+[01:13:46] many different optimizations, especially
+[01:13:48] in the compiler world, to reduce thread
+[01:13:52] divergence. Okay? So probably say one
+[01:13:55] warp is say half a warp is going this
+[01:13:58] way, half a warp is going that way. But
+[01:14:00] for next warp, half a warp is going this
+[01:14:02] way, half of that one in that way. So
+[01:14:04] can you combine this half warp and that
+[01:14:07] half warp together? Right? In that case,
+[01:14:09] we avoid this thread divergence. There
+[01:14:11] are many
+[01:14:12] like
+[01:14:13] academic research that is doing this
+[01:14:16] type of optimization. Then for industry
+[01:14:20] there is always a problem that we really
+[01:14:22] know very little about how Nvidia GPU
+[01:14:24] works internally. There may be some
+[01:14:25] optimization, maybe not. Then we don't
+[01:14:27] know.
+[01:14:28] Uh I'm pretty much sure this is a so
+[01:14:31] classic issue then there are some
+[01:14:33] optimization in it.
+[01:14:34] In Nvidia GPUs. Okay?
+[01:14:36] Now hope you like this type of uh
+[01:14:39] blackboard based uh teaching then
+[01:14:42] for GPU I'm pretty much like I hope for
+[01:14:45] the next a few Thursdays we'll try to in
+[01:14:47] this way to teach GPU programming. Okay?
+[01:14:51] All right. I think that's all for
+[01:14:53] today's lecture.

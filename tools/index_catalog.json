@@ -102,6 +102,30 @@
    "groups": []
   },
   {
+   "id": "pbl",
+   "dir": "pbl",
+   "title": "🧩 PBL 問題導向學習與解決方案",
+   "groups": []
+  },
+  {
+   "id": "pbl2",
+   "dir": "pbl2",
+   "title": "📱 PBL2 校園問題解決方案與教學實務",
+   "groups": []
+  },
+  {
+   "id": "SUBTITLE",
+   "dir": "SUBTITLE",
+   "title": "🎬 SUBTITLE 影音字幕提取與語音轉文字專題",
+   "groups": []
+  },
+  {
+   "id": "inquiry-1",
+   "dir": "inquiry-1",
+   "title": "🔍 INQUIRY-1 教育議題探究與學習行為研究",
+   "groups": []
+  },
+  {
    "id": "guide",
    "dir": "",
    "title": "📋 工作區指引與核心規範",
@@ -265,6 +289,21 @@
     "AI/research_proposal_b02.md"
    ],
    "attachments": []
+  },
+  {
+   "title": "NodeMCU-32S (ESP32) + Wi-Fi DHCP Web Server + DHT + SSD1306 128×64 OLED 溫濕度與天氣符號實作 1110-1",
+   "category": "ec",
+   "files": [
+    "ec/nodemcu32s_dht_ssd1306_weather_1110.html",
+    "ec/nodemcu32s_dht_ssd1306_weather_1110.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/1110-1.ino",
+     "title": "NodeMCU-32S (ESP32) Wi-Fi DHCP Web Server + DHT(GPIO16) + SSD1306 OLED 整合程式碼 1110-1"
+    }
+   ],
+   "group": "display"
   },
   {
    "title": "Arduino Uno + DHT11：LCD1602 → SSD1306 OLED (U8x8) 溫濕度顯示與動態效果實作 1029",
@@ -1052,6 +1091,202 @@
    ],
    "attachments": [],
    "category": "ev3"
+  },
+  {
+   "title": "尋找解決方案",
+   "files": [
+    "pbl/AGENTS.md"
+   ],
+   "attachments": [],
+   "category": "pbl"
+  },
+  {
+   "title": "YouTube 影片取得字幕並轉換成文字檔（.txt / .srt）完整解決方案指南",
+   "files": [
+    "pbl/youtube_subtitle_to_text_methods.html",
+    "pbl/youtube_subtitle_to_text_methods.md"
+   ],
+   "attachments": [
+    {
+     "path": "pbl/oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope.srt",
+     "title": "oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope.srt"
+    },
+    {
+     "path": "pbl/oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope.txt",
+     "title": "oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope.txt"
+    },
+    {
+     "path": "pbl/oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope_timestamped.txt",
+     "title": "oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope_timestamped.txt"
+    },
+    {
+     "path": "pbl/yt_sub_to_txt.py",
+     "title": "yt_sub_to_txt.py"
+    },
+    {
+     "path": "pbl/gvi0OE5OzOk_14 GPU Architecture 1.srt",
+     "title": "gvi0OE5OzOk_14 GPU Architecture 1.srt"
+    },
+    {
+     "path": "pbl/gvi0OE5OzOk_14 GPU Architecture 1.txt",
+     "title": "gvi0OE5OzOk_14 GPU Architecture 1.txt"
+    },
+    {
+     "path": "pbl/gvi0OE5OzOk_14 GPU Architecture 1_timestamped.txt",
+     "title": "gvi0OE5OzOk_14 GPU Architecture 1_timestamped.txt"
+    }
+   ],
+   "category": "pbl"
+  },
+  {
+   "title": "PBL2 尋找解決方案規範 (AGENTS.md)",
+   "files": [
+    "pbl2/AGENTS.md"
+   ],
+   "attachments": [
+    {
+     "path": "pbl2/AGENTS.bak",
+     "title": "AGENTS.bak"
+    }
+   ],
+   "category": "pbl2"
+  },
+  {
+   "title": "解決學生上課滑手機問題：從腦科學機制、班級經營到數位教學轉化的完整解決方案指南",
+   "files": [
+    "pbl2/classroom_smartphone_management_solutions.html",
+    "pbl2/classroom_smartphone_management_solutions.md"
+   ],
+   "attachments": [
+    {
+     "path": "pbl2/classroom_focus_dashboard.py",
+     "title": "課堂載具紅綠燈與專注力管理看板 (classroom_focus_dashboard.py)"
+    }
+   ],
+   "category": "pbl2"
+  },
+  {
+   "title": "🧩 PBL 問題探究與解決方案通用規範範本 (AGENTS_template.md)",
+   "files": [
+    "pbl2/AGENTS_template.md"
+   ],
+   "attachments": [],
+   "category": "pbl2"
+  },
+  {
+   "title": "尋找解決方案",
+   "files": [
+    "SUBTITLE/AGENTS.md"
+   ],
+   "attachments": [],
+   "category": "SUBTITLE"
+  },
+  {
+   "title": "YouTube 影片取得字幕並轉成文字檔（.txt / .srt）完整解決方案指南",
+   "files": [
+    "SUBTITLE/youtube_subtitle_to_text_methods.html",
+    "SUBTITLE/youtube_subtitle_to_text_methods.md"
+   ],
+   "attachments": [
+    {
+     "path": "SUBTITLE/yt_sub_to_txt.py",
+     "title": "YouTube CC 字幕提取與文字檔轉換工具 (yt_sub_to_txt.py)"
+    },
+    {
+     "path": "SUBTITLE/GZ9mAhGvT3U_How Power-Efficient Can AI Become_ _ Conversations in Action.txt",
+     "title": "How Power-Efficient Can AI Become? 純文字自然段落檔 (.txt)"
+    },
+    {
+     "path": "SUBTITLE/GZ9mAhGvT3U_How Power-Efficient Can AI Become_ _ Conversations in Action_timestamped.txt",
+     "title": "How Power-Efficient Can AI Become? 時間戳記對照文字檔 (_timestamped.txt)"
+    },
+    {
+     "path": "SUBTITLE/GZ9mAhGvT3U_How Power-Efficient Can AI Become_ _ Conversations in Action.srt",
+     "title": "How Power-Efficient Can AI Become? 標準字幕檔 (.srt)"
+    },
+    {
+     "path": "SUBTITLE/ZAzWPE9CItg_AI Crisis in Math_ Navier-Stokes, Riemann Hypothesis & Compl.txt",
+     "title": "AI Crisis in Math (Lex Fridman #503) 純文字自然段落檔 (.txt)"
+    },
+    {
+     "path": "SUBTITLE/ZAzWPE9CItg_AI Crisis in Math_ Navier-Stokes, Riemann Hypothesis & Compl_timestamped.txt",
+     "title": "AI Crisis in Math (Lex Fridman #503) 時間戳記對照文字檔 (_timestamped.txt)"
+    },
+    {
+     "path": "SUBTITLE/ZAzWPE9CItg_AI Crisis in Math_ Navier-Stokes, Riemann Hypothesis & Compl.srt",
+     "title": "AI Crisis in Math (Lex Fridman #503) 標準字幕檔 (.srt)"
+    }
+   ],
+   "category": "SUBTITLE"
+  },
+  {
+   "title": "尋找解決方案",
+   "files": [
+    "inquiry-1/AGENTS.md"
+   ],
+   "attachments": [],
+   "category": "inquiry-1"
+  },
+  {
+   "title": "為什麼學生喜歡在課堂上看其他科教材、課本或測驗卷？相關學術研究剖析與班級經營解決方案指南",
+   "files": [
+    "inquiry-1/classroom_cross_subject_study_research_and_solutions.html",
+    "inquiry-1/classroom_cross_subject_study_research_and_solutions.md"
+   ],
+   "attachments": [
+    {
+     "path": "inquiry-1/classroom_cross_subject_analyzer.py",
+     "title": "classroom_cross_subject_analyzer.py"
+    }
+   ],
+   "category": "inquiry-1"
+  },
+  {
+   "title": "課堂「學習相關但離題」多工：他科講義／課本／測驗卷行為的實證研究綜述",
+   "files": [
+    "inquiry-1/learning_related_offtask_multitasking_empirical_review.html",
+    "inquiry-1/learning_related_offtask_multitasking_empirical_review.md"
+   ],
+   "attachments": [
+    {
+     "path": "inquiry-1/classroom_offtask_triage_labeler.py",
+     "title": "classroom_offtask_triage_labeler.py"
+    }
+   ],
+   "category": "inquiry-1"
+  },
+  {
+   "title": "課堂看他科資料／做他科作業的原因與動機（Causes & Motivations）",
+   "files": [
+    "inquiry-1/research_notes/課堂看他科資料原因研究/causes_motivation.md"
+   ],
+   "attachments": [],
+   "category": "inquiry-1"
+  },
+  {
+   "title": "Learning outcomes when students do other-course work during lecture / 課堂做他科功課的學習結果與認知效應",
+   "files": [
+    "inquiry-1/research_notes/課堂看他科資料原因研究/effects_outcomes.md"
+   ],
+   "attachments": [],
+   "category": "inquiry-1"
+  },
+  {
+   "title": "課堂他科資料／離任務多工：介入與教學設計比較（Interventions Comparison）",
+   "files": [
+    "inquiry-1/research_notes/課堂看他科資料原因研究/interventions_comparison.md"
+   ],
+   "attachments": [],
+   "category": "inquiry-1"
+  },
+  {
+   "title": "學生把低價值課堂改做他科 — 課堂看他科資料原因研究",
+   "files": [
+    "inquiry-1/reports/課堂看他科資料原因研究.html",
+    "inquiry-1/reports/課堂看他科資料原因研究.md"
+   ],
+   "attachments": [],
+   "category": "inquiry-1"
   }
  ],
  "date_overrides": {

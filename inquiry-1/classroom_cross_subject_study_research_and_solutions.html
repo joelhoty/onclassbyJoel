@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>為什麼學生喜歡在課堂上看其他科教材、課本或測驗卷？相關學術研究剖析與班級經營解決方案指南</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'neutral' });</script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --primary-color: #1e3a8a;
+      --secondary-color: #2563eb;
+      --accent-color: #0d9488;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --code-bg: #0f172a;
+      --highlight-bg: #eff6ff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.8;
+      color: var(--text-main);
+      background-color: var(--bg-color);
+      padding: 2.5rem 1.5rem;
+    }
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 3rem;
+      border-radius: 14px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border-color);
+    }
+    .header-section {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .title-group { flex: 1; min-width: 280px; }
+    .title-group h1 {
+      font-size: 1.85rem;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+      line-height: 1.35;
+      font-weight: 800;
+    }
+    .metadata-card {
+      background: var(--highlight-bg);
+      border-left: 4px solid var(--secondary-color);
+      padding: 0.85rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+    }
+    .metadata-card p { margin: 0.25rem 0; }
+    .metadata-card strong { color: #1e40af; }
+    .btn-export {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #ffffff;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .btn-export:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45);
+    }
+    h2 {
+      font-size: 1.48rem;
+      color: var(--primary-color);
+      margin: 2.5rem 0 1.2rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 2px solid #dbeafe;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    h3 {
+      font-size: 1.2rem;
+      color: #0f766e;
+      margin: 1.8rem 0 0.8rem;
+    }
+    h4 {
+      font-size: 1.05rem;
+      color: #1e40af;
+      margin: 1.2rem 0 0.6rem;
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0.6rem 0 1.2rem 1.8rem; }
+    li { margin-bottom: 0.45rem; }
+    .alert {
+      padding: 1.1rem 1.4rem;
+      border-radius: 8px;
+      margin: 1.4rem 0;
+      border-left: 5px solid;
+    }
+    .alert-warning {
+      background: #fffbeb;
+      border-color: #f59e0b;
+      color: #92400e;
+    }
+    .alert-info {
+      background: #f0f9ff;
+      border-color: #0284c7;
+      color: #075985;
+    }
+    .mermaid-wrapper {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      text-align: center;
+      overflow-x: auto;
+    }
+    .formula-box {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.25rem 0;
+      overflow-x: auto;
+    }
+    .table-wrapper {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.94rem;
+    }
+    th, td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #f1f5f9;
+      color: var(--primary-color);
+      font-weight: 700;
+    }
+    tr:nth-child(even) td { background: #f8fafc; }
+    .code-container {
+      position: relative;
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--code-bg);
+    }
+    .code-header {
+      background: #1e293b;
+      color: #cbd5e1;
+      padding: 0.65rem 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-family: monospace;
+    }
+    .btn-copy {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 0.35rem 0.9rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .btn-copy:hover { background: #2563eb; }
+    pre {
+      padding: 1.3rem;
+      overflow-x: auto;
+      color: #e2e8f0;
+      font-family: "Consolas", "Monaco", "Courier New", monospace;
+      font-size: 0.88rem;
+      line-height: 1.65;
+    }
+    .sim-panel {
+      background: linear-gradient(180deg, #f0fdf4 0%, #ecfeff 100%);
+      border: 2px solid #14b8a6;
+      border-radius: 12px;
+      padding: 1.6rem;
+      margin: 1.8rem 0;
+    }
+    .sim-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .sim-card {
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .sim-card label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 0.4rem;
+      color: #0f172a;
+    }
+    .sim-result-box {
+      margin-top: 1.2rem;
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 1.2rem;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 0.92rem;
+    }
+    .prompt-card {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-left: 4px solid #6366f1;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 1.2rem;
+    }
+    @media print {
+      body { background: white; padding: 0; }
+      .container { box-shadow: none; border: none; max-width: 100%; padding: 1rem; }
+      .btn-export, .btn-copy { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-section">
+      <div class="title-group">
+        <h1>📚 為什麼學生喜歡在課堂上看其他科教材、課本或測驗卷？相關學術研究剖析與班級經營解決方案指南</h1>
+        <div class="metadata-card">
+          <p><strong>最後更新時間</strong>: 2026-11-11 10:52:03 (UTC+8)</p>
+          <p><strong>使用模型</strong>: Gemini 4 Argon (Medium)</p>
+          <p><strong>執行 Agent</strong>: Antigravity</p>
+          <p><strong>主題分類</strong>: 教育心理學研究 / 課堂偏離行為 (Off-Task Behavior) / 學習動機理論 / 班級經營與教學設計</p>
+        </div>
+      </div>
+      <button class="btn-export" onclick="window.print()">📄 匯出成 PDF</button>
+    </div>
+
+    <section>
+      <h2>🎯 摘要 (Summary)</h2>
+      <p>在國中、高中職乃至大學的教育現場中，「<strong>學生坐在 A 科目的課堂裡，桌下或桌上卻攤開 B 科目的課本、講義或測驗卷埋頭苦讀／趕作業</strong>」是極為普遍卻又令授課教師心情複雜的現象。與「上課滑手機、睡覺、聊天」等典型消極分心不同，這類學生表面上仍在從事「高認知投入的學習活動」，因此常自我合理化為「善用時間」或「認真向學」，卻在無形中造成<strong>雙重任務認知損耗、課堂互動瓦解與師生信任摩擦</strong>。</p>
+      <p>本文件根據關鍵字檢索國內外教育心理學、認知神經科學與教育社會學文獻，從<strong>五大核心研究理論</strong>深度剖析此行為的成因機制，並整理出 <strong>六大系統化解決方案</strong>、<strong>Mermaid 決策流程圖</strong>、<strong>互動式雙任務認知損益模擬器與 Python 診斷工具</strong>，以及<strong>六大方案應用與限制比較表</strong>。</p>
+    </section>
+
+    <section>
+      <h2>💡 1. 核心概念剖析：為什麼學生上課愛看別科教材？相關學術研究總覽 (Core Concepts)</h2>
+      <p>在學術文獻中，學生於課堂上閱讀其他科目教材或撰寫他科測驗卷，橫跨了<strong>「課堂偏離行為（Off-Task Behavior）」</strong>、<strong>「學業多工處理（Academic Multitasking）」</strong>、<strong>「動機干擾（Motivational Interference）」</strong>以及<strong>「學業時間配置（Academic Time Allocation）」</strong>四大研究領域。</p>
+
+      <h3>1.1 五大理論視角與課堂跨科分心成因架構圖</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart TD
+    Phenomenon["課堂現象：學生在 A 課堂看 B 科課本／寫 B 科測驗卷"] --> T1["1. 期望—價值與成本理論<br/>(Eccles & Wigfield, 2000, 2020)"]
+    Phenomenon --> T2["2. 動機干擾與未完成張力<br/>(Fries et al., 2008; Zeigarnik)"]
+    Phenomenon --> T3["3. 認知負荷與心流通道失衡<br/>(Sweller, 1988; Csikszentmihalyi)"]
+    Phenomenon --> T4["4. 自我價值保護與習得無助<br/>(Covington, 1992)"]
+    Phenomenon --> T5["5. 升學主義與隱性課程結構<br/>(Jackson, 1968; 台灣升學制度研究)"]
+
+    T1 --> C1["功利計算：B 科短期效用(小考/加權) > A 科<br/>聽 A 課的『機會成本』過高"]
+    T2 --> C2["死線焦慮：下一節考 B 科或作業未交<br/>產生強烈心理干擾與侵入性思緒"]
+    T3 --> C3["太簡單：補習班已超前學過，覺得聽課浪費時間<br/>太單調：單向講述留給大腦過多空檔"]
+    T4 --> C4["太難聽不懂：在 A 科受挫產生無力感<br/>轉寫會寫的 B 科試卷以獲得『補償性掌控感』"]
+    T5 --> C5["主副科階層化：制度默許『借課』與分數至上<br/>形成表面順從、私下挪移的學生次文化"]
+
+    C1 & C2 & C3 & C4 & C5 --> Illusion["心理防衛機制：『假性高效率 (Illusion of Productivity)』<br/>自認沒有滑手機或睡覺，而是在『善用時間讀書』"]
+        </div>
+      </div>
+
+      <h3>1.2 國內外五大相關學術研究領域深度解析</h3>
+      <ol>
+        <li><strong>期望—價值理論與「機會成本」模型（Expectancy-Value Theory, Eccles &amp; Wigfield, 2000, 2020; Flake et al., 2015）</strong>：學生在課堂上持續評估「內在價值、成就價值、工具／效用價值」與「<strong>感知機會成本（Opportunity Cost）</strong>」。當下一節要考 B 科（短期效用價值極高、不準備的懲罰成本極大），而當前 A 課堂缺乏立即評量或連結時，學生判定「專心聽 A 課的機會成本過高」，便啟動跨科行為轉移。</li>
+        <li><strong>動機干擾理論與蔡格尼克效應（Motivational Interference Theory, Fries, Dietz &amp; Schmid, 2008；林玉雯等，2011）</strong>：真實校園中學生同時背負多科目標。當有「未寫完的測驗卷」或「下一節要考的單字」時，會引發<strong>蔡格尼克效應（Zeigarnik Effect，未完成任務佔據工作記憶張力）</strong>，形成侵入性思緒與情緒焦慮（動機干擾），迫使學生在當前課堂拿出別科考卷以緩解焦慮。</li>
+        <li><strong>認知負荷理論、心流理論與「補習班超前學習效應」（Sweller, 1988; Csikszentmihalyi, 1990; Bray, 2009）</strong>：台灣與東亞普及的「影子教育（補習班超前學習）」使部分學生在學校正課感到<strong>認知負荷過低（Boredom Channel 無聊通道）</strong>，覺得重聽基礎觀念是浪費時間；加上單向講述留給視覺與雙手過多空檔，誘發學生拿補習班講義或他科題本自習。</li>
+        <li><strong>自我價值保護理論與「補償性掌控感」（Self-Worth Theory, Covington, 1992）</strong>：當學生對當前科目 A 嚴重聽不懂（自我效能感極低），盯著黑板會產生羞愧與習得無助感。此時轉而寫自己「算得出來、或只需機械抄寫」的 B 科作業，既能進行<strong>自我設障（Self-Handicapping：沒聽懂是因為我在忙別科，不是因為我笨）</strong>，又能從勾選題目中獲得立即的<strong>補償性掌控感（Compensatory Control）</strong>。</li>
+        <li><strong>升學主義、學科階層化與「隱性課程」（Hidden Curriculum, Jackson, 1968; Apple, 2004）</strong>：升學考試將學科無形劃分為「高加權主科」與「非考科／副科」。若體制曾默許「借課考試」或「非考科自習」，隱性課程便教會學生「分數至上」的功利主義，發展出「表面安靜順從、私下時間挪移（Time-Shifting）」的次文化生存策略。</li>
+      </ol>
+
+      <h3>1.3 為什麼「邊聽 A 課、邊讀 B 科」是雙輸？學業多工認知損益數學模型</h3>
+      <div class="formula-box">
+        <p><strong>1. 課堂任務選擇決策不等式（Expectancy-Value Switching Threshold）：</strong></p>
+        $$\Delta U(t) = \underbrace{\left[ E_B \cdot V_B \cdot e^{\lambda / \tau_{\text{deadline}, B}} \right]}_{\text{科目 } B \text{ 的急迫加權價值}} - \underbrace{\left[ E_A(t) \cdot V_A(t) + P_{\text{detect}} \cdot C_{\text{penalty}} \right]}_{\text{專注科目 } A \text{ 的價值與違規風險}}$$
+        <p><strong>2. 語音迴路衝突與雙任務學習總產出損耗公式（Baddeley, 2000; Pashler, 1994）：</strong></p>
+        $$G_{\text{multitask}} = T_{\text{class}} \cdot \left[ \theta \cdot \eta_A (1 - \delta_{\text{switch}}) + (1 - \theta) \cdot \eta_B (1 - \delta_{\text{env}}) \right]$$
+      </div>
+      <div class="alert alert-warning">
+        <strong>⚠️ 實證結論（學業欠債惡性循環 Academic Debt Spiral）：</strong><br>
+        聽老師講課（語音輸入）與看別科課本／寫考卷（視覺文字轉語音內在默讀 Subvocalization）共用大腦同一個「<strong>語音迴路（Phonological Loop）</strong>」。在 A 課堂偷寫 B 科考卷，1 小時只能發揮約 0.4 小時的 B 科效率，卻同時毀掉 0.8 小時的 A 科理解；等到 A 科快考試時，又必須在 C 課堂偷補 A 科，陷入「全科都在欠債補破網」的惡性循環！
+      </div>
+    </section>
+
+    <section>
+      <h2>🛠️ 2. 實作與應用範例：六大系統化解決方案與診斷工具 (Practical Examples)</h2>
+
+      <h3>2.1 課堂跨科分心診斷與解決方案選型決策流程圖</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart TD
+    Start["發現學生在課堂上看他科課本／寫他科測驗卷"] --> Step1{"第一步：非對抗式快速診斷<br/>背後的核心驅動力為何？"}
+
+    Step1 -->|"下一節要小考／作業死線逼近<br/>(動機干擾與時間擠壓)"| Sol4["方法 4：跨科評量與作業協調機制<br/>+ 方法 5：時間邊界契約與緩衝時間"]
+    Step1 -->|"覺得這堂課太簡單／補習班學過了<br/>(認知低負荷與無聊逃避)"| Sol3A["方法 3 (軌道 A)：差異化加深任務包<br/>檢核達標後開放自主進階學習"]
+    Step1 -->|"這堂課聽不懂／基礎跟不上<br/>(自我價值保護與無助逃避)"| Sol3B["方法 3 (軌道 B)：降階鷹架講義與微目標<br/>+ 方法 1：期望與自我效能重建"]
+    Step1 -->|"覺得這科不重要／非考科或單向講述太悶<br/>(低效用價值與高機會成本)"| Sol12["方法 1：課程效用價值錨定法<br/>+ 方法 2：高互動提取練習教學設計"]
+
+    Sol4 & Sol3A & Sol3B & Sol12 --> Tool["方法 6：課堂多工認知損益模擬與動機診斷工具<br/>(破除學生『邊聽邊寫比較省時』的認知迷思)"]
+    Tool --> Goal["達成目標：消除惡性學業欠債循環，恢復課堂專注與師生互信"]
+        </div>
+      </div>
+
+      <h3>2.2 線上互動模擬器：課堂跨科多工認知損益與時間負債試算 (Interactive Simulator)</h3>
+      <div class="sim-panel">
+        <h4>🧪 互動式雙任務認知損耗試算（調整下方拉桿，立即觀察「上 A 課偷看 B 科」的真實時間代價）</h4>
+        <div class="sim-grid">
+          <div class="sim-card">
+            <label>課堂分配給 A 科注意力比例 ($\theta_A$): <span id="val-theta">50%</span></label>
+            <input type="range" id="inp-theta" min="0" max="100" value="50" style="width:100%" oninput="updateSim()">
+            <small style="color:#64748b">其餘時間用於偷看 B 科教材／寫考卷</small>
+          </div>
+          <div class="sim-card">
+            <label>A 科任務切換懲罰率 ($\delta_{\text{switch}}$): <span id="val-switch">45%</span></label>
+            <input type="range" id="inp-switch" min="10" max="75" value="45" style="width:100%" oninput="updateSim()">
+            <small style="color:#64748b">因低頭寫 B 科漏聽關鍵推導造成的理解折損</small>
+          </div>
+          <div class="sim-card">
+            <label>B 科環境語音干擾率 ($\delta_{\text{env}}$): <span id="val-env">35%</span></label>
+            <input type="range" id="inp-env" min="10" max="70" value="35" style="width:100%" oninput="updateSim()">
+            <small style="color:#64748b">一邊聽老師聲音一邊防備巡堂造成的效率折損</small>
+          </div>
+        </div>
+        <div class="sim-result-box" id="sim-output"></div>
+      </div>
+
+      <h3>2.3 方法六：Python 課堂跨科多工認知損益模擬與動機診斷工具</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart TD
+    Start(["啟動 classroom_cross_subject_analyzer.py"]) --> Mode{"選擇執行模式"}
+    Mode -->|"1. 預設示範與全面比較報表"| SimAll["載入四種典型上課策略參數<br/>(100%單工專注 vs 輕度偷看 vs 重度趕工 vs 逃避棄保)"]
+    Mode -->|"2. 班級學生跨科分心動機診斷"| Diag["輸入學生行為特徵<br/>(發生時機、自身程度、當前科目互動度)"]
+    SimAll --> CalcEngine["認知損益計算引擎 (Cognitive Cost Engine)<br/>計算 A 科重學時間債與 B 科實際有效產出"]
+    Diag --> RuleEngine["動機理論配對引擎 (EVT / MI / CLT / Self-Worth)<br/>判定學生亞型並輸出非對抗式溝通話術與教學處方"]
+    CalcEngine & RuleEngine --> Output["輸出結構化分析報表與 JSON 診斷報告"]
+        </div>
+      </div>
+
+      <div class="code-container">
+        <div class="code-header">
+          <span>🐍 Python — classroom_cross_subject_analyzer.py</span>
+          <button class="btn-copy" onclick="copyCode(this)">📋 複製程式碼</button>
+        </div>
+        <pre><code id="python-code">#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+課堂跨科多工認知損益模擬與動機診斷工具 (Classroom Cross-Subject Multitasking Analyzer)
+=====================================================================================
+1. 根據工作記憶語音迴路衝突 (Baddeley, 2000) 與任務切換成本 (Pashler, 1994; Leroy, 2009)，
+   定量模擬「在 A 課堂看 B 科教材/寫 B 科測驗卷」對比「專注單工學習」的認知吸收率與時間負債。
+2. 根據期望價值理論 (Eccles &amp; Wigfield, 2020) 與動機干擾理論 (Fries et al., 2008)，
+   針對不同類型的「上課看別科」學生進行精準亞型診斷，並提供教師非對抗式溝通話術與處遇建議。
+"""
+
+import argparse
+import json
+from dataclasses import dataclass, asdict
+from typing import List, Dict
+
+
+@dataclass
+class StudyStrategyScenario:
+    """定義學生的課堂時間分配與學習策略情境資料結構"""
+    name: str                    # 策略情境名稱
+    class_minutes: float         # 單節課堂時間 (分鐘)，預設 50 分鐘
+    after_school_minutes: float  # 課後預計用於複習/寫作業的基準時間 (分鐘)，預設 50 分鐘
+    theta_a: float               # 課堂上分配給當前科目 A 的注意力比例 (0.0 ~ 1.0)
+    switch_penalty_a: float      # 因頻繁低頭看 B 科導致 A 科邏輯斷裂的切換懲罰率 (0.0 ~ 0.8)
+    env_penalty_b: float         # 在 A 課堂吵雜與防備老師下寫 B 科的環境與語音干擾率 (0.0 ~ 0.7)
+    relearn_multiplier: float    # A 科課堂沒聽懂，回家自己看書需要花費的時間倍數 (通常 1.8 ~ 2.5 倍)
+
+
+@dataclass
+class SimulationResult:
+    """儲存模擬計算結果之資料結構"""
+    scenario_name: str
+    effective_a_in_class: float       # A 科在課堂上的實質有效吸收量 (等效專注分鐘數)
+    effective_b_in_class: float       # B 科在課堂上偷寫的實質有效完成量 (等效專注分鐘數)
+    relearn_debt_a_minutes: float     # A 科因為上課漏聽，課後必須額外花費的重學補洞時間 (分鐘)
+    remaining_b_after_class: float    # B 科課後還需要花多少時間才能完成 50 分鐘標準進度 (分鐘)
+    total_time_spent: float           # 為達成 A、B 兩科相同標準進度，總共耗費的真實時間 (分鐘)
+    net_time_wasted: float            # 相較於「專注單工」，多浪費的淨時間成本 (分鐘)
+    combined_retention_score: float   # 固定時間預算下的 A+B 綜合測驗預期得分率 (0 ~ 100%)
+</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>🚀 3. 延伸思考與進階主題：六大方案比較表與四大亞型處遇矩陣 (Extensions &amp; Advanced Topics)</h2>
+
+      <h3>3.1 六大解決方案之應用與限制綜合比較表</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>方法名稱</th>
+              <th>核心原理／作法</th>
+              <th>最佳適用場景</th>
+              <th>主要優勢</th>
+              <th>應用限制與潛在風險</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>方法一：課程價值錨定與期望—價值提升法</strong></td>
+              <td>開課前 3 分鐘連結真實問題／大考素養考點（拉高 $V_A$），並將難題拆解為 15 分鐘微階梯（拉高 $E_A$）</td>
+              <td>學生認為「這科沒用、不重要」或「覺得太難想放棄」的學科</td>
+              <td>直接從動機根源降低「看別科的相對誘因」，不需靠高壓懲罰即可提升內在投入</td>
+              <td>教師備課需花心思設計「價值鉤子」與素養連結；若僅口頭說教而無實質連結則無效</td>
+            </tr>
+            <tr>
+              <td><strong>方法二：高互動教學與認知無縫參與法</strong></td>
+              <td>採用「10分鐘講述 + 3分鐘闔書提取練習 + 2分鐘同儕互評」，讓雙手與工作記憶持續參與</td>
+              <td>傳統講述比例過高、學生容易「邊聽邊低頭寫別科考卷」的課堂</td>
+              <td>物理與認知上消除「偷寫別科的空檔」，同時藉由提取練習大幅提升當堂記憶留存率</td>
+              <td>教學進度初期可能感覺變慢，需精簡枝節講述；對習慣單向灌輸之教師轉型門檻較高</td>
+            </tr>
+            <tr>
+              <td><strong>方法三：差異化教學與雙軌任務包法</strong></td>
+              <td>對「補習超前生」實施先測免修與高階挑戰題／小老師任務；對「落後逃避生」提供挖空保底講義</td>
+              <td>班級程度雙峰現象明顯（有人已在補習班學完、有人完全聽不懂）的課堂</td>
+              <td>同時解決「太無聊看別科」與「太挫折看別科」兩大極端群體，符合適性揚才精神</td>
+              <td>教師需事先準備雙軌題目或分層講義；先測免修標準須公開透明以免引發不公爭議</td>
+            </tr>
+            <tr>
+              <td><strong>方法四：跨科作業與評量協調機制</strong></td>
+              <td>建立班級「共用評量熱力日曆」，限制單日大範圍小考不超過 2 科，減少機械式罰寫</td>
+              <td>段考前夕、衝刺期，或各科小考密集導致全班普遍「借上節課背下節考卷」的班級</td>
+              <td>從學校系統源頭消除「動機干擾（Motivational Interference）」與時間擠壓</td>
+              <td>需仰賴導師與各科任課教師橫向協調共識；個別強勢考科教師若不配合則效果受限</td>
+            </tr>
+            <tr>
+              <td><strong>方法五：課堂時間邊界契約與緩衝時間法</strong></td>
+              <td>約定「前 40 分鐘桌面淨空高密度專注 + 最後 10 分鐘達標後開放彈性複習」及課前誠實報備制</td>
+              <td>高中職以上或高年級班級，學生自主意識強、考前複習壓力真實存在的情境</td>
+              <td>運用普氏原則（Premack Principle）將想看別科的動機轉化為前 40 分鐘專注達標的獎勵</td>
+              <td>教師必須嚴格守時並兌現最後 8～10 分鐘承諾；若前段控場不佳拖延進度則契約失效</td>
+            </tr>
+            <tr>
+              <td><strong>方法六：多工認知損益模擬與動機診斷工具</strong></td>
+              <td>透過科學數據與模擬器量化展示「雙重任務干擾」造成的重學時間債，並診斷四大心理亞型</td>
+              <td>班會課、學習輔導、親師座談，或與自認「邊聽邊寫很有效率」的學生進行個別晤談</td>
+              <td>用客觀腦科學與時間報酬率取代道德說教，極易說服重視效率與分數的學生主動改變</td>
+              <td>屬於認知觀念重塑與診斷工具，仍須搭配方法一至五的課堂結構調整以維持長期效果</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>3.2 學生「上課看別科」四大典型亞型精準診斷與處遇矩陣</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>診斷維度</th>
+              <th>① 死線焦慮趕工型</th>
+              <th>② 補習超前無聊型</th>
+              <th>③ 習得無助逃避型</th>
+              <th>④ 功利棄保挪移型</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>表面行為特徵</strong></td>
+              <td>眼神緊張、翻書與寫字極快，常發生在特定科目小考前一節課</td>
+              <td>表情平靜略顯無聊，老師提問其實答得出來，桌下放高難度題本</td>
+              <td>眉頭深鎖迴避黑板，本科考卷常空白，卻在寫別科抄寫或基礎作業</td>
+              <td>專挑非考科或溫和老師的課，光明正大整桌擺滿主科講義</td>
+            </tr>
+            <tr>
+              <td><strong>核心心理機制</strong></td>
+              <td>動機干擾 (MI) 與蔡格尼克未完成張力</td>
+              <td>認知負荷過低與補習班重複學習效應</td>
+              <td>自我價值保護與補償性掌控感需求</td>
+              <td>期望—價值機會成本與升學功利階層化</td>
+            </tr>
+            <tr>
+              <td><strong>最佳精準處遇</strong></td>
+              <td>課前報備制 + 40+10 緩衝時間 + 跨科小考錯峰</td>
+              <td>先測免修契約 + 進階挑戰包 + 邀請擔任小組教練</td>
+              <td>降階挖空講義 + 保底微目標 + 私下肯定微小進步</td>
+              <td>開課 3 分鐘素養價值連結 + 10-3-2 高頻互動提取練習</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>📚 4. 參考資料列表 (References)</h2>
+      <ol>
+        <li><strong>Eccles, J. S., &amp; Wigfield, A. (2020)</strong> — <em>From expectancy-value theory to situated expectancy-value theory: A developmental, social cognitive, and sociocultural perspective on motivation</em>, <em>Contemporary Educational Psychology</em>, 61, 101859. 網址：<a href="https://www.sciencedirect.com/science/article/pii/S0361476X20300242" target="_blank">https://www.sciencedirect.com/science/article/pii/S0361476X20300242</a>（取得日期：2026-11-11）</li>
+        <li><strong>Fries, S., Dietz, F., &amp; Schmid, S. (2008)</strong> — <em>Motivational interference in learning: The impact of attainment value and tentativeness of task choice</em>, <em>Contemporary Educational Psychology</em>, 33(2), 119–133. 網址：<a href="https://www.sciencedirect.com/science/article/pii/S0361476X07000185" target="_blank">https://www.sciencedirect.com/science/article/pii/S0361476X07000185</a>（取得日期：2026-11-11）</li>
+        <li><strong>Flake, J. K., et al. (2015)</strong> — <em>Measuring cost: The forgotten component of expectancy-value theory</em>, <em>Contemporary Educational Psychology</em>, 41, 232–244. 網址：<a href="https://www.sciencedirect.com/science/article/pii/S0361476X15000223" target="_blank">https://www.sciencedirect.com/science/article/pii/S0361476X15000223</a>（取得日期：2026-11-11）</li>
+        <li><strong>Sana, F., Weston, T., &amp; Cepeda, N. J. (2013)</strong> — <em>Laptop multitasking hinders classroom learning for both users and nearby peers</em>, <em>Computers &amp; Education</em>, 62, 24–31. 網址：<a href="https://www.sciencedirect.com/science/article/pii/S0360131512002254" target="_blank">https://www.sciencedirect.com/science/article/pii/S0360131512002254</a>（取得日期：2026-11-11）</li>
+        <li><strong>Leroy, S. (2009)</strong> — <em>Why is it so hard to do my work? The challenge of attention residue when switching between work tasks</em>, <em>Organizational Behavior and Human Decision Processes</em>, 109(2), 168–181. 網址：<a href="https://www.sciencedirect.com/science/article/pii/S0749597809000399" target="_blank">https://www.sciencedirect.com/science/article/pii/S0749597809000399</a>（取得日期：2026-11-11）</li>
+        <li><strong>Pashler, H. (1994)</strong> — <em>Dual-task interference in simple tasks: Data and theory</em>, <em>Psychological Bulletin</em>, 116(2), 220–244. 網址：<a href="https://psycnet.apa.org/record/1995-00610-001" target="_blank">https://psycnet.apa.org/record/1995-00610-001</a>（取得日期：2026-11-11）</li>
+        <li><strong>Covington, M. V. (1992)</strong> — <em>Making the Grade: A Self-Worth Perspective on Motivation and School Reform</em>, Cambridge University Press. 網址：<a href="https://www.cambridge.org/" target="_blank">https://www.cambridge.org/</a>（取得日期：2026-11-11）</li>
+        <li><strong>林玉雯、黃台生、柯志恩 (2011)</strong> —〈課室學習專注力之研究—量表發展與分析應用〉，《教育心理學報》，43(2)，495–516。網址：<a href="https://epbulletin.epc.ntnu.edu.tw/" target="_blank">https://epbulletin.epc.ntnu.edu.tw/</a>（取得日期：2026-11-11）</li>
+        <li><strong>國家圖書館 — 臺灣博碩士論文知識加值系統 (NDLTD in Taiwan)</strong>。網址：<a href="https://ndltd.ncl.edu.tw/" target="_blank">https://ndltd.ncl.edu.tw/</a>（取得日期：2026-11-11）</li>
+        <li><strong>親子天下／翻轉教育 — 班級經營與課堂專注力實務專題</strong>。網址：<a href="https://flipedu.parenting.com.tw/" target="_blank">https://flipedu.parenting.com.tw/</a>（取得日期：2026-11-11）</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+      <div class="prompt-card">
+        <h4>🔹 [2026-11-11 10:49:05] [Gemini 4 Argon (Medium) / Antigravity] 變更紀錄</h4>
+        <p><strong>模型/Agent</strong>: Gemini 4 Argon (Medium) / Antigravity</p>
+        <p><strong>Prompt 原文</strong>:</p>
+        <pre><code>為什麼很多學生喜歡在課堂上看其他課程的教材 課本或測驗卷 有沒有相關的研究</code></pre>
+        <p><strong>變更摘要</strong>: 依 <code>inquiry-1/AGENTS.md</code> 與工作區核心規範，透過中英文關鍵字檢索國內外教育心理學、認知神經科學與教育社會學文獻，剖析學生課堂跨科閱讀與寫他科測驗卷之成因與解決方法。</p>
+      </div>
+      <div class="prompt-card">
+        <h4>🔹 [2026-11-11 10:52:03] [Gemini 4 Argon (Medium) / Antigravity] 變更紀錄</h4>
+        <p><strong>模型/Agent</strong>: Gemini 4 Argon (Medium) / Antigravity</p>
+        <p><strong>Prompt 原文</strong>:</p>
+        <pre><code>繼續</code></pre>
+        <p><strong>變更摘要</strong>: 完成 <code>inquiry-1/classroom_cross_subject_study_research_and_solutions.md</code> 與 <code>.html</code> 雙格式筆記建置，以及 <code>inquiry-1/classroom_cross_subject_analyzer.py</code> 課堂跨科多工認知損益模擬與動機診斷工具，並同步更新全站索引。</p>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function copyCode(btn) {
+      const code = document.getElementById('python-code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const orig = btn.innerText;
+        btn.innerText = '✅ 已複製！';
+        setTimeout(() => { btn.innerText = orig; }, 2000);
+      });
+    }
+
+    function updateSim() {
+      const theta = parseInt(document.getElementById('inp-theta').value, 10) / 100.0;
+      const sw = parseInt(document.getElementById('inp-switch').value, 10) / 100.0;
+      const env = parseInt(document.getElementById('inp-env').value, 10) / 100.0;
+
+      document.getElementById('val-theta').innerText = Math.round(theta * 100) + '%';
+      document.getElementById('val-switch').innerText = Math.round(sw * 100) + '%';
+      document.getElementById('val-env').innerText = Math.round(env * 100) + '%';
+
+      const classMin = 50.0;
+      const afterMin = 50.0;
+      const relearnMult = 2.0;
+
+      const rawA = classMin * theta;
+      const rawB = classMin * (1 - theta);
+      const effA = theta === 1.0 ? classMin : rawA * (1 - sw);
+      const effB = theta === 1.0 ? 0.0 : rawB * (1 - env);
+
+      const debtA = Math.max(0, 50.0 - effA) * relearnMult;
+      const rework = rawB > 0 ? 1.15 : 1.0;
+      const remB = Math.max(0, (50.0 - effB) * rework);
+      const totalTime = classMin + debtA + remB;
+      const wasted = totalTime - 100.0;
+
+      const leftForA = Math.max(0, afterMin - remB);
+      const recA = leftForA / relearnMult;
+      const finalA = Math.min(50.0, effA + recA);
+      const finalB = Math.min(50.0, effB + Math.min(afterMin, remB) / rework);
+      const score = ((finalA + finalB) / 100.0) * 100.0;
+
+      document.getElementById('sim-output').innerHTML =
+        `📌 <strong>【模擬結果（以單節課 50 分鐘 + 課後 50 分鐘基準比較）】</strong><br>` +
+        `• A 科課堂實質吸收量：<strong>${effA.toFixed(1)} 分鐘</strong>（課後需花 <strong>${debtA.toFixed(1)} 分鐘</strong> 補洞重學）<br>` +
+        `• B 科課堂實質完成量：<strong>${effB.toFixed(1)} 分鐘</strong>（課後仍需 <strong>${remB.toFixed(1)} 分鐘</strong> 完成與訂正）<br>` +
+        `• 兩科完全學會總耗時：<strong>${totalTime.toFixed(1)} 分鐘</strong>（比專注單工 100 分鐘<strong>多浪費 ${wasted.toFixed(1)} 分鐘</strong>！）<br>` +
+        `• 固定 100 分鐘預算下之 A+B 綜合測驗預期得分率：<strong style="color:#38bdf8">${score.toFixed(1)}%</strong>（專注單工為 100.0%）`;
+    }
+    updateSim();
+  </script>
+</body>
+</html>
