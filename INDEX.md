@@ -1,8 +1,8 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-11-11 11:30:07 (UTC+8)
-> **使用模型**: Composer
-> **執行 Agent**: Auto
+> **最後更新時間**: 2026-11-12 16:14:46 (UTC+8)
+> **使用模型**: GPT-6
+> **執行 Agent**: Codex
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 > **變更記錄**: [CHANGELOG.md](./CHANGELOG.md)
 > **注意**: 本檔由 `tools/build_index.py` 產生，請勿手動修改。
@@ -11,16 +11,16 @@
 
 ## 🆕 最近更新 (10 篇)
 
-* `2026-11-11` | [NodeMCU-32S (ESP32) + Wi-Fi DHCP Web Server + DHT + SSD1306 128×64 OLED 溫濕度與天氣符號實作 1110-1](./ec/nodemcu32s_dht_ssd1306_weather_1110.html) · [MD](./ec/nodemcu32s_dht_ssd1306_weather_1110.md) · 📎 [1110-1.ino](./ec/1110-1.ino)
-* `2026-11-11` | [尋找解決方案](./pbl/AGENTS.md)
-* `2026-11-11` | [YouTube 影片取得字幕並轉換成文字檔（.txt / .srt）完整解決方案指南](./pbl/youtube_subtitle_to_text_methods.html) · [MD](./pbl/youtube_subtitle_to_text_methods.md) · 📎 [oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope.srt](./pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope.srt)、[oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope.txt](./pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope.txt)、[oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope_timestamped.txt](./pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope_timestamped.txt)、[yt_sub_to_txt.py](./pbl/yt_sub_to_txt.py)、[gvi0OE5OzOk_14 GPU Architecture 1.srt](./pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201.srt)、[gvi0OE5OzOk_14 GPU Architecture 1.txt](./pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201.txt)、[gvi0OE5OzOk_14 GPU Architecture 1_timestamped.txt](./pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201_timestamped.txt)
-* `2026-11-11` | [PBL2 尋找解決方案規範 (AGENTS.md)](./pbl2/AGENTS.md) · 📎 [AGENTS.bak](./pbl2/AGENTS.bak)
-* `2026-11-11` | [解決學生上課滑手機問題：從腦科學機制、班級經營到數位教學轉化的完整解決方案指南](./pbl2/classroom_smartphone_management_solutions.html) · [MD](./pbl2/classroom_smartphone_management_solutions.md) · 📎 [classroom_focus_dashboard.py](./pbl2/classroom_focus_dashboard.py)
-* `2026-11-11` | [🧩 PBL 問題探究與解決方案通用規範範本 (AGENTS_template.md)](./pbl2/AGENTS_template.md)
-* `2026-11-11` | [尋找解決方案](./SUBTITLE/AGENTS.md)
-* `2026-11-11` | [YouTube 影片取得字幕並轉成文字檔（.txt / .srt）完整解決方案指南](./SUBTITLE/youtube_subtitle_to_text_methods.html) · [MD](./SUBTITLE/youtube_subtitle_to_text_methods.md) · 📎 [yt_sub_to_txt.py](./SUBTITLE/yt_sub_to_txt.py)、[GZ9mAhGvT3U_How Power-Efficient Can AI Become_ _ Conversations in Action.txt](./SUBTITLE/GZ9mAhGvT3U_How%20Power-Efficient%20Can%20AI%20Become_%20_%20Conversations%20in%20Action.txt)、[GZ9mAhGvT3U_How Power-Efficient Can AI Become_ _ Conversations in Action_timestamped.txt](./SUBTITLE/GZ9mAhGvT3U_How%20Power-Efficient%20Can%20AI%20Become_%20_%20Conversations%20in%20Action_timestamped.txt)、[GZ9mAhGvT3U_How Power-Efficient Can AI Become_ _ Conversations in Action.srt](./SUBTITLE/GZ9mAhGvT3U_How%20Power-Efficient%20Can%20AI%20Become_%20_%20Conversations%20in%20Action.srt)、[ZAzWPE9CItg_AI Crisis in Math_ Navier-Stokes, Riemann Hypothesis & Compl.txt](./SUBTITLE/ZAzWPE9CItg_AI%20Crisis%20in%20Math_%20Navier-Stokes,%20Riemann%20Hypothesis%20&%20Compl.txt)、[ZAzWPE9CItg_AI Crisis in Math_ Navier-Stokes, Riemann Hypothesis & Compl_timestamped.txt](./SUBTITLE/ZAzWPE9CItg_AI%20Crisis%20in%20Math_%20Navier-Stokes,%20Riemann%20Hypothesis%20&%20Compl_timestamped.txt)、[ZAzWPE9CItg_AI Crisis in Math_ Navier-Stokes, Riemann Hypothesis & Compl.srt](./SUBTITLE/ZAzWPE9CItg_AI%20Crisis%20in%20Math_%20Navier-Stokes,%20Riemann%20Hypothesis%20&%20Compl.srt)
-* `2026-11-11` | [尋找解決方案](./inquiry-1/AGENTS.md)
-* `2026-11-11` | [為什麼學生喜歡在課堂上看其他科教材、課本或測驗卷？相關學術研究剖析與班級經營解決方案指南](./inquiry-1/classroom_cross_subject_study_research_and_solutions.html) · [MD](./inquiry-1/classroom_cross_subject_study_research_and_solutions.md) · 📎 [classroom_cross_subject_analyzer.py](./inquiry-1/classroom_cross_subject_analyzer.py)
+* `2026-11-12` | [尋找解決方案](./PBL_Agents/pbl/AGENTS.md)
+* `2026-11-12` | [YouTube 影片取得字幕並轉換成文字檔（.txt / .srt）完整解決方案指南](./PBL_Agents/pbl/youtube_subtitle_to_text_methods.html) · [MD](./PBL_Agents/pbl/youtube_subtitle_to_text_methods.md) · 📎 [oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope.srt](./PBL_Agents/pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope.srt)、[oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope.txt](./PBL_Agents/pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope.txt)、[oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope_timestamped.txt](./PBL_Agents/pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope_timestamped.txt)、[yt_sub_to_txt.py](./PBL_Agents/pbl/yt_sub_to_txt.py)、[gvi0OE5OzOk_14 GPU Architecture 1.srt](./PBL_Agents/pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201.srt)、[gvi0OE5OzOk_14 GPU Architecture 1.txt](./PBL_Agents/pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201.txt)、[gvi0OE5OzOk_14 GPU Architecture 1_timestamped.txt](./PBL_Agents/pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201_timestamped.txt)
+* `2026-11-12` | [PBL2 尋找解決方案規範 (AGENTS.md)](./PBL_Agents/pbl2/AGENTS.md) · 📎 [AGENTS.bak](./PBL_Agents/pbl2/AGENTS.bak)
+* `2026-11-12` | [解決學生上課滑手機問題：從腦科學機制、班級經營到數位教學轉化的完整解決方案指南](./PBL_Agents/pbl2/classroom_smartphone_management_solutions.html) · [MD](./PBL_Agents/pbl2/classroom_smartphone_management_solutions.md) · 📎 [classroom_focus_dashboard.py](./PBL_Agents/pbl2/classroom_focus_dashboard.py)
+* `2026-11-12` | [🧩 PBL 問題探究與解決方案通用規範範本 (AGENTS_template.md)](./PBL_Agents/pbl2/AGENTS_template.md)
+* `2026-11-12` | [尋找解決方案](./PBL_Agents/inquiry-1/AGENTS.md)
+* `2026-11-12` | [為什麼學生喜歡在課堂上看其他科教材、課本或測驗卷？相關學術研究剖析與班級經營解決方案指南](./PBL_Agents/inquiry-1/classroom_cross_subject_study_research_and_solutions.html) · [MD](./PBL_Agents/inquiry-1/classroom_cross_subject_study_research_and_solutions.md) · 📎 [classroom_cross_subject_analyzer.py](./PBL_Agents/inquiry-1/classroom_cross_subject_analyzer.py)
+* `2026-11-12` | [課堂「學習相關但離題」多工：他科講義／課本／測驗卷行為的實證研究綜述](./PBL_Agents/inquiry-1/learning_related_offtask_multitasking_empirical_review.html) · [MD](./PBL_Agents/inquiry-1/learning_related_offtask_multitasking_empirical_review.md) · 📎 [classroom_offtask_triage_labeler.py](./PBL_Agents/inquiry-1/classroom_offtask_triage_labeler.py)
+* `2026-11-12` | [課堂看他科資料／做他科作業的原因與動機（Causes & Motivations）](./PBL_Agents/inquiry-1/research_notes/課堂看他科資料原因研究/causes_motivation.md)
+* `2026-11-12` | [Learning outcomes when students do other-course work during lecture / 課堂做他科功課的學習結果與認知效應](./PBL_Agents/inquiry-1/research_notes/課堂看他科資料原因研究/effects_outcomes.md)
 
 ---
 
@@ -129,27 +129,27 @@
 ### 9. 🎤 Keynote／課程簡報 (`keynote/`)
 * `2026-10-04` | [Arduino 實作與設計流程：18 頁核心簡報](./keynote/Arduino_WorkFLow_core_slides_b01.html)
 
-### 10. 🧩 PBL 問題導向學習與解決方案 (`pbl/`)
-* `2026-11-11` | [尋找解決方案](./pbl/AGENTS.md)
-* `2026-11-11` | [YouTube 影片取得字幕並轉換成文字檔（.txt / .srt）完整解決方案指南](./pbl/youtube_subtitle_to_text_methods.html) · [MD](./pbl/youtube_subtitle_to_text_methods.md) · 📎 [oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope.srt](./pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope.srt)、[oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope.txt](./pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope.txt)、[oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope_timestamped.txt](./pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope_timestamped.txt)、[yt_sub_to_txt.py](./pbl/yt_sub_to_txt.py)、[gvi0OE5OzOk_14 GPU Architecture 1.srt](./pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201.srt)、[gvi0OE5OzOk_14 GPU Architecture 1.txt](./pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201.txt)、[gvi0OE5OzOk_14 GPU Architecture 1_timestamped.txt](./pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201_timestamped.txt)
+### 10. 🧩 PBL 問題導向學習與解決方案 (`PBL_Agents/pbl/`)
+* `2026-11-12` | [尋找解決方案](./PBL_Agents/pbl/AGENTS.md)
+* `2026-11-12` | [YouTube 影片取得字幕並轉換成文字檔（.txt / .srt）完整解決方案指南](./PBL_Agents/pbl/youtube_subtitle_to_text_methods.html) · [MD](./PBL_Agents/pbl/youtube_subtitle_to_text_methods.md) · 📎 [oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope.srt](./PBL_Agents/pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope.srt)、[oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope.txt](./PBL_Agents/pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope.txt)、[oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope_timestamped.txt](./PBL_Agents/pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope_timestamped.txt)、[yt_sub_to_txt.py](./PBL_Agents/pbl/yt_sub_to_txt.py)、[gvi0OE5OzOk_14 GPU Architecture 1.srt](./PBL_Agents/pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201.srt)、[gvi0OE5OzOk_14 GPU Architecture 1.txt](./PBL_Agents/pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201.txt)、[gvi0OE5OzOk_14 GPU Architecture 1_timestamped.txt](./PBL_Agents/pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201_timestamped.txt)
 
-### 11. 📱 PBL2 校園問題解決方案與教學實務 (`pbl2/`)
-* `2026-11-11` | [PBL2 尋找解決方案規範 (AGENTS.md)](./pbl2/AGENTS.md) · 📎 [AGENTS.bak](./pbl2/AGENTS.bak)
-* `2026-11-11` | [解決學生上課滑手機問題：從腦科學機制、班級經營到數位教學轉化的完整解決方案指南](./pbl2/classroom_smartphone_management_solutions.html) · [MD](./pbl2/classroom_smartphone_management_solutions.md) · 📎 [classroom_focus_dashboard.py](./pbl2/classroom_focus_dashboard.py)
-* `2026-11-11` | [🧩 PBL 問題探究與解決方案通用規範範本 (AGENTS_template.md)](./pbl2/AGENTS_template.md)
+### 11. 📱 PBL2 校園問題解決方案與教學實務 (`PBL_Agents/pbl2/`)
+* `2026-11-12` | [PBL2 尋找解決方案規範 (AGENTS.md)](./PBL_Agents/pbl2/AGENTS.md) · 📎 [AGENTS.bak](./PBL_Agents/pbl2/AGENTS.bak)
+* `2026-11-12` | [解決學生上課滑手機問題：從腦科學機制、班級經營到數位教學轉化的完整解決方案指南](./PBL_Agents/pbl2/classroom_smartphone_management_solutions.html) · [MD](./PBL_Agents/pbl2/classroom_smartphone_management_solutions.md) · 📎 [classroom_focus_dashboard.py](./PBL_Agents/pbl2/classroom_focus_dashboard.py)
+* `2026-11-12` | [🧩 PBL 問題探究與解決方案通用規範範本 (AGENTS_template.md)](./PBL_Agents/pbl2/AGENTS_template.md)
 
 ### 12. 🎬 SUBTITLE 影音字幕提取與語音轉文字專題 (`SUBTITLE/`)
 * `2026-11-11` | [尋找解決方案](./SUBTITLE/AGENTS.md)
 * `2026-11-11` | [YouTube 影片取得字幕並轉成文字檔（.txt / .srt）完整解決方案指南](./SUBTITLE/youtube_subtitle_to_text_methods.html) · [MD](./SUBTITLE/youtube_subtitle_to_text_methods.md) · 📎 [yt_sub_to_txt.py](./SUBTITLE/yt_sub_to_txt.py)、[GZ9mAhGvT3U_How Power-Efficient Can AI Become_ _ Conversations in Action.txt](./SUBTITLE/GZ9mAhGvT3U_How%20Power-Efficient%20Can%20AI%20Become_%20_%20Conversations%20in%20Action.txt)、[GZ9mAhGvT3U_How Power-Efficient Can AI Become_ _ Conversations in Action_timestamped.txt](./SUBTITLE/GZ9mAhGvT3U_How%20Power-Efficient%20Can%20AI%20Become_%20_%20Conversations%20in%20Action_timestamped.txt)、[GZ9mAhGvT3U_How Power-Efficient Can AI Become_ _ Conversations in Action.srt](./SUBTITLE/GZ9mAhGvT3U_How%20Power-Efficient%20Can%20AI%20Become_%20_%20Conversations%20in%20Action.srt)、[ZAzWPE9CItg_AI Crisis in Math_ Navier-Stokes, Riemann Hypothesis & Compl.txt](./SUBTITLE/ZAzWPE9CItg_AI%20Crisis%20in%20Math_%20Navier-Stokes,%20Riemann%20Hypothesis%20&%20Compl.txt)、[ZAzWPE9CItg_AI Crisis in Math_ Navier-Stokes, Riemann Hypothesis & Compl_timestamped.txt](./SUBTITLE/ZAzWPE9CItg_AI%20Crisis%20in%20Math_%20Navier-Stokes,%20Riemann%20Hypothesis%20&%20Compl_timestamped.txt)、[ZAzWPE9CItg_AI Crisis in Math_ Navier-Stokes, Riemann Hypothesis & Compl.srt](./SUBTITLE/ZAzWPE9CItg_AI%20Crisis%20in%20Math_%20Navier-Stokes,%20Riemann%20Hypothesis%20&%20Compl.srt)
 
-### 13. 🔍 INQUIRY-1 教育議題探究與學習行為研究 (`inquiry-1/`)
-* `2026-11-11` | [尋找解決方案](./inquiry-1/AGENTS.md)
-* `2026-11-11` | [為什麼學生喜歡在課堂上看其他科教材、課本或測驗卷？相關學術研究剖析與班級經營解決方案指南](./inquiry-1/classroom_cross_subject_study_research_and_solutions.html) · [MD](./inquiry-1/classroom_cross_subject_study_research_and_solutions.md) · 📎 [classroom_cross_subject_analyzer.py](./inquiry-1/classroom_cross_subject_analyzer.py)
-* `2026-11-11` | [課堂「學習相關但離題」多工：他科講義／課本／測驗卷行為的實證研究綜述](./inquiry-1/learning_related_offtask_multitasking_empirical_review.html) · [MD](./inquiry-1/learning_related_offtask_multitasking_empirical_review.md) · 📎 [classroom_offtask_triage_labeler.py](./inquiry-1/classroom_offtask_triage_labeler.py)
-* `2026-11-11` | [課堂看他科資料／做他科作業的原因與動機（Causes & Motivations）](./inquiry-1/research_notes/課堂看他科資料原因研究/causes_motivation.md)
-* `2026-11-11` | [Learning outcomes when students do other-course work during lecture / 課堂做他科功課的學習結果與認知效應](./inquiry-1/research_notes/課堂看他科資料原因研究/effects_outcomes.md)
-* `2026-11-11` | [課堂他科資料／離任務多工：介入與教學設計比較（Interventions Comparison）](./inquiry-1/research_notes/課堂看他科資料原因研究/interventions_comparison.md)
-* `2026-11-11` | [學生把低價值課堂改做他科 — 課堂看他科資料原因研究](./inquiry-1/reports/課堂看他科資料原因研究.html) · [MD](./inquiry-1/reports/課堂看他科資料原因研究.md)
+### 13. 🔍 INQUIRY-1 教育議題探究與學習行為研究 (`PBL_Agents/inquiry-1/`)
+* `2026-11-12` | [尋找解決方案](./PBL_Agents/inquiry-1/AGENTS.md)
+* `2026-11-12` | [為什麼學生喜歡在課堂上看其他科教材、課本或測驗卷？相關學術研究剖析與班級經營解決方案指南](./PBL_Agents/inquiry-1/classroom_cross_subject_study_research_and_solutions.html) · [MD](./PBL_Agents/inquiry-1/classroom_cross_subject_study_research_and_solutions.md) · 📎 [classroom_cross_subject_analyzer.py](./PBL_Agents/inquiry-1/classroom_cross_subject_analyzer.py)
+* `2026-11-12` | [課堂「學習相關但離題」多工：他科講義／課本／測驗卷行為的實證研究綜述](./PBL_Agents/inquiry-1/learning_related_offtask_multitasking_empirical_review.html) · [MD](./PBL_Agents/inquiry-1/learning_related_offtask_multitasking_empirical_review.md) · 📎 [classroom_offtask_triage_labeler.py](./PBL_Agents/inquiry-1/classroom_offtask_triage_labeler.py)
+* `2026-11-12` | [課堂看他科資料／做他科作業的原因與動機（Causes & Motivations）](./PBL_Agents/inquiry-1/research_notes/課堂看他科資料原因研究/causes_motivation.md)
+* `2026-11-12` | [Learning outcomes when students do other-course work during lecture / 課堂做他科功課的學習結果與認知效應](./PBL_Agents/inquiry-1/research_notes/課堂看他科資料原因研究/effects_outcomes.md)
+* `2026-11-12` | [課堂他科資料／離任務多工：介入與教學設計比較（Interventions Comparison）](./PBL_Agents/inquiry-1/research_notes/課堂看他科資料原因研究/interventions_comparison.md)
+* `2026-11-12` | [學生把低價值課堂改做他科 — 課堂看他科資料原因研究](./PBL_Agents/inquiry-1/reports/課堂看他科資料原因研究.html) · [MD](./PBL_Agents/inquiry-1/reports/課堂看他科資料原因研究.md)
 
 ### 14. 📋 工作區指引與核心規範
 * `2026-10-30` | [Multi-Agent 工作區規範](./AGENTS.md)

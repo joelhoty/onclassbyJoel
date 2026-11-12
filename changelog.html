@@ -90,11 +90,11 @@
     <header>
         <div class="header-content">
             <h1>📝 onclassbyJoel - 全站提示詞歷史與變更記錄</h1>
-            <p class="subtitle">共 79 筆紀錄 (依時間由舊至新排列)</p>
+            <p class="subtitle">共 80 筆紀錄 (依時間由舊至新排列)</p>
             <div class="metadata-box">
-                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-11-11 11:30:07 (UTC+8)</div>
-                <div class="metadata-item"><strong>使用模型:</strong> Composer</div>
-                <div class="metadata-item"><strong>執行 Agent:</strong> Auto</div>
+                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-11-12 16:14:46 (UTC+8)</div>
+                <div class="metadata-item"><strong>使用模型:</strong> GPT-6</div>
+                <div class="metadata-item"><strong>執行 Agent:</strong> Codex</div>
                 <div class="metadata-item"><strong>GitHub Repo:</strong> <a href="https://github.com/joelhoty/onclassbyJoel" style="color:#38bdf8;" target="_blank">joelhoty/onclassbyJoel</a></div>
             </div>
             <div class="actions"><button class="btn" onclick="exportPdf()">🖨️ 匯出成 PDF / 列印此頁</button><a class="btn btn-secondary" href="./index.html">📚 回到索引</a><a class="btn btn-secondary" href="./CHANGELOG.md">📄 Markdown 版本</a></div>
@@ -406,6 +406,7 @@ rgh的光源是發射幾個設定好的固定顏色?</pre><p><strong>變更摘�
 跟現有檔案區分 不要編輯同一份檔案</pre><p><strong>變更摘要:</strong> 依使用者要求與既有檔案區分，**未編輯** `inquiry-1/classroom_cross_subject_study_research_and_solutions.*` 與 `pbl2/classroom_smartphone_management_solutions.*`；另建 `inquiry-1/learning_related_offtask_multitasking_empirical_review.md/.html`、`classroom_offtask_triage_labeler.py`、`reports/課堂看他科資料原因研究.md` 與 `research_notes/課堂看他科資料原因研究/` 三份筆記，聚焦 Deng 等 learning-related yet off-task 實證、盛行率、對當堂課效應與介入比較（取得日期 2026-11-11），並更新全站索引。</p></div>
 <div class="prompt-archive"><h4>🔹 [2026-11-11 11:25:00] [Composer / Auto] 完成課堂看他科資料敘事研究報告並整理索引歸屬</h4><p><strong>模型/Agent:</strong> Composer / Auto (Cursor)（報告正文由 deep-research report writer 產出）</p><p><strong>Prompt 原文:</strong></p><pre>Perform any necessary follow-up actions in response to the subagent completion above.</pre><p><strong>變更摘要:</strong> 確認 `inquiry-1/reports/課堂看他科資料原因研究.md/.html` 已由 stub 覆寫為完整敘事報告；將報告 md／html 在 `index_catalog.json` 歸為同一篇筆記、自實證綜述附件中移除重複連結，並於實證綜述補上與報告的交叉引用後重建全站索引。</p></div>
 <div class="prompt-archive"><h4>🔹 [2026-11-11 11:30:07] [Composer / Auto] git commit --trailer &quot;Co-authored-by: Cursor &lt;cursoragent@cursor.com&gt;&quot; and push 匯總本次未追蹤筆記與索引</h4><p><strong>模型/Agent:</strong> Composer / Auto (Cursor)</p><p><strong>Prompt 原文:</strong></p><pre>git commit --trailer &quot;Co-authored-by: Cursor &lt;cursoragent@cursor.com&gt;&quot; and push</pre><p><strong>變更摘要:</strong> 將 ec/ NodeMCU-32S 天氣 OLED／Web Server 實作、pbl/ 與 SUBTITLE/ YouTube 字幕工具與轉檔產物、pbl2/ 課堂手機管理與 AGENTS 規範、inquiry-1/ 跨科閱讀／離題多工研究與報告，以及 CHANGELOG.md、	ools/index_catalog.json 與重建之 INDEX.md／index.html／changelog.html 一併提交並推送至 origin/main。</p></div>
+<div class="prompt-archive"><h4>🔹 [2026-11-12 16:14:46] [GPT-6 / Codex] 整理 PBL_Agents 目錄並同步索引</h4><p><strong>模型/Agent:</strong> GPT-6 / Codex</p><p><strong>Prompt 原文:</strong></p><pre>git commit and push</pre><p><strong>變更摘要:</strong> 提交使用者將 `inquiry-1/`、`pbl/`、`pbl2/` 共 28 個檔案原樣搬移至 `PBL_Agents/` 的變更；更新 `tools/index_catalog.json` 路徑並以 `tools/build_index.py` 重建 `INDEX.md`、`index.html` 與 `changelog.html`，保留既有分類與附件歸屬。</p></div>
     </main>
     <script>
         let closedBeforePrint = [];

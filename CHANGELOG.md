@@ -1,8 +1,8 @@
 # 📝 onclassbyJoel - 全站提示詞歷史與變更記錄 (CHANGELOG)
 
-> **最後更新時間**: 2026-11-11 11:30:07 (UTC+8)
-> **使用模型**: Composer
-> **執行 Agent**: Auto
+> **最後更新時間**: 2026-11-12 16:14:46 (UTC+8)
+> **使用模型**: GPT-6
+> **執行 Agent**: Codex
 
 ---
 
@@ -692,3 +692,11 @@ go
   git commit --trailer "Co-authored-by: Cursor <cursoragent@cursor.com>" and push
   ```
 - **變更摘要**: 將 ec/ NodeMCU-32S 天氣 OLED／Web Server 實作、pbl/ 與 SUBTITLE/ YouTube 字幕工具與轉檔產物、pbl2/ 課堂手機管理與 AGENTS 規範、inquiry-1/ 跨科閱讀／離題多工研究與報告，以及 CHANGELOG.md、	ools/index_catalog.json 與重建之 INDEX.md／index.html／changelog.html 一併提交並推送至 origin/main。
+
+### 🔹 [2026-11-12 16:14:46] [GPT-6 / Codex] 整理 PBL_Agents 目錄並同步索引
+- **模型/Agent**: GPT-6 / Codex
+- **Prompt 原文**:
+  ```text
+  git commit and push
+  ```
+- **變更摘要**: 提交使用者將 `inquiry-1/`、`pbl/`、`pbl2/` 共 28 個檔案原樣搬移至 `PBL_Agents/` 的變更；更新 `tools/index_catalog.json` 路徑並以 `tools/build_index.py` 重建 `INDEX.md`、`index.html` 與 `changelog.html`，保留既有分類與附件歸屬。
