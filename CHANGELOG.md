@@ -1,8 +1,8 @@
 # 📝 onclassbyJoel - 全站提示詞歷史與變更記錄 (CHANGELOG)
 
-> **最後更新時間**: 2026-11-12 16:14:46 (UTC+8)
-> **使用模型**: GPT-6
-> **執行 Agent**: Codex
+> **最後更新時間**: 2026-11-13 06:04:54 (UTC+8)
+> **使用模型**: Claude Opus 5.5
+> **執行 Agent**: Claude Code
 
 ---
 
@@ -693,6 +693,24 @@ go
   ```
 - **變更摘要**: 將 ec/ NodeMCU-32S 天氣 OLED／Web Server 實作、pbl/ 與 SUBTITLE/ YouTube 字幕工具與轉檔產物、pbl2/ 課堂手機管理與 AGENTS 規範、inquiry-1/ 跨科閱讀／離題多工研究與報告，以及 CHANGELOG.md、	ools/index_catalog.json 與重建之 INDEX.md／index.html／changelog.html 一併提交並推送至 origin/main。
 
+### 🔹 [2026-11-12 14:27:30] [Gemini 4 Argon / Antigravity] 新增 NodeMCU-32S (ESP32) + DHT 溫濕度 + SSD1306 128×64 OLED 符號與版面設計實作 (1112-1)
+- **模型/Agent**: Gemini 4 Argon / Antigravity
+- **Prompt 原文**:
+  ```text
+  'C:\Users\User\Desktop\onclass\1112-1.txt'  整合這個程式 在nodemc32s上 讓OLED1306 128x64顯示溫濕度及符號，並規劃適當的版面, 儲存成1112-1.ino
+  ```
+- **變更摘要**: 整合 `1112-1.txt` 中的 `DHT_Unified`（GPIO 16）與 U8g2 `Weather.ino`（SSD1306 128×64 硬體 I2C：SDA=GPIO 21, SCL=GPIO 22），重新規劃 128×64 黃金三區版面（左側 48×48 天氣圖示、右側自繪溫度計/水滴符號與即時溫濕度數值、底部動態跑馬燈狀態列），輸出 `1112-1.ino` 並建立技術筆記與互動模擬器（`ec/nodemcu32s_dht_ssd1306_layout_1112.md` 與 `.html`），同步更新全站索引。
+
+
+### 🔹 [2026-11-12 14:58:30] [Gemini 4 Argon / Antigravity] 增補 1112-1 實作照片與 U8g2 建構類別深度解析
+- **模型/Agent**: Gemini 4 Argon / Antigravity
+- **Prompt 原文**:
+  ```text
+  加入筆記的實作照片，另外增加u8G2建構類別的補充說明
+  ```
+- **變更摘要**: 於 `ec/` 歸檔兩張實體完成照片（`2026-11-12-1457-oled-display.jpg` 與 `2026-11-12-1457-hardware-wiring.jpg`）並整合進 `ec/nodemcu32s_dht_ssd1306_layout_1112.md` 與 `.html`；新增第 1.4 節「U8g2 建構類別（Constructor Classes）深度補充說明」（涵蓋六段式命名解剖、0.96 吋 `SSD1306` vs 1.3 吋 `SH1106` 記憶體偏移排錯、`_1_ / _2_ / _F_` 緩衝模式與旋轉參數），互動模擬器新增實拍 `TEMP / HUMI` 外框版面切換，並重建全站索引。
+
+
 ### 🔹 [2026-11-12 16:14:46] [GPT-6 / Codex] 整理 PBL_Agents 目錄並同步索引
 - **模型/Agent**: GPT-6 / Codex
 - **Prompt 原文**:
@@ -700,3 +718,12 @@ go
   git commit and push
   ```
 - **變更摘要**: 提交使用者將 `inquiry-1/`、`pbl/`、`pbl2/` 共 28 個檔案原樣搬移至 `PBL_Agents/` 的變更；更新 `tools/index_catalog.json` 路徑並以 `tools/build_index.py` 重建 `INDEX.md`、`index.html` 與 `changelog.html`，保留既有分類與附件歸屬。
+
+
+### 🔹 [2026-11-13 06:04:54] [Claude Opus 5.5 / Claude Code] git 同步 1112-1 筆記並合併遠端 PBL_Agents 整理
+- **模型/Agent**: Claude Opus 5.5 / Claude Code
+- **Prompt 原文**:
+  ```text
+  git 同步
+  ```
+- **變更摘要**: 提交 `ec/` 1112-1 ESP32 DHT + SSD1306 OLED 版面筆記（MD/HTML、`1112-1.ino`、兩張實拍照片）與 `tools/index_catalog.json` 條目；rebase 至遠端 `PBL_Agents/` 搬移提交，解決 `CHANGELOG.md` 衝突（雙方紀錄皆保留並依時間排序），重建 `INDEX.md`／`index.html`／`changelog.html` 後推送至 origin/main。

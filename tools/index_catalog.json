@@ -291,6 +291,29 @@
    "attachments": []
   },
   {
+   "title": "NodeMCU-32S (ESP32) + DHT 溫濕度 + SSD1306 128×64 OLED 符號與黃金三區版面設計 1112-1",
+   "category": "ec",
+   "files": [
+    "ec/nodemcu32s_dht_ssd1306_layout_1112.html",
+    "ec/nodemcu32s_dht_ssd1306_layout_1112.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/1112-1.ino",
+     "title": "NodeMCU-32S (ESP32) DHT(GPIO16) + SSD1306 128x64 OLED 溫濕度與天氣符號版面整合程式碼 1112-1"
+    },
+    {
+     "path": "ec/2026-11-12-1457-oled-display.jpg",
+     "title": "OLED 128x64 實測顯示雲朵天氣圖示與溫濕度 (TEMP 25.8°C / HUMI 47.2%)"
+    },
+    {
+     "path": "ec/2026-11-12-1457-hardware-wiring.jpg",
+     "title": "NodeMCU-32S 擴充板、DHT22 溫濕度傳感器與 OLED 1.3 吋硬體接線實拍"
+    }
+   ],
+   "group": "display"
+  },
+  {
    "title": "NodeMCU-32S (ESP32) + Wi-Fi DHCP Web Server + DHT + SSD1306 128×64 OLED 溫濕度與天氣符號實作 1110-1",
    "category": "ec",
    "files": [
