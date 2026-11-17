@@ -507,7 +507,7 @@ CSS = '''
         .file-row { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
         .file-link { color: var(--primary-color); text-decoration: none; font-size: 0.93rem; }
         .file-link:hover { text-decoration: underline; }
-        .file-folder { font-size: 0.75rem; color: var(--text-muted); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; white-space: nowrap; }
+        .file-folder { font-size: 0.75rem; color: #0891b2; background-color: #ecfeff; border: 1px solid #a5f3fc; padding: 0.05rem 0.4rem; border-radius: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; white-space: nowrap; }
         .file-meta { display: flex; align-items: center; gap: 0.35rem; white-space: nowrap; }
         .file-date { font-size: 0.78rem; color: var(--text-muted); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background-color: #f1f5f9; padding: 0.1rem 0.35rem; border-radius: 4px; border: 1px solid var(--border-color); }
         .tag { font-size: 0.72rem; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 600; letter-spacing: 0.5px; text-decoration: none; background-color: #f1f5f9; color: #475569; }

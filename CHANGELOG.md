@@ -1,6 +1,6 @@
 # 📝 onclassbyJoel - 全站提示詞歷史與變更記錄 (CHANGELOG)
 
-> **最後更新時間**: 2026-11-17 10:33:46 (UTC+8)
+> **最後更新時間**: 2026-11-17 10:58:16 (UTC+8)
 > **使用模型**: Claude Opus 5.5
 > **執行 Agent**: Claude Code
 
@@ -749,3 +749,12 @@ $code-review-for-learning 'C:\Users\User\Desktop\onclass\1112-1\1112-1.ino'
   好，做 A 並修正 PBL 分類問題 B也可以加
   ```
 - **變更摘要**: `tools/index_catalog.json` 的 `ec` 分類新增 `codereview` 子主題「🔍 AI 程式碼導讀」（`match: ^ec/AI_CodeReview/`，排在 `display` 之前），並將 1112-1 導讀改列此組。`tools/build_index.py` 新增 `find_category()`，改以「路徑開頭相符且 `dir` 最長」決定新筆記分類，修正 `PBL_Agents/pbl`、`pbl2`、`inquiry-1` 新筆記誤歸「工作區指引」的問題；新增 `subfolder()`，主檔案位於分類資料夾的子資料夾時，在 INDEX.md 與 index.html 項目標題後顯示 `📁 子路徑/` 標籤。重建全站索引。
+
+
+### 🔹 [2026-11-17 10:58:16] [Claude Opus 5.5 / Claude Code] 調亮索引子資料夾 📁 標籤顏色
+- **模型/Agent**: Claude Opus 5.5 / Claude Code
+- **Prompt 原文**:
+  ```text
+  把 📁 標籤顏色調亮一點
+  ```
+- **變更摘要**: `tools/build_index.py` 的 `.file-folder` 樣式由灰色文字改為青色（`#0891b2`）文字、淺青底（`#ecfeff`）與細框的小標籤，讓子資料夾路徑更醒目；重建全站索引。
