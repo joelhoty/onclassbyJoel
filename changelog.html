@@ -91,9 +91,9 @@
     <header>
         <div class="header-content">
             <h1>📝 onclassbyJoel - 全站提示詞歷史與變更記錄</h1>
-            <p class="subtitle">共 86 筆紀錄 (依時間由舊至新排列)</p>
+            <p class="subtitle">共 87 筆紀錄 (依時間由舊至新排列)</p>
             <div class="metadata-box">
-                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-11-17 10:58:16 (UTC+8)</div>
+                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-11-17 16:00:02 (UTC+8)</div>
                 <div class="metadata-item"><strong>使用模型:</strong> Claude Opus 5.5</div>
                 <div class="metadata-item"><strong>執行 Agent:</strong> Claude Code</div>
                 <div class="metadata-item"><strong>GitHub Repo:</strong> <a href="https://github.com/joelhoty/onclassbyJoel" style="color:#38bdf8;" target="_blank">joelhoty/onclassbyJoel</a></div>
@@ -418,6 +418,7 @@ rgh的光源是發射幾個設定好的固定顏色?</pre><p><strong>變更摘�
 
 好，做 A 並修正 PBL 分類問題 B也可以加</pre><p><strong>變更摘要:</strong> `tools/index_catalog.json` 的 `ec` 分類新增 `codereview` 子主題「🔍 AI 程式碼導讀」（`match: ^ec/AI_CodeReview/`，排在 `display` 之前），並將 1112-1 導讀改列此組。`tools/build_index.py` 新增 `find_category()`，改以「路徑開頭相符且 `dir` 最長」決定新筆記分類，修正 `PBL_Agents/pbl`、`pbl2`、`inquiry-1` 新筆記誤歸「工作區指引」的問題；新增 `subfolder()`，主檔案位於分類資料夾的子資料夾時，在 INDEX.md 與 index.html 項目標題後顯示 `📁 子路徑/` 標籤。重建全站索引。</p></div>
 <div class="prompt-archive"><h4>🔹 [2026-11-17 10:58:16] [Claude Opus 5.5 / Claude Code] 調亮索引子資料夾 📁 標籤顏色</h4><p><strong>模型/Agent:</strong> Claude Opus 5.5 / Claude Code</p><p><strong>Prompt 原文:</strong></p><pre>把 📁 標籤顏色調亮一點</pre><p><strong>變更摘要:</strong> `tools/build_index.py` 的 `.file-folder` 樣式由灰色文字改為青色（`#0891b2`）文字、淺青底（`#ecfeff`）與細框的小標籤，讓子資料夾路徑更醒目；重建全站索引。</p></div>
+<div class="prompt-archive"><h4>🔹 [2026-11-17 16:00:02] [Claude Opus 5.5 / Claude Code] 收錄手動新增的 ec/1117-1 資料夾並更新索引</h4><p><strong>模型/Agent:</strong> Claude Opus 5.5 / Claude Code</p><p><strong>Prompt 原文:</strong></p><pre>ec/ 的資料夾手動增加了1117-1的資料夾 更新索引並推送</pre><p><strong>變更摘要:</strong> 收錄使用者手動新增的 `ec/1117-1/`（`note-1117.md`／`.html` 智慧環境監測系統筆記，含 `1117-1.ino`、`1117-1copy.txt`、`1117.txt` 三個程式附件）。資料夾內原有一個空的巢狀 `.git`（無任何 commit、無 remote），為避免被當成子模組而移出工作區。於 `tools/index_catalog.json` 新增條目，列入電子電路／DHT OLED 顯示分類並設定附件標題；重建全站索引。</p></div>
     </main>
     <script>
         let closedBeforePrint = [];

@@ -1,6 +1,6 @@
 # 📝 onclassbyJoel - 全站提示詞歷史與變更記錄 (CHANGELOG)
 
-> **最後更新時間**: 2026-11-17 10:58:16 (UTC+8)
+> **最後更新時間**: 2026-11-17 16:00:02 (UTC+8)
 > **使用模型**: Claude Opus 5.5
 > **執行 Agent**: Claude Code
 
@@ -758,3 +758,12 @@ $code-review-for-learning 'C:\Users\User\Desktop\onclass\1112-1\1112-1.ino'
   把 📁 標籤顏色調亮一點
   ```
 - **變更摘要**: `tools/build_index.py` 的 `.file-folder` 樣式由灰色文字改為青色（`#0891b2`）文字、淺青底（`#ecfeff`）與細框的小標籤，讓子資料夾路徑更醒目；重建全站索引。
+
+
+### 🔹 [2026-11-17 16:00:02] [Claude Opus 5.5 / Claude Code] 收錄手動新增的 ec/1117-1 資料夾並更新索引
+- **模型/Agent**: Claude Opus 5.5 / Claude Code
+- **Prompt 原文**:
+  ```text
+  ec/ 的資料夾手動增加了1117-1的資料夾 更新索引並推送
+  ```
+- **變更摘要**: 收錄使用者手動新增的 `ec/1117-1/`（`note-1117.md`／`.html` 智慧環境監測系統筆記，含 `1117-1.ino`、`1117-1copy.txt`、`1117.txt` 三個程式附件）。資料夾內原有一個空的巢狀 `.git`（無任何 commit、無 remote），為避免被當成子模組而移出工作區。於 `tools/index_catalog.json` 新增條目，列入電子電路／DHT OLED 顯示分類並設定附件標題；重建全站索引。

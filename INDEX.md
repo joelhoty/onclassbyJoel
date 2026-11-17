@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-11-17 10:58:16 (UTC+8)
+> **最後更新時間**: 2026-11-17 16:00:02 (UTC+8)
 > **使用模型**: Claude Opus 5.5
 > **執行 Agent**: Claude Code
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -11,6 +11,7 @@
 
 ## 🆕 最近更新 (10 篇)
 
+* `2026-11-17` | [NodeMCU-32S (ESP32) + DHT22 + SEN0159 CO2 + SSD1306 OLED + Wi-Fi AJAX WebServer 智慧環境監測系統 1117-1](./ec/1117-1/note-1117.html) `📁 1117-1/` · [MD](./ec/1117-1/note-1117.md) · 📎 [1117-1.ino](./ec/1117-1/1117-1.ino)、[1117-1copy.txt](./ec/1117-1/1117-1copy.txt)、[1117.txt](./ec/1117-1/1117.txt)
 * `2026-11-17` | [程式碼導讀：1112-1.ino — ESP32 DHT 與 OLED 教學講義](./ec/AI_CodeReview/reviews/1112-1/CODE_REVIEW.html) `📁 AI_CodeReview/reviews/1112-1/` · [MD](./ec/AI_CodeReview/reviews/1112-1/CODE_REVIEW.md) · 📎 [1112-1.ino](./ec/AI_CodeReview/reviews/1112-1/1112-1.ino)
 * `2026-11-13` | [NodeMCU-32S (ESP32) + DHT 溫濕度 + SSD1306 128×64 OLED 符號與黃金三區版面設計 1112-1](./ec/nodemcu32s_dht_ssd1306_layout_1112.html) · [MD](./ec/nodemcu32s_dht_ssd1306_layout_1112.md) · 📎 [1112-1.ino](./ec/1112-1.ino)、[2026-11-12-1457-oled-display.jpg](./ec/2026-11-12-1457-oled-display.jpg)、[2026-11-12-1457-hardware-wiring.jpg](./ec/2026-11-12-1457-hardware-wiring.jpg)
 * `2026-11-12` | [尋找解決方案](./PBL_Agents/pbl/AGENTS.md)
@@ -20,7 +21,6 @@
 * `2026-11-12` | [🧩 PBL 問題探究與解決方案通用規範範本 (AGENTS_template.md)](./PBL_Agents/pbl2/AGENTS_template.md)
 * `2026-11-12` | [尋找解決方案](./PBL_Agents/inquiry-1/AGENTS.md)
 * `2026-11-12` | [為什麼學生喜歡在課堂上看其他科教材、課本或測驗卷？相關學術研究剖析與班級經營解決方案指南](./PBL_Agents/inquiry-1/classroom_cross_subject_study_research_and_solutions.html) · [MD](./PBL_Agents/inquiry-1/classroom_cross_subject_study_research_and_solutions.md) · 📎 [classroom_cross_subject_analyzer.py](./PBL_Agents/inquiry-1/classroom_cross_subject_analyzer.py)
-* `2026-11-12` | [課堂「學習相關但離題」多工：他科講義／課本／測驗卷行為的實證研究綜述](./PBL_Agents/inquiry-1/learning_related_offtask_multitasking_empirical_review.html) · [MD](./PBL_Agents/inquiry-1/learning_related_offtask_multitasking_empirical_review.md) · 📎 [classroom_offtask_triage_labeler.py](./PBL_Agents/inquiry-1/classroom_offtask_triage_labeler.py)
 
 ---
 
@@ -76,6 +76,7 @@
 * `2026-11-17` | [程式碼導讀：1112-1.ino — ESP32 DHT 與 OLED 教學講義](./ec/AI_CodeReview/reviews/1112-1/CODE_REVIEW.html) `📁 AI_CodeReview/reviews/1112-1/` · [MD](./ec/AI_CodeReview/reviews/1112-1/CODE_REVIEW.md) · 📎 [1112-1.ino](./ec/AI_CodeReview/reviews/1112-1/1112-1.ino)
 
 #### 🌡️ DHT11／LCD／OLED 顯示
+* `2026-11-17` | [NodeMCU-32S (ESP32) + DHT22 + SEN0159 CO2 + SSD1306 OLED + Wi-Fi AJAX WebServer 智慧環境監測系統 1117-1](./ec/1117-1/note-1117.html) `📁 1117-1/` · [MD](./ec/1117-1/note-1117.md) · 📎 [1117-1.ino](./ec/1117-1/1117-1.ino)、[1117-1copy.txt](./ec/1117-1/1117-1copy.txt)、[1117.txt](./ec/1117-1/1117.txt)
 * `2026-11-13` | [NodeMCU-32S (ESP32) + DHT 溫濕度 + SSD1306 128×64 OLED 符號與黃金三區版面設計 1112-1](./ec/nodemcu32s_dht_ssd1306_layout_1112.html) · [MD](./ec/nodemcu32s_dht_ssd1306_layout_1112.md) · 📎 [1112-1.ino](./ec/1112-1.ino)、[2026-11-12-1457-oled-display.jpg](./ec/2026-11-12-1457-oled-display.jpg)、[2026-11-12-1457-hardware-wiring.jpg](./ec/2026-11-12-1457-hardware-wiring.jpg)
 * `2026-11-11` | [NodeMCU-32S (ESP32) + Wi-Fi DHCP Web Server + DHT + SSD1306 128×64 OLED 溫濕度與天氣符號實作 1110-1](./ec/nodemcu32s_dht_ssd1306_weather_1110.html) · [MD](./ec/nodemcu32s_dht_ssd1306_weather_1110.md) · 📎 [1110-1.ino](./ec/1110-1.ino)
 * `2026-10-29` | [Arduino Uno + DHT11：LCD1602 → SSD1306 OLED (U8x8) 溫濕度顯示與動態效果實作 1029](./ec/arduino_dht11_lcd1602_oled_u8x8_animation_1029.html) · [MD](./ec/arduino_dht11_lcd1602_oled_u8x8_animation_1029.md) · 📎 [1029-u8x8.ino](./ec/1029-u8x8.ino)、[1029.ino](./ec/1029.ino)

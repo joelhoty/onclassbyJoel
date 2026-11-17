@@ -296,6 +296,29 @@
    "attachments": []
   },
   {
+   "title": "NodeMCU-32S (ESP32) + DHT22 + SEN0159 CO2 + SSD1306 OLED + Wi-Fi AJAX WebServer 智慧環境監測系統 1117-1",
+   "category": "ec",
+   "files": [
+    "ec/1117-1/note-1117.html",
+    "ec/1117-1/note-1117.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/1117-1/1117-1.ino",
+     "title": "1117-1 整合程式碼（DHT22、SEN0159 CO2、OLED、Wi-Fi AJAX WebServer 與 Canvas 歷史折線圖）"
+    },
+    {
+     "path": "ec/1117-1/1117-1copy.txt",
+     "title": "1117-1 整合程式碼早期版本備份"
+    },
+    {
+     "path": "ec/1117-1/1117.txt",
+     "title": "1117 原始參考程式碼（Adafruit DHT Unified Sensor 範例等）"
+    }
+   ],
+   "group": "display"
+  },
+  {
    "title": "NodeMCU-32S (ESP32) + DHT 溫濕度 + SSD1306 128×64 OLED 符號與黃金三區版面設計 1112-1",
    "category": "ec",
    "files": [
