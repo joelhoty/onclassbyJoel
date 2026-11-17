@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-11-13 06:04:54 (UTC+8)
+> **最後更新時間**: 2026-11-17 10:33:46 (UTC+8)
 > **使用模型**: Claude Opus 5.5
 > **執行 Agent**: Claude Code
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -11,6 +11,7 @@
 
 ## 🆕 最近更新 (10 篇)
 
+* `2026-11-17` | [程式碼導讀：1112-1.ino — ESP32 DHT 與 OLED 教學講義](./ec/AI_CodeReview/reviews/1112-1/CODE_REVIEW.html) `📁 AI_CodeReview/reviews/1112-1/` · [MD](./ec/AI_CodeReview/reviews/1112-1/CODE_REVIEW.md) · 📎 [1112-1.ino](./ec/AI_CodeReview/reviews/1112-1/1112-1.ino)
 * `2026-11-13` | [NodeMCU-32S (ESP32) + DHT 溫濕度 + SSD1306 128×64 OLED 符號與黃金三區版面設計 1112-1](./ec/nodemcu32s_dht_ssd1306_layout_1112.html) · [MD](./ec/nodemcu32s_dht_ssd1306_layout_1112.md) · 📎 [1112-1.ino](./ec/1112-1.ino)、[2026-11-12-1457-oled-display.jpg](./ec/2026-11-12-1457-oled-display.jpg)、[2026-11-12-1457-hardware-wiring.jpg](./ec/2026-11-12-1457-hardware-wiring.jpg)
 * `2026-11-12` | [尋找解決方案](./PBL_Agents/pbl/AGENTS.md)
 * `2026-11-12` | [YouTube 影片取得字幕並轉換成文字檔（.txt / .srt）完整解決方案指南](./PBL_Agents/pbl/youtube_subtitle_to_text_methods.html) · [MD](./PBL_Agents/pbl/youtube_subtitle_to_text_methods.md) · 📎 [oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope.srt](./PBL_Agents/pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope.srt)、[oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope.txt](./PBL_Agents/pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope.txt)、[oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope_timestamped.txt](./PBL_Agents/pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope_timestamped.txt)、[yt_sub_to_txt.py](./PBL_Agents/pbl/yt_sub_to_txt.py)、[gvi0OE5OzOk_14 GPU Architecture 1.srt](./PBL_Agents/pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201.srt)、[gvi0OE5OzOk_14 GPU Architecture 1.txt](./PBL_Agents/pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201.txt)、[gvi0OE5OzOk_14 GPU Architecture 1_timestamped.txt](./PBL_Agents/pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201_timestamped.txt)
@@ -20,7 +21,6 @@
 * `2026-11-12` | [尋找解決方案](./PBL_Agents/inquiry-1/AGENTS.md)
 * `2026-11-12` | [為什麼學生喜歡在課堂上看其他科教材、課本或測驗卷？相關學術研究剖析與班級經營解決方案指南](./PBL_Agents/inquiry-1/classroom_cross_subject_study_research_and_solutions.html) · [MD](./PBL_Agents/inquiry-1/classroom_cross_subject_study_research_and_solutions.md) · 📎 [classroom_cross_subject_analyzer.py](./PBL_Agents/inquiry-1/classroom_cross_subject_analyzer.py)
 * `2026-11-12` | [課堂「學習相關但離題」多工：他科講義／課本／測驗卷行為的實證研究綜述](./PBL_Agents/inquiry-1/learning_related_offtask_multitasking_empirical_review.html) · [MD](./PBL_Agents/inquiry-1/learning_related_offtask_multitasking_empirical_review.md) · 📎 [classroom_offtask_triage_labeler.py](./PBL_Agents/inquiry-1/classroom_offtask_triage_labeler.py)
-* `2026-11-12` | [課堂看他科資料／做他科作業的原因與動機（Causes & Motivations）](./PBL_Agents/inquiry-1/research_notes/課堂看他科資料原因研究/causes_motivation.md)
 
 ---
 
@@ -71,6 +71,9 @@
 * `2026-10-20` | [Arduino 專案開發模式與實務標準流程 (SOP) 手冊](./ec/arduino_development_workflow_methodology.html) · [MD](./ec/arduino_development_workflow_methodology.md)
 * `2026-10-20` | [Arduino Uno 連接 I2C LCD 1602：HelloWorld 範例與 LiquidCrystal_I2C 物件方法全解析](./ec/arduino_i2c_lcd1602_helloworld_guide.html) · [MD](./ec/arduino_i2c_lcd1602_helloworld_guide.md) · 📎 [2026-10-20-142320.jpg](./ec/2026-10-20-142320.jpg)、[2026-10-20-143026.jpg](./ec/2026-10-20-143026.jpg)、[2026-10-20-150654_ide_helloworld.jpg](./ec/2026-10-20-150654_ide_helloworld.jpg)、[arduino_i2c_lcd1602_helloworld.ino](./ec/arduino_i2c_lcd1602_helloworld.ino)
 * `2026-10-01` | [Arduino IDE 開發環境與 I2C LCD 1602 實體接線指南](./ec/arduino_ide_i2c_lcd1602_guide.html) · [MD](./ec/arduino_ide_i2c_lcd1602_guide.md) · 📎 [2026-10-01-145140.jpg](./ec/2026-10-01-145140.jpg)、[i2c_lcd1602.ino](./ec/i2c_lcd1602.ino)
+
+#### 🔍 AI 程式碼導讀
+* `2026-11-17` | [程式碼導讀：1112-1.ino — ESP32 DHT 與 OLED 教學講義](./ec/AI_CodeReview/reviews/1112-1/CODE_REVIEW.html) `📁 AI_CodeReview/reviews/1112-1/` · [MD](./ec/AI_CodeReview/reviews/1112-1/CODE_REVIEW.md) · 📎 [1112-1.ino](./ec/AI_CodeReview/reviews/1112-1/1112-1.ino)
 
 #### 🌡️ DHT11／LCD／OLED 顯示
 * `2026-11-13` | [NodeMCU-32S (ESP32) + DHT 溫濕度 + SSD1306 128×64 OLED 符號與黃金三區版面設計 1112-1](./ec/nodemcu32s_dht_ssd1306_layout_1112.html) · [MD](./ec/nodemcu32s_dht_ssd1306_layout_1112.md) · 📎 [1112-1.ino](./ec/1112-1.ino)、[2026-11-12-1457-oled-display.jpg](./ec/2026-11-12-1457-oled-display.jpg)、[2026-11-12-1457-hardware-wiring.jpg](./ec/2026-11-12-1457-hardware-wiring.jpg)
@@ -147,14 +150,14 @@
 * `2026-11-12` | [尋找解決方案](./PBL_Agents/inquiry-1/AGENTS.md)
 * `2026-11-12` | [為什麼學生喜歡在課堂上看其他科教材、課本或測驗卷？相關學術研究剖析與班級經營解決方案指南](./PBL_Agents/inquiry-1/classroom_cross_subject_study_research_and_solutions.html) · [MD](./PBL_Agents/inquiry-1/classroom_cross_subject_study_research_and_solutions.md) · 📎 [classroom_cross_subject_analyzer.py](./PBL_Agents/inquiry-1/classroom_cross_subject_analyzer.py)
 * `2026-11-12` | [課堂「學習相關但離題」多工：他科講義／課本／測驗卷行為的實證研究綜述](./PBL_Agents/inquiry-1/learning_related_offtask_multitasking_empirical_review.html) · [MD](./PBL_Agents/inquiry-1/learning_related_offtask_multitasking_empirical_review.md) · 📎 [classroom_offtask_triage_labeler.py](./PBL_Agents/inquiry-1/classroom_offtask_triage_labeler.py)
-* `2026-11-12` | [課堂看他科資料／做他科作業的原因與動機（Causes & Motivations）](./PBL_Agents/inquiry-1/research_notes/課堂看他科資料原因研究/causes_motivation.md)
-* `2026-11-12` | [Learning outcomes when students do other-course work during lecture / 課堂做他科功課的學習結果與認知效應](./PBL_Agents/inquiry-1/research_notes/課堂看他科資料原因研究/effects_outcomes.md)
-* `2026-11-12` | [課堂他科資料／離任務多工：介入與教學設計比較（Interventions Comparison）](./PBL_Agents/inquiry-1/research_notes/課堂看他科資料原因研究/interventions_comparison.md)
-* `2026-11-12` | [學生把低價值課堂改做他科 — 課堂看他科資料原因研究](./PBL_Agents/inquiry-1/reports/課堂看他科資料原因研究.html) · [MD](./PBL_Agents/inquiry-1/reports/課堂看他科資料原因研究.md)
+* `2026-11-12` | [課堂看他科資料／做他科作業的原因與動機（Causes & Motivations）](./PBL_Agents/inquiry-1/research_notes/課堂看他科資料原因研究/causes_motivation.md) `📁 research_notes/課堂看他科資料原因研究/`
+* `2026-11-12` | [Learning outcomes when students do other-course work during lecture / 課堂做他科功課的學習結果與認知效應](./PBL_Agents/inquiry-1/research_notes/課堂看他科資料原因研究/effects_outcomes.md) `📁 research_notes/課堂看他科資料原因研究/`
+* `2026-11-12` | [課堂他科資料／離任務多工：介入與教學設計比較（Interventions Comparison）](./PBL_Agents/inquiry-1/research_notes/課堂看他科資料原因研究/interventions_comparison.md) `📁 research_notes/課堂看他科資料原因研究/`
+* `2026-11-12` | [學生把低價值課堂改做他科 — 課堂看他科資料原因研究](./PBL_Agents/inquiry-1/reports/課堂看他科資料原因研究.html) `📁 reports/` · [MD](./PBL_Agents/inquiry-1/reports/課堂看他科資料原因研究.md)
 
 ### 14. 📋 工作區指引與核心規範
+* `2026-11-17` | [索引產生腳本 (build_index.py)](./tools/build_index.py) `📁 tools/`
 * `2026-10-30` | [Multi-Agent 工作區規範](./AGENTS.md)
-* `2026-10-30` | [索引產生腳本 (build_index.py)](./tools/build_index.py)
 * `2026-09-26` | [根目錄 AI 課程總覽](./ai_0910.html)
 * `2026-09-10` | [筆記生成與更新標準指引](./NOTE_GENERATION_GUIDE.md)
 * `2026-09-10` | [Antigravity Note Rules](./GEMINI.md)

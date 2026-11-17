@@ -1,6 +1,6 @@
 # 📝 onclassbyJoel - 全站提示詞歷史與變更記錄 (CHANGELOG)
 
-> **最後更新時間**: 2026-11-13 06:04:54 (UTC+8)
+> **最後更新時間**: 2026-11-17 10:33:46 (UTC+8)
 > **使用模型**: Claude Opus 5.5
 > **執行 Agent**: Claude Code
 
@@ -727,3 +727,25 @@ go
   git 同步
   ```
 - **變更摘要**: 提交 `ec/` 1112-1 ESP32 DHT + SSD1306 OLED 版面筆記（MD/HTML、`1112-1.ino`、兩張實拍照片）與 `tools/index_catalog.json` 條目；rebase 至遠端 `PBL_Agents/` 搬移提交，解決 `CHANGELOG.md` 衝突（雙方紀錄皆保留並依時間排序），重建 `INDEX.md`／`index.html`／`changelog.html` 後推送至 origin/main。
+
+
+### 🔹 [2026-11-17 09:57:16] [未知（Codex） / /root] 新增 1112-1 教學用程式碼導讀
+- **模型/Agent**: 未知（Codex；環境未提供可確認的模型 ID） / /root
+- **Prompt 原文**:
+  ```text
+$code-review-for-learning 'C:\Users\User\Desktop\onclass\1112-1\1112-1.ino'
+
+繼續
+  ```
+- **變更摘要**: 於 `ec/AI_CodeReview/reviews/1112-1/` 新增 `CODE_REVIEW.md`、`CODE_REVIEW.html` 與未修改的 325 行原始碼快照。講義含十三節、十個函式導讀卡、21 張流程圖、三類數值追蹤、問題查證與實驗題；完整技能原文保留於各篇提示詞紀錄。沿用技能 HTML 轉換腳本並補 PDF 匯出、複製與明暗切換。已核對 296 行節錄、566 個行號連結，並以瀏覽器驗證左右對照、反向跳轉、複製、窄螢幕與 PDF 列印；未編譯、燒錄或實測 ESP32。將講義列入電子電路／DHT OLED 顯示分類，以原始碼為附件，使用 `tools/build_index.py` 重建全站索引。
+
+
+### 🔹 [2026-11-17 10:33:46] [Claude Opus 5.5 / Claude Code] 索引支援多層資料夾：AI 程式碼導讀分組、子資料夾標籤與 PBL 分類修正
+- **模型/Agent**: Claude Opus 5.5 / Claude Code
+- **Prompt 原文**:
+  ```text
+  在ec/資料夾中有多層資料夾 應該如何在index.html或是各分類中呈現這樣的資料夾結構?
+
+  好，做 A 並修正 PBL 分類問題 B也可以加
+  ```
+- **變更摘要**: `tools/index_catalog.json` 的 `ec` 分類新增 `codereview` 子主題「🔍 AI 程式碼導讀」（`match: ^ec/AI_CodeReview/`，排在 `display` 之前），並將 1112-1 導讀改列此組。`tools/build_index.py` 新增 `find_category()`，改以「路徑開頭相符且 `dir` 最長」決定新筆記分類，修正 `PBL_Agents/pbl`、`pbl2`、`inquiry-1` 新筆記誤歸「工作區指引」的問題；新增 `subfolder()`，主檔案位於分類資料夾的子資料夾時，在 INDEX.md 與 index.html 項目標題後顯示 `📁 子路徑/` 標籤。重建全站索引。

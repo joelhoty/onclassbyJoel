@@ -1,0 +1,2241 @@
+<!DOCTYPE html>
+<!-- 產生時間：2026-11-17 09:52 (UTC+08:00)｜模型：未知（Codex）｜原始檔：1112-1.ino（325 行） -->
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="generator" content="產生時間：2026-11-17 09:52 (UTC+08:00)｜模型：未知（Codex）｜原始檔：1112-1.ino（325 行）">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>程式碼導讀：1112-1.ino</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* 版面：左欄導讀（閱讀寬度），右欄固定的程式碼面板；窄螢幕時程式碼面板固定在上方 */
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --ink:#1b2430; --muted:#5d6878; --line:#d9dee6;
+  --accent:#0f6b8f; --mark:#ffe9a8; --warn-bg:#fff1d6; --warn-ink:#8a5200; --code-bg:#fbfcfd;
+  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --f-head:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --f-code:"JetBrains Mono","SFMono-Regular",Consolas,"Noto Sans Mono CJK TC",monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#12161c; --surface:#1a2029; --ink:#e4e9f0; --muted:#98a3b3; --line:#2e3744;
+    --accent:#6cc3e4; --mark:#5a4a12; --warn-bg:#40300e; --warn-ink:#ffd58a; --code-bg:#161b22;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#12161c; --surface:#1a2029; --ink:#e4e9f0; --muted:#98a3b3; --line:#2e3744;
+  --accent:#6cc3e4; --mark:#5a4a12; --warn-bg:#40300e; --warn-ink:#ffd58a; --code-bg:#161b22;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.75 var(--f-body)}
+.wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);height:100%}
+main{overflow-y:auto;padding:28px 28px 80px;scroll-behavior:smooth}
+article{max-width:46rem;margin:0 auto}
+aside{border-left:1px solid var(--line);background:var(--code-bg);display:flex;flex-direction:column;min-height:0}
+.bar{display:flex;justify-content:space-between;gap:12px;padding:10px 16px;border-bottom:1px solid var(--line);
+  font:600 13px/1.4 var(--f-code);color:var(--muted)}
+.code{overflow:auto;flex:1;padding:8px 0 40px;font:400 13px/1.6 var(--f-code)}
+.row{display:flex;white-space:pre}
+.no{flex:none;width:4.2em;padding-right:1em;text-align:right;color:var(--muted);user-select:none;font-variant-numeric:tabular-nums}
+.tx{padding-right:16px}
+.cm{color:var(--muted)}
+.row.hit{background:var(--mark);box-shadow:inset 3px 0 0 var(--accent)}
+.row.has{cursor:pointer}
+.row.key .no{color:var(--accent);font-weight:600}
+.row.has:hover{background:var(--surface)}
+.row.has.hit:hover{background:var(--mark)}
+.lab{margin:10px 0 2px;padding:3px 16px;border-top:1px solid var(--line);font:500 12px/1.5 var(--f-body);color:var(--accent);cursor:pointer;white-space:normal}
+.lab:hover{text-decoration:underline}
+.flash{background:var(--mark);border-radius:3px}
+h1,h2,h3{font-family:var(--f-head);text-wrap:balance;line-height:1.35}
+h1{font-size:1.9rem;margin:0 0 .4em}
+h2{font-size:1.4rem;margin:2.4em 0 .6em;padding-top:.8em;border-top:2px solid var(--ink)}
+h3{font-size:1.08rem;margin:1.8em 0 .4em}
+p,ul,ol{margin:.6em 0}
+p.ex{display:inline-block;margin:.2em 0 .6em;padding:1px 10px;border:1px solid var(--line);border-radius:4px;background:var(--surface);font-size:.86rem}
+blockquote{margin:.8em 0;padding:.2em .9em;border-left:3px solid var(--accent);color:var(--muted);font-size:.88rem}
+a{color:var(--accent)}
+a.lr{text-decoration:none;border-bottom:1px dashed var(--accent);font-variant-numeric:tabular-nums;cursor:pointer}
+a.lr:hover,a.lr:focus-visible{background:var(--mark);outline:none}
+code{font:400 .88em var(--f-code);background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:.05em .35em}
+pre{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 14px;overflow-x:auto}
+pre code{border:0;padding:0;background:none}
+pre.mermaid{text-align:center}
+.tw{overflow-x:auto;margin:.8em 0}
+table{border-collapse:collapse;width:100%;font-size:.92rem;background:var(--surface)}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top;min-width:3.6em}
+th{font-weight:700;white-space:nowrap}
+.tbc{background:var(--warn-bg);color:var(--warn-ink);border-radius:4px;padding:0 .35em;font-size:.86em;font-weight:500;white-space:nowrap}
+nav.toc{margin:0 0 1.6em;font-size:.9rem}
+nav.toc ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 8px}
+nav.toc ul ul{display:none}
+nav.toc a{display:block;padding:2px 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface);text-decoration:none;color:var(--ink)}
+nav.toc a:hover,nav.toc a:focus-visible{border-color:var(--accent);color:var(--accent);outline:none}
+@media (max-width:860px){
+  .wrap{grid-template-columns:minmax(0,1fr);grid-template-rows:38% minmax(0,1fr)}
+  aside{order:-1;border-left:0;border-bottom:1px solid var(--line)}
+  main{padding:20px 16px 60px}
+}
+@media (prefers-reduced-motion:reduce){main{scroll-behavior:auto}}
+</style>
+
+<style id="workspace-lesson-extras">
+.lesson-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 18px}
+.lesson-tools button,.copy-block{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:6px;padding:5px 10px;color:var(--ink);background:var(--surface);cursor:pointer}
+.copy-block{display:block;margin:0 0 5px auto}.lesson-tools button:focus-visible,.copy-block:focus-visible{outline:2px solid var(--accent)}
+#tool-status{font-size:13px;color:var(--muted)}
+html[data-theme="dark"]{color-scheme:dark;--bg:#12161c;--surface:#1a2029;--ink:#e4e9f0;--muted:#98a3b3;--line:#2e3744;--accent:#6cc3e4;--mark:#5a4a12;--warn-bg:#40300e;--warn-ink:#ffd58a;--code-bg:#161b22}
+@media print{
+  @page{size:A4;margin:14mm}
+  html,body{height:auto!important;overflow:visible!important;background:#fff!important;color:#111!important}
+  :root{--ink:#111;--muted:#444;--surface:#fff;--bg:#fff;--line:#ccc;--code-bg:#fff;--accent:#124b66}
+  .wrap{display:block!important;height:auto!important;overflow:visible!important}
+  main,aside,.code{height:auto!important;max-height:none!important;overflow:visible!important;position:static!important}
+  main{padding:0!important}article{max-width:none!important}
+  aside{break-before:page;border:0!important}aside .bar{position:static!important}
+  nav.toc,.lesson-tools,.copy-block{display:none!important}
+  .tw{overflow:visible!important}table{font-size:9pt;min-width:0!important;width:100%!important}
+  th,td{overflow-wrap:anywhere}tr,pre.mermaid{break-inside:avoid}
+  h2,h3{break-after:avoid}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:8pt}
+  .row{font-size:8pt;line-height:1.4;break-inside:avoid}.tx{white-space:pre-wrap!important;overflow-wrap:anywhere}
+}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+<main><article>
+
+<div class="lesson-tools" role="toolbar" aria-label="講義工具">
+  <button type="button" id="export-pdf">匯出 PDF</button>
+  <button type="button" id="copy-source">複製原始碼</button>
+  <button type="button" id="toggle-theme">切換明暗</button>
+  <span id="tool-status" role="status" aria-live="polite"></span>
+</div>
+
+<nav class="toc" aria-label="章節"><div class="toc">
+<ul>
+<li><a href="#0">0. 我的預測</a></li>
+<li><a href="#1">1. 全覽</a></li>
+<li><a href="#2">2. 函式庫</a></li>
+<li><a href="#3">3. 類別與物件</a></li>
+<li><a href="#4">4. 常數與全域變數</a></li>
+<li><a href="#5">5. 主程式結構</a></li>
+<li><a href="#6">6. 流程控制</a></li>
+<li><a href="#7">7. 自訂函式</a></li>
+<li><a href="#8">8. 資料流與變數追蹤</a></li>
+<li><a href="#9">9. 查證與問題</a></li>
+<li><a href="#10">10. 改進</a></li>
+<li><a href="#11">11. 應用與延伸</a></li>
+<li><a href="#12">12. 自我檢核與反思</a></li>
+<li><a href="#prompt-archive">📝 提示詞歷史與變更記錄 (Prompt Archive)</a></li>
+</ul>
+</div>
+</nav>
+<h1 id="1112-1ino">程式碼導讀：1112-1.ino</h1>
+<blockquote>
+<p>產生時間：2026-11-17 09:52 (UTC+08:00)｜模型：未知（Codex）｜原始檔：1112-1.ino（325 行）
+<strong>最後更新時間</strong>: 2026-11-17 09:52:48 (UTC+8)
+<strong>使用模型</strong>: 未知（Codex；本次環境未提供可確認的模型 ID）
+<strong>執行 Agent</strong>: /root</p>
+</blockquote>
+<p>本講義以指定桌面檔案的 <strong>325 行原始程式</strong>做靜態閱讀；未在 ESP32 上編譯、燒錄或量測。程式快照見 <a href="1112-1.ino">1112-1.ino</a>，與指定檔案逐位元組相同。下文的數值追蹤是依程式推演，不是感測器實測；函式庫線上文件查核日期為 2026-11-17，不代表使用者已安裝相同版本。原始程式及其註解保持原樣；第 10 節提出修改方向，並未套用修改。</p>
+<p>HTML 操作：左欄讀講義，點行號對照右欄；點右欄有標記的程式行可回到說明。上方可匯出 PDF、複製原始碼與切換明暗；一般程式碼區塊附複製按鈕。PDF 使用瀏覽器的「另存為 PDF」。</p>
+<h2 id="0">0. 我的預測</h2>
+<p>（學生填寫）先只看檔名、 第 <a class="lr" href="#L1" data-a="1" data-b="26">1–26</a> 行 的開頭註解與 第 <a class="lr" href="#L28" data-a="28" data-b="33">28–33</a> 行 的引入，寫兩三句話，暫時不要往下找答案。</p>
+<ul>
+<li>我預測它會做什麼：＿＿＿＿＿＿＿＿＿＿＿＿</li>
+<li>我預測輸入與輸出是：＿＿＿＿＿＿＿＿＿＿＿＿</li>
+<li>我想先查的一個問題：＿＿＿＿＿＿＿＿＿＿＿＿</li>
+</ul>
+<h2 id="1">1. 全覽</h2>
+<p>一句話摘要：程式定時讀取 DHT 溫濕度，以人為門檻挑選五種圖示，並在 128×64 OLED 顯示數值與跑馬燈；這是環境儀表板，程式沒有取得實際降雨或雷電資料（ 第 <a class="lr" href="#L67" data-a="67" data-b="96">67–96</a> 行 、 第 <a class="lr" href="#L222" data-a="222" data-b="252">222–252</a> 行 、 第 <a class="lr" href="#L301" data-a="301" data-b="325">301–325</a> 行 ）。</p>
+<h3 id="_1">執行環境與接線</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>程式提供的線索</th>
+<th>上課前確認</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>平台</td>
+<td>NodeMCU-32S／ESP32； 第 <a class="lr" href="#L2" data-a="2" data-b="2">2</a> 行 、 第 <a class="lr" href="#L49" data-a="49" data-b="49">49</a> 行</td>
+<td>Arduino IDE 與 Arduino-ESP32 核心版本未記錄，<span class="tbc">待查證</span>；先確認所選板型</td>
+</tr>
+<tr>
+<td>DHT</td>
+<td>DATA=GPIO16，預設 DHT22； 第 <a class="lr" href="#L13" data-a="13" data-b="15">13–15</a> 行 、 第 <a class="lr" href="#L36" data-a="36" data-b="43">36–43</a> 行</td>
+<td>實際型號、模組電壓與 DATA 上拉電阻<span class="tbc">待查證</span>，不能只靠外殼顏色判型</td>
+</tr>
+<tr>
+<td>OLED</td>
+<td>SSD1306 128×64、硬體 I2C； 第 <a class="lr" href="#L16" data-a="16" data-b="20">16–20</a> 行 、 第 <a class="lr" href="#L51" data-a="51" data-b="51">51</a> 行</td>
+<td>接線註解要求 3.3V、SDA21、SCL22；模組型號、位址及電壓相容性<span class="tbc">待查證</span></td>
+</tr>
+<tr>
+<td>函式庫</td>
+<td>Adafruit DHT、Unified Sensor、U8g2； 第 <a class="lr" href="#L23" data-a="23" data-b="25">23–25</a> 行 、 第 <a class="lr" href="#L28" data-a="28" data-b="33">28–33</a> 行</td>
+<td>安裝版本與原始範例版本<span class="tbc">待查證</span></td>
+</tr>
+<tr>
+<td>序列監控</td>
+<td><code>Serial.begin(115200)</code>； 第 <a class="lr" href="#L256" data-a="256" data-b="256">256</a> 行</td>
+<td>監控器鮑率設 115200，觀察錯誤訊息</td>
+</tr>
+</tbody>
+</table></div>
+<p>I2C 是讓多個裝置共用 SDA／SCL 兩條訊號線的通訊方式。官方文件列出 Generic ESP32 預設 SDA21／SCL22，並提醒板型可能不同、訊號線需要上拉；本程式 第 <a class="lr" href="#L51" data-a="51" data-b="51">51</a> 行 沒有明確指定兩腳，故仍須核對板型。<a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/api/i2c.html#setpins">Espressif I2C 文件</a></p>
+<h3 id="_2">區段地圖</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>區段</th>
+<th>行號</th>
+<th>類別</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>說明、接線與引入</td>
+<td>第 <a class="lr" href="#L1" data-a="1" data-b="33">1–33</a> 行</td>
+<td>設定</td>
+<td>說明硬體與相依檔案</td>
+</tr>
+<tr>
+<td>DHT、OLED、共享狀態</td>
+<td>第 <a class="lr" href="#L35" data-a="35" data-b="64">35–64</a> 行</td>
+<td>設定／資料</td>
+<td>建立物件、配置初值</td>
+</tr>
+<tr>
+<td>分類與狀態文字</td>
+<td>第 <a class="lr" href="#L67" data-a="67" data-b="96">67–96</a> 行</td>
+<td>邏輯</td>
+<td>輸入數值，回傳代碼與文字</td>
+</tr>
+<tr>
+<td>大圖示與小圖示</td>
+<td>第 <a class="lr" href="#L99" data-a="99" data-b="141">99–141</a> 行</td>
+<td>顯示</td>
+<td>用字型與幾何形狀作畫</td>
+</tr>
+<tr>
+<td>跑馬燈</td>
+<td>第 <a class="lr" href="#L144" data-a="144" data-b="173">144–173</a> 行</td>
+<td>邏輯／顯示</td>
+<td>裁出可見的文字片段</td>
+</tr>
+<tr>
+<td>整合版面</td>
+<td>第 <a class="lr" href="#L175" data-a="175" data-b="219">175–219</a> 行</td>
+<td>顯示</td>
+<td>組合圖示、數值與狀態</td>
+</tr>
+<tr>
+<td>感測與序列輸出</td>
+<td>第 <a class="lr" href="#L222" data-a="222" data-b="252">222–252</a> 行</td>
+<td>輸入輸出</td>
+<td>更新溫度、濕度與分類</td>
+</tr>
+<tr>
+<td>初始化</td>
+<td>第 <a class="lr" href="#L255" data-a="255" data-b="298">255–298</a> 行</td>
+<td>主流程</td>
+<td>啟動周邊、讀規格、首次取樣</td>
+</tr>
+<tr>
+<td>持續更新</td>
+<td>第 <a class="lr" href="#L301" data-a="301" data-b="325">301–325</a> 行</td>
+<td>主流程</td>
+<td>到期取樣、分頁繪圖、移動文字</td>
+</tr>
+</tbody>
+</table></div>
+<p>練習：從 第 <a class="lr" href="#L222" data-a="222" data-b="252">222–252</a> 行 找出「輸入」和「狀態更新」的分界。答案：＿＿＿＿。</p>
+<h2 id="2">2. 函式庫</h2>
+<p>先用流程圖看引入與呼叫的關係，再對照原碼。</p>
+<pre class="mermaid">flowchart LR
+  A[&quot;引入標頭檔&quot;] --&gt; B[&quot;取得型別與 API 宣告&quot;] --&gt; C[&quot;後續函式才能使用&quot;]
+</pre>
+<p class="ex">對照程式：第 <a class="lr" href="#L28" data-a="28" data-b="33">28–33</a> 行</p>
+<p><code>#include</code> 是把標頭檔宣告納入編譯，並不等於已啟動感測器（ 第 <a class="lr" href="#L28" data-a="28" data-b="33">28–33</a> 行 與 第 <a class="lr" href="#L260" data-a="260" data-b="264">260–264</a> 行 ）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>引入</th>
+<th>來源</th>
+<th>在本程式的用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Arduino.h</code>； 第 <a class="lr" href="#L28" data-a="28" data-b="28">28</a> 行</td>
+<td>Arduino 核心</td>
+<td>時間、序列輸出、基礎型別與巨集</td>
+</tr>
+<tr>
+<td><code>Wire.h</code>； 第 <a class="lr" href="#L29" data-a="29" data-b="29">29</a> 行</td>
+<td>Arduino-ESP32 核心</td>
+<td>提供硬體 I2C；原碼沒有直接呼叫 <code>Wire</code> 方法</td>
+</tr>
+<tr>
+<td><code>U8g2lib.h</code>； 第 <a class="lr" href="#L30" data-a="30" data-b="30">30</a> 行</td>
+<td>olikraus／U8g2</td>
+<td>OLED 驅動、字型及繪圖</td>
+</tr>
+<tr>
+<td><code>Adafruit_Sensor.h</code>； 第 <a class="lr" href="#L31" data-a="31" data-b="31">31</a> 行</td>
+<td>Adafruit Unified Sensor</td>
+<td><code>sensor_t</code>、<code>sensors_event_t</code> 等統一資料結構</td>
+</tr>
+<tr>
+<td><code>DHT.h</code>； 第 <a class="lr" href="#L32" data-a="32" data-b="32">32</a> 行</td>
+<td>Adafruit DHT sensor library</td>
+<td>DHT 型號常數及底層驅動；本程式透過 Unified 包裝使用</td>
+</tr>
+<tr>
+<td><code>DHT_U.h</code>； 第 <a class="lr" href="#L33" data-a="33" data-b="33">33</a> 行</td>
+<td>同一套 DHT 函式庫</td>
+<td><code>DHT_Unified</code> 與溫度／濕度介面</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="_3">實際使用的外部函式與方法</h3>
+<p>下表依呼叫位置說明用途；具體回傳型別與底層等待行為須對照安裝版本。<code>F()</code> 是巨集，不是一般函式；建構式另見第 3 節。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>函式／方法／巨集</th>
+<th>所屬</th>
+<th>從本程式可看出的用途與行號</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>isnan()</code></td>
+<td>C/C++ 數學介面</td>
+<td>判斷無效浮點數； 第 <a class="lr" href="#L68" data-a="68" data-b="68">68</a>、<a class="lr" href="#L199" data-a="199" data-b="199">199</a>、<a class="lr" href="#L210" data-a="210" data-b="210">210</a>、<a class="lr" href="#L227" data-a="227" data-b="227">227</a>、<a class="lr" href="#L239" data-a="239" data-b="239">239</a>、<a class="lr" href="#L310" data-a="310" data-b="310">310</a> 行</td>
+</tr>
+<tr>
+<td><code>strlen()</code></td>
+<td>C 字串介面</td>
+<td>計算結束字元前的位元組數； 第 <a class="lr" href="#L146" data-a="146" data-b="146">146</a>、<a class="lr" href="#L322" data-a="322" data-b="322">322</a> 行</td>
+</tr>
+<tr>
+<td><code>strncpy()</code></td>
+<td>C 字串介面</td>
+<td>複製指定數量字元到緩衝區； 第 <a class="lr" href="#L158" data-a="158" data-b="158">158</a>、<a class="lr" href="#L169" data-a="169" data-b="169">169</a> 行</td>
+</tr>
+<tr>
+<td><code>millis()</code></td>
+<td>Arduino</td>
+<td>取得毫秒時間供排程； 第 <a class="lr" href="#L297" data-a="297" data-b="297">297</a>、<a class="lr" href="#L303" data-a="303" data-b="303">303</a> 行</td>
+</tr>
+<tr>
+<td><code>delay()</code></td>
+<td>Arduino</td>
+<td>在呼叫處等待； 第 <a class="lr" href="#L257" data-a="257" data-b="257">257</a>、<a class="lr" href="#L320" data-a="320" data-b="320">320</a> 行</td>
+</tr>
+<tr>
+<td><code>F()</code></td>
+<td>Arduino</td>
+<td>包裝輸出字串； 第 <a class="lr" href="#L228" data-a="228" data-b="228">228</a>、<a class="lr" href="#L232" data-a="232" data-b="232">232</a>、<a class="lr" href="#L234" data-a="234" data-b="234">234</a>、<a class="lr" href="#L240" data-a="240" data-b="240">240</a>、<a class="lr" href="#L244" data-a="244" data-b="244">244</a>、<a class="lr" href="#L246" data-a="246" data-b="246">246</a>、<a class="lr" href="#L251" data-a="251" data-b="251">251</a> 行 及 第 <a class="lr" href="#L265" data-a="265" data-b="287">265–287</a> 行；儲存方式依核心實作</td>
+</tr>
+<tr>
+<td><code>Serial.begin()</code></td>
+<td>Arduino 序列介面</td>
+<td>設定鮑率； 第 <a class="lr" href="#L256" data-a="256" data-b="256">256</a> 行</td>
+</tr>
+<tr>
+<td><code>Serial.print()</code></td>
+<td>Arduino 序列介面</td>
+<td>輸出文字或一位小數； 第 <a class="lr" href="#L232" data-a="232" data-b="245">232–245</a> 行 、 第 <a class="lr" href="#L271" data-a="271" data-b="286">271–286</a> 行</td>
+</tr>
+<tr>
+<td><code>Serial.println()</code></td>
+<td>Arduino 序列介面</td>
+<td>輸出並換行； 第 <a class="lr" href="#L228" data-a="228" data-b="251">228–251</a> 行 、 第 <a class="lr" href="#L265" data-a="265" data-b="287">265–287</a> 行</td>
+</tr>
+<tr>
+<td><code>dht.begin()</code></td>
+<td>DHT Unified</td>
+<td>初始化 DHT； 第 <a class="lr" href="#L264" data-a="264" data-b="264">264</a> 行</td>
+</tr>
+<tr>
+<td><code>dht.temperature()</code></td>
+<td>DHT Unified</td>
+<td>取得溫度子介面； 第 <a class="lr" href="#L226" data-a="226" data-b="226">226</a>、<a class="lr" href="#L268" data-a="268" data-b="268">268</a> 行</td>
+</tr>
+<tr>
+<td><code>dht.humidity()</code></td>
+<td>DHT Unified</td>
+<td>取得濕度子介面； 第 <a class="lr" href="#L238" data-a="238" data-b="238">238</a>、<a class="lr" href="#L279" data-a="279" data-b="279">279</a> 行</td>
+</tr>
+<tr>
+<td><code>getEvent()</code></td>
+<td>DHT Unified 子介面</td>
+<td>把此次讀值寫到 <code>event</code>； 第 <a class="lr" href="#L226" data-a="226" data-b="226">226</a>、<a class="lr" href="#L238" data-a="238" data-b="238">238</a> 行</td>
+</tr>
+<tr>
+<td><code>getSensor()</code></td>
+<td>DHT Unified 子介面</td>
+<td>把規格寫到 <code>sensor</code>； 第 <a class="lr" href="#L268" data-a="268" data-b="268">268</a>、<a class="lr" href="#L279" data-a="279" data-b="279">279</a> 行</td>
+</tr>
+<tr>
+<td><code>u8g2.begin()</code></td>
+<td>U8g2</td>
+<td>初始化顯示； 第 <a class="lr" href="#L260" data-a="260" data-b="260">260</a> 行</td>
+</tr>
+<tr>
+<td><code>enableUTF8Print()</code></td>
+<td>U8g2</td>
+<td>啟用 <code>print</code> 的 UTF-8 解碼； 第 <a class="lr" href="#L261" data-a="261" data-b="261">261</a> 行</td>
+</tr>
+<tr>
+<td><code>setFont()</code></td>
+<td>U8g2</td>
+<td>選擇後續文字／字形的字型； 第 <a class="lr" href="#L103" data-a="103" data-b="103">103</a>、<a class="lr" href="#L107" data-a="107" data-b="107">107</a>、<a class="lr" href="#L111" data-a="111" data-b="111">111</a>、<a class="lr" href="#L115" data-a="115" data-b="115">115</a>、<a class="lr" href="#L119" data-a="119" data-b="119">119</a>、<a class="lr" href="#L151" data-a="151" data-b="151">151</a>、<a class="lr" href="#L197" data-a="197" data-b="197">197</a>、<a class="lr" href="#L208" data-a="208" data-b="208">208</a> 行</td>
+</tr>
+<tr>
+<td><code>drawGlyph()</code></td>
+<td>U8g2</td>
+<td>依字形編碼畫圖； 第 <a class="lr" href="#L104" data-a="104" data-b="104">104</a>、<a class="lr" href="#L108" data-a="108" data-b="108">108</a>、<a class="lr" href="#L112" data-a="112" data-b="112">112</a>、<a class="lr" href="#L116" data-a="116" data-b="116">116</a>、<a class="lr" href="#L120" data-a="120" data-b="120">120</a> 行</td>
+</tr>
+<tr>
+<td><code>drawRFrame()</code></td>
+<td>U8g2</td>
+<td>畫溫度計圓角外框； 第 <a class="lr" href="#L128" data-a="128" data-b="128">128</a> 行</td>
+</tr>
+<tr>
+<td><code>drawDisc()</code></td>
+<td>U8g2</td>
+<td>畫填滿圓形； 第 <a class="lr" href="#L129" data-a="129" data-b="129">129</a>、<a class="lr" href="#L139" data-a="139" data-b="139">139</a> 行</td>
+</tr>
+<tr>
+<td><code>drawVLine()</code></td>
+<td>U8g2</td>
+<td>畫直線； 第 <a class="lr" href="#L130" data-a="130" data-b="130">130</a>、<a class="lr" href="#L191" data-a="191" data-b="191">191</a> 行</td>
+</tr>
+<tr>
+<td><code>drawHLine()</code></td>
+<td>U8g2</td>
+<td>畫橫線； 第 <a class="lr" href="#L131" data-a="131" data-b="133">131–133</a> 行 、 第 <a class="lr" href="#L192" data-a="192" data-b="193">192–193</a> 行</td>
+</tr>
+<tr>
+<td><code>drawTriangle()</code></td>
+<td>U8g2</td>
+<td>畫水滴尖端三角形； 第 <a class="lr" href="#L138" data-a="138" data-b="138">138</a> 行</td>
+</tr>
+<tr>
+<td><code>drawPixel()</code></td>
+<td>U8g2</td>
+<td>補一個像素； 第 <a class="lr" href="#L140" data-a="140" data-b="140">140</a> 行</td>
+</tr>
+<tr>
+<td><code>getDisplayWidth()</code></td>
+<td>U8g2</td>
+<td>取得寬度以算可見字數與復位位置； 第 <a class="lr" href="#L155" data-a="155" data-b="167">155–167</a> 行 、 第 <a class="lr" href="#L323" data-a="323" data-b="323">323</a> 行</td>
+</tr>
+<tr>
+<td><code>drawStr()</code></td>
+<td>U8g2</td>
+<td>在基線座標畫跑馬燈片段； 第 <a class="lr" href="#L160" data-a="160" data-b="160">160</a>、<a class="lr" href="#L171" data-a="171" data-b="171">171</a> 行</td>
+</tr>
+<tr>
+<td><code>setCursor()</code></td>
+<td>U8g2／Print</td>
+<td>指定數字輸出的游標； 第 <a class="lr" href="#L198" data-a="198" data-b="198">198</a>、<a class="lr" href="#L209" data-a="209" data-b="209">209</a> 行</td>
+</tr>
+<tr>
+<td><code>u8g2.print()</code></td>
+<td>U8g2／Arduino Print</td>
+<td>印數字、單位或無效占位文字； 第 <a class="lr" href="#L200" data-a="200" data-b="214">200–214</a> 行</td>
+</tr>
+<tr>
+<td><code>firstPage()</code></td>
+<td>U8g2</td>
+<td>開始一幀的分頁繪圖； 第 <a class="lr" href="#L314" data-a="314" data-b="314">314</a> 行</td>
+</tr>
+<tr>
+<td><code>nextPage()</code></td>
+<td>U8g2</td>
+<td>處理目前頁並判斷是否繼續； 第 <a class="lr" href="#L317" data-a="317" data-b="317">317</a> 行</td>
+</tr>
+</tbody>
+</table></div>
+<p>官方說明 <code>enableUTF8Print()</code> 對 <code>print</code> 生效；能否畫出某個字還取決於字型。分頁繪圖要求各頁使用一致內容。本程式的啟用位置與分頁位置見 第 <a class="lr" href="#L261" data-a="261" data-b="261">261</a> 行 、 第 <a class="lr" href="#L314" data-a="314" data-b="317">314–317</a> 行 。<a href="https://github.com/olikraus/u8g2/wiki/u8g2reference#enableutf8print">U8g2 API 文件</a></p>
+<h3 id="_4">看不出意義的名稱與數字</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>名稱／數字</th>
+<th>本程式的意義</th>
+<th>如何查證</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>_1_HW_I2C</code>； 第 <a class="lr" href="#L51" data-a="51" data-b="51">51</a> 行</td>
+<td>單頁緩衝、硬體 I2C 的驅動類別選擇</td>
+<td>查 U8g2 建構式清單及所裝標頭檔；一頁實際位元組數<span class="tbc">待查證</span></td>
+</tr>
+<tr>
+<td><code>U8G2_R0</code>／<code>U8X8_PIN_NONE</code>； 第 <a class="lr" href="#L51" data-a="51" data-b="51">51</a> 行</td>
+<td>不旋轉／未指定獨立 reset 腳</td>
+<td>查建構式；是否需要實體 reset 線依模組而定</td>
+</tr>
+<tr>
+<td><code>open_iconic_weather_6x_t</code>、<code>embedded_6x_t</code>； 第 <a class="lr" href="#L103" data-a="103" data-b="120">103–120</a> 行</td>
+<td>大圖示字型；相同 67 在不同字型是不同字形</td>
+<td>比對 <a href="https://github.com/olikraus/u8g2/blob/master/sys/arduino/u8g2_page_buffer/Weather/Weather.ino">Weather 原始範例</a> 與字型圖表</td>
+</tr>
+<tr>
+<td><code>69 / 65 / 64 / 67</code>； 第 <a class="lr" href="#L104" data-a="104" data-b="120">104–120</a> 行</td>
+<td>傳給所選字型的 glyph 編碼，不是天氣代碼 0–4</td>
+<td>切換字型再畫相同編碼觀察</td>
+</tr>
+<tr>
+<td><code>helvB12_tf</code>； 第 <a class="lr" href="#L197" data-a="197" data-b="197">197</a>、<a class="lr" href="#L208" data-a="208" data-b="208">208</a> 行</td>
+<td>溫濕度數字字型</td>
+<td>查字型涵蓋字元與寬度，不能由名稱假定每字 12 像素寬</td>
+</tr>
+<tr>
+<td><code>8x13_mf</code> 與 <code>8</code>； 第 <a class="lr" href="#L151" data-a="151" data-b="171">151–171</a> 行</td>
+<td>跑馬燈按每字 8 像素分割</td>
+<td>ASCII 固定寬度前提；替換字型後須重新量測</td>
+</tr>
+<tr>
+<td><code>48 / 50 / 66 / 63</code>； 第 <a class="lr" href="#L188" data-a="188" data-b="218">188–218</a> 行</td>
+<td>大圖示基線、分隔線、數字起點、底列文字基線</td>
+<td>用格線圖逐項對照；座標不全都是左上角</td>
+</tr>
+<tr>
+<td><code>85 / 28 / 80 / 70 / 55</code>； 第 <a class="lr" href="#L71" data-a="71" data-b="77">71–77</a> 行</td>
+<td>作者自訂分級門檻</td>
+<td>沒有附氣象或舒適度模型來源，不可當成已驗證預測</td>
+</tr>
+</tbody>
+</table></div>
+<p>練習： 第 <a class="lr" href="#L116" data-a="116" data-b="116">116</a> 行 與 第 <a class="lr" href="#L120" data-a="120" data-b="120">120</a> 行 都用 67，為什麼不能只看 67 判定畫什麼？＿＿＿＿。</p>
+<h2 id="3">3. 類別與物件</h2>
+<pre class="mermaid">flowchart LR
+  A[&quot;DHT 腳位與型號&quot;] --&gt; B[&quot;建立 dht 物件&quot;] --&gt; C[&quot;等候 setup 啟動&quot;]
+</pre>
+<p class="ex">對照程式：第 <a class="lr" href="#L43" data-a="43" data-b="43">43</a> 行</p>
+<pre class="mermaid">flowchart LR
+  A[&quot;選擇 OLED 驅動&quot;] --&gt; B[&quot;建立 u8g2 物件&quot;] --&gt; C[&quot;等候 begin 啟動&quot;]
+</pre>
+<p class="ex">對照程式：第 <a class="lr" href="#L49" data-a="49" data-b="51">49–51</a> 行</p>
+<p><strong>類別</strong>像功能與資料的設計圖；<strong>物件</strong>是依設計圖建立的實例；<strong>建構式</strong>是在建立時接收初始設定的程式（ 第 <a class="lr" href="#L43" data-a="43" data-b="43">43</a>、<a class="lr" href="#L51" data-a="51" data-b="51">51</a> 行 ）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>物件／介面</th>
+<th>類別或型別</th>
+<th>位置</th>
+<th>建構參數及意義</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dht</code></td>
+<td><code>DHT_Unified</code></td>
+<td>第 <a class="lr" href="#L43" data-a="43" data-b="43">43</a> 行</td>
+<td><code>DHTPIN=16</code>、<code>DHTTYPE=DHT22</code>，代表這顆 DHT</td>
+</tr>
+<tr>
+<td><code>u8g2</code></td>
+<td><code>U8G2_SSD1306_128X64_NONAME_1_HW_I2C</code></td>
+<td>第 <a class="lr" href="#L51" data-a="51" data-b="51">51</a> 行</td>
+<td><code>U8G2_R0</code>、<code>U8X8_PIN_NONE</code>；代表 OLED 驅動</td>
+</tr>
+<tr>
+<td><code>Serial</code></td>
+<td>核心提供的序列物件／巨集映射；實際類別<span class="tbc">待查證</span></td>
+<td>首次使用 第 <a class="lr" href="#L228" data-a="228" data-b="228">228</a> 行 ，初始化 第 <a class="lr" href="#L256" data-a="256" data-b="256">256</a> 行</td>
+<td>本檔未建立；ESP32 核心與 USB 設定可能影響其實際對應</td>
+</tr>
+<tr>
+<td><code>Wire</code></td>
+<td>核心提供的 <code>TwoWire</code> 介面，實際實例<span class="tbc">待查證</span></td>
+<td>引入 第 <a class="lr" href="#L29" data-a="29" data-b="29">29</a> 行 ，透過 第 <a class="lr" href="#L51" data-a="51" data-b="51">51</a> 行 的硬體 I2C 使用</td>
+<td>本檔未直接呼叫或自行建構</td>
+</tr>
+<tr>
+<td><code>dht.temperature()</code>／<code>dht.humidity()</code> 的子介面</td>
+<td>DHT Unified 的溫度／濕度介面</td>
+<td>第 <a class="lr" href="#L226" data-a="226" data-b="226">226</a>、<a class="lr" href="#L238" data-a="238" data-b="238">238</a>、<a class="lr" href="#L268" data-a="268" data-b="268">268</a>、<a class="lr" href="#L279" data-a="279" data-b="279">279</a> 行</td>
+<td>由 <code>dht</code> 提供，沒有自己宣告具名全域物件</td>
+</tr>
+</tbody>
+</table></div>
+<p>建立 <code>dht</code>（ 第 <a class="lr" href="#L43" data-a="43" data-b="43">43</a> 行 ）不等於開始讀值；<code>dht.begin()</code>（ 第 <a class="lr" href="#L264" data-a="264" data-b="264">264</a> 行 ）才進行初始化，<code>getEvent(&amp;event)</code>（ 第 <a class="lr" href="#L226" data-a="226" data-b="226">226</a> 行 ）才要求資料。<code>u8g2</code> 也在 第 <a class="lr" href="#L51" data-a="51" data-b="51">51</a> 行 建立、 第 <a class="lr" href="#L260" data-a="260" data-b="260">260</a> 行 啟動。<code>物件.方法()</code> 表示請特定物件做事，例如 <code>u8g2.setFont(...)</code>（ 第 <a class="lr" href="#L197" data-a="197" data-b="197">197</a> 行 ）。</p>
+<p>只有資料的結構另外看：<code>sensors_event_t event</code>（ 第 <a class="lr" href="#L223" data-a="223" data-b="223">223</a> 行 ）裝一次事件；<code>sensor_t sensor</code>（ 第 <a class="lr" href="#L267" data-a="267" data-b="267">267</a> 行 ）裝規格。<code>&amp;event</code> 是傳地址，讓函式可以寫入原來那份資料（ 第 <a class="lr" href="#L226" data-a="226" data-b="226">226</a>、<a class="lr" href="#L238" data-a="238" data-b="238">238</a> 行 ）。本程式沒有自訂 <code>class</code> 或 <code>struct</code> 定義（ 第 <a class="lr" href="#L1" data-a="1" data-b="325">1–325</a> 行 ）。</p>
+<p>練習：把 第 <a class="lr" href="#L43" data-a="43" data-b="43">43</a> 行 留著、拿掉 第 <a class="lr" href="#L264" data-a="264" data-b="264">264</a> 行 ，能否保證讀值正常？需要查哪個實作？＿＿＿＿。</p>
+<h2 id="4">4. 常數與全域變數</h2>
+<pre class="mermaid">flowchart LR
+  A[&quot;選擇接線與感測型號&quot;] --&gt; B[&quot;前處理器替換名稱&quot;] --&gt; C[&quot;建立 DHT 使用設定&quot;]
+</pre>
+<p class="ex">對照程式：第 <a class="lr" href="#L35" data-a="35" data-b="41">35–41</a> 行</p>
+<pre class="mermaid">flowchart LR
+  A[&quot;設定讀取間隔與時間戳&quot;] --&gt; B[&quot;跨圈保留&quot;] --&gt; C[&quot;loop 判斷到期&quot;]
+</pre>
+<p class="ex">對照程式：第 <a class="lr" href="#L45" data-a="45" data-b="46">45–46</a> 行</p>
+<pre class="mermaid">flowchart LR
+  A[&quot;定義分類代碼&quot;] --&gt; B[&quot;建立無效初值與動畫狀態&quot;] --&gt; C[&quot;供感測與繪圖共用&quot;]
+</pre>
+<p class="ex">對照程式：第 <a class="lr" href="#L53" data-a="53" data-b="64">53–64</a> 行</p>
+<h3 id="_5">常數</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>名稱</th>
+<th>值</th>
+<th>行號</th>
+<th>意義</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DHTPIN</code></td>
+<td>16</td>
+<td>第 <a class="lr" href="#L36" data-a="36" data-b="36">36</a> 行</td>
+<td>DATA 腳；錯誤訊息另寫死 16</td>
+</tr>
+<tr>
+<td><code>DHTTYPE</code></td>
+<td><code>DHT22</code></td>
+<td>第 <a class="lr" href="#L40" data-a="40" data-b="40">40</a> 行</td>
+<td>啟用的型號； 第 <a class="lr" href="#L39" data-a="39" data-b="39">39</a>、<a class="lr" href="#L41" data-a="41" data-b="41">41</a> 行 的 DHT11／DHT21 已註解，不生效</td>
+</tr>
+<tr>
+<td><code>SUN</code></td>
+<td>0</td>
+<td>第 <a class="lr" href="#L54" data-a="54" data-b="54">54</a> 行</td>
+<td>乾燥區間對應圖示</td>
+</tr>
+<tr>
+<td><code>SUN_CLOUD</code></td>
+<td>1</td>
+<td>第 <a class="lr" href="#L55" data-a="55" data-b="55">55</a> 行</td>
+<td>次一級濕度圖示</td>
+</tr>
+<tr>
+<td><code>CLOUD</code></td>
+<td>2</td>
+<td>第 <a class="lr" href="#L56" data-a="56" data-b="56">56</a> 行</td>
+<td>中高濕度／失敗預設圖示</td>
+</tr>
+<tr>
+<td><code>RAIN</code></td>
+<td>3</td>
+<td>第 <a class="lr" href="#L57" data-a="57" data-b="57">57</a> 行</td>
+<td>高濕度圖示</td>
+</tr>
+<tr>
+<td><code>THUNDER</code></td>
+<td>4</td>
+<td>第 <a class="lr" href="#L58" data-a="58" data-b="58">58</a> 行</td>
+<td>高溫高濕圖示</td>
+</tr>
+</tbody>
+</table></div>
+<p>以上是 <code>#define</code> 巨集，編譯前替換，不是有儲存空間的 <code>const</code> 變數。<code>DHT22</code>、<code>NAN</code>、旋轉與 reset 常數來自函式庫或核心；其具體定義不在本檔（ 第 <a class="lr" href="#L28" data-a="28" data-b="33">28–33</a> 行 、 第 <a class="lr" href="#L40" data-a="40" data-b="40">40</a> 行 、 第 <a class="lr" href="#L51" data-a="51" data-b="51">51</a> 行 、 第 <a class="lr" href="#L61" data-a="61" data-b="62">61–62</a> 行 ）。</p>
+<h3 id="_6">全域變數與共享物件</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>名稱</th>
+<th>型別／宣告初值</th>
+<th>寫入處</th>
+<th>讀取處</th>
+<th>意義與全域理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dht</code></td>
+<td><code>DHT_Unified</code>； 第 <a class="lr" href="#L43" data-a="43" data-b="43">43</a> 行 建構</td>
+<td>內部狀態由 第 <a class="lr" href="#L264" data-a="264" data-b="264">264</a> 行 與讀取方法維護</td>
+<td>第 <a class="lr" href="#L226" data-a="226" data-b="226">226</a>、<a class="lr" href="#L238" data-a="238" data-b="238">238</a>、<a class="lr" href="#L268" data-a="268" data-b="268">268</a>、<a class="lr" href="#L279" data-a="279" data-b="279">279</a> 行</td>
+<td><code>setup</code> 與感測函式共用硬體介面</td>
+</tr>
+<tr>
+<td><code>delayMS</code></td>
+<td><code>uint32_t</code>；2000， 第 <a class="lr" href="#L45" data-a="45" data-b="45">45</a> 行</td>
+<td>第 <a class="lr" href="#L290" data-a="290" data-b="290">290</a>、<a class="lr" href="#L292" data-a="292" data-b="292">292</a> 行</td>
+<td>第 <a class="lr" href="#L291" data-a="291" data-b="291">291</a>、<a class="lr" href="#L304" data-a="304" data-b="304">304</a> 行</td>
+<td>初始化後供主迴圈使用的取樣間隔</td>
+</tr>
+<tr>
+<td><code>lastSensorRead</code></td>
+<td><code>uint32_t</code>；0， 第 <a class="lr" href="#L46" data-a="46" data-b="46">46</a> 行</td>
+<td>第 <a class="lr" href="#L297" data-a="297" data-b="297">297</a>、<a class="lr" href="#L305" data-a="305" data-b="305">305</a> 行</td>
+<td>第 <a class="lr" href="#L304" data-a="304" data-b="304">304</a> 行</td>
+<td>跨圈保存讀取時間，區域自動變數會失去歷史</td>
+</tr>
+<tr>
+<td><code>u8g2</code></td>
+<td>OLED 類別； 第 <a class="lr" href="#L51" data-a="51" data-b="51">51</a> 行 建構</td>
+<td>初始化、字型／游標／繪圖呼叫</td>
+<td>第 <a class="lr" href="#L99" data-a="99" data-b="219">99–219</a> 行 、 第 <a class="lr" href="#L260" data-a="260" data-b="261">260–261</a> 行 、 第 <a class="lr" href="#L314" data-a="314" data-b="323">314–323</a> 行</td>
+<td>所有繪圖函式共用畫布與裝置</td>
+</tr>
+<tr>
+<td><code>currentTemp</code></td>
+<td><code>float</code>；<code>NAN</code>， 第 <a class="lr" href="#L61" data-a="61" data-b="61">61</a> 行</td>
+<td>第 <a class="lr" href="#L229" data-a="229" data-b="229">229</a>、<a class="lr" href="#L231" data-a="231" data-b="231">231</a> 行</td>
+<td>第 <a class="lr" href="#L199" data-a="199" data-b="199">199</a>、<a class="lr" href="#L202" data-a="202" data-b="202">202</a>、<a class="lr" href="#L250" data-a="250" data-b="250">250</a>、<a class="lr" href="#L310" data-a="310" data-b="310">310</a> 行</td>
+<td>未取得數值前先顯示無效，取樣後供分類與畫面讀取</td>
+</tr>
+<tr>
+<td><code>currentHum</code></td>
+<td><code>float</code>；<code>NAN</code>， 第 <a class="lr" href="#L62" data-a="62" data-b="62">62</a> 行</td>
+<td>第 <a class="lr" href="#L241" data-a="241" data-b="241">241</a>、<a class="lr" href="#L243" data-a="243" data-b="243">243</a> 行</td>
+<td>第 <a class="lr" href="#L210" data-a="210" data-b="210">210</a>、<a class="lr" href="#L213" data-a="213" data-b="213">213</a>、<a class="lr" href="#L250" data-a="250" data-b="250">250</a>、<a class="lr" href="#L310" data-a="310" data-b="310">310</a> 行</td>
+<td>與溫度同樣跨函式共享</td>
+</tr>
+<tr>
+<td><code>currentSymbol</code></td>
+<td><code>uint8_t</code>；<code>CLOUD=2</code>， 第 <a class="lr" href="#L63" data-a="63" data-b="63">63</a> 行</td>
+<td>第 <a class="lr" href="#L250" data-a="250" data-b="250">250</a> 行</td>
+<td>第 <a class="lr" href="#L188" data-a="188" data-b="188">188</a>、<a class="lr" href="#L311" data-a="311" data-b="311">311</a> 行</td>
+<td>保存最新分類，畫面不必各自重算</td>
+</tr>
+<tr>
+<td><code>scrollOffset</code></td>
+<td><code>int16_t</code>；−128， 第 <a class="lr" href="#L64" data-a="64" data-b="64">64</a> 行</td>
+<td>第 <a class="lr" href="#L321" data-a="321" data-b="321">321</a>、<a class="lr" href="#L323" data-a="323" data-b="323">323</a> 行</td>
+<td>第 <a class="lr" href="#L218" data-a="218" data-b="218">218</a>、<a class="lr" href="#L321" data-a="321" data-b="322">321–322</a> 行</td>
+<td>動畫需跨圈保留位移，允許負值</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>NAN</code> 是「不是有效數值」的浮點標記；以 <code>isnan()</code> 判斷，不要用 <code>x == NAN</code>。初始 <code>CLOUD</code> 不代表真的多雲；有效性由兩個浮點數共同決定（ 第 <a class="lr" href="#L61" data-a="61" data-b="63">61–63</a> 行 、 第 <a class="lr" href="#L68" data-a="68" data-b="69">68–69</a> 行 、 第 <a class="lr" href="#L310" data-a="310" data-b="310">310</a> 行 ）。全域是目前設計的共享方法，並非唯一方法；進階可把它們集中成狀態結構傳參數。</p>
+<h3 id="_7">區域變數</h3>
+<pre class="mermaid">flowchart LR
+  A[&quot;收到位移與文字&quot;] --&gt; B[&quot;建立或重用工作區&quot;] --&gt; C[&quot;計算可見片段&quot;]
+</pre>
+<p class="ex">對照程式：第 <a class="lr" href="#L144" data-a="144" data-b="149">144–149</a> 行</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>名稱與作用域</th>
+<th>型別／生命週期</th>
+<th>容易誤會之處</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>temp, hum</code>； 第 <a class="lr" href="#L67" data-a="67" data-b="67">67</a> 行</td>
+<td><code>float</code> 參數副本</td>
+<td>分類函式不會寫回全域值</td>
+</tr>
+<tr>
+<td><code>symbol, sensorOk</code>； 第 <a class="lr" href="#L84" data-a="84" data-b="84">84</a> 行</td>
+<td><code>uint8_t, bool</code> 參數</td>
+<td>無效時先回錯誤文字，不看分類</td>
+</tr>
+<tr>
+<td><code>x, y, symbol</code>； 第 <a class="lr" href="#L99" data-a="99" data-b="99">99</a> 行 ，<code>x, y</code>； 第 <a class="lr" href="#L127" data-a="127" data-b="127">127</a>、<a class="lr" href="#L137" data-a="137" data-b="137">137</a> 行</td>
+<td>座標與代碼參數</td>
+<td>y 的意義依繪圖 API，不都代表上緣</td>
+</tr>
+<tr>
+<td><code>offset, s</code>； 第 <a class="lr" href="#L144" data-a="144" data-b="144">144</a> 行</td>
+<td>位移副本、唯讀字元指標</td>
+<td><code>s</code> 不複製整段文字；本程式傳入結束於 <code>\0</code> 的字串</td>
+</tr>
+<tr>
+<td><code>buf[36]</code>； 第 <a class="lr" href="#L145" data-a="145" data-b="145">145</a> 行</td>
+<td><code>static char</code>，跨次呼叫保留</td>
+<td>作用域仍在函式內；36 bytes 包含終止字元，不是 36 個中文字</td>
+</tr>
+<tr>
+<td><code>len, char_offset, visible</code>； 第 <a class="lr" href="#L146" data-a="146" data-b="149">146–149</a> 行</td>
+<td><code>size_t</code>，每次呼叫重建</td>
+<td>字串長度與索引為無號整數；未到賦值前的初值分別為字串長度、0、0</td>
+</tr>
+<tr>
+<td><code>dx</code>； 第 <a class="lr" href="#L148" data-a="148" data-b="148">148</a> 行</td>
+<td><code>u8g2_uint_t</code>，每次重建</td>
+<td>無號像素型別；負座標轉換見第 8、9 節</td>
+</tr>
+<tr>
+<td><code>statusMsg</code>； 第 <a class="lr" href="#L186" data-a="186" data-b="186">186</a> 行</td>
+<td><code>const char*</code> 參數</td>
+<td>只讀文字內容，指標本身沒有被宣告 <code>const</code></td>
+</tr>
+<tr>
+<td><code>event</code>； 第 <a class="lr" href="#L223" data-a="223" data-b="223">223</a> 行</td>
+<td><code>sensors_event_t</code>，每次取樣重建</td>
+<td>第 <a class="lr" href="#L238" data-a="238" data-b="238">238</a> 行 會重寫它；溫度已在 第 <a class="lr" href="#L231" data-a="231" data-b="231">231</a> 行 保存</td>
+</tr>
+<tr>
+<td><code>sensor</code>； 第 <a class="lr" href="#L267" data-a="267" data-b="267">267</a> 行</td>
+<td><code>sensor_t</code>，只活在 <code>setup</code></td>
+<td>第 <a class="lr" href="#L279" data-a="279" data-b="279">279</a> 行 之後是濕度規格； 第 <a class="lr" href="#L290" data-a="290" data-b="290">290</a> 行 使用最後寫入的 <code>min_delay</code></td>
+</tr>
+<tr>
+<td><code>now, sensorOk, statusMsg</code>； 第 <a class="lr" href="#L303" data-a="303" data-b="303">303</a>、<a class="lr" href="#L310" data-a="310" data-b="311">310–311</a> 行</td>
+<td>每圈重新計算</td>
+<td><code>now</code> 不會在繪圖後自動更新；文字指標直接指向常值字串</td>
+</tr>
+</tbody>
+</table></div>
+<p>練習：<code>static buf</code> 與全域 <code>scrollOffset</code> 都能保留值，它們能被哪些函式直接使用？＿＿＿＿。</p>
+<h2 id="5">5. 主程式結構</h2>
+<h3 id="setup">setup：只做一次的初始化</h3>
+<pre class="mermaid">flowchart LR
+  A[&quot;啟動序列與 OLED&quot;] --&gt; B[&quot;啟動 DHT 並取得規格&quot;] --&gt; C[&quot;設定間隔與首次讀值&quot;]
+</pre>
+<p class="ex">對照程式：第 <a class="lr" href="#L255" data-a="255" data-b="298">255–298</a> 行</p>
+<p>Arduino 執行環境會先呼叫 <code>setup()</code>，再重複呼叫 <code>loop()</code>；使用者原碼沒有自己寫 <code>main()</code>（ 第 <a class="lr" href="#L255" data-a="255" data-b="325">255–325</a> 行 ）。</p>
+<ol>
+<li>序列埠設 115200，等待 100ms（ 第 <a class="lr" href="#L256" data-a="256" data-b="257">256–257</a> 行 ）。</li>
+<li>初始化 OLED，再啟用 UTF-8 <code>print</code>（ 第 <a class="lr" href="#L260" data-a="260" data-b="261">260–261</a> 行 ）。</li>
+<li>啟動 DHT，依序印溫度、濕度規格；第二次 <code>getSensor</code> 覆用同一個 <code>sensor</code>（ 第 <a class="lr" href="#L264" data-a="264" data-b="287">264–287</a> 行 ）。</li>
+<li>把 <code>sensor.min_delay</code> 從微秒除以 1000 轉成毫秒，再把下限設為 2000ms（ 第 <a class="lr" href="#L289" data-a="289" data-b="293">289–293</a> 行 ）。例如 2,000,000µs → 2000ms。此單位可對照 <a href="https://github.com/adafruit/DHT-sensor-library/blob/master/DHT_U.cpp">Adafruit DHT Unified 實作</a>。</li>
+<li>首次讀溫濕度，完成後記時間（ 第 <a class="lr" href="#L296" data-a="296" data-b="297">296–297</a> 行 ）。這和 <code>loop</code> 先記時間再讀取的順序不同（ 第 <a class="lr" href="#L305" data-a="305" data-b="306">305–306</a> 行 ）。</li>
+</ol>
+<h3 id="loop">loop：每一圈都執行</h3>
+<pre class="mermaid">flowchart LR
+  A[&quot;讀時間並判斷到期&quot;] --&gt; B[&quot;取狀態文字並完成整幀繪圖&quot;] --&gt; C[&quot;等待並更新位移&quot;]
+</pre>
+<p class="ex">對照程式：第 <a class="lr" href="#L301" data-a="301" data-b="325">301–325</a> 行</p>
+<p>一圈先判斷取樣時間，再取得狀態文字，最後畫完整幀並更新跑馬燈。不是每一圈都讀 DHT，也不是每畫一頁就移動文字（ 第 <a class="lr" href="#L304" data-a="304" data-b="306">304–306</a> 行 、 第 <a class="lr" href="#L314" data-a="314" data-b="323">314–323</a> 行 ）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>動作</th>
+<th>何時執行</th>
+<th>會等待嗎／限制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>開機延遲</td>
+<td>一次 100ms； 第 <a class="lr" href="#L257" data-a="257" data-b="257">257</a> 行</td>
+<td>這段 <code>setup</code> 等待</td>
+</tr>
+<tr>
+<td>DHT 取樣</td>
+<td>開機一次；之後到期的第一圈； 第 <a class="lr" href="#L296" data-a="296" data-b="296">296</a> 行 、 第 <a class="lr" href="#L304" data-a="304" data-b="306">304–306</a> 行</td>
+<td>到期判斷不忙等，但真正讀取是同步呼叫；耗時待量測</td>
+</tr>
+<tr>
+<td>OLED 整幀</td>
+<td>每圈一幀； 第 <a class="lr" href="#L314" data-a="314" data-b="317">314–317</a> 行</td>
+<td>所有頁完成後才往下；不能由 25ms 推定幀率</td>
+</tr>
+<tr>
+<td>動畫延遲</td>
+<td>每圈 25ms； 第 <a class="lr" href="#L320" data-a="320" data-b="320">320</a> 行</td>
+<td>當前 <code>loop</code> 不再往下執行；ESP32 其他排程工作是否運作依核心而定</td>
+</tr>
+<tr>
+<td>位移</td>
+<td>每圈加 2 像素； 第 <a class="lr" href="#L321" data-a="321" data-b="321">321</a> 行</td>
+<td>約 <code>2 / 一圈秒數</code> 像素／秒；不能直接宣稱固定 80px/s</td>
+</tr>
+<tr>
+<td>序列輸出</td>
+<td>開機與每次取樣； 第 <a class="lr" href="#L228" data-a="228" data-b="287">228–287</a> 行</td>
+<td>輸出量與緩衝區可能影響耗時，待量測</td>
+</tr>
+</tbody>
+</table></div>
+<p>公式：<code>T圈 = T判斷與字串 + T感測（若到期） + T分頁繪圖與傳輸 + 25ms + 其他開銷</code>；所以 40fps 只能是忽略所有額外開銷的上限估計（ 第 <a class="lr" href="#L303" data-a="303" data-b="324">303–324</a> 行 ）。<a href="https://github.com/adafruit/DHT-sensor-library/blob/master/DHT.cpp">Adafruit 底層 DHT 實作</a> 也包含等待與脈衝讀取，不能把排程非阻塞推廣為整段讀取非阻塞。</p>
+<p>練習：如果某圈繪圖耗時 30ms、其餘處理 5ms，且沒有感測讀取，那圈約多久？＿＿＿＿。</p>
+<h2 id="6">6. 流程控制</h2>
+<h3 id="_8">種類與出現次數</h3>
+<p>計數規則：以<strong>完整結構</strong>計數；<code>else if</code> 同時另列其節點數，但不重算成獨立 <code>if</code>。循序用函式本體為單位，非逐語句計數。第 <a class="lr" href="#L317" data-a="317" data-b="317">317</a> 行 的 <code>while</code> 是 <code>do…while</code> 尾端，不算另一個獨立 <code>while</code>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>種類</th>
+<th style="text-align: right;">次數</th>
+<th>位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>循序</td>
+<td style="text-align: right;">10 個函式本體</td>
+<td>第 <a class="lr" href="#L67" data-a="67" data-b="67">67</a>、<a class="lr" href="#L84" data-a="84" data-b="84">84</a>、<a class="lr" href="#L99" data-a="99" data-b="99">99</a>、<a class="lr" href="#L127" data-a="127" data-b="127">127</a>、<a class="lr" href="#L137" data-a="137" data-b="137">137</a>、<a class="lr" href="#L144" data-a="144" data-b="144">144</a>、<a class="lr" href="#L186" data-a="186" data-b="186">186</a>、<a class="lr" href="#L222" data-a="222" data-b="222">222</a>、<a class="lr" href="#L255" data-a="255" data-b="255">255</a>、<a class="lr" href="#L301" data-a="301" data-b="301">301</a> 行</td>
+</tr>
+<tr>
+<td>單獨 <code>if</code>（無 else）</td>
+<td style="text-align: right;">9</td>
+<td>第 <a class="lr" href="#L68" data-a="68" data-b="68">68</a>、<a class="lr" href="#L85" data-a="85" data-b="85">85</a>、<a class="lr" href="#L155" data-a="155" data-b="155">155</a>、<a class="lr" href="#L157" data-a="157" data-b="157">157</a>、<a class="lr" href="#L163" data-a="163" data-b="163">163</a>、<a class="lr" href="#L166" data-a="166" data-b="166">166</a>、<a class="lr" href="#L291" data-a="291" data-b="291">291</a>、<a class="lr" href="#L304" data-a="304" data-b="304">304</a>、<a class="lr" href="#L322" data-a="322" data-b="322">322</a> 行</td>
+</tr>
+<tr>
+<td>單純 <code>if / else</code></td>
+<td style="text-align: right;">5</td>
+<td>第 <a class="lr" href="#L152" data-a="152" data-b="152">152</a>、<a class="lr" href="#L199" data-a="199" data-b="199">199</a>、<a class="lr" href="#L210" data-a="210" data-b="210">210</a>、<a class="lr" href="#L227" data-a="227" data-b="227">227</a>、<a class="lr" href="#L239" data-a="239" data-b="239">239</a> 行</td>
+</tr>
+<tr>
+<td><code>if / else if / else</code> 鏈</td>
+<td style="text-align: right;">1</td>
+<td>第 <a class="lr" href="#L71" data-a="71" data-b="81">71–81</a> 行</td>
+</tr>
+<tr>
+<td><code>else if</code> 節點</td>
+<td style="text-align: right;">3</td>
+<td>第 <a class="lr" href="#L73" data-a="73" data-b="73">73</a>、<a class="lr" href="#L75" data-a="75" data-b="75">75</a>、<a class="lr" href="#L77" data-a="77" data-b="77">77</a> 行</td>
+</tr>
+<tr>
+<td><code>switch</code></td>
+<td style="text-align: right;">2</td>
+<td>第 <a class="lr" href="#L88" data-a="88" data-b="88">88</a>、<a class="lr" href="#L101" data-a="101" data-b="101">101</a> 行</td>
+</tr>
+<tr>
+<td><code>for</code></td>
+<td style="text-align: right;">0</td>
+<td>本程式沒有用到</td>
+</tr>
+<tr>
+<td>獨立 <code>while</code></td>
+<td style="text-align: right;">0</td>
+<td>本程式沒有用到</td>
+</tr>
+<tr>
+<td><code>do … while</code></td>
+<td style="text-align: right;">1</td>
+<td>第 <a class="lr" href="#L315" data-a="315" data-b="317">315–317</a> 行</td>
+</tr>
+<tr>
+<td>Arduino 主迴圈 <code>loop</code></td>
+<td style="text-align: right;">1</td>
+<td>第 <a class="lr" href="#L301" data-a="301" data-b="325">301–325</a> 行 ，由執行環境重複呼叫</td>
+</tr>
+<tr>
+<td>提早離開 <code>return</code></td>
+<td style="text-align: right;">15</td>
+<td>第 <a class="lr" href="#L69" data-a="69" data-b="69">69</a>、<a class="lr" href="#L72" data-a="72" data-b="72">72</a>、<a class="lr" href="#L74" data-a="74" data-b="74">74</a>、<a class="lr" href="#L76" data-a="76" data-b="76">76</a>、<a class="lr" href="#L78" data-a="78" data-b="78">78</a>、<a class="lr" href="#L80" data-a="80" data-b="80">80</a>、<a class="lr" href="#L86" data-a="86" data-b="86">86</a>、<a class="lr" href="#L89" data-a="89" data-b="94">89–94</a>、<a class="lr" href="#L155" data-a="155" data-b="155">155</a>、<a class="lr" href="#L163" data-a="163" data-b="163">163</a> 行</td>
+</tr>
+<tr>
+<td><code>break</code></td>
+<td style="text-align: right;">5</td>
+<td>第 <a class="lr" href="#L105" data-a="105" data-b="105">105</a>、<a class="lr" href="#L109" data-a="109" data-b="109">109</a>、<a class="lr" href="#L113" data-a="113" data-b="113">113</a>、<a class="lr" href="#L117" data-a="117" data-b="117">117</a>、<a class="lr" href="#L121" data-a="121" data-b="121">121</a> 行</td>
+</tr>
+<tr>
+<td><code>continue</code></td>
+<td style="text-align: right;">0</td>
+<td>本程式沒有用到</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="_9">循序與主迴圈：先後順序就是規則</h3>
+<p>循序是上一句完成後才進入下一句；主迴圈則讓同一套流程反覆執行。 第 <a class="lr" href="#L305" data-a="305" data-b="305">305</a> 行 在 第 <a class="lr" href="#L306" data-a="306" data-b="306">306</a> 行 之前，因此記下的是開始讀取前的 <code>now</code>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>結構／具體情境</th>
+<th>條件真假</th>
+<th>結果</th>
+<th>常見誤會</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>循序：<code>now=2300,last=200,delayMS=2000</code>； 第 <a class="lr" href="#L304" data-a="304" data-b="306">304–306</a> 行</td>
+<td><code>2100&gt;=2000</code> 真</td>
+<td>先 <code>last=2300</code>，再取樣</td>
+<td>以為記的是完成取樣時間</td>
+</tr>
+<tr>
+<td>主迴圈：位移初值 −128，無復位； 第 <a class="lr" href="#L314" data-a="314" data-b="321">314–321</a> 行</td>
+<td>每圈都繪圖；不需額外條件</td>
+<td>兩圈畫面使用 −128、−126；圈尾狀態為 −124</td>
+<td>把 <code>loop</code> 與分頁迴圈混成同一層</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="if-if-else">單獨 if 與 if / else</h3>
+<p>單獨 <code>if</code> 條件不成立時跳過本段；<code>if / else</code> 則兩支只選一支（ 第 <a class="lr" href="#L291" data-a="291" data-b="293">291–293</a> 行 、 第 <a class="lr" href="#L227" data-a="227" data-b="235">227–235</a> 行 ）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>例子</th>
+<th>判斷</th>
+<th>真／假</th>
+<th>執行結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>delayMS=1000</code>； 第 <a class="lr" href="#L291" data-a="291" data-b="291">291</a> 行</td>
+<td><code>&lt;2000</code></td>
+<td>真</td>
+<td>設成 2000</td>
+</tr>
+<tr>
+<td><code>delayMS=2000</code>； 第 <a class="lr" href="#L291" data-a="291" data-b="291">291</a> 行</td>
+<td><code>&lt;2000</code></td>
+<td>假</td>
+<td>保持 2000</td>
+</tr>
+<tr>
+<td><code>event.temperature=26.5</code>； 第 <a class="lr" href="#L227" data-a="227" data-b="227">227</a> 行</td>
+<td><code>isnan(26.5)</code></td>
+<td>假</td>
+<td>第 <a class="lr" href="#L231" data-a="231" data-b="231">231</a> 行 寫入 26.5</td>
+</tr>
+<tr>
+<td><code>event.temperature=NAN</code>； 第 <a class="lr" href="#L227" data-a="227" data-b="227">227</a> 行</td>
+<td><code>isnan(NAN)</code></td>
+<td>真</td>
+<td>第 <a class="lr" href="#L229" data-a="229" data-b="229">229</a> 行 寫入 <code>NAN</code>，印錯誤訊息</td>
+</tr>
+</tbody>
+</table></div>
+<p>常見錯誤：把 <code>&gt;=</code> 寫成 <code>&gt;</code> 會改變邊界；忘了 <code>else</code> 的互斥性，可能誤以為兩段都執行（ 第 <a class="lr" href="#L304" data-a="304" data-b="304">304</a> 行 、 第 <a class="lr" href="#L227" data-a="227" data-b="235">227–235</a> 行 ）。</p>
+<h3 id="else-if">else if 鏈與邏輯運算</h3>
+<p>鏈式判斷從上往下找第一個成立的條件；<code>&amp;&amp;</code> 是兩邊都要成立，<code>||</code> 是至少一邊成立。它們會短路求值，必要結果已確定時不再計算右側（ 第 <a class="lr" href="#L68" data-a="68" data-b="68">68</a>、<a class="lr" href="#L71" data-a="71" data-b="71">71</a> 行 ）。完整分類原碼與流程圖見第 7 節。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th><code>temp,hum</code></th>
+<th>無效？ 第 <a class="lr" href="#L68" data-a="68" data-b="68">68</a> 行</th>
+<th><code>hum&gt;=85 &amp;&amp; temp&gt;=28</code>； 第 <a class="lr" href="#L71" data-a="71" data-b="71">71</a> 行</th>
+<th><code>hum&gt;=80</code>； 第 <a class="lr" href="#L73" data-a="73" data-b="73">73</a> 行</th>
+<th><code>hum&gt;=70</code>； 第 <a class="lr" href="#L75" data-a="75" data-b="75">75</a> 行</th>
+<th><code>hum&gt;=55</code>； 第 <a class="lr" href="#L77" data-a="77" data-b="77">77</a> 行</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>28.0,85.0</td>
+<td>假</td>
+<td>真</td>
+<td>未執行</td>
+<td>未執行</td>
+<td>未執行</td>
+<td><code>THUNDER=4</code></td>
+</tr>
+<tr>
+<td>27.9,85.0</td>
+<td>假</td>
+<td>假</td>
+<td>真</td>
+<td>未執行</td>
+<td>未執行</td>
+<td><code>RAIN=3</code></td>
+</tr>
+<tr>
+<td>26.5,54.9</td>
+<td>假</td>
+<td>假（右側短路）</td>
+<td>假</td>
+<td>假</td>
+<td>假</td>
+<td><code>SUN=0</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>常見錯誤：先判斷 <code>hum&gt;=55</code> 就會攔下所有高濕資料；表內「未執行」不等於條件為假（ 第 <a class="lr" href="#L71" data-a="71" data-b="80">71–80</a> 行 ）。</p>
+<h3 id="switchreturn-break">switch、return 與 break</h3>
+<p><code>switch</code> 按代碼選分支；<code>return</code> 離開整個函式；<code>break</code> 只離開 <code>switch</code>。 第 <a class="lr" href="#L89" data-a="89" data-b="94">89–94</a> 行 已 <code>return</code>，不用再寫 <code>break</code>； 第 <a class="lr" href="#L103" data-a="103" data-b="105">103–105</a> 行 畫完後仍需 <code>break</code> 防止接著畫下一個圖。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>具體輸入</th>
+<th>判斷與去向</th>
+<th>最後結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sensorOk=false,symbol=4</code>； 第 <a class="lr" href="#L85" data-a="85" data-b="86">85–86</a> 行</td>
+<td><code>!sensorOk</code> 真，直接 <code>return</code>，不進 switch</td>
+<td>錯誤字串</td>
+</tr>
+<tr>
+<td><code>sensorOk=true,symbol=3</code>； 第 <a class="lr" href="#L88" data-a="88" data-b="94">88–94</a> 行</td>
+<td><code>case RAIN</code> 匹配，其他不走</td>
+<td>回傳 <code>RAINY - High Humidity</code></td>
+</tr>
+<tr>
+<td><code>sensorOk=true,symbol=9</code>； 第 <a class="lr" href="#L88" data-a="88" data-b="94">88–94</a> 行</td>
+<td>五個 case 都不匹配</td>
+<td><code>default</code> 回傳 <code>Monitoring...</code></td>
+</tr>
+<tr>
+<td><code>symbol=3</code>； 第 <a class="lr" href="#L101" data-a="101" data-b="121">101–121</a> 行</td>
+<td>進 <code>RAIN</code>，到 第 <a class="lr" href="#L117" data-a="117" data-b="117">117</a> 行 <code>break</code></td>
+<td>選 weather 字型、畫 67，不會續畫 THUNDER</td>
+</tr>
+<tr>
+<td><code>symbol=9</code>； 第 <a class="lr" href="#L101" data-a="101" data-b="122">101–122</a> 行</td>
+<td>無匹配且無 <code>default</code></td>
+<td>此函式不畫任何圖示</td>
+</tr>
+<tr>
+<td><code>offset=-128,width=128</code>； 第 <a class="lr" href="#L153" data-a="153" data-b="155">153–155</a> 行</td>
+<td><code>char_offset=16</code>，<code>16&gt;=16</code> 真</td>
+<td><code>return</code>，本次跑馬燈不畫字，儀表板其餘部分仍可完成</td>
+</tr>
+</tbody>
+</table></div>
+<p>常見錯誤：把 <code>break</code> 誤認成跳出整個 <code>loop</code>；把函式的 <code>return</code> 誤認成讓 Arduino 停機（ 第 <a class="lr" href="#L105" data-a="105" data-b="105">105</a> 行 、 第 <a class="lr" href="#L155" data-a="155" data-b="155">155</a> 行 ）。</p>
+<h3 id="do-while">do … while：先做一次，再問還有沒有下一頁</h3>
+<p>這種結構保證本體至少執行一次；本程式用來讓所有頁畫同一份儀表板（ 第 <a class="lr" href="#L314" data-a="314" data-b="317">314–317</a> 行 ）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>示意 <code>nextPage()</code> 回傳序列</th>
+<th>條件真假</th>
+<th style="text-align: right;"><code>drawDashboard</code> 執行次數</th>
+<th>意義</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>false</code></td>
+<td>第一次就假</td>
+<td style="text-align: right;">1</td>
+<td>仍已畫過一次；不是略過繪圖</td>
+</tr>
+<tr>
+<td><code>true,true,false</code></td>
+<td>真、真、假</td>
+<td style="text-align: right;">3</td>
+<td>三頁示意；不是宣稱本硬體只有三頁</td>
+</tr>
+</tbody>
+</table></div>
+<p>常見錯誤：把 第 <a class="lr" href="#L321" data-a="321" data-b="321">321</a> 行 的位移更新搬進分頁本體，會使同一幀各頁使用不同位移。實際頁數須依驅動與緩衝配置查證，不能把上表當作量測（ 第 <a class="lr" href="#L51" data-a="51" data-b="51">51</a> 行 、 第 <a class="lr" href="#L314" data-a="314" data-b="321">314–321</a> 行 ）。</p>
+<p>慣用寫法：<code>now-last&gt;=interval</code> 是定時檢查（ 第 <a class="lr" href="#L304" data-a="304" data-b="304">304</a> 行 ）；先驗證再 <code>return</code> 是守門條件（ 第 <a class="lr" href="#L68" data-a="68" data-b="69">68–69</a> 行 、 第 <a class="lr" href="#L85" data-a="85" data-b="86">85–86</a> 行 ）；<code>sensorOk</code> 是每圈重算的有效性旗標，不是保存上次成功的記憶（ 第 <a class="lr" href="#L310" data-a="310" data-b="310">310</a> 行 ）。</p>
+<p>練習：<code>now-last</code> 剛好等於 2000 時會取樣嗎？<code>symbol=9</code> 時兩個 <code>switch</code> 行為相同嗎？＿＿＿＿。</p>
+<h2 id="7">7. 自訂函式</h2>
+<h3 id="_10">呼叫關係圖</h3>
+<pre class="mermaid">flowchart TD
+  AR[Arduino 執行環境] --&gt; ST[setup]
+  AR --&gt; LP[loop]
+  ST --&gt; RD[readDHTSensor]
+  LP --&gt; RD
+  RD --&gt; SY[getWeatherSymbol]
+  LP --&gt; TX[getWeatherStatusText]
+  LP --&gt; DB[drawDashboard：每頁呼叫]
+  DB --&gt; WS[drawWeatherSymbol]
+  DB --&gt; TM[drawThermometerIcon]
+  DB --&gt; DR[drawDropletIcon]
+  DB --&gt; SC[drawScrollString]
+</pre>
+<p>呼叫依據： 第 <a class="lr" href="#L188" data-a="188" data-b="188">188</a>、<a class="lr" href="#L196" data-a="196" data-b="196">196</a>、<a class="lr" href="#L207" data-a="207" data-b="207">207</a>、<a class="lr" href="#L218" data-a="218" data-b="218">218</a>、<a class="lr" href="#L250" data-a="250" data-b="250">250</a>、<a class="lr" href="#L296" data-a="296" data-b="296">296</a>、<a class="lr" href="#L306" data-a="306" data-b="306">306</a>、<a class="lr" href="#L311" data-a="311" data-b="311">311</a>、<a class="lr" href="#L316" data-a="316" data-b="316">316</a> 行 。以下卡片涵蓋全部 10 個函式；卡片練習均保留給學生。</p>
+<h3 id="getweathersymbol">getWeatherSymbol：數值轉代碼</h3>
+<pre class="mermaid">flowchart LR
+  A[&quot;先檢查無效值&quot;] --&gt; B[&quot;按高溫高濕與濕度門檻判斷&quot;] --&gt; C[&quot;回傳第一個匹配代碼&quot;]
+</pre>
+<p class="ex">對照程式：第 <a class="lr" href="#L67" data-a="67" data-b="82">67–82</a> 行</p>
+<ul>
+<li>作用：依門檻回傳一個 <code>uint8_t</code> 圖示代碼（ 第 <a class="lr" href="#L67" data-a="67" data-b="82">67–82</a> 行 ）。</li>
+<li>輸入：參數 <code>temp,hum</code>，沒有讀取感測器，也不讀溫濕度全域值（ 第 <a class="lr" href="#L67" data-a="67" data-b="77">67–77</a> 行 ）。</li>
+<li>輸出：回傳 0–4 中一個值；不改寫全域值（ 第 <a class="lr" href="#L69" data-a="69" data-b="80">69–80</a> 行 ）。</li>
+<li>關鍵行： 第 <a class="lr" href="#L68" data-a="68" data-b="68">68</a>、<a class="lr" href="#L71" data-a="71" data-b="71">71</a>、<a class="lr" href="#L77" data-a="77" data-b="77">77</a> 行 。</li>
+<li>練習：<code>temp=28,hum=84.9</code> 會選哪支？＿＿＿＿。</li>
+</ul>
+<h3 id="getweatherstatustext">getWeatherStatusText：代碼與有效性轉文字</h3>
+<pre class="mermaid">flowchart LR
+  A[&quot;先看感測是否有效&quot;] --&gt; B[&quot;按代碼選擇文字&quot;] --&gt; C[&quot;回傳唯讀字串指標&quot;]
+</pre>
+<p class="ex">對照程式：第 <a class="lr" href="#L84" data-a="84" data-b="96">84–96</a> 行</p>
+<ul>
+<li>作用：給定代碼與有效性，選一段狀態文字（ 第 <a class="lr" href="#L84" data-a="84" data-b="96">84–96</a> 行 ）。</li>
+<li>輸入：<code>symbol,sensorOk</code>（ 第 <a class="lr" href="#L84" data-a="84" data-b="84">84</a> 行 ）。</li>
+<li>輸出：指向常值字串的 <code>const char*</code>；沒有配置或複製新字串，沒有改全域值（ 第 <a class="lr" href="#L86" data-a="86" data-b="94">86–94</a> 行 ）。</li>
+<li>關鍵行： 第 <a class="lr" href="#L85" data-a="85" data-b="85">85</a>、<a class="lr" href="#L88" data-a="88" data-b="88">88</a>、<a class="lr" href="#L94" data-a="94" data-b="94">94</a> 行 。</li>
+<li>練習：<code>symbol=SUN,sensorOk=false</code> 時，哪個條件先決定結果？＿＿＿＿。</li>
+</ul>
+<h3 id="drawweathersymbol">drawWeatherSymbol：代碼轉大圖示</h3>
+<pre class="mermaid">flowchart LR
+  A[&quot;依代碼選分支&quot;] --&gt; B[&quot;設定字型並畫字形&quot;] --&gt; C[&quot;break 結束該分支&quot;]
+</pre>
+<p class="ex">對照程式：第 <a class="lr" href="#L98" data-a="98" data-b="123">98–123</a> 行</p>
+<ul>
+<li>作用：在指定座標畫分類圖示（ 第 <a class="lr" href="#L99" data-a="99" data-b="123">99–123</a> 行 ）。</li>
+<li>輸入：<code>x,y,symbol</code>；使用全域 <code>u8g2</code>（ 第 <a class="lr" href="#L99" data-a="99" data-b="120">99–120</a> 行 ）。</li>
+<li>輸出：改變繪圖緩衝與目前字型，無回傳值；分頁傳輸由外層負責（ 第 <a class="lr" href="#L103" data-a="103" data-b="120">103–120</a> 行 、 第 <a class="lr" href="#L314" data-a="314" data-b="317">314–317</a> 行 ）。</li>
+<li>關鍵行： 第 <a class="lr" href="#L101" data-a="101" data-b="101">101</a>、<a class="lr" href="#L119" data-a="119" data-b="119">119</a>、<a class="lr" href="#L120" data-a="120" data-b="120">120</a> 行 。</li>
+<li>練習：刪掉 第 <a class="lr" href="#L117" data-a="117" data-b="117">117</a> 行 後，雨天會多執行哪個分支？＿＿＿＿。</li>
+</ul>
+<h3 id="drawthermometericon">drawThermometerIcon：幾何圖形組合溫度計</h3>
+<pre class="mermaid">flowchart LR
+  A[&quot;接收圖示原點&quot;] --&gt; B[&quot;畫玻璃管與感溫球&quot;] --&gt; C[&quot;補水銀柱及刻度&quot;]
+</pre>
+<p class="ex">對照程式：第 <a class="lr" href="#L125" data-a="125" data-b="134">125–134</a> 行</p>
+<ul>
+<li>作用：把框、圓、直線與刻度組成小溫度計（ 第 <a class="lr" href="#L127" data-a="127" data-b="134">127–134</a> 行 ）。</li>
+<li>輸入：<code>x,y</code> 與全域 <code>u8g2</code>（ 第 <a class="lr" href="#L127" data-a="127" data-b="133">127–133</a> 行 ）。</li>
+<li>輸出：畫布像素，無回傳值；沒有使用實際溫度去改柱高（ 第 <a class="lr" href="#L128" data-a="128" data-b="133">128–133</a> 行 ）。</li>
+<li>關鍵行： 第 <a class="lr" href="#L128" data-a="128" data-b="128">128</a>、<a class="lr" href="#L129" data-a="129" data-b="129">129</a>、<a class="lr" href="#L130" data-a="130" data-b="130">130</a> 行 。</li>
+<li>練習：呼叫 <code>(54,4)</code> 時，感溫球圓心在哪裡？＿＿＿＿。</li>
+</ul>
+<h3 id="drawdropleticon">drawDropletIcon：組合水滴</h3>
+<pre class="mermaid">flowchart LR
+  A[&quot;接收圖示原點&quot;] --&gt; B[&quot;畫三角形及圓形&quot;] --&gt; C[&quot;補交界像素&quot;]
+</pre>
+<p class="ex">對照程式：第 <a class="lr" href="#L136" data-a="136" data-b="141">136–141</a> 行</p>
+<ul>
+<li>作用：用三角形、圓與像素畫固定水滴（ 第 <a class="lr" href="#L137" data-a="137" data-b="141">137–141</a> 行 ）。</li>
+<li>輸入：<code>x,y</code>、全域 <code>u8g2</code>（ 第 <a class="lr" href="#L137" data-a="137" data-b="140">137–140</a> 行 ）。</li>
+<li>輸出：畫布像素，無回傳值；圖示大小不隨濕度變化（ 第 <a class="lr" href="#L138" data-a="138" data-b="140">138–140</a> 行 ）。</li>
+<li>關鍵行： 第 <a class="lr" href="#L138" data-a="138" data-b="138">138</a>、<a class="lr" href="#L139" data-a="139" data-b="139">139</a>、<a class="lr" href="#L140" data-a="140" data-b="140">140</a> 行 。</li>
+<li>練習：呼叫 <code>(54,30)</code> 時，三角形最上方頂點座標是多少？＿＿＿＿。</li>
+</ul>
+<h3 id="drawscrollstring">drawScrollString：分割文字與計算位置</h3>
+<pre class="mermaid">flowchart LR
+  A[&quot;計算字串長度&quot;] --&gt; B[&quot;依位移正負選可見片段&quot;] --&gt; C[&quot;補終止字元並繪字&quot;]
+</pre>
+<p class="ex">對照程式：第 <a class="lr" href="#L143" data-a="143" data-b="173">143–173</a> 行</p>
+<ul>
+<li>作用：取出一段可能看得見的 ASCII 文字並繪製（ 第 <a class="lr" href="#L144" data-a="144" data-b="173">144–173</a> 行 ）。</li>
+<li>輸入：<code>offset,s</code>、顯示寬度與全域 <code>u8g2</code>（ 第 <a class="lr" href="#L144" data-a="144" data-b="171">144–171</a> 行 ）。</li>
+<li>輸出：重寫靜態 <code>buf</code>、更改字型與畫布；不改全域 <code>scrollOffset</code>，也不改 <code>s</code> 指向的字元（ 第 <a class="lr" href="#L145" data-a="145" data-b="171">145–171</a> 行 ）。</li>
+<li>關鍵行： 第 <a class="lr" href="#L153" data-a="153" data-b="153">153</a>、<a class="lr" href="#L162" data-a="162" data-b="162">162</a>、<a class="lr" href="#L170" data-a="170" data-b="170">170</a> 行 。</li>
+<li>練習：<code>offset=10</code> 時跳過幾個字？第一個保留字左移幾像素？＿＿＿＿。</li>
+</ul>
+<h3 id="drawdashboard">drawDashboard：把各區組成一幀內容</h3>
+<pre class="mermaid">flowchart LR
+  A[&quot;畫圖示與分隔線&quot;] --&gt; B[&quot;按有效性畫數值或占位&quot;] --&gt; C[&quot;畫底部跑馬燈&quot;]
+</pre>
+<p class="ex">對照程式：第 <a class="lr" href="#L186" data-a="186" data-b="219">186–219</a> 行</p>
+<ul>
+<li>作用：畫儀表板內容；自己不啟動或結束分頁迴圈（ 第 <a class="lr" href="#L186" data-a="186" data-b="219">186–219</a> 行 ）。</li>
+<li>輸入：<code>statusMsg</code>，讀取 <code>currentSymbol,currentTemp,currentHum,scrollOffset</code> 與 <code>u8g2</code>（ 第 <a class="lr" href="#L188" data-a="188" data-b="218">188–218</a> 行 ）。</li>
+<li>輸出：緩衝內容、字型與游標；不更新感測狀態（ 第 <a class="lr" href="#L188" data-a="188" data-b="218">188–218</a> 行 ）。</li>
+<li>關鍵行： 第 <a class="lr" href="#L188" data-a="188" data-b="188">188</a>、<a class="lr" href="#L199" data-a="199" data-b="199">199</a>、<a class="lr" href="#L218" data-a="218" data-b="218">218</a> 行 。</li>
+<li>練習：只有濕度無效時，溫度那一區會顯示什麼？＿＿＿＿。</li>
+</ul>
+<h3 id="readdhtsensor">readDHTSensor：輸入轉共享狀態</h3>
+<pre class="mermaid">flowchart LR
+  A[&quot;讀溫度並存入全域&quot;] --&gt; B[&quot;重用事件讀濕度並保存&quot;] --&gt; C[&quot;重新計算圖示且輸出紀錄&quot;]
+</pre>
+<p class="ex">對照程式：第 <a class="lr" href="#L221" data-a="221" data-b="252">221–252</a> 行</p>
+<ul>
+<li>作用：讀取兩種量測、處理無效值，最後重算分類（ 第 <a class="lr" href="#L222" data-a="222" data-b="252">222–252</a> 行 ）。</li>
+<li>輸入：DHT 硬體與 <code>dht</code>，沒有參數（ 第 <a class="lr" href="#L222" data-a="222" data-b="222">222</a>、<a class="lr" href="#L226" data-a="226" data-b="226">226</a>、<a class="lr" href="#L238" data-a="238" data-b="238">238</a> 行 ）。</li>
+<li>輸出：改寫 <code>currentTemp,currentHum,currentSymbol</code>，輸出 <code>Serial</code>；無回傳值（ 第 <a class="lr" href="#L229" data-a="229" data-b="251">229–251</a> 行 ）。</li>
+<li>關鍵行： 第 <a class="lr" href="#L226" data-a="226" data-b="226">226</a>、<a class="lr" href="#L238" data-a="238" data-b="238">238</a>、<a class="lr" href="#L250" data-a="250" data-b="250">250</a> 行 。</li>
+<li>練習：為什麼 第 <a class="lr" href="#L238" data-a="238" data-b="238">238</a> 行 可以重用 <code>event</code>，不會丟失已保存的溫度？＿＿＿＿。</li>
+</ul>
+<h3 id="setup_1">setup：初始化導讀卡</h3>
+<pre class="mermaid">flowchart LR
+  A[&quot;規格換算毫秒並設下限&quot;] --&gt; B[&quot;首次取樣&quot;] --&gt; C[&quot;記錄完成後時間&quot;]
+</pre>
+<p class="ex">對照程式：第 <a class="lr" href="#L289" data-a="289" data-b="298">289–298</a> 行</p>
+<p>完整函式原碼在第 5 節；本段聚焦最後三項動作（ 第 <a class="lr" href="#L255" data-a="255" data-b="298">255–298</a> 行 ）。</p>
+<ul>
+<li>作用：啟動周邊並準備首筆資料（ 第 <a class="lr" href="#L255" data-a="255" data-b="298">255–298</a> 行 ）。</li>
+<li>輸入：全域物件及 <code>getSensor</code> 規格（ 第 <a class="lr" href="#L260" data-a="260" data-b="290">260–290</a> 行 ）。</li>
+<li>輸出：初始化裝置，改寫 <code>delayMS,lastSensorRead</code>，並透過取樣改寫三個顯示狀態（ 第 <a class="lr" href="#L290" data-a="290" data-b="297">290–297</a> 行 ）。</li>
+<li>關鍵行： 第 <a class="lr" href="#L290" data-a="290" data-b="290">290</a>、<a class="lr" href="#L296" data-a="296" data-b="296">296</a>、<a class="lr" href="#L297" data-a="297" data-b="297">297</a> 行 。</li>
+<li>練習：<code>min_delay=1000000</code> 時，最後 <code>delayMS</code> 是多少？＿＿＿＿。</li>
+</ul>
+<h3 id="loop_1">loop：持續運轉導讀卡</h3>
+<pre class="mermaid">flowchart LR
+  A[&quot;啟動分頁並重畫同一狀態&quot;] --&gt; B[&quot;完成後等待並推進位移&quot;] --&gt; C[&quot;超過終點就復位&quot;]
+</pre>
+<p class="ex">對照程式：第 <a class="lr" href="#L313" data-a="313" data-b="324">313–324</a> 行</p>
+<p>完整函式原碼在第 5 節；本段聚焦繪圖與動畫順序（ 第 <a class="lr" href="#L301" data-a="301" data-b="325">301–325</a> 行 ）。</p>
+<ul>
+<li>作用：調度到期取樣、繪圖與跑馬燈（ 第 <a class="lr" href="#L303" data-a="303" data-b="324">303–324</a> 行 ）。</li>
+<li>輸入：時間與全域狀態；<code>getWeatherStatusText</code> 的回傳指標（ 第 <a class="lr" href="#L303" data-a="303" data-b="311">303–311</a> 行 ）。</li>
+<li>輸出：可能更新讀值與時間戳，每圈輸出畫面並改位移（ 第 <a class="lr" href="#L305" data-a="305" data-b="323">305–323</a> 行 ）。</li>
+<li>關鍵行： 第 <a class="lr" href="#L304" data-a="304" data-b="304">304</a>、<a class="lr" href="#L316" data-a="316" data-b="316">316</a>、<a class="lr" href="#L321" data-a="321" data-b="321">321</a> 行 。</li>
+<li>練習：為什麼文字位移更新安排在 <code>nextPage()</code> 迴圈完成之後？＿＿＿＿。</li>
+</ul>
+<h2 id="8">8. 資料流與變數追蹤</h2>
+<h3 id="_11">資料流向圖</h3>
+<pre class="mermaid">flowchart LR
+  HW[DHT 硬體] --&gt; EV[event：先溫度後濕度]
+  EV --&gt; RD[readDHTSensor]
+  RD --&gt; TH[currentTemp 與 currentHum]
+  TH --&gt; GS[getWeatherSymbol]
+  GS --&gt; CS[currentSymbol]
+  TH --&gt; OK[sensorOk]
+  CS --&gt; GT[getWeatherStatusText]
+  OK --&gt; GT
+  GT --&gt; MSG[statusMsg]
+  TH --&gt; DB[drawDashboard]
+  CS --&gt; DB
+  MSG --&gt; DB
+  OFF[scrollOffset] --&gt; DB
+  DB --&gt; BUF[U8g2 頁緩衝]
+  BUF --&gt; OLED[OLED]
+  CLK[millis] --&gt; T[now 與 lastSensorRead]
+  T --&gt; DUE[到期判斷]
+  DUE --&gt; RD
+</pre>
+<p>圖示依據： 第 <a class="lr" href="#L226" data-a="226" data-b="250">226–250</a> 行 、 第 <a class="lr" href="#L303" data-a="303" data-b="323">303–323</a> 行 。序列輸出是另一條旁路，不是 OLED 顯示必經的輸入（ 第 <a class="lr" href="#L228" data-a="228" data-b="251">228–251</a> 行 ）。</p>
+<h3 id="_12">資料旅程表</h3>
+<p>假設此次事件回傳 26.5°C、62.0%RH，原狀態為 25.0、50.0、<code>SUN=0</code>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步驟</th>
+<th>從哪裡到哪裡</th>
+<th>行號</th>
+<th>發生什麼</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>DHT → <code>event.temperature</code></td>
+<td>第 <a class="lr" href="#L226" data-a="226" data-b="226">226</a> 行</td>
+<td>取得 26.5</td>
+</tr>
+<tr>
+<td>2</td>
+<td>event → <code>currentTemp</code></td>
+<td>第 <a class="lr" href="#L227" data-a="227" data-b="234">227–234</a> 行</td>
+<td>非 NaN，保存並印出</td>
+</tr>
+<tr>
+<td>3</td>
+<td>DHT → 同一 <code>event.relative_humidity</code></td>
+<td>第 <a class="lr" href="#L238" data-a="238" data-b="238">238</a> 行</td>
+<td>事件容器被重用，取得 62.0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>event → <code>currentHum</code></td>
+<td>第 <a class="lr" href="#L239" data-a="239" data-b="246">239–246</a> 行</td>
+<td>保存 62.0</td>
+</tr>
+<tr>
+<td>5</td>
+<td>兩個全域值 → 分類 → <code>currentSymbol</code></td>
+<td>第 <a class="lr" href="#L250" data-a="250" data-b="250">250</a> 行</td>
+<td>第一個成功門檻是 <code>hum&gt;=55</code>，代碼 1</td>
+</tr>
+<tr>
+<td>6</td>
+<td>讀值 → <code>sensorOk</code> → <code>statusMsg</code></td>
+<td>第 <a class="lr" href="#L310" data-a="310" data-b="311">310–311</a> 行</td>
+<td><code>true</code>，選 <code>PARTLY CLOUDY - Comfort</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td>狀態 → <code>drawDashboard</code> → OLED</td>
+<td>第 <a class="lr" href="#L314" data-a="314" data-b="317">314–317</a> 行</td>
+<td>同一份數值畫完所有頁</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>scrollOffset</code> → 下一圈</td>
+<td>第 <a class="lr" href="#L320" data-a="320" data-b="323">320–323</a> 行</td>
+<td>本圈畫完才加 2 或復位</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="_13">追蹤一：一次輸入如何改變全域值</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>已執行到</th>
+<th><code>event</code> 本次有效欄位</th>
+<th style="text-align: right;"><code>currentTemp</code></th>
+<th style="text-align: right;"><code>currentHum</code></th>
+<th style="text-align: right;"><code>currentSymbol</code></th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>呼叫前</td>
+<td>尚未填入</td>
+<td style="text-align: right;">25.0</td>
+<td style="text-align: right;">50.0</td>
+<td style="text-align: right;">0</td>
+<td>前一筆完整狀態</td>
+</tr>
+<tr>
+<td>第 <a class="lr" href="#L226" data-a="226" data-b="226">226</a> 行</td>
+<td>temperature=26.5</td>
+<td style="text-align: right;">25.0</td>
+<td style="text-align: right;">50.0</td>
+<td style="text-align: right;">0</td>
+<td>先只有事件更新</td>
+</tr>
+<tr>
+<td>第 <a class="lr" href="#L231" data-a="231" data-b="231">231</a> 行</td>
+<td>temperature=26.5</td>
+<td style="text-align: right;">26.5</td>
+<td style="text-align: right;">50.0</td>
+<td style="text-align: right;">0</td>
+<td>新溫度配舊濕度，暫時不一致</td>
+</tr>
+<tr>
+<td>第 <a class="lr" href="#L238" data-a="238" data-b="238">238</a> 行</td>
+<td>relative_humidity=62.0</td>
+<td style="text-align: right;">26.5</td>
+<td style="text-align: right;">50.0</td>
+<td style="text-align: right;">0</td>
+<td>不再依賴 event 的舊溫度欄位</td>
+</tr>
+<tr>
+<td>第 <a class="lr" href="#L243" data-a="243" data-b="243">243</a> 行</td>
+<td>relative_humidity=62.0</td>
+<td style="text-align: right;">26.5</td>
+<td style="text-align: right;">62.0</td>
+<td style="text-align: right;">0</td>
+<td>兩數值更新，分類仍舊</td>
+</tr>
+<tr>
+<td>第 <a class="lr" href="#L250" data-a="250" data-b="250">250</a> 行</td>
+<td>relative_humidity=62.0</td>
+<td style="text-align: right;">26.5</td>
+<td style="text-align: right;">62.0</td>
+<td style="text-align: right;">1</td>
+<td>完整狀態更新完成</td>
+</tr>
+</tbody>
+</table></div>
+<p>這段暫時不一致在目前單一順序流程下，不會直接被 OLED 看到，因為讀取完成才進入繪圖；若以後加入另一個並行讀取狀態的工作，就要考慮成組發布資料（ 第 <a class="lr" href="#L306" data-a="306" data-b="316">306–316</a> 行 ）。</p>
+<h3 id="_14">追蹤二：跨圈定時與位移</h3>
+<p>以下是刻意選定的 <code>now</code>，不是假設每圈固定相差 25ms。初始 <code>lastSensorRead=1000,delayMS=2000</code>，文字固定長 19，復位門檻 <code>19×8+4=156</code>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>圈</th>
+<th style="text-align: right;"><code>now</code>； 第 <a class="lr" href="#L303" data-a="303" data-b="303">303</a> 行</th>
+<th style="text-align: right;">進圈 last</th>
+<th>差值≥2000？ 第 <a class="lr" href="#L304" data-a="304" data-b="304">304</a> 行</th>
+<th style="text-align: right;">出圈 last</th>
+<th style="text-align: right;">本圈繪圖位移</th>
+<th style="text-align: right;"><code>+=2</code> 後</th>
+<th style="text-align: right;">最後位移； 第 <a class="lr" href="#L322" data-a="322" data-b="323">322–323</a> 行</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td style="text-align: right;">2999</td>
+<td style="text-align: right;">1000</td>
+<td>1999，假</td>
+<td style="text-align: right;">1000</td>
+<td style="text-align: right;">−128</td>
+<td style="text-align: right;">−126</td>
+<td style="text-align: right;">−126</td>
+</tr>
+<tr>
+<td>B</td>
+<td style="text-align: right;">3000</td>
+<td style="text-align: right;">1000</td>
+<td>2000，真，讀取</td>
+<td style="text-align: right;">3000</td>
+<td style="text-align: right;">−126</td>
+<td style="text-align: right;">−124</td>
+<td style="text-align: right;">−124</td>
+</tr>
+<tr>
+<td>C</td>
+<td style="text-align: right;">3060</td>
+<td style="text-align: right;">3000</td>
+<td>60，假</td>
+<td style="text-align: right;">3000</td>
+<td style="text-align: right;">−124</td>
+<td style="text-align: right;">−122</td>
+<td style="text-align: right;">−122</td>
+</tr>
+<tr>
+<td>後續 X</td>
+<td style="text-align: right;">4900</td>
+<td style="text-align: right;">3000</td>
+<td>1900，假</td>
+<td style="text-align: right;">3000</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">156</td>
+<td style="text-align: right;">156，<code>156&gt;156</code> 假</td>
+</tr>
+<tr>
+<td>後續 Y</td>
+<td style="text-align: right;">4960</td>
+<td style="text-align: right;">3000</td>
+<td>1960，假</td>
+<td style="text-align: right;">3000</td>
+<td style="text-align: right;">156</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">−128，<code>158&gt;156</code> 真</td>
+</tr>
+</tbody>
+</table></div>
+<p>第 <a class="lr" href="#L321" data-a="321" data-b="321">321</a> 行 加 2 後的值不會回頭改變已畫好的本圈畫面。復位邊界為嚴格大於，不是大於等於（ 第 <a class="lr" href="#L314" data-a="314" data-b="323">314–323</a> 行 ）。</p>
+<h3 id="drawscrollstring_1">追蹤三：drawScrollString 內部逐行追蹤</h3>
+<p>固定 <code>s="SUNNY - Dry &amp; Clear"</code>、<code>len=19</code>、<code>width=128</code>；先追 <code>offset=10</code> 的正向分支。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>行號</th>
+<th>執行後的具體值／內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第 <a class="lr" href="#L146" data-a="146" data-b="149">146–149</a> 行</td>
+<td><code>len=19,char_offset=0,dx=0,visible=0</code></td>
+</tr>
+<tr>
+<td>第 <a class="lr" href="#L152" data-a="152" data-b="152">152</a> 行</td>
+<td><code>10&lt;0</code> 假，走 else</td>
+</tr>
+<tr>
+<td>第 <a class="lr" href="#L162" data-a="162" data-b="162">162</a> 行</td>
+<td><code>char_offset=10/8=1</code>，整數除法捨去餘數</td>
+</tr>
+<tr>
+<td>第 <a class="lr" href="#L163" data-a="163" data-b="163">163</a> 行</td>
+<td><code>1&gt;=19</code> 假，繼續</td>
+</tr>
+<tr>
+<td>第 <a class="lr" href="#L164" data-a="164" data-b="164">164</a> 行</td>
+<td><code>dx=10-1×8=2</code></td>
+</tr>
+<tr>
+<td>第 <a class="lr" href="#L165" data-a="165" data-b="165">165</a> 行</td>
+<td><code>visible=19-1=18</code></td>
+</tr>
+<tr>
+<td>第 <a class="lr" href="#L166" data-a="166" data-b="167">166–167</a> 行</td>
+<td><code>18&gt;128/8+1=17</code> 真，改為 17</td>
+</tr>
+<tr>
+<td>第 <a class="lr" href="#L169" data-a="169" data-b="169">169</a> 行</td>
+<td>從 <code>s+1</code> 複製 17 bytes：<code>UNNY - Dry &amp; Clea</code>；此刻不保證已有終止字元</td>
+</tr>
+<tr>
+<td>第 <a class="lr" href="#L170" data-a="170" data-b="170">170</a> 行</td>
+<td><code>buf[17]='\0'</code>，得到可安全當字串的 17 字元片段</td>
+</tr>
+<tr>
+<td>第 <a class="lr" href="#L171" data-a="171" data-b="171">171</a> 行</td>
+<td>邏輯繪圖起點 x=−2、基線 y=63；傳入無號座標時的表示見下表</td>
+</tr>
+</tbody>
+</table></div>
+<p>再看進場分支；邏輯座標使用數學上的帶正負位置，不能直接當作 <code>dx</code> 的儲存值。以 16-bit <code>u8g2_uint_t</code>、32-bit <code>size_t</code> 的情境示範：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th style="text-align: right;">offset</th>
+<th style="text-align: right;"><code>char_offset</code>； 第 <a class="lr" href="#L153" data-a="153" data-b="153">153</a> 行</th>
+<th style="text-align: right;">邏輯餘量</th>
+<th style="text-align: right;"><code>dx</code> 儲存值； 第 <a class="lr" href="#L154" data-a="154" data-b="154">154</a> 行</th>
+<th style="text-align: right;"><code>visible</code>（len=19）</th>
+<th>第 <a class="lr" href="#L160" data-a="160" data-b="160">160</a> 行 最終座標值／邏輯位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">−128</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">未計算， 第 <a class="lr" href="#L155" data-a="155" data-b="155">155</a> 行 先 return</td>
+<td>不畫字</td>
+</tr>
+<tr>
+<td style="text-align: right;">−126</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">−6</td>
+<td style="text-align: right;">65530</td>
+<td style="text-align: right;">2</td>
+<td>轉為座標型別後 126／右邊緣進場</td>
+</tr>
+<tr>
+<td style="text-align: right;">−8</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">16</td>
+<td>8</td>
+</tr>
+<tr>
+<td style="text-align: right;">−2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">−2</td>
+<td style="text-align: right;">65534</td>
+<td style="text-align: right;">17</td>
+<td>2</td>
+</tr>
+<tr>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0（else）</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">17</td>
+<td>0</td>
+</tr>
+</tbody>
+</table></div>
+<p>無號轉換按模數儲存，例如 −6 對 65536 取模為 65530；這不等於本程式必定把文字畫在錯誤位置。相同設計也見於 <a href="https://github.com/olikraus/u8g2/blob/master/sys/arduino/u8g2_page_buffer/Weather/Weather.ino">U8g2 Weather 範例</a>；型別定義可核對 <a href="https://github.com/olikraus/u8g2/blob/master/csrc/u8g2.h">u8g2.h</a>。本機所裝版本的負座標裁切仍<span class="tbc">待查證</span>，需用 −126、−2、2 等位移實測（ 第 <a class="lr" href="#L148" data-a="148" data-b="171">148–171</a> 行 ）。</p>
+<p><code>buf</code> 每次會被覆寫，但本程式在每次繪字前補終止字元，且在固定 128 寬下最多複製 17 bytes，<code>17+1&lt;=36</code>；不能僅因為有 <code>strncpy</code> 就斷言溢位（ 第 <a class="lr" href="#L145" data-a="145" data-b="170">145–170</a> 行 ）。</p>
+<p>練習一：原值 26.5、62.0、1；下一次溫度 <code>NAN</code>、濕度 90.0，填出 第 <a class="lr" href="#L229" data-a="229" data-b="229">229</a>、<a class="lr" href="#L243" data-a="243" data-b="243">243</a>、<a class="lr" href="#L250" data-a="250" data-b="250">250</a>、<a class="lr" href="#L310" data-a="310" data-b="311">310–311</a> 行 之後的狀態。＿＿＿＿。</p>
+<p>練習二：<code>offset=184,len=23,width=128</code>， 第 <a class="lr" href="#L163" data-a="163" data-b="163">163</a> 行 是否提早返回？若文字剛換成長 19，動畫還要經過哪些判斷才復位？＿＿＿＿。</p>
+<h2 id="9">9. 查證與問題</h2>
+<h3 id="_15">查核範圍與判斷標準</h3>
+<p>未在原碼中發現能單靠閱讀就確定「必然當機」的路徑；尚未編譯，不能據此宣稱程式可在使用者環境成功編譯。以下把已確認的說明問題、條件式風險與硬體<span class="tbc">待查證</span>分開列出。所有問題都附小實驗，數值案例依原碼推演。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>編號／優先序</th>
+<th>面向與行號</th>
+<th>現象、原因與影響</th>
+<th>驗證方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Q1／高</td>
+<td>不一致； 第 <a class="lr" href="#L7" data-a="7" data-b="7">7</a> 行 、 第 <a class="lr" href="#L67" data-a="67" data-b="94">67–94</a> 行</td>
+<td>「天氣」實際只有溫濕度門檻；沒有雨量、雷電或天氣服務輸入。把結果當實際天氣會誤解量測能力；<code>Comfort</code> 同樣未附模型</td>
+<td>用同一組 28°C、85%RH 在不同天氣情境推演，輸出始終相同；檢查資料流是否存在降雨輸入</td>
+</tr>
+<tr>
+<td>Q2／高</td>
+<td>硬體與初始化錯誤處理； 第 <a class="lr" href="#L13" data-a="13" data-b="20">13–20</a> 行 、 第 <a class="lr" href="#L36" data-a="36" data-b="51">36–51</a> 行 、 第 <a class="lr" href="#L260" data-a="260" data-b="264">260–264</a> 行</td>
+<td>未顯式設定 I2C 位址及腳位，也沒有 OLED 連線失敗的使用者提示；實際型號、上拉與模組電壓<span class="tbc">待查證</span></td>
+<td>先核對模組規格與板型，再用 I2C 掃描找位址；斷開 OLED，觀察序列是否仍繼續。<code>u8g2.begin()</code> 回傳值不能直接當成有螢幕回應的證據</td>
+</tr>
+<tr>
+<td>Q3／中</td>
+<td>資源與時間／註解； 第 <a class="lr" href="#L9" data-a="9" data-b="9">9</a> 行 、 第 <a class="lr" href="#L303" data-a="303" data-b="320">303–320</a> 行</td>
+<td><code>millis</code> 只避免等兩秒的取樣忙等；分頁傳輸、DHT 呼叫及每圈 <code>delay(25)</code> 仍花時間。動畫速度因此隨一圈耗時變化</td>
+<td>在桌面副本於繪圖前後記錄 <code>micros()</code>，比較正常、取樣與斷線時的一圈耗時；不要逐頁大量列印以免改變結果</td>
+</tr>
+<tr>
+<td>Q4／中</td>
+<td>顯示邊界； 第 <a class="lr" href="#L197" data-a="197" data-b="214">197–214</a> 行</td>
+<td>數字從 x=66 起算，右側只剩 62 像素；100.0%、負溫或較寬單位可能超出版面。是否截斷<span class="tbc">待查證</span>，不能只看字元數下結論</td>
+<td>固定輸入 −40.0、80.0、100.0% 等值，量測完整文字的實際字型寬度並拍照；檢查是否超過 x=127</td>
+</tr>
+<tr>
+<td>Q5／中</td>
+<td>有號／無號與移植； 第 <a class="lr" href="#L148" data-a="148" data-b="171">148–171</a> 行</td>
+<td><code>dx</code> 是無號，進場分支會保存模數值；現行範例也用這個模式，不能直接判成錯誤。改平台、型別或裁切實作時需重新確認</td>
+<td>記錄 <code>sizeof(u8g2_uint_t)</code>、<code>sizeof(size_t)</code>，對照 offset=−126、−2、0、2；確認每兩像素連續移動</td>
+</tr>
+<tr>
+<td>Q6／中</td>
+<td>動畫狀態； 第 <a class="lr" href="#L311" data-a="311" data-b="311">311</a> 行 、 第 <a class="lr" href="#L321" data-a="321" data-b="323">321–323</a> 行</td>
+<td>換狀態文字時沿用舊位移。長 27 的錯誤字串若在 offset=180 換成長 19 的文字，本圈 <code>char_offset=22&gt;=19</code> 會不畫字，圈尾才復位；若字串變長則可從中途開始</td>
+<td>固定 offset=180，切換長 27→19、19→27 的文字；記錄首幀內容與位移，不誇大成永久不顯示</td>
+</tr>
+<tr>
+<td>Q7／中</td>
+<td>風險與資料品質； 第 <a class="lr" href="#L68" data-a="68" data-b="68">68</a> 行 、 第 <a class="lr" href="#L227" data-a="227" data-b="243">227–243</a> 行 、 第 <a class="lr" href="#L310" data-a="310" data-b="310">310</a> 行</td>
+<td>只驗 NaN，沒有有限值與合理範圍檢查；合成輸入 <code>hum=101</code> 或無限大仍可被視為有效。不是斷言正常 DHT 一定會產生這些值</td>
+<td>在獨立測試副本餵入 101、−1、正無限大與 NaN，觀察有效性與分類；再定義允許範圍</td>
+</tr>
+<tr>
+<td>Q8／低</td>
+<td>重複設定／可讀性； 第 <a class="lr" href="#L36" data-a="36" data-b="36">36</a> 行 、 第 <a class="lr" href="#L86" data-a="86" data-b="86">86</a> 行 、 第 <a class="lr" href="#L71" data-a="71" data-b="77">71–77</a> 行 、 第 <a class="lr" href="#L151" data-a="151" data-b="171">151–171</a> 行</td>
+<td>GPIO16 錯誤文字、門檻、每字 8px 與畫面尺寸散在多處；改腳位時訊息可能仍指向舊腳</td>
+<td>只改 <code>DHTPIN</code> 為另一個已確認可用腳，模擬錯誤，檢查文字；搜尋所有 8、128 與門檻值</td>
+</tr>
+<tr>
+<td>Q9／低</td>
+<td>相依性與來源； 第 <a class="lr" href="#L3" data-a="3" data-b="3">3</a> 行 、 第 <a class="lr" href="#L23" data-a="23" data-b="33">23–33</a> 行</td>
+<td>有標明整合來源名稱及作者，但沒記板核心／函式庫版本，也沒附確切來源連結或原檔；難以重現</td>
+<td>記錄 IDE、核心、函式庫版本並保留編譯輸出；比對本機 <code>Weather.ino</code> 與 <code>DHT_U.cpp</code> 的實際版本</td>
+</tr>
+<tr>
+<td>Q10／低</td>
+<td>註解、圖形尺寸； 第 <a class="lr" href="#L100" data-a="100" data-b="100">100</a> 行 、 第 <a class="lr" href="#L126" data-a="126" data-b="140">126–140</a> 行</td>
+<td>U8g2 在此使用字型 glyph，不能僅據「向量圖示」註解就認為可任意縮放；溫度計刻度到 x+7，含端點的寬度至少 8px，非註解的 7px；水滴幾何涵蓋 y 到 y+13，與 15px 標示需說明是否含留白</td>
+<td>在方格紙列出幾何端點，或框住像素實測邊界；查字型格式，區分來源圖示與實際繪製方式</td>
+</tr>
+</tbody>
+</table></div>
+<p>關於 Q2：U8g2 文件描述 <code>begin()</code> 固定回傳成功值，故不宜只加 <code>if (!u8g2.begin())</code> 就宣稱完成硬體探測；需另設 I2C 偵測。 第 <a class="lr" href="#L260" data-a="260" data-b="260">260</a> 行 目前沒有實體回應檢查。<a href="https://github.com/olikraus/u8g2/wiki/u8g2reference#begin">U8g2 begin 文件</a></p>
+<h3 id="_16">已有的錯誤處理與看起來可疑、其實合理</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>現象</th>
+<th>為什麼合理／限制</th>
+<th>如何驗證</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>沒使用 <code>getEvent()</code> 的布林回傳值； 第 <a class="lr" href="#L226" data-a="226" data-b="239">226–239</a> 行</td>
+<td>線上 Adafruit 實作的 <code>getEvent()</code> 即使讀值無效仍回 <code>true</code>；以事件欄位 <code>isnan</code> 判斷有理由。本機版本仍<span class="tbc">待查證</span></td>
+<td>查看本機 <code>DHT_U.cpp</code>，再模擬或斷開 DHT，觀察 NaN 分支。<a href="https://github.com/adafruit/DHT-sensor-library/blob/master/DHT_U.cpp">官方實作</a></td>
+</tr>
+<tr>
+<td>失敗就覆寫為 <code>NAN</code>； 第 <a class="lr" href="#L229" data-a="229" data-b="229">229</a>、<a class="lr" href="#L241" data-a="241" data-b="241">241</a> 行</td>
+<td>不把舊讀值假裝成新值；OLED 顯示占位，錯誤文字優先於分類（ 第 <a class="lr" href="#L85" data-a="85" data-b="86">85–86</a> 行 、 第 <a class="lr" href="#L199" data-a="199" data-b="214">199–214</a> 行 ）</td>
+<td>分別模擬只有一欄無效與兩欄都無效；對照序列與畫面</td>
+</tr>
+<tr>
+<td>兩次 <code>getEvent</code> 共用一個 event； 第 <a class="lr" href="#L223" data-a="223" data-b="243">223–243</a> 行</td>
+<td>溫度已先存到 <code>currentTemp</code> 才重用容器，不必維持兩份事件</td>
+<td>按第 8 節追蹤表逐步檢查；重用後勿再讀舊事件的溫度欄位</td>
+</tr>
+<tr>
+<td>連著讀溫度與濕度； 第 <a class="lr" href="#L226" data-a="226" data-b="226">226</a>、<a class="lr" href="#L238" data-a="238" data-b="238">238</a> 行</td>
+<td>不等於一定做兩次完整實體交易；官方底層有間隔內快取。本機實際版本與時序仍<span class="tbc">待查證</span></td>
+<td>查本機 <code>DHT::read()</code>，或以邏輯分析儀看 DATA；不要擅加兩秒 delay。<a href="https://github.com/adafruit/DHT-sensor-library/blob/master/DHT.cpp">DHT 底層來源</a></td>
+</tr>
+<tr>
+<td><code>switch</code> 中有的沒有 break； 第 <a class="lr" href="#L89" data-a="89" data-b="94">89–94</a> 行</td>
+<td>這些分支已用 <code>return</code> 離開函式；畫圖的另一個 switch 則都有 <code>break</code>（ 第 <a class="lr" href="#L105" data-a="105" data-b="121">105–121</a> 行 ）</td>
+<td>用代碼 3 追蹤兩個函式，檢查實際執行路徑</td>
+</tr>
+<tr>
+<td><code>buf[36]</code> 搭配 <code>strncpy</code>； 第 <a class="lr" href="#L145" data-a="145" data-b="170">145–170</a> 行</td>
+<td>固定 128 寬下最多取 17 bytes，再補 <code>\0</code>，目前容量足夠；不是任意寬度都安全。若改寬度到 280，理論上可取 36，再寫 <code>buf[36]</code> 越界</td>
+<td>保持目前尺寸先算上界；未來一般化時用 <code>sizeof(buf)-1</code> 限制，不在本講義改原碼</td>
+</tr>
+<tr>
+<td><code>now-last</code> 可能跨越溢位； 第 <a class="lr" href="#L303" data-a="303" data-b="305">303–305</a> 行</td>
+<td>兩者皆 32-bit 無號，減法取模可跨一次回捲：<code>now=100,last=4294966296</code> 時差為 1100ms。前提是沒有相隔整個約 49.7 天的計數週期而完全不檢查</td>
+<td>使用合成數值測試 1100ms 與到期邊界；不要換成直接比較 <code>now&gt;=last+delayMS</code></td>
+</tr>
+<tr>
+<td><code>sensor</code> 被覆寫後才算間隔； 第 <a class="lr" href="#L268" data-a="268" data-b="268">268</a>、<a class="lr" href="#L279" data-a="279" data-b="279">279</a>、<a class="lr" href="#L290" data-a="290" data-b="290">290</a> 行</td>
+<td>目前用的是濕度規格。線上 DHT Unified 對同型感測器的兩種介面採同一套最小間隔，因此不能直接判為錯誤；泛化其他感測器需比較兩者</td>
+<td>查本機兩次 <code>getSensor</code> 結果；若未來不同則取較保守的間隔</td>
+</tr>
+</tbody>
+</table></div>
+<p>記憶體方面，原碼可確定 <code>buf</code> 為 36 bytes，六個一般全域數值變數的名義寬度總計 19 bytes（兩個 uint32、兩個 float 在 32-bit float 前提下、uint8、int16）；實際含物件、對齊、堆疊與字型的總用量不能由此直接相加。OLED 單色完整像素資料為 <code>128×64/8=1024 bytes</code>； <code>_1_</code> 的實際頁緩衝及物件開銷應查編譯配置，不把 1024 誤稱目前頁緩衝用量（ 第 <a class="lr" href="#L45" data-a="45" data-b="64">45–64</a> 行 、 第 <a class="lr" href="#L145" data-a="145" data-b="145">145</a> 行 、 第 <a class="lr" href="#L223" data-a="223" data-b="223">223</a> 行 、 第 <a class="lr" href="#L267" data-a="267" data-b="267">267</a> 行 ）。</p>
+<h3 id="_17">測試案例表</h3>
+<p>下列為<strong>待執行案例及預期</strong>，不是硬體測試通過清單。輸入格式為 <code>(溫度,濕度)</code>；分類代碼只代表作者規則。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>輸入／操作</th>
+<th>預期結果</th>
+<th>依據</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(26.5,54.9)／(26.5,55.0)</td>
+<td>0／1</td>
+<td>第 <a class="lr" href="#L77" data-a="77" data-b="80">77–80</a> 行</td>
+</tr>
+<tr>
+<td>(26.5,69.9)／(26.5,70.0)</td>
+<td>1／2</td>
+<td>第 <a class="lr" href="#L75" data-a="75" data-b="78">75–78</a> 行</td>
+</tr>
+<tr>
+<td>(26.5,79.9)／(26.5,80.0)</td>
+<td>2／3</td>
+<td>第 <a class="lr" href="#L73" data-a="73" data-b="76">73–76</a> 行</td>
+</tr>
+<tr>
+<td>(28.0,84.9)／(28.0,85.0)</td>
+<td>3／4</td>
+<td>第 <a class="lr" href="#L71" data-a="71" data-b="74">71–74</a> 行</td>
+</tr>
+<tr>
+<td>(27.9,85.0)／(28.0,85.0)</td>
+<td>3／4，證明溫度門檻也重要</td>
+<td>第 <a class="lr" href="#L71" data-a="71" data-b="74">71–74</a> 行</td>
+</tr>
+<tr>
+<td>(NaN,62)／(26.5,NaN)</td>
+<td>圖示代碼 2；錯誤狀態文字；只有無效數值顯示占位</td>
+<td>第 <a class="lr" href="#L68" data-a="68" data-b="69">68–69</a> 行 、 第 <a class="lr" href="#L85" data-a="85" data-b="86">85–86</a> 行 、 第 <a class="lr" href="#L199" data-a="199" data-b="214">199–214</a> 行 、 第 <a class="lr" href="#L310" data-a="310" data-b="311">310–311</a> 行</td>
+</tr>
+<tr>
+<td><code>sensorOk=true,symbol=9</code></td>
+<td><code>Monitoring...</code>；大圖示不畫</td>
+<td>第 <a class="lr" href="#L88" data-a="88" data-b="94">88–94</a> 行 、 第 <a class="lr" href="#L101" data-a="101" data-b="122">101–122</a> 行</td>
+</tr>
+<tr>
+<td><code>last=1000,delayMS=2000,now=2999/3000</code></td>
+<td>前者不讀，後者讀並把 last 設 3000</td>
+<td>第 <a class="lr" href="#L303" data-a="303" data-b="306">303–306</a> 行</td>
+</tr>
+<tr>
+<td><code>last=4294966296,now=100,delayMS=2000</code></td>
+<td>無號差 1100，未到期</td>
+<td>第 <a class="lr" href="#L304" data-a="304" data-b="304">304</a> 行</td>
+</tr>
+<tr>
+<td><code>offset=-128,-126,0,10,152</code>，len=19</td>
+<td>首項不畫；其餘邊界與片段見第 8 節；152/8=19 直接返回</td>
+<td>第 <a class="lr" href="#L152" data-a="152" data-b="171">152–171</a> 行</td>
+</tr>
+<tr>
+<td>len=19、入圈 offset=154／156</td>
+<td>圈尾分別 156／−128</td>
+<td>第 <a class="lr" href="#L321" data-a="321" data-b="323">321–323</a> 行</td>
+</tr>
+<tr>
+<td><code>hum=100.0</code>、<code>temp=-40.0</code></td>
+<td>邏輯輸出一位小數；顯示能否完整容納<span class="tbc">待查證</span></td>
+<td>第 <a class="lr" href="#L197" data-a="197" data-b="214">197–214</a> 行</td>
+</tr>
+<tr>
+<td><code>hum=101</code> 或正無限大</td>
+<td>只做 NaN 檢查，不會自動當成錯誤；列為 Q7 風險</td>
+<td>第 <a class="lr" href="#L68" data-a="68" data-b="80">68–80</a> 行 、 第 <a class="lr" href="#L310" data-a="310" data-b="310">310</a> 行</td>
+</tr>
+<tr>
+<td>DHT 斷線／型號選錯</td>
+<td>若函式庫回 NaN，錯誤訊息及占位應出現；實際行為待硬體驗證</td>
+<td>第 <a class="lr" href="#L40" data-a="40" data-b="40">40</a> 行 、 第 <a class="lr" href="#L227" data-a="227" data-b="250">227–250</a> 行</td>
+</tr>
+<tr>
+<td>OLED 斷線／I2C 位址不符</td>
+<td>程式沒有專門的 OLED 錯誤提示；序列仍可能正常</td>
+<td>第 <a class="lr" href="#L260" data-a="260" data-b="265">260–265</a> 行 、 第 <a class="lr" href="#L314" data-a="314" data-b="317">314–317</a> 行</td>
+</tr>
+</tbody>
+</table></div>
+<p>審查結論：這支程式適合教「感測→共享狀態→分類→分頁繪圖」，函式分工清楚，也已有 NaN 防護與取樣間隔下限。先釐清 Q1 的量測意義及 Q2 的實體環境，再處理 Q3–Q7 的時間、版面與狀態邊界，最後集中設定與補足版本紀錄（Q8–Q10）。目前沒有足夠證據把無號座標模式或共用 event 直接判為錯誤。</p>
+<h2 id="10">10. 改進</h2>
+<p>本節是建議，沒有改寫原始 <code>.ino</code>。先讓學生說出想保留的行為，再做單一修改與比較。</p>
+<h3 id="_18">工程角度：好讀、好改</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>對應問題</th>
+<th>改什麼</th>
+<th>為什麼</th>
+<th>怎麼驗證</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Q1</td>
+<td>將天氣文字改為「乾燥／潮濕／高溫高濕」等可由量測支持的名稱，或明確標示示意分類</td>
+<td>避免把環境狀態當成天氣預測</td>
+<td>原始分類邊界測試保持一致；畫面名稱正確描述資料來源（ 第 <a class="lr" href="#L67" data-a="67" data-b="94">67–94</a> 行 ）</td>
+</tr>
+<tr>
+<td>Q8</td>
+<td>集中腳位、門檻、字寬、動畫間隔及步進；錯誤文字由 <code>DHTPIN</code> 產生</td>
+<td>同一設定只維護一處</td>
+<td>改腳位後訊息同步；用第 9 節邊界表驗證（ 第 <a class="lr" href="#L36" data-a="36" data-b="36">36</a> 行 、 第 <a class="lr" href="#L86" data-a="86" data-b="86">86</a> 行 、 第 <a class="lr" href="#L71" data-a="71" data-b="77">71–77</a> 行 、 第 <a class="lr" href="#L320" data-a="320" data-b="323">320–323</a> 行 ）</td>
+</tr>
+<tr>
+<td>Q9</td>
+<td>記錄板型、核心／函式庫版本、來源連結與編譯步驟</td>
+<td>讓下一位老師能重現</td>
+<td>在另一套相同版本環境編譯，再比較輸出與警告（ 第 <a class="lr" href="#L3" data-a="3" data-b="3">3</a> 行 、 第 <a class="lr" href="#L23" data-a="23" data-b="33">23–33</a> 行 ）</td>
+</tr>
+<tr>
+<td>Q5、Q10</td>
+<td>為負座標模數表示與每種座標原點補上精確註解，修正圖示尺寸文字</td>
+<td>保留可用模式時也能讀懂限制</td>
+<td>以第 8 節數值表與格線圖核對（ 第 <a class="lr" href="#L126" data-a="126" data-b="171">126–171</a> 行 ）</td>
+</tr>
+<tr>
+<td>Q7</td>
+<td>未來把溫度、濕度、有效性與分類集中成一個狀態結構</td>
+<td>成組發布新樣本，降低擴充並行工作時的不一致</td>
+<td>刻意加入讀取者，確認一次只看見完整新樣本；目前沒有並行問題就不急著加鎖（ 第 <a class="lr" href="#L229" data-a="229" data-b="250">229–250</a> 行 ）</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="_19">實際運作角度：時間、資源與失敗行為</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>對應問題</th>
+<th>改什麼</th>
+<th>為什麼</th>
+<th>怎麼驗證</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Q2</td>
+<td>明確設定並記錄 I2C 腳位與位址，增加獨立連線偵測及錯誤提示</td>
+<td><code>begin</code> 不能保證硬體回應；接錯線時有診斷線索</td>
+<td>正常、缺 OLED、位址不符分別試驗；斷線仍應能從序列看到原因（ 第 <a class="lr" href="#L51" data-a="51" data-b="51">51</a> 行 、 第 <a class="lr" href="#L260" data-a="260" data-b="260">260</a> 行 ）</td>
+</tr>
+<tr>
+<td>Q3</td>
+<td>用獨立時間戳控制動畫更新，移除固定 <code>delay(25)</code>，評估需不需要降低重畫頻率</td>
+<td>讓動畫及新增輸入較不受工作量影響；同步 I/O 仍需計時</td>
+<td>量測圈耗時與文字速度；比較加入按鈕後回應延遲（ 第 <a class="lr" href="#L303" data-a="303" data-b="323">303–323</a> 行 ）</td>
+</tr>
+<tr>
+<td>Q4</td>
+<td>量測完整單位字串寬度；必要時縮字型或調整數值起點</td>
+<td>支援負數、100% 與占位文字</td>
+<td>用極端值與錯誤占位拍照確認所有字在 x=0–127（ 第 <a class="lr" href="#L198" data-a="198" data-b="214">198–214</a> 行 ）</td>
+</tr>
+<tr>
+<td>Q6</td>
+<td>偵測狀態文字改變時將位移重設為負顯示寬度</td>
+<td>新訊息從完整起點開始</td>
+<td>以 27→19、19→27 字元切換，檢查第一幀與後續連續性（ 第 <a class="lr" href="#L311" data-a="311" data-b="311">311</a> 行 、 第 <a class="lr" href="#L321" data-a="321" data-b="323">321–323</a> 行 ）</td>
+</tr>
+<tr>
+<td>Q7</td>
+<td>在取得完整樣本後驗有限值與合理範圍，定義錯誤策略</td>
+<td>NaN 檢查不能排除所有不合理資料</td>
+<td>餵入 −1%、101%、無限大、NaN、合法邊界；不要默默截值掩蓋故障（ 第 <a class="lr" href="#L227" data-a="227" data-b="250">227–250</a> 行 、 第 <a class="lr" href="#L310" data-a="310" data-b="310">310</a> 行 ）</td>
+</tr>
+<tr>
+<td>Q5／緩衝區限制</td>
+<td>將複製上限再限制為 <code>sizeof(buf)-1</code>；更改螢幕／字型時重算字寬</td>
+<td>保留目前行為，也能安全一般化</td>
+<td>測固定 128 寬、空字串、長字串與較寬畫布；先保留終止字元空間（ 第 <a class="lr" href="#L145" data-a="145" data-b="170">145–170</a> 行 ）</td>
+</tr>
+</tbody>
+</table></div>
+<p>建議順序：確認硬體與版本（Q2、Q9）→修正量測名稱（Q1）→先量測時間與邊界（Q3–Q7）→逐一修改並重跑相關案例→整理設定與註解（Q8、Q10）。分頁繪圖內維持狀態不變（ 第 <a class="lr" href="#L314" data-a="314" data-b="317">314–317</a> 行 ）是修改時應保留的條件。</p>
+<h2 id="11">11. 應用與延伸</h2>
+<h3 id="_20">動手實驗：先預測，再改一兩行，最後觀察</h3>
+<p>只在複製的實驗草稿上修改；每次還原後再進下一題。預測與觀察都由學生填寫，不附答案。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>實驗</th>
+<th>修改位置與操作</th>
+<th>我的預測</th>
+<th>我的觀察</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A：門檻</td>
+<td>第 <a class="lr" href="#L77" data-a="77" data-b="77">77</a> 行 的 55.0 改 60.0；用濕度 58、溫度 26.5 比較</td>
+<td>＿＿＿＿</td>
+<td>＿＿＿＿</td>
+</tr>
+<tr>
+<td>B：動畫步幅</td>
+<td>第 <a class="lr" href="#L321" data-a="321" data-b="321">321</a> 行 的 2 改 4；其餘不變，拍固定長度影片</td>
+<td>＿＿＿＿</td>
+<td>＿＿＿＿</td>
+</tr>
+<tr>
+<td>C：等待時間</td>
+<td>第 <a class="lr" href="#L320" data-a="320" data-b="320">320</a> 行 的 25 改 50；比較一圈耗時與跑馬燈速度</td>
+<td>＿＿＿＿</td>
+<td>＿＿＿＿</td>
+</tr>
+<tr>
+<td>D：無效讀值</td>
+<td>第 <a class="lr" href="#L231" data-a="231" data-b="231">231</a> 行 右側改為 <code>NAN</code>；觀察溫度、圖示、濕度與錯誤列</td>
+<td>＿＿＿＿</td>
+<td>＿＿＿＿</td>
+</tr>
+<tr>
+<td>E：版面邊界</td>
+<td>第 <a class="lr" href="#L213" data-a="213" data-b="213">213</a> 行 的數值改固定 <code>100.0</code>；檢查百分比是否完整顯示</td>
+<td>＿＿＿＿</td>
+<td>＿＿＿＿</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="_21">延伸應用</h3>
+<ol>
+<li><strong>教室環境提示器</strong>：沿用 第 <a class="lr" href="#L67" data-a="67" data-b="96">67–96</a> 行 的分類入口，改成有明確依據的室內環境提示。新概念：遲滯（進入與離開門檻不同，避免讀值在邊界附近來回切換）、狀態機、感測器校正；先保留一般資訊用途，不把它作為健康或氣象判定。</li>
+<li><strong>溫濕度趨勢記錄</strong>：沿用 第 <a class="lr" href="#L222" data-a="222" data-b="252">222–252</a> 行 的取樣，把帶時間戳的樣本放進固定大小環形緩衝。新概念：索引回捲、固定記憶體預算、缺值標記、移動平均；比較平滑程度與延遲的取捨。</li>
+<li><strong>真正的天氣與室內量測對照</strong>：保留 第 <a class="lr" href="#L186" data-a="186" data-b="219">186–219</a> 行 的儀表板分區，另外取得具來源與更新時間的外部天氣資料。新概念：網路請求、JSON、逾時、資料過期及同步／非同步 I/O；室內量測與外部資訊各保留自己的來源與時間。</li>
+</ol>
+<h2 id="12">12. 自我檢核與反思</h2>
+<h3 id="_22">五題自我檢核（不附答案）</h3>
+<ol>
+<li>結構：<code>setup</code> 與 <code>loop</code> 的工作如何不同？指出哪段只執行一次、哪段每頁執行。提示： 第 <a class="lr" href="#L255" data-a="255" data-b="298">255–298</a> 行 、 第 <a class="lr" href="#L314" data-a="314" data-b="317">314–317</a> 行 。回答：＿＿＿＿。</li>
+<li>流程：<code>temp=27.9,hum=85.0</code> 與 <code>temp=28.0,hum=85.0</code> 為什麼可能不同？請逐個標真假與未執行。提示： 第 <a class="lr" href="#L68" data-a="68" data-b="80">68–80</a> 行 。回答：＿＿＿＿。</li>
+<li>變數： 第 <a class="lr" href="#L238" data-a="238" data-b="238">238</a> 行 重寫 <code>event</code> 時，先前溫度存在哪裡？哪個時刻分類才同步更新？提示： 第 <a class="lr" href="#L231" data-a="231" data-b="231">231</a>、<a class="lr" href="#L238" data-a="238" data-b="238">238</a>、<a class="lr" href="#L243" data-a="243" data-b="243">243</a>、<a class="lr" href="#L250" data-a="250" data-b="250">250</a> 行 。回答：＿＿＿＿。</li>
+<li>函式庫：<code>enableUTF8Print()</code> 能否保證 <code>drawStr()</code> 畫出任何中文字？還要核對哪些 API 與字型限制？提示： 第 <a class="lr" href="#L151" data-a="151" data-b="151">151</a>、<a class="lr" href="#L160" data-a="160" data-b="160">160</a>、<a class="lr" href="#L171" data-a="171" data-b="171">171</a>、<a class="lr" href="#L261" data-a="261" data-b="261">261</a> 行 。回答：＿＿＿＿。</li>
+<li>時間與型別：32-bit 無號毫秒計數回捲時，為什麼不能直接判定 第 <a class="lr" href="#L304" data-a="304" data-b="304">304</a> 行 出錯？列出這種寫法成立的使用前提。提示： 第 <a class="lr" href="#L45" data-a="45" data-b="46">45–46</a> 行 、 第 <a class="lr" href="#L303" data-a="303" data-b="305">303–305</a> 行 。回答：＿＿＿＿。</li>
+</ol>
+<h3 id="_23">我的反思（學生填寫）</h3>
+<ul>
+<li>原先預測對了多少：＿＿＿＿＿＿＿＿＿＿＿＿</li>
+<li>最難懂的一段與原因：＿＿＿＿＿＿＿＿＿＿＿＿</li>
+<li>我還不確定的事情：＿＿＿＿＿＿＿＿＿＿＿＿</li>
+<li>我實際驗證過的一項與證據：＿＿＿＿＿＿＿＿＿＿＿＿</li>
+<li>下次我會先觀察哪個變數：＿＿＿＿＿＿＿＿＿＿＿＿</li>
+</ul>
+<hr />
+<h2 id="prompt-archive">📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+<h3 id="2026-11-17-095248-codex-id">🔹 [2026-11-17 09:52:48] [Codex / 未知模型 ID] 變更紀錄</h3>
+<ul>
+<li><strong>模型/Agent</strong>: 未知（Codex） / /root</li>
+<li><strong>Prompt 原文</strong>：</li>
+</ul>
+<pre><code class="language-text">$code-review-for-learning 'C:\Users\User\Desktop\onclass\1112-1\1112-1.ino'
+
+繼續
+</code></pre>
+<ul>
+<li><strong>套用技能原文</strong>：使用者提供 <code>D:\code_reviewr\skills\code-review-for-learning\SKILL.md</code>；以下保留該技能完整內容作為本次附帶指令。</li>
+</ul>
+<pre><code class="language-text">---
+name: code-review-for-learning
+description: 教學用分層程式碼導讀：老師或學生想讀懂、review 一支程式（尤其是 AI 協作產生的程式），要產出 CODE_REVIEW.md 與左右對照的 HTML 講義時使用。不用於一般合併前的工程審查。
+---
+
+# 教學用分層程式碼導讀（Code Review for Learning）
+
+&gt; 版本：2026-11-16 21:51 (UTC+08:00)｜模型：claude-fable-5-2
+
+目的不是寫更多程式，而是幫學習者**讀懂已經有的程式**，並把導讀結果整理成可當學習資源的講義：`CODE_REVIEW.md` 與左右對照的 `CODE_REVIEW.html`。程式多半由學生與 AI 協作產生，所以也要檢查 AI 的註解與說法是否和程式實際行為一致。
+
+## 先決定模式
+
+- **講義模式（預設，對象是老師）**：針對指定的程式碼一次產出完整的 `CODE_REVIEW.md`，再轉成 `CODE_REVIEW.html`，由老師帶學生看結果。「我的預測」「我的反思」留白，各節提問保留為練習題，不附答案。
+- **導讀模式（對象是學生，使用者說「帶我讀」「一步一步」時）**：一節一節互動，先問後講。
+
+沒有特別說明時，用講義模式，不必先詢問。
+
+## 基本原則
+
+1. **每個說法都附行號**：例如「`delayMS` 在第 45 行宣告、第 280 行被改寫」。先實際讀檔取得行號，不要憑印象。
+2. **不確定就標示「<span class="tbc">待查證</span>」**：函式庫行為、硬體特性若不能從程式碼本身確認，寫「<span class="tbc">待查證</span>」並說明去哪裡查或怎麼實驗，不要猜。沒有實際執行過程式時，在講義開頭說明這是靜態閱讀的結果。
+3. **註解不等於事實**：註解與 AI 先前的說明都要對照實際程式碼，不一致就列入第 9 節。
+4. **第 10 節之前不改程式**：前面各節只讀不改。
+5. **留白給學生**：標示「學生填寫」的欄位不可代寫。
+6. **語言**：依使用者的語言（預設繁體中文）；識別字、函式名、函式庫名保留原文。以初學者能懂為準，術語第一次出現時用一句話解釋。
+7. **檔案標頭**：每個產生的檔案開頭都要寫上產生日期、時間（含時區）與模型代號。時間用工具或系統時鐘取得，不要猜；模型代號寫自己實際的模型 ID，無法確定時寫「未知」。
+8. **導讀模式另外遵守**：每節先請學生預測或回答，學生回答後才說明；一次只做一節，做完就停，等學生說「下一節」；改進建議先給方向，學生嘗試後才給程式碼。
+
+## 講義的十三節
+
+章節順序跟著程式檔由上往下的順序，讓學生可以邊看程式邊對照。以 Arduino `.ino` 為基準；其他語言照對應關係調整（`#include` 對應 import，`setup()` / `loop()` 對應程式進入點與主迴圈或事件處理）。某一節在這支程式中沒有內容時，保留標題並寫「本程式沒有用到」。
+
+| 節 | 名稱 | 要回答的問題 |
+|---|---|---|
+| 0 | 我的預測 | 還沒細讀前，你覺得這支程式在做什麼？ |
+| 1 | 全覽 | 這支程式做什麼？需要什麼環境？分成哪幾段？ |
+| 2 | 函式庫 | 用了哪些函式庫？各提供什麼功能？ |
+| 3 | 類別與物件 | 建立了哪些物件？建構參數代表什麼？ |
+| 4 | 常數與全域變數 | 資料放在哪裡？誰寫入、誰讀取？ |
+| 5 | 主程式結構 | 程式從哪裡開始？每一圈做什麼？ |
+| 6 | 流程控制 | 程式怎麼決定下一步？哪裡會重複？ |
+| 7 | 自訂函式 | 每個函式負責什麼？誰呼叫誰？ |
+| 8 | 資料流與變數追蹤 | 資料從哪裡來、到哪裡去？變數的值怎麼一步步改變？ |
+| 9 | 查證與問題 | 註解說的和程式做的一樣嗎？哪裡可能出錯？ |
+| 10 | 改進 | 要改的話先改哪一個？為什麼？ |
+| 11 | 應用與延伸 | 改一行會怎樣？還能拿來做什麼？ |
+| 12 | 自我檢核與反思 | 我真的懂了嗎？ |
+
+### 0. 我的預測
+（學生填寫）請學生只看檔名、開頭註解與 import／`#include`，用兩三句話寫下預測。
+
+### 1. 全覽
+- 一句話摘要。
+- 執行環境：平台或開發板、接線或相依套件、需要安裝的函式庫，各附行號。
+- 區段地圖：區段名稱、行號範圍、類別（設定／資料／邏輯／顯示／輸入輸出／主流程）、一句話作用。
+
+### 2. 函式庫
+- 每個 import／`#include` 一列：函式庫、來源、在本程式的用途。
+- 每個實際呼叫到的函式一列：函式、所屬函式庫、做什麼、行號。
+- 「看不出意義的名稱與數字」（字型名稱、編號、座標、門檻值）：代表什麼、去哪裡查。
+
+### 3. 類別與物件
+- 用一兩句話解釋類別、物件、建構式。
+- 物件表：物件名稱、類別、建立位置（行號）、建構參數與意義、代表什麼。包含不用自己建立的內建物件。
+- 說明「建立物件」與「啟動」的差別（例如建構式與 `begin()`），以及 `物件.方法()` 的呼叫方式，各舉本程式的例子。
+- 只有資料的型別（結構）另外列出。
+
+### 4. 常數與全域變數
+- 常數表：名稱、值、行號、意義。
+- 全域變數表：名稱、型別、宣告位置與初值、在哪裡寫入、在哪裡讀取、意義。
+- 說明這些變數為什麼需要是全域的，以及初值的用意。
+- 值得注意的區域變數（`static`、緩衝區、容易誤會的型別）。
+
+### 5. 主程式結構
+- 進入點與初始化（`setup()`）依序做了什麼。
+- 主迴圈（`loop()`）每一圈依序做的事，附行號。
+- 時間行為表：每個動作多久做一次、會不會卡住程式（如 `delay()`、`sleep`、同步 I/O）。
+
+### 6. 流程控制
+獨立一節，專門講「程式怎麼決定下一步做什麼」。
+- 總覽表：種類、出現次數、行號。種類包含循序、`if`、`if / else`、`else if` 鏈、`switch`、`for`、`while`、`do … while`、主迴圈、提早離開（`return`、`break`、`continue`）。沒用到的種類也列出並註明。
+- 每一種結構：一句話解釋；本程式中最具代表性的一處（行號）；判斷條件；用一到三組具體數值做追蹤表，寫出每個判斷的真假與最後結果；這種結構常見的錯誤（判斷順序、漏掉 `break`、邊界值、無窮迴圈）。
+- 慣用寫法：由基本結構組成的常見模式，例如定時檢查、提早返回、用旗標記住狀態。
+
+### 7. 自訂函式
+- 呼叫關係圖（Mermaid `flowchart`）。
+- 每個函式一張導讀卡：作用（一句話）、輸入（參數、讀取的全域變數、硬體訊號）、輸出（回傳值、改寫的全域變數、畫面或其他輸出）、關鍵行（最多三行）、練習一題。
+
+### 8. 資料流與變數追蹤
+獨立一節，專門講「資料怎麼流動、變數的值怎麼改變」。追蹤表一律用具體數值。
+- 資料流向圖（Mermaid `flowchart`）：從輸入到輸出，資料依序經過哪些變數與函式。圖中的文字不要寫行號。
+- 資料旅程表：步驟、資料從哪裡到哪裡、行號、發生什麼事。
+- 變數追蹤表，至少三種：一次輸入造成的變化（關鍵變數在各行執行後的值）；跨圈或跨次呼叫的變化（計數、計時、狀態）；一個函式內部的區域變數逐行追蹤（選最難懂的函式）。
+- 指出變數之間暫時不一致、或可能被意外改寫的時間點。
+- 練習：至少兩題追蹤題。
+
+### 9. 查證與問題
+依下列面向逐項檢查。每個問題寫：行號、現象、為什麼是問題、怎麼驗證（最好是學生能動手做的小實驗）。
+- **錯誤**：會產生錯誤結果或當機。沒有就明說沒有發現。
+- **風險**：特定條件下才出問題（邊界值、型別與有號無號、緩衝區大小、輸入失敗、平台差異）。
+- **錯誤處理**：初始化或讀取失敗時程式怎麼反應；有處理的也列出來當示範。
+- **資源與時間**：記憶體與緩衝區、每圈耗時、哪裡會卡住。
+- **硬體介面**（有硬體時）：腳位、電壓、通訊位址、上拉電阻，是否與說明一致。
+- **相依性**：函式庫與平台的版本是否有記錄、程式出處是否有標明。
+- **不一致**：註解、命名、AI 的說法與實際行為不符；寫死的值和常數定義重複；從別的平台沿用過來的寫法。
+- **可讀性**：魔術數字、重複程式碼、過長的函式。
+- **安全性**（有連網或處理敏感資料時才列）：密碼或金鑰是否寫死。
+- **看起來可疑、其實正確**：列出並說明原因，這和找錯同樣重要。
+- **測試案例表**：輸入或操作、預期結果、依據的行號，要包含邊界值與失敗情況。
+- **審查結論**：一段總評，加上問題的優先序。
+
+### 10. 改進
+分成兩個角度，每項寫「改什麼、為什麼、怎麼驗證」，並對應到第 9 節的問題編號：
+- **工程角度**（好讀、好改）：命名、魔術數字、重複程式碼、設定是否集中、文件與版本記錄。
+- **實際運作角度**（跑起來的表現）：時間與阻塞、記憶體、失敗時的行為、硬體限制。
+最後給建議的執行順序。
+
+### 11. 應用與延伸
+- 動手實驗：三到五個「預測 → 修改 → 觀察」的小實驗，每個只改一兩行。
+- 延伸應用：兩到三個由淺入深的延伸題，說明會用到哪些新概念。
+
+### 12. 自我檢核與反思
+- 自我檢核題：五題，結構、流程、變數、函式庫各至少一題，附行號提示但不附答案。
+- 我的反思（學生填寫）：預測對了多少？哪一段最難懂？還不確定的是什麼？哪一項自己動手驗證過？
+
+## 輸出：`CODE_REVIEW.md`
+
+第一行是 `# 程式碼導讀：&lt;檔名&gt;`，接著空一行寫標頭 `&gt; 產生時間：YYYY-MM-DD HH:MM (UTC±HH:MM)｜模型：&lt;模型代號&gt;｜原始檔：&lt;檔名&gt;（&lt;行數&gt; 行）`（轉成 HTML 時腳本會自動帶入）。之後依序是 `## 0. 我的預測` 到 `## 12. 自我檢核與反思` 十三個二級標題，名稱與上表相同。
+
+程式與導讀要並列：凡是針對一段程式做說明的地方（函式庫引入、物件建立、變數宣告、`setup`、`loop`、每個自訂函式），先放那一段程式碼再說明。程式碼放在程式碼區塊中，每行開頭加原始行號，格式是 `行號 | 程式內容`，內容與原始檔完全相同。
+
+為了讓 HTML 轉換正確：
+- 行號一律寫成「第 12 行」「第 3–9 行」「第 1、5、8 行」（「第」與「行」前後各一個空格）。
+- 呼叫關係圖放在 mermaid 程式碼區塊。
+- 不確定的事項使用「<span class="tbc">待查證</span>」三個字。
+
+## 輸出：`CODE_REVIEW.html`
+
+講義模式下，`CODE_REVIEW.md` 寫完後一定要再產生 `CODE_REVIEW.html`：單一檔案、左右兩欄對照，上課投影用。產生方式，依序嘗試：
+
+1. 找得到 `build_review_html.py` 時（依序找：與這份檔案同一個資料夾下的 `scripts/`；目前的工作資料夾與已連接的資料夾，例如教材庫的 `skills/code-review-for-learning/scripts/`；使用者提供的檔案），直接執行 `python3 build_review_html.py CODE_REVIEW.md &lt;程式碼檔&gt; CODE_REVIEW.html`（需要 `pip install markdown`）。如果 `python3` 不存在、沒有輸出或執行失敗（例如 Windows 上的 Microsoft Store 別名），改用 `python` 執行同一行指令。不要改寫腳本，這樣每份講義的樣子才會一致。
+2. 找不到時，自行產生符合下列規格的單一 HTML 檔，並告訴使用者這次沒有用到腳本：
+   - 左右兩欄：左欄是導讀，右欄是含行號的原始程式碼，兩欄各自捲動；窄螢幕時程式碼固定在上方。
+   - 導讀中每個「第 N 行」都是連結，點了以後右欄捲到那一行並標示；行號範圍則標示整段。
+   - 左欄捲動時，右欄自動跟著捲到目前這一段對應的程式碼並標示；md 中帶行號的程式碼片段在 HTML 中改成「對照程式」連結，不重複顯示。
+   - 右欄在每一段程式的開頭標出該段的名稱，點名稱回到左欄那一段；右欄中有被說明到的程式行要有標記，點了以後左欄跳到提到那一行的說明，重複點則輪流跳到下一處。
+   - 上方有章節導覽；表格可橫向捲動；「<span class="tbc">待查證</span>」用醒目樣式標示；Mermaid 圖要能顯示；支援深色與淺色。
+
+每支程式的講義放在自己的資料夾（程式碼、`CODE_REVIEW.md`、`CODE_REVIEW.html` 三個檔案），教材庫中是 `AI_CodeReview/reviews/&lt;名稱&gt;/`。完成後把 md 與 html 都交給使用者。
+
+## 完成前自我檢查
+
+- 檔案標頭是否有產生日期、時間與模型代號？
+- 十三節是否齊全，順序與名稱是否正確？
+- 說明一段程式的地方，是否都先附上帶行號的程式碼片段，且內容與原始檔相同？
+- 資料流與變數追蹤一節是否有資料流向圖與至少三種追蹤表，且都用具體數值？
+- 每個說法是否都有行號，且與目前檔案一致？
+- 變數表與物件表是否涵蓋所有全域變數、常數與物件？
+- 流程控制一節是否每種結構都有行號與追蹤表，沒用到的種類是否註明？
+- 第 9 節的每個問題是否都附了驗證方法？測試案例表是否包含邊界值與失敗情況？
+- 是否有任何「<span class="tbc">待查證</span>」被寫成了肯定句？
+- 學生填寫的欄位是否保持空白？
+- 講義模式：`CODE_REVIEW.html` 是否已產生，點行號能否對照到程式碼？
+</code></pre>
+<ul>
+<li><strong>變更摘要</strong>：以未更動的 325 行原始碼建立十三節繁體中文教師講義，含函式卡、完整外部呼叫清單、流程控制計數、三類具體追蹤、查核問題與待執行測試。沿用技能轉換腳本產生左右對照 HTML，增補 PDF 匯出、複製與明暗切換；未燒錄、未編譯原始韌體。</li>
+</ul>
+</article></main>
+<aside aria-label="原始程式碼">
+<div class="bar"><span>1112-1.ino</span><span id="where">點左邊的行號看程式，點右邊的行號看說明</span></div>
+<div class="code" id="code"><div class="row" id="L1"><span class="no">1</span><span class="tx"><span class="cm">// ============================================================================</span></span></div><div class="row" id="L2"><span class="no">2</span><span class="tx"><span class="cm">// 1112-1.ino — NodeMCU-32S (ESP32) + DHT 溫濕度感測 + SSD1306 128x64 OLED 版面設計</span></span></div><div class="row" id="L3"><span class="no">3</span><span class="tx"><span class="cm">// 整合來源：1112-1.txt (Adafruit DHT_Unified 範例 + U8g2 Weather.ino 範例)</span></span></div><div class="row" id="L4"><span class="no">4</span><span class="tx"><span class="cm">//</span></span></div><div class="row" id="L5"><span class="no">5</span><span class="tx"><span class="cm">// 【功能特色】</span></span></div><div class="row" id="L6"><span class="no">6</span><span class="tx"><span class="cm">//   1. 透過 NodeMCU-32S 的 GPIO 16 讀取 DHT22/DHT11 溫度 (°C) 與相對濕度 (%RH)</span></span></div><div class="row" id="L7"><span class="no">7</span><span class="tx"><span class="cm">//   2. 依據即時溫濕度自動判斷 5 種天氣狀態，於左側繪製 48x48 Open Iconic 天氣符號</span></span></div><div class="row" id="L8"><span class="no">8</span><span class="tx"><span class="cm">//   3. 規劃 128x64 OLED 黃金三區版面（左區 48x48 天氣圖示、右區溫度計/水滴符號與數值、底區狀態列）</span></span></div><div class="row" id="L9"><span class="no">9</span><span class="tx"><span class="cm">//   4. 採用 millis() 非阻塞定時讀取感測器，搭配底部平滑跑馬燈狀態列</span></span></div><div class="row" id="L10"><span class="no">10</span><span class="tx"><span class="cm">//</span></span></div><div class="row" id="L11"><span class="no">11</span><span class="tx"><span class="cm">// 【硬體接線 (NodeMCU-32S / ESP32)】</span></span></div><div class="row" id="L12"><span class="no">12</span><span class="tx"><span class="cm">//   1. DHT 溫濕度感測器：</span></span></div><div class="row" id="L13"><span class="no">13</span><span class="tx"><span class="cm">//      - VCC  -&gt; 3V3 (3.3V)</span></span></div><div class="row" id="L14"><span class="no">14</span><span class="tx"><span class="cm">//      - DATA -&gt; GPIO 16 (板子上標示 RX2 / IO16 / 16)</span></span></div><div class="row" id="L15"><span class="no">15</span><span class="tx"><span class="cm">//      - GND  -&gt; GND</span></span></div><div class="row" id="L16"><span class="no">16</span><span class="tx"><span class="cm">//   2. SSD1306 OLED (128x64, I2C 介面)：</span></span></div><div class="row" id="L17"><span class="no">17</span><span class="tx"><span class="cm">//      - GND  -&gt; GND</span></span></div><div class="row" id="L18"><span class="no">18</span><span class="tx"><span class="cm">//      - VCC  -&gt; 3V3 (3.3V)</span></span></div><div class="row" id="L19"><span class="no">19</span><span class="tx"><span class="cm">//      - SCL  -&gt; GPIO 22 (ESP32 預設硬體 I2C SCL)</span></span></div><div class="row" id="L20"><span class="no">20</span><span class="tx"><span class="cm">//      - SDA  -&gt; GPIO 21 (ESP32 預設硬體 I2C SDA)</span></span></div><div class="row" id="L21"><span class="no">21</span><span class="tx"><span class="cm">//</span></span></div><div class="row" id="L22"><span class="no">22</span><span class="tx"><span class="cm">// 【需要的 Arduino 函式庫】</span></span></div><div class="row" id="L23"><span class="no">23</span><span class="tx"><span class="cm">//   - DHT sensor library (by Adafruit)</span></span></div><div class="row" id="L24"><span class="no">24</span><span class="tx"><span class="cm">//   - Adafruit Unified Sensor (by Adafruit)</span></span></div><div class="row" id="L25"><span class="no">25</span><span class="tx"><span class="cm">//   - U8g2 (by olikraus)</span></span></div><div class="row" id="L26"><span class="no">26</span><span class="tx"><span class="cm">// ============================================================================</span></span></div><div class="row" id="L27"><span class="no">27</span><span class="tx"> </span></div><div class="row" id="L28"><span class="no">28</span><span class="tx">#include &lt;Arduino.h&gt;</span></div><div class="row" id="L29"><span class="no">29</span><span class="tx">#include &lt;Wire.h&gt;</span></div><div class="row" id="L30"><span class="no">30</span><span class="tx">#include &lt;U8g2lib.h&gt;</span></div><div class="row" id="L31"><span class="no">31</span><span class="tx">#include &lt;Adafruit_Sensor.h&gt;</span></div><div class="row" id="L32"><span class="no">32</span><span class="tx">#include &lt;DHT.h&gt;</span></div><div class="row" id="L33"><span class="no">33</span><span class="tx">#include &lt;DHT_U.h&gt;</span></div><div class="row" id="L34"><span class="no">34</span><span class="tx"> </span></div><div class="row" id="L35"><span class="no">35</span><span class="tx"><span class="cm">// -------------------- 1. DHT 溫濕度感測器設定 --------------------</span></span></div><div class="row" id="L36"><span class="no">36</span><span class="tx">#define DHTPIN 16          <span class="cm">// Digital pin connected to the DHT sensor (NodeMCU-32S GPIO 16)</span></span></div><div class="row" id="L37"><span class="no">37</span><span class="tx"> </span></div><div class="row" id="L38"><span class="no">38</span><span class="tx"><span class="cm">// 請依實際使用的感測器型號取消註解對應行：</span></span></div><div class="row" id="L39"><span class="no">39</span><span class="tx"><span class="cm">//#define DHTTYPE    DHT11   // DHT 11 (藍色外殼)</span></span></div><div class="row" id="L40"><span class="no">40</span><span class="tx">#define DHTTYPE    DHT22   <span class="cm">// DHT 22 (AM2302，白色外殼，1112-1.txt 預設)</span></span></div><div class="row" id="L41"><span class="no">41</span><span class="tx"><span class="cm">//#define DHTTYPE    DHT21   // DHT 21 (AM2301)</span></span></div><div class="row" id="L42"><span class="no">42</span><span class="tx"> </span></div><div class="row" id="L43"><span class="no">43</span><span class="tx">DHT_Unified dht(DHTPIN, DHTTYPE);</span></div><div class="row" id="L44"><span class="no">44</span><span class="tx"> </span></div><div class="row" id="L45"><span class="no">45</span><span class="tx">uint32_t delayMS = 2000;        <span class="cm">// 感測器取樣間隔 (ms)</span></span></div><div class="row" id="L46"><span class="no">46</span><span class="tx">uint32_t lastSensorRead = 0;    <span class="cm">// 上次讀取感測器的時間戳記</span></span></div><div class="row" id="L47"><span class="no">47</span><span class="tx"> </span></div><div class="row" id="L48"><span class="no">48</span><span class="tx"><span class="cm">// -------------------- 2. SSD1306 128x64 OLED 設定 --------------------</span></span></div><div class="row" id="L49"><span class="no">49</span><span class="tx"><span class="cm">// 使用 ESP32 硬體 I2C (預設腳位：SCL = GPIO 22, SDA = GPIO 21)</span></span></div><div class="row" id="L50"><span class="no">50</span><span class="tx"><span class="cm">// 採用 _1_ (Page Buffer 模式) 兼顧記憶體效率與相容性</span></span></div><div class="row" id="L51"><span class="no">51</span><span class="tx">U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);</span></div><div class="row" id="L52"><span class="no">52</span><span class="tx"> </span></div><div class="row" id="L53"><span class="no">53</span><span class="tx"><span class="cm">// -------------------- 3. 天氣符號常數定義 (取自 Weather.ino) --------------------</span></span></div><div class="row" id="L54"><span class="no">54</span><span class="tx">#define SUN        0   <span class="cm">// 晴天 (Glyph 69)</span></span></div><div class="row" id="L55"><span class="no">55</span><span class="tx">#define SUN_CLOUD  1   <span class="cm">// 晴時多雲 (Glyph 65)</span></span></div><div class="row" id="L56"><span class="no">56</span><span class="tx">#define CLOUD      2   <span class="cm">// 多雲 / 陰天 (Glyph 64)</span></span></div><div class="row" id="L57"><span class="no">57</span><span class="tx">#define RAIN       3   <span class="cm">// 下雨 / 潮濕 (Glyph 67)</span></span></div><div class="row" id="L58"><span class="no">58</span><span class="tx">#define THUNDER    4   <span class="cm">// 雷雨 / 悶熱高濕 (Embedded Glyph 67)</span></span></div><div class="row" id="L59"><span class="no">59</span><span class="tx"> </span></div><div class="row" id="L60"><span class="no">60</span><span class="tx"><span class="cm">// 儲存最新溫濕度與天氣狀態</span></span></div><div class="row" id="L61"><span class="no">61</span><span class="tx">float   currentTemp   = NAN;</span></div><div class="row" id="L62"><span class="no">62</span><span class="tx">float   currentHum    = NAN;</span></div><div class="row" id="L63"><span class="no">63</span><span class="tx">uint8_t currentSymbol = CLOUD;</span></div><div class="row" id="L64"><span class="no">64</span><span class="tx">int16_t scrollOffset  = -128;   <span class="cm">// 底部狀態列跑馬燈位移量</span></span></div><div class="row" id="L65"><span class="no">65</span><span class="tx"> </span></div><div class="row" id="L66"><span class="no">66</span><span class="tx"><span class="cm">// -------------------- 4. 依溫濕度決定天氣符號與狀態文字 --------------------</span></span></div><div class="row" id="L67"><span class="no">67</span><span class="tx">uint8_t getWeatherSymbol(float temp, float hum) {</span></div><div class="row" id="L68"><span class="no">68</span><span class="tx">  if (isnan(temp) || isnan(hum)) {</span></div><div class="row" id="L69"><span class="no">69</span><span class="tx">    return CLOUD;                 <span class="cm">// 感測器讀取失敗時預設顯示雲朵</span></span></div><div class="row" id="L70"><span class="no">70</span><span class="tx">  }</span></div><div class="row" id="L71"><span class="no">71</span><span class="tx">  if (hum &gt;= 85.0 &amp;&amp; temp &gt;= 28.0) {</span></div><div class="row" id="L72"><span class="no">72</span><span class="tx">    return THUNDER;               <span class="cm">// 高溫且高濕：雷雨符號</span></span></div><div class="row" id="L73"><span class="no">73</span><span class="tx">  } else if (hum &gt;= 80.0) {</span></div><div class="row" id="L74"><span class="no">74</span><span class="tx">    return RAIN;                  <span class="cm">// 濕度 &gt;= 80%：下雨符號</span></span></div><div class="row" id="L75"><span class="no">75</span><span class="tx">  } else if (hum &gt;= 70.0) {</span></div><div class="row" id="L76"><span class="no">76</span><span class="tx">    return CLOUD;                 <span class="cm">// 濕度 70% ~ 79.9%：多雲符號</span></span></div><div class="row" id="L77"><span class="no">77</span><span class="tx">  } else if (hum &gt;= 55.0) {</span></div><div class="row" id="L78"><span class="no">78</span><span class="tx">    return SUN_CLOUD;             <span class="cm">// 濕度 55% ~ 69.9%：晴時多雲</span></span></div><div class="row" id="L79"><span class="no">79</span><span class="tx">  } else {</span></div><div class="row" id="L80"><span class="no">80</span><span class="tx">    return SUN;                   <span class="cm">// 濕度 &lt; 55%：晴天太陽符號</span></span></div><div class="row" id="L81"><span class="no">81</span><span class="tx">  }</span></div><div class="row" id="L82"><span class="no">82</span><span class="tx">}</span></div><div class="row" id="L83"><span class="no">83</span><span class="tx"> </span></div><div class="row" id="L84"><span class="no">84</span><span class="tx">const char* getWeatherStatusText(uint8_t symbol, bool sensorOk) {</span></div><div class="row" id="L85"><span class="no">85</span><span class="tx">  if (!sensorOk) {</span></div><div class="row" id="L86"><span class="no">86</span><span class="tx">    return &quot;Sensor Error! Check GPIO 16&quot;;</span></div><div class="row" id="L87"><span class="no">87</span><span class="tx">  }</span></div><div class="row" id="L88"><span class="no">88</span><span class="tx">  switch (symbol) {</span></div><div class="row" id="L89"><span class="no">89</span><span class="tx">    case SUN:       return &quot;SUNNY - Dry &amp; Clear&quot;;</span></div><div class="row" id="L90"><span class="no">90</span><span class="tx">    case SUN_CLOUD: return &quot;PARTLY CLOUDY - Comfort&quot;;</span></div><div class="row" id="L91"><span class="no">91</span><span class="tx">    case CLOUD:     return &quot;CLOUDY - Mild Humid&quot;;</span></div><div class="row" id="L92"><span class="no">92</span><span class="tx">    case RAIN:      return &quot;RAINY - High Humidity&quot;;</span></div><div class="row" id="L93"><span class="no">93</span><span class="tx">    case THUNDER:   return &quot;THUNDER - Hot &amp; Humid&quot;;</span></div><div class="row" id="L94"><span class="no">94</span><span class="tx">    default:        return &quot;Monitoring...&quot;;</span></div><div class="row" id="L95"><span class="no">95</span><span class="tx">  }</span></div><div class="row" id="L96"><span class="no">96</span><span class="tx">}</span></div><div class="row" id="L97"><span class="no">97</span><span class="tx"> </span></div><div class="row" id="L98"><span class="no">98</span><span class="tx"><span class="cm">// -------------------- 5. 繪製左側 48x48 天氣圖示 (取自 Weather.ino) --------------------</span></span></div><div class="row" id="L99"><span class="no">99</span><span class="tx">void drawWeatherSymbol(u8g2_uint_t x, u8g2_uint_t y, uint8_t symbol) {</span></div><div class="row" id="L100"><span class="no">100</span><span class="tx">  <span class="cm">// 使用 U8g2 內建 Open Iconic 6x (48x48) 向量圖示字型</span></span></div><div class="row" id="L101"><span class="no">101</span><span class="tx">  switch (symbol) {</span></div><div class="row" id="L102"><span class="no">102</span><span class="tx">    case SUN:</span></div><div class="row" id="L103"><span class="no">103</span><span class="tx">      u8g2.setFont(u8g2_font_open_iconic_weather_6x_t);</span></div><div class="row" id="L104"><span class="no">104</span><span class="tx">      u8g2.drawGlyph(x, y, 69);</span></div><div class="row" id="L105"><span class="no">105</span><span class="tx">      break;</span></div><div class="row" id="L106"><span class="no">106</span><span class="tx">    case SUN_CLOUD:</span></div><div class="row" id="L107"><span class="no">107</span><span class="tx">      u8g2.setFont(u8g2_font_open_iconic_weather_6x_t);</span></div><div class="row" id="L108"><span class="no">108</span><span class="tx">      u8g2.drawGlyph(x, y, 65);</span></div><div class="row" id="L109"><span class="no">109</span><span class="tx">      break;</span></div><div class="row" id="L110"><span class="no">110</span><span class="tx">    case CLOUD:</span></div><div class="row" id="L111"><span class="no">111</span><span class="tx">      u8g2.setFont(u8g2_font_open_iconic_weather_6x_t);</span></div><div class="row" id="L112"><span class="no">112</span><span class="tx">      u8g2.drawGlyph(x, y, 64);</span></div><div class="row" id="L113"><span class="no">113</span><span class="tx">      break;</span></div><div class="row" id="L114"><span class="no">114</span><span class="tx">    case RAIN:</span></div><div class="row" id="L115"><span class="no">115</span><span class="tx">      u8g2.setFont(u8g2_font_open_iconic_weather_6x_t);</span></div><div class="row" id="L116"><span class="no">116</span><span class="tx">      u8g2.drawGlyph(x, y, 67);</span></div><div class="row" id="L117"><span class="no">117</span><span class="tx">      break;</span></div><div class="row" id="L118"><span class="no">118</span><span class="tx">    case THUNDER:</span></div><div class="row" id="L119"><span class="no">119</span><span class="tx">      u8g2.setFont(u8g2_font_open_iconic_embedded_6x_t);</span></div><div class="row" id="L120"><span class="no">120</span><span class="tx">      u8g2.drawGlyph(x, y, 67);</span></div><div class="row" id="L121"><span class="no">121</span><span class="tx">      break;</span></div><div class="row" id="L122"><span class="no">122</span><span class="tx">  }</span></div><div class="row" id="L123"><span class="no">123</span><span class="tx">}</span></div><div class="row" id="L124"><span class="no">124</span><span class="tx"> </span></div><div class="row" id="L125"><span class="no">125</span><span class="tx"><span class="cm">// -------------------- 6. 繪製右側小圖示：溫度計與水滴符號 --------------------</span></span></div><div class="row" id="L126"><span class="no">126</span><span class="tx"><span class="cm">// 繪製 7x16 px 迷你溫度計符號 (左上座標 x, y)</span></span></div><div class="row" id="L127"><span class="no">127</span><span class="tx">void drawThermometerIcon(u8g2_uint_t x, u8g2_uint_t y) {</span></div><div class="row" id="L128"><span class="no">128</span><span class="tx">  u8g2.drawRFrame(x + 1, y, 5, 11, 1); <span class="cm">// 溫度計玻璃管外框</span></span></div><div class="row" id="L129"><span class="no">129</span><span class="tx">  u8g2.drawDisc(x + 3, y + 12, 3);     <span class="cm">// 底部感溫球</span></span></div><div class="row" id="L130"><span class="no">130</span><span class="tx">  u8g2.drawVLine(x + 3, y + 4, 6);     <span class="cm">// 內部水銀柱</span></span></div><div class="row" id="L131"><span class="no">131</span><span class="tx">  u8g2.drawHLine(x + 6, y + 2, 2);     <span class="cm">// 右側刻度線 1</span></span></div><div class="row" id="L132"><span class="no">132</span><span class="tx">  u8g2.drawHLine(x + 6, y + 5, 2);     <span class="cm">// 右側刻度線 2</span></span></div><div class="row" id="L133"><span class="no">133</span><span class="tx">  u8g2.drawHLine(x + 6, y + 8, 2);     <span class="cm">// 右側刻度線 3</span></span></div><div class="row" id="L134"><span class="no">134</span><span class="tx">}</span></div><div class="row" id="L135"><span class="no">135</span><span class="tx"> </span></div><div class="row" id="L136"><span class="no">136</span><span class="tx"><span class="cm">// 繪製 7x15 px 迷你水滴濕度符號 (左上座標 x, y)</span></span></div><div class="row" id="L137"><span class="no">137</span><span class="tx">void drawDropletIcon(u8g2_uint_t x, u8g2_uint_t y) {</span></div><div class="row" id="L138"><span class="no">138</span><span class="tx">  u8g2.drawTriangle(x + 3, y, x, y + 9, x + 6, y + 9); <span class="cm">// 水滴上方尖錐</span></span></div><div class="row" id="L139"><span class="no">139</span><span class="tx">  u8g2.drawDisc(x + 3, y + 10, 3);                     <span class="cm">// 水滴下方圓弧</span></span></div><div class="row" id="L140"><span class="no">140</span><span class="tx">  u8g2.drawPixel(x + 2, y + 9);                        <span class="cm">// 修補交界像素</span></span></div><div class="row" id="L141"><span class="no">141</span><span class="tx">}</span></div><div class="row" id="L142"><span class="no">142</span><span class="tx"> </span></div><div class="row" id="L143"><span class="no">143</span><span class="tx"><span class="cm">// -------------------- 7. 繪製底部跑馬燈文字 (改良自 Weather.ino) --------------------</span></span></div><div class="row" id="L144"><span class="no">144</span><span class="tx">void drawScrollString(int16_t offset, const char *s) {</span></div><div class="row" id="L145"><span class="no">145</span><span class="tx">  static char buf[36];</span></div><div class="row" id="L146"><span class="no">146</span><span class="tx">  size_t len = strlen(s);</span></div><div class="row" id="L147"><span class="no">147</span><span class="tx">  size_t char_offset = 0;</span></div><div class="row" id="L148"><span class="no">148</span><span class="tx">  u8g2_uint_t dx = 0;</span></div><div class="row" id="L149"><span class="no">149</span><span class="tx">  size_t visible = 0;</span></div><div class="row" id="L150"><span class="no">150</span><span class="tx"> </span></div><div class="row" id="L151"><span class="no">151</span><span class="tx">  u8g2.setFont(u8g2_font_8x13_mf);</span></div><div class="row" id="L152"><span class="no">152</span><span class="tx">  if (offset &lt; 0) {</span></div><div class="row" id="L153"><span class="no">153</span><span class="tx">    char_offset = (-offset) / 8;</span></div><div class="row" id="L154"><span class="no">154</span><span class="tx">    dx = offset + char_offset * 8;</span></div><div class="row" id="L155"><span class="no">155</span><span class="tx">    if (char_offset &gt;= u8g2.getDisplayWidth() / 8) return;</span></div><div class="row" id="L156"><span class="no">156</span><span class="tx">    visible = u8g2.getDisplayWidth() / 8 - char_offset + 1;</span></div><div class="row" id="L157"><span class="no">157</span><span class="tx">    if (visible &gt; len) visible = len;</span></div><div class="row" id="L158"><span class="no">158</span><span class="tx">    strncpy(buf, s, visible);</span></div><div class="row" id="L159"><span class="no">159</span><span class="tx">    buf[visible] = &#x27;\0&#x27;;</span></div><div class="row" id="L160"><span class="no">160</span><span class="tx">    u8g2.drawStr(char_offset * 8 - dx, 63, buf);</span></div><div class="row" id="L161"><span class="no">161</span><span class="tx">  } else {</span></div><div class="row" id="L162"><span class="no">162</span><span class="tx">    char_offset = offset / 8;</span></div><div class="row" id="L163"><span class="no">163</span><span class="tx">    if (char_offset &gt;= len) return;</span></div><div class="row" id="L164"><span class="no">164</span><span class="tx">    dx = offset - char_offset * 8;</span></div><div class="row" id="L165"><span class="no">165</span><span class="tx">    visible = len - char_offset;</span></div><div class="row" id="L166"><span class="no">166</span><span class="tx">    if (visible &gt; u8g2.getDisplayWidth() / 8 + 1) {</span></div><div class="row" id="L167"><span class="no">167</span><span class="tx">      visible = u8g2.getDisplayWidth() / 8 + 1;</span></div><div class="row" id="L168"><span class="no">168</span><span class="tx">    }</span></div><div class="row" id="L169"><span class="no">169</span><span class="tx">    strncpy(buf, s + char_offset, visible);</span></div><div class="row" id="L170"><span class="no">170</span><span class="tx">    buf[visible] = &#x27;\0&#x27;;</span></div><div class="row" id="L171"><span class="no">171</span><span class="tx">    u8g2.drawStr(-dx, 63, buf);</span></div><div class="row" id="L172"><span class="no">172</span><span class="tx">  }</span></div><div class="row" id="L173"><span class="no">173</span><span class="tx">}</span></div><div class="row" id="L174"><span class="no">174</span><span class="tx"> </span></div><div class="row" id="L175"><span class="no">175</span><span class="tx"><span class="cm">// -------------------- 8. 繪製 128x64 OLED 整合版面 --------------------</span></span></div><div class="row" id="L176"><span class="no">176</span><span class="tx">/*</span></div><div class="row" id="L177"><span class="no">177</span><span class="tx">  【128x64 像素版面規劃】</span></div><div class="row" id="L178"><span class="no">178</span><span class="tx">  ┌───────────────────┬─────────────────────────────────────────┐ y=0</span></div><div class="row" id="L179"><span class="no">179</span><span class="tx">  │                   │ [🌡️] 26.5 °C   (溫度區 y: 0~24)          │</span></div><div class="row" id="L180"><span class="no">180</span><span class="tx">  │   48x48 天氣符號   ├─────────────────────────────────────────┤ y=25 (分隔線)</span></div><div class="row" id="L181"><span class="no">181</span><span class="tx">  │   (x: 0~47)       │ [💧] 62.0 %    (濕度區 y: 26~49)         │</span></div><div class="row" id="L182"><span class="no">182</span><span class="tx">  ├───────────────────┴─────────────────────────────────────────┤ y=50 (分隔線)</span></div><div class="row" id="L183"><span class="no">183</span><span class="tx">  │  PARTLY CLOUDY - Comfort       (底部跑馬燈狀態列 y: 51~63)   │</span></div><div class="row" id="L184"><span class="no">184</span><span class="tx">  └─────────────────────────────────────────────────────────────┘ y=63</span></div><div class="row" id="L185"><span class="no">185</span><span class="tx">*/</span></div><div class="row" id="L186"><span class="no">186</span><span class="tx">void drawDashboard(const char *statusMsg) {</span></div><div class="row" id="L187"><span class="no">187</span><span class="tx">  <span class="cm">// 1. 左區 (x: 0~47, y: 0~48)：繪製 48x48 天氣大圖示</span></span></div><div class="row" id="L188"><span class="no">188</span><span class="tx">  drawWeatherSymbol(0, 48, currentSymbol);</span></div><div class="row" id="L189"><span class="no">189</span><span class="tx"> </span></div><div class="row" id="L190"><span class="no">190</span><span class="tx">  <span class="cm">// 2. 垂直與水平分隔線，建構儀表板網格感</span></span></div><div class="row" id="L191"><span class="no">191</span><span class="tx">  u8g2.drawVLine(50, 0, 50);   <span class="cm">// 左圖示區與右數值區垂直分隔線 (x=50)</span></span></div><div class="row" id="L192"><span class="no">192</span><span class="tx">  u8g2.drawHLine(50, 25, 78);  <span class="cm">// 溫度與濕度水平分隔線 (y=25)</span></span></div><div class="row" id="L193"><span class="no">193</span><span class="tx">  u8g2.drawHLine(0, 50, 128);  <span class="cm">// 主顯示區與底部狀態列水平分隔線 (y=50)</span></span></div><div class="row" id="L194"><span class="no">194</span><span class="tx"> </span></div><div class="row" id="L195"><span class="no">195</span><span class="tx">  <span class="cm">// 3. 右上區 (x: 54~127, y: 0~24)：溫度計符號 + 即時溫度</span></span></div><div class="row" id="L196"><span class="no">196</span><span class="tx">  drawThermometerIcon(54, 4);</span></div><div class="row" id="L197"><span class="no">197</span><span class="tx">  u8g2.setFont(u8g2_font_helvB12_tf);</span></div><div class="row" id="L198"><span class="no">198</span><span class="tx">  u8g2.setCursor(66, 19);</span></div><div class="row" id="L199"><span class="no">199</span><span class="tx">  if (isnan(currentTemp)) {</span></div><div class="row" id="L200"><span class="no">200</span><span class="tx">    u8g2.print(&quot;--.-°C&quot;);</span></div><div class="row" id="L201"><span class="no">201</span><span class="tx">  } else {</span></div><div class="row" id="L202"><span class="no">202</span><span class="tx">    u8g2.print(currentTemp, 1);</span></div><div class="row" id="L203"><span class="no">203</span><span class="tx">    u8g2.print(&quot;°C&quot;);</span></div><div class="row" id="L204"><span class="no">204</span><span class="tx">  }</span></div><div class="row" id="L205"><span class="no">205</span><span class="tx"> </span></div><div class="row" id="L206"><span class="no">206</span><span class="tx">  <span class="cm">// 4. 右下區 (x: 54~127, y: 26~49)：水滴符號 + 即時相對濕度</span></span></div><div class="row" id="L207"><span class="no">207</span><span class="tx">  drawDropletIcon(54, 30);</span></div><div class="row" id="L208"><span class="no">208</span><span class="tx">  u8g2.setFont(u8g2_font_helvB12_tf);</span></div><div class="row" id="L209"><span class="no">209</span><span class="tx">  u8g2.setCursor(66, 45);</span></div><div class="row" id="L210"><span class="no">210</span><span class="tx">  if (isnan(currentHum)) {</span></div><div class="row" id="L211"><span class="no">211</span><span class="tx">    u8g2.print(&quot;--.- %&quot;);</span></div><div class="row" id="L212"><span class="no">212</span><span class="tx">  } else {</span></div><div class="row" id="L213"><span class="no">213</span><span class="tx">    u8g2.print(currentHum, 1);</span></div><div class="row" id="L214"><span class="no">214</span><span class="tx">    u8g2.print(&quot; %&quot;);</span></div><div class="row" id="L215"><span class="no">215</span><span class="tx">  }</span></div><div class="row" id="L216"><span class="no">216</span><span class="tx"> </span></div><div class="row" id="L217"><span class="no">217</span><span class="tx">  <span class="cm">// 5. 底部狀態列 (x: 0~127, y: 51~63)：跑馬燈顯示天氣與舒適度描述</span></span></div><div class="row" id="L218"><span class="no">218</span><span class="tx">  drawScrollString(scrollOffset, statusMsg);</span></div><div class="row" id="L219"><span class="no">219</span><span class="tx">}</span></div><div class="row" id="L220"><span class="no">220</span><span class="tx"> </span></div><div class="row" id="L221"><span class="no">221</span><span class="tx"><span class="cm">// -------------------- 9. 讀取 DHT 感測器並輸出至序列埠 --------------------</span></span></div><div class="row" id="L222"><span class="no">222</span><span class="tx">void readDHTSensor() {</span></div><div class="row" id="L223"><span class="no">223</span><span class="tx">  sensors_event_t event;</span></div><div class="row" id="L224"><span class="no">224</span><span class="tx"> </span></div><div class="row" id="L225"><span class="no">225</span><span class="tx">  <span class="cm">// 讀取溫度事件</span></span></div><div class="row" id="L226"><span class="no">226</span><span class="tx">  dht.temperature().getEvent(&amp;event);</span></div><div class="row" id="L227"><span class="no">227</span><span class="tx">  if (isnan(event.temperature)) {</span></div><div class="row" id="L228"><span class="no">228</span><span class="tx">    Serial.println(F(&quot;Error reading temperature!&quot;));</span></div><div class="row" id="L229"><span class="no">229</span><span class="tx">    currentTemp = NAN;</span></div><div class="row" id="L230"><span class="no">230</span><span class="tx">  } else {</span></div><div class="row" id="L231"><span class="no">231</span><span class="tx">    currentTemp = event.temperature;</span></div><div class="row" id="L232"><span class="no">232</span><span class="tx">    Serial.print(F(&quot;Temperature: &quot;));</span></div><div class="row" id="L233"><span class="no">233</span><span class="tx">    Serial.print(currentTemp, 1);</span></div><div class="row" id="L234"><span class="no">234</span><span class="tx">    Serial.println(F(&quot;°C&quot;));</span></div><div class="row" id="L235"><span class="no">235</span><span class="tx">  }</span></div><div class="row" id="L236"><span class="no">236</span><span class="tx"> </span></div><div class="row" id="L237"><span class="no">237</span><span class="tx">  <span class="cm">// 讀取濕度事件</span></span></div><div class="row" id="L238"><span class="no">238</span><span class="tx">  dht.humidity().getEvent(&amp;event);</span></div><div class="row" id="L239"><span class="no">239</span><span class="tx">  if (isnan(event.relative_humidity)) {</span></div><div class="row" id="L240"><span class="no">240</span><span class="tx">    Serial.println(F(&quot;Error reading humidity!&quot;));</span></div><div class="row" id="L241"><span class="no">241</span><span class="tx">    currentHum = NAN;</span></div><div class="row" id="L242"><span class="no">242</span><span class="tx">  } else {</span></div><div class="row" id="L243"><span class="no">243</span><span class="tx">    currentHum = event.relative_humidity;</span></div><div class="row" id="L244"><span class="no">244</span><span class="tx">    Serial.print(F(&quot;Humidity:    &quot;));</span></div><div class="row" id="L245"><span class="no">245</span><span class="tx">    Serial.print(currentHum, 1);</span></div><div class="row" id="L246"><span class="no">246</span><span class="tx">    Serial.println(F(&quot;%&quot;));</span></div><div class="row" id="L247"><span class="no">247</span><span class="tx">  }</span></div><div class="row" id="L248"><span class="no">248</span><span class="tx"> </span></div><div class="row" id="L249"><span class="no">249</span><span class="tx">  <span class="cm">// 更新對應的天氣圖示代碼</span></span></div><div class="row" id="L250"><span class="no">250</span><span class="tx">  currentSymbol = getWeatherSymbol(currentTemp, currentHum);</span></div><div class="row" id="L251"><span class="no">251</span><span class="tx">  Serial.println(F(&quot;------------------------------------&quot;));</span></div><div class="row" id="L252"><span class="no">252</span><span class="tx">}</span></div><div class="row" id="L253"><span class="no">253</span><span class="tx"> </span></div><div class="row" id="L254"><span class="no">254</span><span class="tx"><span class="cm">// -------------------- 10. 初始化設定 setup() --------------------</span></span></div><div class="row" id="L255"><span class="no">255</span><span class="tx">void setup(void) {</span></div><div class="row" id="L256"><span class="no">256</span><span class="tx">  Serial.begin(115200); <span class="cm">// ESP32 建議使用 115200 baud (亦可改回 9600)</span></span></div><div class="row" id="L257"><span class="no">257</span><span class="tx">  delay(100);</span></div><div class="row" id="L258"><span class="no">258</span><span class="tx"> </span></div><div class="row" id="L259"><span class="no">259</span><span class="tx">  <span class="cm">// 1. 初始化 SSD1306 OLED</span></span></div><div class="row" id="L260"><span class="no">260</span><span class="tx">  u8g2.begin();</span></div><div class="row" id="L261"><span class="no">261</span><span class="tx">  u8g2.enableUTF8Print(); <span class="cm">// 啟用 UTF-8 支援以正常顯示 &quot;°C&quot;</span></span></div><div class="row" id="L262"><span class="no">262</span><span class="tx"> </span></div><div class="row" id="L263"><span class="no">263</span><span class="tx">  <span class="cm">// 2. 初始化 DHT 溫濕度感測器並印出感測器硬體資訊</span></span></div><div class="row" id="L264"><span class="no">264</span><span class="tx">  dht.begin();</span></div><div class="row" id="L265"><span class="no">265</span><span class="tx">  Serial.println(F(&quot;DHTxx Unified Sensor + U8g2 OLED Weather Station (1112-1)&quot;));</span></div><div class="row" id="L266"><span class="no">266</span><span class="tx"> </span></div><div class="row" id="L267"><span class="no">267</span><span class="tx">  sensor_t sensor;</span></div><div class="row" id="L268"><span class="no">268</span><span class="tx">  dht.temperature().getSensor(&amp;sensor);</span></div><div class="row" id="L269"><span class="no">269</span><span class="tx">  Serial.println(F(&quot;------------------------------------&quot;));</span></div><div class="row" id="L270"><span class="no">270</span><span class="tx">  Serial.println(F(&quot;Temperature Sensor&quot;));</span></div><div class="row" id="L271"><span class="no">271</span><span class="tx">  Serial.print  (F(&quot;Sensor Type: &quot;)); Serial.println(sensor.name);</span></div><div class="row" id="L272"><span class="no">272</span><span class="tx">  Serial.print  (F(&quot;Driver Ver:  &quot;)); Serial.println(sensor.version);</span></div><div class="row" id="L273"><span class="no">273</span><span class="tx">  Serial.print  (F(&quot;Unique ID:   &quot;)); Serial.println(sensor.sensor_id);</span></div><div class="row" id="L274"><span class="no">274</span><span class="tx">  Serial.print  (F(&quot;Max Value:   &quot;)); Serial.print(sensor.max_value); Serial.println(F(&quot;°C&quot;));</span></div><div class="row" id="L275"><span class="no">275</span><span class="tx">  Serial.print  (F(&quot;Min Value:   &quot;)); Serial.print(sensor.min_value); Serial.println(F(&quot;°C&quot;));</span></div><div class="row" id="L276"><span class="no">276</span><span class="tx">  Serial.print  (F(&quot;Resolution:  &quot;)); Serial.print(sensor.resolution); Serial.println(F(&quot;°C&quot;));</span></div><div class="row" id="L277"><span class="no">277</span><span class="tx">  Serial.println(F(&quot;------------------------------------&quot;));</span></div><div class="row" id="L278"><span class="no">278</span><span class="tx"> </span></div><div class="row" id="L279"><span class="no">279</span><span class="tx">  dht.humidity().getSensor(&amp;sensor);</span></div><div class="row" id="L280"><span class="no">280</span><span class="tx">  Serial.println(F(&quot;Humidity Sensor&quot;));</span></div><div class="row" id="L281"><span class="no">281</span><span class="tx">  Serial.print  (F(&quot;Sensor Type: &quot;)); Serial.println(sensor.name);</span></div><div class="row" id="L282"><span class="no">282</span><span class="tx">  Serial.print  (F(&quot;Driver Ver:  &quot;)); Serial.println(sensor.version);</span></div><div class="row" id="L283"><span class="no">283</span><span class="tx">  Serial.print  (F(&quot;Unique ID:   &quot;)); Serial.println(sensor.sensor_id);</span></div><div class="row" id="L284"><span class="no">284</span><span class="tx">  Serial.print  (F(&quot;Max Value:   &quot;)); Serial.print(sensor.max_value); Serial.println(F(&quot;%&quot;));</span></div><div class="row" id="L285"><span class="no">285</span><span class="tx">  Serial.print  (F(&quot;Min Value:   &quot;)); Serial.print(sensor.min_value); Serial.println(F(&quot;%&quot;));</span></div><div class="row" id="L286"><span class="no">286</span><span class="tx">  Serial.print  (F(&quot;Resolution:  &quot;)); Serial.print(sensor.resolution); Serial.println(F(&quot;%&quot;));</span></div><div class="row" id="L287"><span class="no">287</span><span class="tx">  Serial.println(F(&quot;------------------------------------&quot;));</span></div><div class="row" id="L288"><span class="no">288</span><span class="tx"> </span></div><div class="row" id="L289"><span class="no">289</span><span class="tx">  <span class="cm">// 設定感測器最小讀取間隔 (至少 2000ms 以確保穩定)</span></span></div><div class="row" id="L290"><span class="no">290</span><span class="tx">  delayMS = sensor.min_delay / 1000;</span></div><div class="row" id="L291"><span class="no">291</span><span class="tx">  if (delayMS &lt; 2000) {</span></div><div class="row" id="L292"><span class="no">292</span><span class="tx">    delayMS = 2000;</span></div><div class="row" id="L293"><span class="no">293</span><span class="tx">  }</span></div><div class="row" id="L294"><span class="no">294</span><span class="tx"> </span></div><div class="row" id="L295"><span class="no">295</span><span class="tx">  <span class="cm">// 啟動時立即讀取一次溫濕度</span></span></div><div class="row" id="L296"><span class="no">296</span><span class="tx">  readDHTSensor();</span></div><div class="row" id="L297"><span class="no">297</span><span class="tx">  lastSensorRead = millis();</span></div><div class="row" id="L298"><span class="no">298</span><span class="tx">}</span></div><div class="row" id="L299"><span class="no">299</span><span class="tx"> </span></div><div class="row" id="L300"><span class="no">300</span><span class="tx"><span class="cm">// -------------------- 11. 主迴圈 loop() --------------------</span></span></div><div class="row" id="L301"><span class="no">301</span><span class="tx">void loop(void) {</span></div><div class="row" id="L302"><span class="no">302</span><span class="tx">  <span class="cm">// 1. 非阻塞定時讀取 DHT 溫濕度 (每 delayMS 毫秒更新一次數值)</span></span></div><div class="row" id="L303"><span class="no">303</span><span class="tx">  uint32_t now = millis();</span></div><div class="row" id="L304"><span class="no">304</span><span class="tx">  if (now - lastSensorRead &gt;= delayMS) {</span></div><div class="row" id="L305"><span class="no">305</span><span class="tx">    lastSensorRead = now;</span></div><div class="row" id="L306"><span class="no">306</span><span class="tx">    readDHTSensor();</span></div><div class="row" id="L307"><span class="no">307</span><span class="tx">  }</span></div><div class="row" id="L308"><span class="no">308</span><span class="tx"> </span></div><div class="row" id="L309"><span class="no">309</span><span class="tx">  <span class="cm">// 2. 取得目前天氣狀態字串</span></span></div><div class="row" id="L310"><span class="no">310</span><span class="tx">  bool sensorOk = (!isnan(currentTemp) &amp;&amp; !isnan(currentHum));</span></div><div class="row" id="L311"><span class="no">311</span><span class="tx">  const char *statusMsg = getWeatherStatusText(currentSymbol, sensorOk);</span></div><div class="row" id="L312"><span class="no">312</span><span class="tx"> </span></div><div class="row" id="L313"><span class="no">313</span><span class="tx">  <span class="cm">// 3. U8g2 Page Buffer 繪圖迴圈</span></span></div><div class="row" id="L314"><span class="no">314</span><span class="tx">  u8g2.firstPage();</span></div><div class="row" id="L315"><span class="no">315</span><span class="tx">  do {</span></div><div class="row" id="L316"><span class="no">316</span><span class="tx">    drawDashboard(statusMsg);</span></div><div class="row" id="L317"><span class="no">317</span><span class="tx">  } while (u8g2.nextPage());</span></div><div class="row" id="L318"><span class="no">318</span><span class="tx"> </span></div><div class="row" id="L319"><span class="no">319</span><span class="tx">  <span class="cm">// 4. 更新底部狀態列跑馬燈位移量</span></span></div><div class="row" id="L320"><span class="no">320</span><span class="tx">  delay(25);</span></div><div class="row" id="L321"><span class="no">321</span><span class="tx">  scrollOffset += 2;</span></div><div class="row" id="L322"><span class="no">322</span><span class="tx">  if (scrollOffset &gt; (int16_t)strlen(statusMsg) * 8 + 4) {</span></div><div class="row" id="L323"><span class="no">323</span><span class="tx">    scrollOffset = -(int16_t)u8g2.getDisplayWidth();</span></div><div class="row" id="L324"><span class="no">324</span><span class="tx">  }</span></div><div class="row" id="L325"><span class="no">325</span><span class="tx">}</span></div></div>
+</aside>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<script>
+(function(){
+  var code=document.getElementById('code'),where=document.getElementById('where');
+  function show(a,b){
+    code.querySelectorAll('.hit').forEach(function(e){e.classList.remove('hit')});
+    for(var i=a;i<=b;i++){var r=document.getElementById('L'+i);if(r)r.classList.add('hit');}
+    var first=document.getElementById('L'+a);
+    if(first){code.scrollTop=Math.max(0,first.offsetTop-code.offsetTop-60);}
+    where.textContent=a===b?('第 '+a+' 行'):('第 '+a+'–'+b+' 行');
+  }
+  document.addEventListener('click',function(ev){
+    var t=ev.target.closest('a.lr');
+    if(t){ev.preventDefault();show(+t.dataset.a,+t.dataset.b);return;}
+    var n=ev.target.closest('nav.toc a');
+    if(n){ev.preventDefault();var h=document.getElementById(decodeURIComponent(n.getAttribute('href').slice(1)));
+      if(h)h.scrollIntoView();}
+  });
+  var main=document.querySelector('main'),marks=[].slice.call(document.querySelectorAll('p.ex a.lr')),last=null,busy=false,hold=0;
+  // 右欄標出各段名稱；點名稱回到左欄那一段
+  marks.forEach(function(mk){
+    var h=mk.parentNode;while(h&&!/^H[23]$/.test(h.tagName))h=h.previousElementSibling;
+    var row=document.getElementById('L'+mk.dataset.a);if(!h||!row)return;
+    var lab=document.createElement('div');lab.className='lab';lab.textContent=h.textContent;
+    lab.addEventListener('click',function(){h.scrollIntoView();});
+    row.parentNode.insertBefore(lab,row);
+  });
+  // 反向連結：點右欄有說明的那一行，左欄跳到提到這一行的說明（重複點會輪流跳）
+  var refs={},turn={};
+  [].slice.call(document.querySelectorAll('article a.lr')).forEach(function(el){
+    if(el.parentNode.className==='ex')return;
+    for(var i=+el.dataset.a;i<=+el.dataset.b;i++){(refs[i]=refs[i]||[]).push(el);}
+  });
+  function span(el){return +el.dataset.b-+el.dataset.a;}
+  Object.keys(refs).forEach(function(n){
+    var r=document.getElementById('L'+n);if(!r)return;
+    refs[n].sort(function(x,y){return span(x)-span(y);});   // 範圍越小的說明越優先
+    r.classList.add('has');r.title='點一下看這一行的說明（共 '+refs[n].length+' 處）';
+    if(span(refs[n][0])<=2)r.classList.add('key');           // 被直接點名的行才加強標示
+  });
+  code.addEventListener('click',function(ev){
+    var r=ev.target.closest('.row.has');if(!r)return;
+    var n=+r.id.slice(1),list=refs[n],k=(turn[n]||0)%list.length,el=list[k];turn[n]=k+1;hold=Date.now()+1500;
+    code.querySelectorAll('.hit').forEach(function(e){e.classList.remove('hit')});r.classList.add('hit');
+    el.scrollIntoView({block:'center'});el.classList.add('flash');
+    setTimeout(function(){el.classList.remove('flash');},1600);
+    where.textContent='第 '+n+' 行的說明 '+(k+1)+' / '+list.length;
+  });
+  // 左欄捲動時，右欄自動對照目前這一段的程式碼
+  main.addEventListener('scroll',function(){
+    if(busy)return;busy=true;
+    requestAnimationFrame(function(){
+      busy=false;var top=main.getBoundingClientRect().top+140,cur=null;
+      for(var i=0;i<marks.length;i++){if(marks[i].getBoundingClientRect().top<top)cur=marks[i];else break;}
+      if(cur&&cur!==last){last=cur;if(Date.now()>hold)show(+cur.dataset.a,+cur.dataset.b);}
+    });
+  });
+  if(window.mermaid){
+    var root=document.documentElement,dark=root.dataset.theme==='dark'||
+      (root.dataset.theme!=='light'&&matchMedia('(prefers-color-scheme: dark)').matches);
+    try{mermaid.initialize({startOnLoad:true,theme:dark?'dark':'neutral'});}catch(e){}
+  }
+})();
+</script>
+
+<script id="workspace-lesson-controls">
+(function(){
+  var status=document.getElementById('tool-status');
+  // Clipboard API may be unavailable on a local file; keep a local selection fallback.
+  function copyText(text){
+    function fallback(){var el=document.createElement('textarea');el.value=text;el.style.position='fixed';el.style.opacity='0';document.body.appendChild(el);el.select();var ok=document.execCommand('copy');el.remove();if(!ok)throw Error('copy failed');}
+    var done=function(){status.textContent='已複製';};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done,function(){try{fallback();done();}catch(e){status.textContent='複製失敗，請手動選取';}});}
+    else{try{fallback();done();}catch(e){status.textContent='複製失敗，請手動選取';}}
+  }
+  document.getElementById('export-pdf').addEventListener('click',function(){window.print();});
+  document.getElementById('copy-source').addEventListener('click',function(){copyText(Array.from(document.querySelectorAll('#code .row .tx'),function(el){return el.textContent===' '?'':el.textContent;}).join('\n')+'\n');});
+  document.querySelectorAll('article pre:not(.mermaid)').forEach(function(pre){
+    var btn=document.createElement('button');btn.type='button';btn.className='copy-block';btn.textContent='複製';
+    btn.addEventListener('click',function(){copyText(pre.textContent);});pre.parentNode.insertBefore(btn,pre);
+  });
+  document.getElementById('toggle-theme').addEventListener('click',function(){var r=document.documentElement;var dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;r.dataset.theme=dark?'light':'dark';});
+})();
+</script>
+
+</body>
+</html>

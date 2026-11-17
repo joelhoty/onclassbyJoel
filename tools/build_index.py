@@ -26,6 +26,7 @@ LEGACY = ROOT / 'tools' / 'changelog_legacy.html'
 CHANGELOG = ROOT / 'CHANGELOG.md'
 DOC_EXTS = {'.md', '.html', '.htm', '.pdf'}
 RECENT_COUNT = 10
+CATEGORY_DIRS = {}  # 分類 id → 資料夾，main() 載入目錄後填入，供子資料夾標籤使用
 GITHUB_URL = 'https://github.com/joelhoty/onclassbyJoel'
 
 
@@ -86,11 +87,16 @@ def read_title(path):
     return Path(path).name
 
 
+def find_category(catalog, path):
+    """取路徑開頭相符且 dir 最長的分類，支援 PBL_Agents/pbl 這類多層分類資料夾。"""
+    matches = [c for c in catalog['categories'] if c['dir'] and path.startswith(c['dir'] + '/')]
+    return max(matches, key=lambda c: len(c['dir']), default=catalog['categories'][-1])
+
+
 def place_note(catalog, note):
     """依路徑決定新筆記的分類，並套用子主題規則。"""
     path = note['files'][0]
-    top = path.split('/')[0] if '/' in path else ''
-    category = next((c for c in catalog['categories'] if c['dir'] == top), catalog['categories'][-1])
+    category = find_category(catalog, path)
     note['category'] = category['id']
     for group in category['groups']:
         if group['match'] is None or re.search(group['match'], path, re.I):
@@ -172,6 +178,15 @@ def href(path):
     return './' + path
 
 
+def subfolder(note):
+    """主檔案相對於分類資料夾的子資料夾路徑；直接放在分類資料夾內時回傳空字串。"""
+    parent = Path(primary_file(note)).parent.as_posix()
+    base = CATEGORY_DIRS.get(note['category'], '')
+    if base and (parent == base or parent.startswith(base + '/')):
+        parent = parent[len(base):].lstrip('/')
+    return '' if parent == '.' else parent
+
+
 def ext_label(path):
     suffix = Path(path).suffix.lstrip('.').upper()
     return {'JPEG': 'JPG', 'PY': 'Python'}.get(suffix, suffix)
@@ -204,6 +219,8 @@ def md_line(note, days):
     primary = primary_file(note)
     title = note['title'].replace('[', '\\[').replace(']', '\\]')
     line = f'* `{days[id(note)]}` | [{title}]({href(primary)})'
+    if subfolder(note):
+        line += f' `📁 {subfolder(note)}/`'
     for file in note['files']:
         if file != primary:
             line += f' · [{ext_label(file)}]({href(file)})'
@@ -255,6 +272,7 @@ def file_item(note, days):
             tags.append(f'<a class="tag tag-{label.lower()}" href="{html.escape(href(file))}">{label}</a>')
     item = (f'<li class="file-item"><div class="file-row">'
             f'<a class="file-link" href="{html.escape(href(primary))}">{html.escape(note["title"])}</a>'
+            + (f' <span class="file-folder">📁 {html.escape(subfolder(note))}/</span>' if subfolder(note) else '') +
             f'<div class="file-meta"><span class="file-date">{days[id(note)]}</span>{"".join(tags)}</div></div>')
     if note['attachments']:
         rows = ''.join(f'<li><a href="{html.escape(href(a["path"]))}">{html.escape(a["title"])}</a>'
@@ -412,6 +430,7 @@ def main():
     args = parser.parse_args()
 
     catalog = json.loads(read(CATALOG))
+    CATEGORY_DIRS.update((c['id'], c['dir']) for c in catalog['categories'])
     messages = sync_catalog(catalog, repo_files())
     days = note_dates(catalog, file_dates())
     meta = latest_metadata()
@@ -488,6 +507,7 @@ CSS = '''
         .file-row { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
         .file-link { color: var(--primary-color); text-decoration: none; font-size: 0.93rem; }
         .file-link:hover { text-decoration: underline; }
+        .file-folder { font-size: 0.75rem; color: var(--text-muted); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; white-space: nowrap; }
         .file-meta { display: flex; align-items: center; gap: 0.35rem; white-space: nowrap; }
         .file-date { font-size: 0.78rem; color: var(--text-muted); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background-color: #f1f5f9; padding: 0.1rem 0.35rem; border-radius: 4px; border: 1px solid var(--border-color); }
         .tag { font-size: 0.72rem; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 600; letter-spacing: 0.5px; text-decoration: none; background-color: #f1f5f9; color: #475569; }

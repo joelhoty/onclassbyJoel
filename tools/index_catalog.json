@@ -43,6 +43,11 @@
      "match": "workflow|arduino_ide_|helloworld"
     },
     {
+     "id": "codereview",
+     "title": "🔍 AI 程式碼導讀",
+     "match": "^ec/AI_CodeReview/"
+    },
+    {
      "id": "display",
      "title": "🌡️ DHT11／LCD／OLED 顯示",
      "match": "dht11|lcd1602|u8g2|ssd1306|oled"
@@ -1310,6 +1315,21 @@
    ],
    "attachments": [],
    "category": "inquiry-1"
+  },
+  {
+   "title": "程式碼導讀：1112-1.ino — ESP32 DHT 與 OLED 教學講義",
+   "category": "ec",
+   "group": "codereview",
+   "files": [
+    "ec/AI_CodeReview/reviews/1112-1/CODE_REVIEW.html",
+    "ec/AI_CodeReview/reviews/1112-1/CODE_REVIEW.md"
+   ],
+   "attachments": [
+    {
+     "path": "ec/AI_CodeReview/reviews/1112-1/1112-1.ino",
+     "title": "導讀對照原始碼（325 行，保留桌面原檔內容）"
+    }
+   ]
   }
  ],
  "date_overrides": {
