@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎙️ 使用 joelhoty/Whisper_WebUI 進行語音轉錄成文字稿：架構剖析、部署實戰與 AI 勘誤工作流指南</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'neutral' });</script>
+  <style>
+    :root {
+      --primary-color: #1e3a8a;
+      --secondary-color: #2563eb;
+      --accent-color: #0d9488;
+      --warning-color: #b45309;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --code-bg: #0f172a;
+      --highlight-bg: #eff6ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+      line-height: 1.85;
+      color: var(--text-main);
+      background-color: var(--bg-color);
+      padding: 2.5rem 1.5rem;
+    }
+
+    .container {
+      max-width: 1060px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 3rem;
+      border-radius: 14px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border-color);
+    }
+
+    .header-section {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .title-group h1 {
+      font-size: 1.95rem;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+      line-height: 1.35;
+      font-weight: 800;
+    }
+
+    .metadata-card {
+      background: var(--highlight-bg);
+      border-left: 4px solid var(--secondary-color);
+      padding: 0.85rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+    }
+
+    .metadata-card p {
+      margin: 0.25rem 0;
+    }
+
+    .metadata-card strong {
+      color: #1e40af;
+    }
+
+    .metadata-card a, a {
+      color: var(--secondary-color);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .btn-export {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #ffffff;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-export:hover {
+      background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(239, 68, 68, 0.5);
+    }
+
+    h2 {
+      font-size: 1.55rem;
+      color: var(--primary-color);
+      margin: 2.8rem 0 1.2rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 2px solid #e0e7ff;
+    }
+
+    h3 {
+      font-size: 1.28rem;
+      color: #1e40af;
+      margin: 2rem 0 0.85rem;
+    }
+
+    h4 {
+      font-size: 1.12rem;
+      color: #0f766e;
+      margin: 1.4rem 0 0.6rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+    }
+
+    ul, ol {
+      margin: 0.75rem 0 1.25rem 1.6rem;
+    }
+
+    li {
+      margin-bottom: 0.45rem;
+    }
+
+    .important-box {
+      background: #fef3c7;
+      border: 1px solid #fcd34d;
+      border-left: 5px solid #d97706;
+      padding: 1.1rem 1.35rem;
+      border-radius: 8px;
+      margin: 1.4rem 0;
+      font-size: 0.95rem;
+      color: #78350f;
+    }
+
+    .mermaid-box {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.93rem;
+    }
+
+    th, td {
+      border: 1px solid var(--border-color);
+      padding: 0.75rem 0.95rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f1f5f9;
+      color: var(--primary-color);
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    code {
+      font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+      background: #f1f5f9;
+      color: #be123c;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+
+    .code-wrapper {
+      position: relative;
+      margin: 1.25rem 0;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 0.65rem;
+      right: 0.65rem;
+      background: #334155;
+      color: #f8fafc;
+      border: 1px solid #475569;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: #475569;
+    }
+
+    pre {
+      background: var(--code-bg);
+      color: #e2e8f0;
+      padding: 1.35rem;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-size: 0.88rem;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      .container {
+        box-shadow: none;
+        border: none;
+        padding: 1rem;
+        max-width: 100%;
+      }
+      .btn-export, .copy-btn {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-section">
+      <div class="title-group">
+        <h1>🎙️ 使用 <code>joelhoty/Whisper_WebUI</code> 進行語音轉錄成文字稿：架構剖析、部署實戰與 AI 勘誤工作流指南</h1>
+        <div class="metadata-card">
+          <p><strong>最後更新時間</strong>：2026-11-18 09:02:00 (UTC+8)</p>
+          <p><strong>使用模型</strong>：Gemini 4 Argon (Medium)</p>
+          <p><strong>執行 Agent</strong>：Antigravity</p>
+          <p><strong>目標專案</strong>：<a href="https://github.com/joelhoty/Whisper_WebUI" target="_blank" rel="noopener">https://github.com/joelhoty/Whisper_WebUI</a></p>
+        </div>
+      </div>
+      <button class="btn-export" onclick="window.print()">📄 匯出成 PDF</button>
+    </div>
+
+    <h2>1. 🔬 核心概念剖析 (Core Concepts)</h2>
+
+    <h3>1.1 <code>joelhoty/Whisper_WebUI</code> 專案定位與工程改良</h3>
+    <p><a href="https://github.com/joelhoty/Whisper_WebUI" target="_blank" rel="noopener"><strong>joelhoty/Whisper_WebUI</strong></a> 是基於 OpenAI Whisper 語音辨識模型與 Gradio 網頁介面所建構的多功能<strong>語音轉文字（Speech-to-Text, STT）與字幕生成系統</strong>。本專案衍生自開源專案 <a href="https://github.com/jhj0517/Whisper-WebUI" target="_blank" rel="noopener"><code>jhj0517/Whisper-WebUI</code></a>（以提交 <code>c3bb3b1</code> 為基礎，採用 Apache-2.0 授權），並針對現代雲端環境（特別是 <strong>Google Colab Python 3.13 核心與新版套件相容性斷裂問題</strong>）進行了關鍵的工程重構：</p>
+    <ol>
+      <li><strong>獨立虛擬環境隔離（Isolated <code>venv</code> Provisioning）</strong>：<br>
+        當 Google Colab 將預設核心升級至 Python 3.13 時，許多音訊與深度學習底層套件尚未支援。本專案透過 <code>notebook/colab_runtime.py</code> 自動偵測環境：若系統 Python 超出 <code>3.10 ~ 3.12</code> 範圍，會自動透過 <code>uv</code> 建立獨立的 <strong>Python 3.12 <code>venv</code></strong>，使安裝過程不污染 Colab 原生核心，且<strong>無須重啟執行階段（No Kernel Restart Required）</strong>。</li>
+      <li><strong>預編譯 Wheel 與 SHA-256 完整性驗證（<code>deps-v2</code> Release）</strong>：<br>
+        原專案從 GitHub 原始碼即時建置 <code>openai-whisper</code>、<code>uvr</code> 與 <code>pyrubberband</code>，常因新版 <code>setuptools&gt;=82</code> 移除 <code>pkg_resources</code> 而建置失敗（如原專案 Issue #628）。<code>joelhoty/Whisper_WebUI</code> 將這三個核心依賴固定 Commit 並預先打包為 Wheel 發佈於 <a href="https://github.com/joelhoty/Whisper_WebUI/releases/tag/deps-v2" target="_blank" rel="noopener"><code>deps-v2</code> Release</a>，在 <code>requirements-common.txt</code> 中直接以 <code>#sha256=...</code> 驗證下載，免除編譯步驟並大幅縮短安裝時間。</li>
+      <li><strong>CUDA 與多媒體解碼器版本鎖定</strong>：
+        <ul>
+          <li><strong>PyAV 版本限制（<code>av&lt;19</code>）</strong>：解決 PyAV 19 移除 <code>av.open()</code> 的 <code>metadata_errors</code> 參數導致 <code>faster-whisper==1.1.1</code> 解碼音訊崩潰的問題。</li>
+          <li><strong>PyTorch / TorchAudio 對齊（<code>2.8.0</code> + CUDA 12.6/12.8）</strong>：修正 TorchAudio 2.9 API 棄用問題（Issue #606），並強制將 <code>venv</code> 內的 NVIDIA cuDNN 動態函式庫路徑置於 <code>LD_LIBRARY_PATH</code> 最前端，避免與系統舊版 cuDNN 衝突。</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h3>1.2 語音轉錄流水線架構 (<code>BaseTranscriptionPipeline</code>)</h3>
+    <p>在 <code>Whisper_WebUI</code> 中，將一段影片或音訊轉錄為純文字稿（<code>.txt</code>）或時間軸字幕（<code>.srt</code> / <code>.vtt</code>）並非單純呼叫模型，而是經過一套模組化的五階段處理流水線：</p>
+    <div class="mermaid-box">
+      <div class="mermaid">
+flowchart LR
+    A["📥 輸入來源<br/>本地檔案 / YouTube 網址 / 麥克風"] --> B["🔍 音訊解碼檢查<br/>modules/utils/audio_manager.py"]
+    B --> C{"🎵 背景音樂分離?<br/>(選用 UVR)"}
+    C -- "開啟" --> D["分離人聲與伴奏<br/>MDX-Net / Demucs / VR"]
+    C -- "關閉" --> E{"🔇 語音活動偵測?<br/>(選用 Silero VAD)"}
+    D --> E
+    E -- "開啟" --> F["切除靜音片段<br/>減少幻覺並加速推論"]
+    E -- "關閉" --> G["🧠 Whisper 語音轉錄<br/>faster-whisper (預設)<br/>openai-whisper / insanely-fast"]
+    F --> G
+    G --> H["⏱️ 時間軸映射還原<br/>(若啟用 VAD)"]
+    H --> I{"👥 說話者分離?<br/>(選用 pyannote)"}
+    I -- "開啟" --> J["標記不同講者<br/>Speaker_00 / Speaker_01"]
+    I -- "關閉" --> K["📄 字幕與文字稿格式化<br/>subtitle_manager.py"]
+    J --> K
+    K --> L[("💾 outputs/<br/>.txt / .srt / .vtt / .lrc")]
+      </div>
+    </div>
+
+    <h3>1.3 三大 Whisper 推論後端與效能數學模型</h3>
+    <p>專案透過工廠模式（<code>modules/whisper/whisper_factory.py</code>）支援三種推論引擎。預設採用的 <strong><code>SYSTRAN/faster-whisper</code></strong> 基於 <strong>CTranslate2</strong> 推論引擎，透過權重量化（FP16 / INT8）、層融合（Layer Fusion）與批次重新排序，在相同準確率（Beam Size = 5）下大幅降低記憶體佔用與推論時間：</p>
+    <table>
+      <thead>
+        <tr>
+          <th>推論實作 (<code>--whisper_type</code>)</th>
+          <th>底層推論框架</th>
+          <th>運算精度</th>
+          <th>Beam Size</th>
+          <th>轉錄耗時基準</th>
+          <th>最大 GPU 記憶體 (VRAM)</th>
+          <th>最大系統記憶體 (RAM)</th>
+          <th>適用場景</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong><code>faster-whisper</code>（預設）</strong></td>
+          <td>CTranslate2</td>
+          <td><code>fp16</code></td>
+          <td>5</td>
+          <td><strong>54 秒</strong></td>
+          <td><strong>4,755 MB</strong></td>
+          <td><strong>3,244 MB</strong></td>
+          <td>絕大多數環境首選，速度快、省顯存（Colab T4 即可跑 <code>large-v2</code> / <code>large-v3</code>）</td>
+        </tr>
+        <tr>
+          <td><strong><code>openai/whisper</code></strong></td>
+          <td>PyTorch 原生</td>
+          <td><code>fp16</code></td>
+          <td>5</td>
+          <td>4 分 30 秒</td>
+          <td>11,325 MB</td>
+          <td>9,439 MB</td>
+          <td>需要與 OpenAI 原始論文行為完全一致之基準測試</td>
+        </tr>
+        <tr>
+          <td><strong><code>insanely-fast-whisper</code></strong></td>
+          <td>HF Transformers + Flash Attention</td>
+          <td><code>fp16</code></td>
+          <td>1 (Batch)</td>
+          <td>極快（批次並行）</td>
+          <td>視 Batch Size 而定</td>
+          <td>中等</td>
+          <td>支援 Flash Attention 2 的高階 GPU 進行長音訊極速批次轉錄</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>2. 🛠️ 實作與應用範例 (Practical Examples)</h2>
+
+    <h3>2.1 方式一：在 Google Colab 雲端免費 GPU 啟動並轉錄文字稿（最推薦）</h3>
+    <p>若本機沒有 NVIDIA 獨顯，可直接透過專案內建的 <code>notebook/whisper-webui.ipynb</code> 在 Google Colab（免費 T4 GPU）上執行。</p>
+
+    <h4>Colab 自動化隔離環境啟動流程圖</h4>
+    <div class="mermaid-box">
+      <div class="mermaid">
+flowchart TD
+    S1["1. 開啟 Colab Notebook<br/>切換執行階段為 T4 GPU"] --> S2["2. 執行 Installation 儲存格<br/>git clone joelhoty/Whisper_WebUI"]
+    S2 --> S3["3. colab_runtime.py install<br/>自動建立獨立 Python 3.12 venv"]
+    S3 --> S4["4. 安裝 CUDA 12.6 PyTorch 2.8.0<br/>與 deps-v2 預編譯 Wheels"]
+    S4 --> S5["5. 自動執行 pip check 與<br/>python app.py --help 預檢"]
+    S5 --> S6{"是否需下載受保護的<br/>YouTube 影片?"}
+    S6 -- "是" --> S7["執行 (Optional) YouTube cookies<br/>上傳 www.youtube.com_cookies.txt"]
+    S6 -- "否" --> S8["6. 執行 Run 儲存格<br/>colab_runtime.py run"]
+    S7 --> S8
+    S8 --> S9["🌐 點擊輸出的 https://xxxx.gradio.live<br/>進入 WebUI 轉錄並下載 .txt 文字稿"]
+      </div>
+    </div>
+
+    <h4>Colab 終端機／自訂 Notebook 呼叫範例</h4>
+    <p>以下為在 Google Colab 儲存格中直接呼叫 <code>colab_runtime.py</code> 進行安裝與啟動的完整指令與說明：</p>
+    <div class="code-wrapper">
+      <button class="copy-btn" onclick="copyCode(this)">📋 複製程式碼</button>
+      <pre><code># ==============================================================================
+# 步驟 1：複製 joelhoty/Whisper_WebUI 儲存庫至 Colab 工作目錄
+# ==============================================================================
+!git clone https://github.com/joelhoty/Whisper_WebUI.git /content/Whisper-WebUI
+%cd /content/Whisper-WebUI
+
+# ==============================================================================
+# 步驟 2：執行隔離環境安裝（建立 Python 3.12 venv、安裝依賴並執行啟動前檢查）
+# 不會污染 Colab 原生 Python 3.13 核心，因此安裝完畢後「不需要」重啟 Runtime
+# ==============================================================================
+!python notebook/colab_runtime.py install
+
+# ==============================================================================
+# 步驟 3：（選用）若轉錄 YouTube 遇到 "Sign in to confirm you're not a bot"
+# 可設定無痕模式匯出的 Netscape 格式 cookies.txt 路徑
+# ==============================================================================
+import os
+os.environ["YOUTUBE_COOKIES_FILE"] = "/content/www.youtube.com_cookies.txt"
+
+# ==============================================================================
+# 步驟 4：啟動 Gradio WebUI 並產生公開分享網址 (*.gradio.live)
+# 預設使用 faster-whisper，輸出檔案會儲存於 /content/Whisper-WebUI/outputs/
+# ==============================================================================
+!python notebook/colab_runtime.py run</code></pre>
+    </div>
+
+    <h3>2.2 方式二：Windows / Linux 本機安裝與自訂啟動腳本</h3>
+    <p>若本機配備 NVIDIA GPU（建議 6GB VRAM 以上），可安裝於本機長期使用。</p>
+
+    <h4>本機安裝與啟動流程圖</h4>
+    <div class="mermaid-box">
+      <div class="mermaid">
+flowchart LR
+    P1["安裝前置軟體<br/>Git + Python 3.10~3.12 + FFmpeg"] --> P2["git clone<br/>joelhoty/Whisper_WebUI"]
+    P2 --> P3["確認 requirements.txt<br/>CUDA 版本 (預設 cu128)"]
+    P3 --> P4["執行 Install.bat / Install.sh<br/>建立 venv 並安裝依賴"]
+    P4 --> P5["執行 start-webui.bat<br/>或 user-start-webui.bat"]
+    P5 --> P6["開啟瀏覽器<br/>http://localhost:7860"]
+      </div>
+    </div>
+
+    <h4>本機部署與自訂參數啟動指令</h4>
+    <div class="code-wrapper">
+      <button class="copy-btn" onclick="copyCode(this)">📋 複製程式碼</button>
+      <pre><code># 1. 下載專案原始碼（請確保系統 PATH 已包含 FFmpeg/bin）
+git clone https://github.com/joelhoty/Whisper_WebUI.git
+cd Whisper_WebUI
+
+# 2. 執行自動安裝腳本（Windows 使用 Install.bat，Linux/macOS 使用 ./Install.sh）
+# 腳本會自動建立 venv 資料夾並安裝 requirements.txt 與 requirements-common.txt
+.\Install.bat
+
+# 3. 啟動預設 WebUI（預設連線位址：http://localhost:7860）
+.\start-webui.bat
+
+# 4. 進階用法：直接透過虛擬環境傳遞命令列參數（例如指定模型目錄、開啟跨網域分享）
+.\venv\Scripts\python.exe app.py `
+  --whisper_type faster-whisper `
+  --server_port 7860 `
+  --share `
+  --api_open</code></pre>
+    </div>
+
+    <h3>2.3 方式三：使用 Python 腳本直接呼叫核心轉錄管線（批次轉文字稿）</h3>
+    <p>除了透過瀏覽器點選 Gradio 介面外，若需要將大量演講音訊或影片自動轉成<strong>純文字稿（<code>.txt</code>）</strong>，可以直接在專案的 <code>venv</code> 環境中呼叫 <code>faster-whisper</code> 模組進行批次處理。</p>
+
+    <h4>批次語音轉純文字稿程式邏輯流程圖</h4>
+    <div class="mermaid-box">
+      <div class="mermaid">
+flowchart TD
+    A["開始批次轉錄腳本"] --> B["載入 FasterWhisperInference<br/>指定模型 (如 large-v3-turbo)"]
+    B --> C["遍歷指定資料夾內的音訊/影片檔<br/>(.mp3 / .mp4 / .wav / .m4a)"]
+    C --> D["設定轉錄參數<br/>任務: transcribe (原語言轉錄)<br/>啟用 Silero VAD 過濾靜音"]
+    D --> E["執行模型推論取得 Segments"]
+    E --> F["提取純文字內容 (不含時間軸)<br/>合併輸出為 .txt 檔案"]
+    F --> G{"是否還有下一個檔案?"}
+    G -- "是" --> C
+    G -- "否" --> H["釋放 VRAM 並完成批次輸出"]
+      </div>
+    </div>
+
+    <h4>批次轉錄純文字稿 Python 範例程式碼</h4>
+    <div class="code-wrapper">
+      <button class="copy-btn" onclick="copyCode(this)">📋 複製程式碼</button>
+      <pre><code>"""
+在 Whisper_WebUI 專案根目錄下，使用虛擬環境批次將音訊/影片轉錄為純文字稿 (.txt)
+執行方式：.\venv\Scripts\python.exe batch_transcribe_txt.py
+"""
+
+from pathlib import Path
+from faster_whisper import WhisperModel
+
+def batch_transcribe_to_txt(
+    input_dir: str,
+    output_dir: str = "outputs",
+    model_size: str = "deepdml/faster-whisper-large-v3-turbo-ct2",
+    language: str = "zh",
+    task: str = "transcribe",  # 注意："transcribe" 保留原語言；"translate" 會全部翻譯成英文！
+    initial_prompt: str = "以下是繁體中文與英文專有名詞夾雜的科技訪談逐字稿。"
+):
+    """
+    使用 Whisper_WebUI 內建的 faster-whisper 引擎將音訊轉為純文字檔 (.txt)
+    """
+    in_path = Path(input_dir)
+    out_path = Path(output_dir)
+    out_path.mkdir(parents=True, exist_ok=True)
+
+    # 1. 初始化 CTranslate2 faster-whisper 模型（GPU 使用 float16）
+    print(f"[*] 正在載入模型: {model_size} ...")
+    model = WhisperModel(model_size, device="cuda", compute_type="float16")
+
+    # 2. 掃描支援的影音格式
+    audio_exts = {".mp3", ".wav", ".m4a", ".mp4", ".mkv", ".flac"}
+    files = [f for f in in_path.iterdir() if f.suffix.lower() in audio_exts]
+
+    for audio_file in files:
+        print(f"[*] 正在轉錄: {audio_file.name} (language={language}, task={task}) ...")
+
+        # 3. 執行語音轉錄，開啟 vad_filter (Silero VAD) 自動切除無聲段落、防止幻覺重複
+        segments, info = model.transcribe(
+            str(audio_file),
+            language=language,
+            task=task,
+            beam_size=5,
+            vad_filter=True,
+            vad_parameters=dict(min_silence_duration_ms=500),
+            initial_prompt=initial_prompt
+        )
+
+        # 4. 逐句收集文字（對應 WebUI 中 File Format 選擇 "txt" 的無時間軸輸出）
+        lines = [seg.text.strip() for seg in segments if seg.text.strip()]
+
+        # 5. 寫入 .txt 純文字檔
+        txt_output_path = out_path / f"{audio_file.stem}.txt"
+        txt_output_path.write_text("\n".join(lines), encoding="utf-8")
+        print(f"[+] 已儲存純文字稿: {txt_output_path} (共 {len(lines)} 行)")
+
+if __name__ == "__main__":
+    # 將 inputs 資料夾內的影音檔批次轉為純文字逐字稿
+    batch_transcribe_to_txt(
+        input_dir="./inputs",
+        output_dir="./outputs",
+        language="zh",
+        task="transcribe"
+    )</code></pre>
+    </div>
+
+    <h3>2.4 WebUI 介面轉出 <code>.txt</code> 純文字稿之標準操作步驟與實戰案例覆盤</h3>
+    <p>在 <code>Whisper_WebUI</code> 網頁介面中，共有四個主要輸入分頁：<strong><code>File</code>（本地檔案）</strong>、<strong><code>Youtube</code>（YouTube 連結）</strong>、<strong><code>Mic</code>（麥克風）</strong> 與 <strong><code>T2T Translation</code>（字幕翻譯）</strong>。若要產出如前兩篇筆記所使用的 <code>.txt</code> 逐字稿，標準步驟如下：</p>
+    <ol>
+      <li><strong>選擇輸入來源</strong>：
+        <ul>
+          <li>若為下載好的音訊／影片，切換至 <strong><code>File</code></strong> 分頁並拖曳上傳檔案。</li>
+          <li>若為線上影片，切換至 <strong><code>Youtube</code></strong> 分頁並貼上影片網址（會自動呼叫 <code>yt-dlp</code> 提取最佳音軌）。</li>
+        </ul>
+      </li>
+      <li><strong>設定模型與語言參數</strong>：
+        <ul>
+          <li><strong>Model</strong>：建議選擇 <code>large-v2</code>、<code>large-v3</code> 或在下拉選單直接輸入 Hugging Face 模型代號 <code>deepdml/faster-whisper-large-v3-turbo-ct2</code>（速度極快且準確率高）。</li>
+          <li><strong>Language</strong>：明確指定主要語言（如 <code>Chinese</code>），避免自動偵測在前 30 秒英文片頭時誤判。</li>
+          <li><strong>File Format</strong>：選擇 <strong><code>txt</code></strong>（僅輸出純文字，不含時間軸與序號，最適合後續交由 AI 整理成文章）。</li>
+        </ul>
+      </li>
+      <li><strong>進階前處理設定</strong>：
+        <ul>
+          <li><strong>勾選 <code>Silero VAD</code></strong>：強烈建議開啟！可過濾長段靜音與過場音樂，避免 Whisper 在無聲處陷入無限重複句子的「幻覺（Hallucination）」。</li>
+          <li><strong>勾選 <code>Background Music Separation (UVR)</code></strong>：僅在背景音樂極大、蓋過人聲時開啟。</li>
+        </ul>
+      </li>
+    </ol>
+
+    <div class="important-box">
+      <strong>💡 實戰案例覆盤：為什麼前兩篇逐字稿會出現截然不同的錯誤型態？</strong><br><br>
+      • <strong>案例 A（<a href="feifei_li_socrates_prompter_transcript_1118.html">《黃叔精讀李飛飛》</a>）</strong>：該影片片頭前 13 行全為李飛飛與胡伯曼的英文原聲對談，隨後才是黃叔的中文講解。轉錄時若將 <strong>Language 設為 <code>Automatic Detection</code>（自動偵測）</strong> 或誤勾選了 <strong><code>Translate to English</code>（語音轉譯為英文）</strong>，Whisper 就會把後面黃叔講的中文全部硬翻成英文，甚至把中文專有名詞直接音譯（如「賽車迷」變成 <code>Saichemi</code>、「蘇格拉底」變成 <code>Sugarati</code>、「帶著卡點」變成 <code>took a card</code>）。<br><br>
+      • <strong>案例 B（<a href="sahar_yousef_grayscale_brain_fog_transcript_1118.html">《薩哈爾·尤瑟夫治好腦霧》</a>）</strong>：該影片全片為中文旁白配音，正確使用了 <code>Chinese</code> + <code>Transcribe</code> 模式，因此產出全中文逐字稿；但因為語音模型僅依賴聲學特徵與局部機率解碼，遇到跨領域專有名詞或英文術語時，容易產生同音字替換（如 <code>Brain Fog</code> 被聽成 <code>Bring Folk</code>、「奠基／惦記／電擊」全部被寫成 <code>電機</code>、「算力」被寫成 <code>順利</code>）。
+    </div>
+
+    <h2>3. 🚀 延伸思考與進階主題 (Extensions &amp; Advanced Topics)</h2>
+
+    <h3>3.1 進階技巧：利用 <code>Initial Prompt</code> 與「Whisper_WebUI + LLM 兩階段工作流」消除同音錯字</h3>
+    <p>為了徹底解決語音轉錄的同音字與中英夾雜誤聽問題，實務上最佳的工程作法是採用 <strong>「前端 Initial Prompt 引導 + 後端 LLM 上下文語意校對」</strong> 的雙階段工作流：</p>
+    <div class="mermaid-box">
+      <div class="mermaid">
+flowchart LR
+    subgraph Stage1["第一階段：Whisper_WebUI 聲學轉錄"]
+        A["原始影音檔"] --> B["填入 Initial Prompt<br/>(注入專有名詞與標點習慣)"]
+        B --> C["開啟 Silero VAD +<br/>faster-whisper large-v3"]
+        C --> D["產出原始 .txt 逐字稿"]
+    end
+    subgraph Stage2["第二階段：LLM 上下文語意勘誤"]
+        D --> E["傳入大型語言模型 (LLM)<br/>指定：保留原文、不加外部資訊、<br/>僅依上下文語意更正同音錯字"]
+        E --> F["產出結構化文章 +<br/>錯字勘誤對照表"]
+    end
+      </div>
+    </div>
+    <ol>
+      <li><strong>善用進階參數中的 <code>Initial Prompt</code>（初始提示詞）</strong>：<br>
+        在 <code>Whisper_WebUI</code> 的 <strong>Advanced Parameters</strong> 展開區塊中，有一個 <code>Initial Prompt</code> 欄位。Whisper 會將這段文字視為「前文語境（Context Tokens）」：若希望輸出<strong>繁體中文</strong>並正確辨識專有名詞，可在 <code>Initial Prompt</code> 填入：<br>
+        <code>以下是關於腦科學與人工智慧的繁體中文訪談逐字稿，包含專有名詞：李飛飛、蘇格拉底、尤瑟夫、Brain Fog、腦霧、Attention Residue、Grayscale Mode。</code></li>
+      <li><strong>結合 LLM 進行無損語意校對</strong>：<br>
+        如同我們在前兩篇筆記中實作的流程，將 <code>Whisper_WebUI</code> 輸出的 <code>.txt</code> 交由 LLM，並明確限制 Prompt：<strong>「把逐字稿整理成文章，不添加其他資訊，保留原文，但是如果有需要更正錯字，可以根據上下文語意處理」</strong>，即可同時保有逐字稿 100% 的真實細節，又徹底消除語音辨識的同音錯字。</li>
+    </ol>
+
+    <h3>3.2 四種部署與使用方式之應用場景與限制比較表</h3>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 18%;">部署與使用方式</th>
+          <th style="width: 16%;">硬體需求</th>
+          <th style="width: 14%;">安裝複雜度</th>
+          <th style="width: 20%;">優點</th>
+          <th style="width: 18%;">限制與注意事項</th>
+          <th style="width: 14%;">最適合場景</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Google Colab 雲端版</strong><br>(<code>notebook/whisper-webui.ipynb</code>)</td>
+          <td><strong>本機零硬體需求</strong><br>（使用雲端免費 T4 GPU）</td>
+          <td>⭐ 極低（點擊即用）</td>
+          <td>免購買昂貴顯卡；<code>joelhoty/Whisper_WebUI</code> 已修復 Python 3.13 與 <code>deps-v2</code> Wheel，不需重啟核心即可拿到 <code>gradio.live</code> 網址</td>
+          <td>免費版 Colab 有連線時間限制；下載 YouTube 影片常遇機器人驗證，需搭配匯出 <code>cookies.txt</code></td>
+          <td>偶爾至中度轉錄需求、跨裝置使用、本機無 NVIDIA 獨顯之使用者</td>
+        </tr>
+        <tr>
+          <td><strong>2. Windows / Linux 本機版</strong><br>(<code>Install.bat</code> + <code>start-webui.bat</code>)</td>
+          <td>NVIDIA GPU（建議 VRAM ≥ 6GB）或 Intel XPU</td>
+          <td>⭐⭐ 中等（需安裝 Git、Python 3.10~3.12、FFmpeg）</td>
+          <td>檔案讀寫最快、無連線中斷限制、支援麥克風即時錄音、YouTube 下載不易被擋 IP</td>
+          <td>首次下載模型權重（約 3GB）需時較長；若 CUDA 版本非 12.8 需修改 <code>requirements.txt</code></td>
+          <td>頻繁轉錄大量影音、重視資料隱私不出本機之個人工作站</td>
+        </tr>
+        <tr>
+          <td><strong>3. Docker 容器版</strong><br>(<code>docker compose up</code>)</td>
+          <td>支援 NVIDIA Container Toolkit 之主機</td>
+          <td>⭐⭐⭐ 中高（需建置約 7GB 映像檔）</td>
+          <td>環境完全封裝隔離，不會與主機既有 Python 套件衝突，易於部署在伺服器供多人共用</td>
+          <td>Docker 映像檔體積較大（~7GB），Windows 下需正確設定 WSL2 GPU 穿透</td>
+          <td>實驗室伺服器、多人共享語音轉錄服務</td>
+        </tr>
+        <tr>
+          <td><strong>4. FastAPI REST API / Python 腳本</strong><br>(<code>backend/main.py</code> 或直接呼叫 <code>modules/</code>)</td>
+          <td>同本機或伺服器環境</td>
+          <td>⭐⭐⭐⭐ 進階（需撰寫呼叫腳本）</td>
+          <td>可整合進自動化工作流（如自動下載 Podcast ➔ 轉出 <code>.txt</code> ➔ 串接 LLM 自動整理筆記）</td>
+          <td>不經由圖形介面，需自行透過 SQLite 任務狀態或腳本管理輸出檔案</td>
+          <td>大規模批次影音轉文字、與 AI Agent 自動化管線串接</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>4. 📚 參考資料與專案連結 (References)</h2>
+    <ol>
+      <li><strong>joelhoty/Whisper_WebUI GitHub 儲存庫（Colab Python 3.13 相容性強化與 <code>deps-v2</code> Wheel 衍生版）</strong><br>
+        網址：<a href="https://github.com/joelhoty/Whisper_WebUI" target="_blank" rel="noopener">https://github.com/joelhoty/Whisper_WebUI</a>（取得日期：2026-11-18）</li>
+      <li><strong>joelhoty/Whisper_WebUI Google Colab 線上執行筆記本</strong><br>
+        網址：<a href="https://colab.research.google.com/github/joelhoty/Whisper_WebUI/blob/main/notebook/whisper-webui.ipynb" target="_blank" rel="noopener">https://colab.research.google.com/github/joelhoty/Whisper_WebUI/blob/main/notebook/whisper-webui.ipynb</a>（取得日期：2026-11-18）</li>
+      <li><strong>joelhoty/Whisper_WebUI <code>deps-v2</code> 預編譯依賴套件 Release</strong><br>
+        網址：<a href="https://github.com/joelhoty/Whisper_WebUI/releases/tag/deps-v2" target="_blank" rel="noopener">https://github.com/joelhoty/Whisper_WebUI/releases/tag/deps-v2</a>（取得日期：2026-11-18）</li>
+      <li><strong>jhj0517/Whisper-WebUI 原始上游專案與命令列參數 Wiki</strong><br>
+        網址：<a href="https://github.com/jhj0517/Whisper-WebUI" target="_blank" rel="noopener">https://github.com/jhj0517/Whisper-WebUI</a> ／ <a href="https://github.com/jhj0517/Whisper-WebUI/wiki/Command-Line-Arguments" target="_blank" rel="noopener">Command-Line Arguments Wiki</a>（取得日期：2026-11-18）</li>
+      <li><strong>本工作區使用 <code>Whisper_WebUI</code> 產出之逐字稿整理實例</strong>：
+        <ul>
+          <li><a href="feifei_li_socrates_prompter_transcript_1118.html">黃叔精讀李飛飛：人類最強的提示詞工程師死了 2400 年（逐字稿整理與勘誤還原）</a></li>
+          <li><a href="sahar_yousef_grayscale_brain_fog_transcript_1118.html">把手機調成黑白模式每年竟憑空多出 15 天清醒生命：柏克萊腦科學家治好腦霧的逆向神經術｜薩哈爾·尤瑟夫｜第一期</a></li>
+        </ul>
+      </li>
+    </ol>
+
+    <h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+    <h3>🔹 [2026-11-18 09:02:00] [Gemini 4 Argon (Medium) / Antigravity] 變更紀錄</h3>
+    <ul>
+      <li><strong>模型/Agent</strong>：Gemini 4 Argon (Medium) / Antigravity</li>
+      <li><strong>Prompt 原文</strong>：</li>
+    </ul>
+    <div class="code-wrapper">
+      <button class="copy-btn" onclick="copyCode(this)">📋 複製</button>
+      <pre><code>進行語音轉錄成文字稿
+增加一篇使用這個repo的說明筆記</code></pre>
+    </div>
+    <ul>
+      <li><strong>變更摘要</strong>：檢索並深入剖析 <code>https://github.com/joelhoty/Whisper_WebUI</code> 儲存庫架構與 <code>README.md</code>、<code>notebook/colab_runtime.py</code>、<code>requirements-common.txt</code> 等核心檔案，建立完整使用說明與技術筆記（<code>AI/whisper_webui_speech_to_text_guide_1118.md</code> 與 <code>.html</code>），涵蓋專案針對 Colab Python 3.13 獨立 <code>venv</code> 與 <code>deps-v2</code> Wheel 的工程改良、五階段語音轉錄流水線、三大 Whisper 引擎效能對比、Colab／本機／Python 批次腳本實作範例、前兩篇逐字稿錯誤成因覆盤與 <code>Initial Prompt</code> + LLM 兩階段勘誤工作流，同步更新全站索引。</li>
+    </ul>
+  </div>
+
+  <script>
+    function copyCode(btn) {
+      const code = btn.parentElement.querySelector('code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const orig = btn.innerText;
+        btn.innerText = '✅ 已複製';
+        setTimeout(() => { btn.innerText = orig; }, 1800);
+      });
+    }
+  </script>
+</body>
+</html>

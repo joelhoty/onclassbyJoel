@@ -1,8 +1,8 @@
 # 📝 onclassbyJoel - 全站提示詞歷史與變更記錄 (CHANGELOG)
 
-> **最後更新時間**: 2026-11-17 16:00:02 (UTC+8)
-> **使用模型**: Claude Opus 5.5
-> **執行 Agent**: Claude Code
+> **最後更新時間**: 2026-11-18 09:06:08 (UTC+8)
+> **使用模型**: GPT-6 (Codex)
+> **執行 Agent**: Codex /root
 
 ---
 
@@ -767,3 +767,41 @@ $code-review-for-learning 'C:\Users\User\Desktop\onclass\1112-1\1112-1.ino'
   ec/ 的資料夾手動增加了1117-1的資料夾 更新索引並推送
   ```
 - **變更摘要**: 收錄使用者手動新增的 `ec/1117-1/`（`note-1117.md`／`.html` 智慧環境監測系統筆記，含 `1117-1.ino`、`1117-1copy.txt`、`1117.txt` 三個程式附件）。資料夾內原有一個空的巢狀 `.git`（無任何 commit、無 remote），為避免被當成子模組而移出工作區。於 `tools/index_catalog.json` 新增條目，列入電子電路／DHT OLED 顯示分類並設定附件標題；重建全站索引。
+
+
+### 🔹 [2026-11-18 08:36:00] [Gemini 4 Argon (Medium) / Antigravity] 新增「黃叔精讀李飛飛：人類最強的提示詞工程師死了 2400 年」逐字稿整理與勘誤還原
+- **模型/Agent**: Gemini 4 Argon (Medium) / Antigravity
+- **Prompt 原文**:
+  ```text
+  "C:\Users\User\Downloads\黄叔精读李飞飞人类最强的提示词工程师死了 2400 年.txt"  把逐字稿整理成文章，不添加其他資訊，保留原文，但是如果有需要更正錯字，可以根據上下文語意處理
+  ```
+- **變更摘要**: 於 `AI/` 新增 `feifei_li_socrates_prompter_transcript_1118.md` 與 `feifei_li_socrates_prompter_transcript_1118.html`，在不添加任何外部無關資訊的前提下，將 352 行語音轉譯逐字稿整理為通順中文文章（保留李飛飛與胡伯曼英文原聲對照），附上 21 處語音辨識與機翻錯字更正對照表及 100% 完整保留之 352 行原文行間勘誤標註；更新 `tools/index_catalog.json` 並以 `tools/build_index.py` 重建全站索引。
+
+
+### 🔹 [2026-11-18 08:52:00] [Gemini 4 Argon (Medium) / Antigravity] 新增「薩哈爾·尤瑟夫：把手機調成黑白模式治好腦霧的逆向神經術（第一期）」逐字稿整理與 Whisper_WebUI 來源標註
+- **模型/Agent**: Gemini 4 Argon (Medium) / Antigravity
+- **Prompt 原文**:
+  ```text
+  C:\Users\User\Downloads\把手機調成黑白模式每年竟憑空多出15天清醒生命伯克利腦科學家治好腦霧的逆向神經術丨薩哈爾尤瑟夫丨第一期.txt  以同樣的方式整理這一篇
+
+  繼續 以上兩篇文字是透過 https://github.com/joelhoty/Whisper_WebUI
+  ```
+- **變更摘要**: 於 `AI/` 新增 `sahar_yousef_grayscale_brain_fog_transcript_1118.md` 與 `sahar_yousef_grayscale_brain_fog_transcript_1118.html`，整理柏克萊認知神經科學家薩哈爾·尤瑟夫博士（Dr. Sahar Yousef）訪談第一期 542 行逐字稿（含單核大腦與注意力殘留 Attention Residue、科技巨頭三步成癮公式与電擊獨處實驗、逆向神經科學數字衛生三招：黑白灰度模式 Grayscale Mode、物理隔離停車場、快遞簽收思維 VIP 白名單），附上 35 組同音錯別字與專有名詞修正對照表及 542 行原文行間勘誤標註；同時於兩篇逐字稿筆記補充標註語音轉文字工具來源為 `https://github.com/joelhoty/Whisper_WebUI`，並以 `tools/build_index.py` 重建全站索引。
+
+
+### 🔹 [2026-11-18 09:02:00] [Gemini 4 Argon (Medium) / Antigravity] 新增 `joelhoty/Whisper_WebUI` 語音轉錄成文字稿之架構剖析與實戰說明筆記
+- **模型/Agent**: Gemini 4 Argon (Medium) / Antigravity
+- **Prompt 原文**:
+  ```text
+  進行語音轉錄成文字稿
+  增加一篇使用這個repo的說明筆記
+  ```
+- **變更摘要**: 於 `AI/` 新增 `whisper_webui_speech_to_text_guide_1118.md` 與 `whisper_webui_speech_to_text_guide_1118.html`，深入剖析 `https://github.com/joelhoty/Whisper_WebUI` 的工程改良（Colab Python 3.13 獨立 `venv` 隔離、CUDA 12.6 / PyTorch 2.8.0 配對、`av<19`、`deps-v2` 預編譯 Wheel SHA256 驗證）、五階段轉錄流水線、三大 Whisper 引擎效能對比、Colab／本機／Python 批次腳本實作、前兩篇逐字稿錯誤型態覆盤與 `Initial Prompt` + LLM 兩階段勘誤工作流，並以 `tools/build_index.py` 更新全站索引。
+
+### 🔹 [2026-11-18 09:06:08] [GPT-6 (Codex) / Codex /root] 提交筆記更新並重建全站索引
+- **模型/Agent**: GPT-6 (Codex) / Codex /root
+- **Prompt 原文**:
+  ```text
+  git commit and push
+  ```
+- **變更摘要**: 提交三篇 AI 筆記（李飛飛逐字稿、薩哈爾·尤瑟夫逐字稿與 Whisper_WebUI 說明）的 Markdown／HTML、ec/1117-1 筆記的 Metadata 與 Prompt Archive 補充，以及索引分類設定；依工作區規範重建全站索引並進行提交及推送檢查。

@@ -1353,6 +1353,33 @@
      "title": "導讀對照原始碼（325 行，保留桌面原檔內容）"
     }
    ]
+  },
+  {
+   "title": "🏛️ 黃叔精讀李飛飛：人類最強的提示詞工程師死了 2400 年（逐字稿整理與勘誤還原）",
+   "files": [
+    "AI/feifei_li_socrates_prompter_transcript_1118.html",
+    "AI/feifei_li_socrates_prompter_transcript_1118.md"
+   ],
+   "attachments": [],
+   "category": "AI"
+  },
+  {
+   "title": "🧠 把手機調成黑白模式每年竟憑空多出 15 天清醒生命：柏克萊腦科學家治好腦霧的逆向神經術｜薩哈爾·尤瑟夫｜第一期",
+   "files": [
+    "AI/sahar_yousef_grayscale_brain_fog_transcript_1118.html",
+    "AI/sahar_yousef_grayscale_brain_fog_transcript_1118.md"
+   ],
+   "attachments": [],
+   "category": "AI"
+  },
+  {
+   "title": "🎙️ 使用 joelhoty/Whisper_WebUI 進行語音轉錄成文字稿：架構剖析、部署實戰與 AI 勘誤工作流指南",
+   "files": [
+    "AI/whisper_webui_speech_to_text_guide_1118.html",
+    "AI/whisper_webui_speech_to_text_guide_1118.md"
+   ],
+   "attachments": [],
+   "category": "AI"
   }
  ],
  "date_overrides": {

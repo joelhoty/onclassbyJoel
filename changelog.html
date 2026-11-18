@@ -91,11 +91,11 @@
     <header>
         <div class="header-content">
             <h1>📝 onclassbyJoel - 全站提示詞歷史與變更記錄</h1>
-            <p class="subtitle">共 87 筆紀錄 (依時間由舊至新排列)</p>
+            <p class="subtitle">共 91 筆紀錄 (依時間由舊至新排列)</p>
             <div class="metadata-box">
-                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-11-17 16:00:02 (UTC+8)</div>
-                <div class="metadata-item"><strong>使用模型:</strong> Claude Opus 5.5</div>
-                <div class="metadata-item"><strong>執行 Agent:</strong> Claude Code</div>
+                <div class="metadata-item"><strong>最後更新時間:</strong> 2026-11-18 09:06:08 (UTC+8)</div>
+                <div class="metadata-item"><strong>使用模型:</strong> GPT-6 (Codex)</div>
+                <div class="metadata-item"><strong>執行 Agent:</strong> Codex /root</div>
                 <div class="metadata-item"><strong>GitHub Repo:</strong> <a href="https://github.com/joelhoty/onclassbyJoel" style="color:#38bdf8;" target="_blank">joelhoty/onclassbyJoel</a></div>
             </div>
             <div class="actions"><button class="btn" onclick="exportPdf()">🖨️ 匯出成 PDF / 列印此頁</button><a class="btn btn-secondary" href="./index.html">📚 回到索引</a><a class="btn btn-secondary" href="./CHANGELOG.md">📄 Markdown 版本</a></div>
@@ -419,6 +419,13 @@ rgh的光源是發射幾個設定好的固定顏色?</pre><p><strong>變更摘�
 好，做 A 並修正 PBL 分類問題 B也可以加</pre><p><strong>變更摘要:</strong> `tools/index_catalog.json` 的 `ec` 分類新增 `codereview` 子主題「🔍 AI 程式碼導讀」（`match: ^ec/AI_CodeReview/`，排在 `display` 之前），並將 1112-1 導讀改列此組。`tools/build_index.py` 新增 `find_category()`，改以「路徑開頭相符且 `dir` 最長」決定新筆記分類，修正 `PBL_Agents/pbl`、`pbl2`、`inquiry-1` 新筆記誤歸「工作區指引」的問題；新增 `subfolder()`，主檔案位於分類資料夾的子資料夾時，在 INDEX.md 與 index.html 項目標題後顯示 `📁 子路徑/` 標籤。重建全站索引。</p></div>
 <div class="prompt-archive"><h4>🔹 [2026-11-17 10:58:16] [Claude Opus 5.5 / Claude Code] 調亮索引子資料夾 📁 標籤顏色</h4><p><strong>模型/Agent:</strong> Claude Opus 5.5 / Claude Code</p><p><strong>Prompt 原文:</strong></p><pre>把 📁 標籤顏色調亮一點</pre><p><strong>變更摘要:</strong> `tools/build_index.py` 的 `.file-folder` 樣式由灰色文字改為青色（`#0891b2`）文字、淺青底（`#ecfeff`）與細框的小標籤，讓子資料夾路徑更醒目；重建全站索引。</p></div>
 <div class="prompt-archive"><h4>🔹 [2026-11-17 16:00:02] [Claude Opus 5.5 / Claude Code] 收錄手動新增的 ec/1117-1 資料夾並更新索引</h4><p><strong>模型/Agent:</strong> Claude Opus 5.5 / Claude Code</p><p><strong>Prompt 原文:</strong></p><pre>ec/ 的資料夾手動增加了1117-1的資料夾 更新索引並推送</pre><p><strong>變更摘要:</strong> 收錄使用者手動新增的 `ec/1117-1/`（`note-1117.md`／`.html` 智慧環境監測系統筆記，含 `1117-1.ino`、`1117-1copy.txt`、`1117.txt` 三個程式附件）。資料夾內原有一個空的巢狀 `.git`（無任何 commit、無 remote），為避免被當成子模組而移出工作區。於 `tools/index_catalog.json` 新增條目，列入電子電路／DHT OLED 顯示分類並設定附件標題；重建全站索引。</p></div>
+<div class="prompt-archive"><h4>🔹 [2026-11-18 08:36:00] [Gemini 4 Argon (Medium) / Antigravity] 新增「黃叔精讀李飛飛：人類最強的提示詞工程師死了 2400 年」逐字稿整理與勘誤還原</h4><p><strong>模型/Agent:</strong> Gemini 4 Argon (Medium) / Antigravity</p><p><strong>Prompt 原文:</strong></p><pre>&quot;C:\Users\User\Downloads\黄叔精读李飞飞人类最强的提示词工程师死了 2400 年.txt&quot;  把逐字稿整理成文章，不添加其他資訊，保留原文，但是如果有需要更正錯字，可以根據上下文語意處理</pre><p><strong>變更摘要:</strong> 於 `AI/` 新增 `feifei_li_socrates_prompter_transcript_1118.md` 與 `feifei_li_socrates_prompter_transcript_1118.html`，在不添加任何外部無關資訊的前提下，將 352 行語音轉譯逐字稿整理為通順中文文章（保留李飛飛與胡伯曼英文原聲對照），附上 21 處語音辨識與機翻錯字更正對照表及 100% 完整保留之 352 行原文行間勘誤標註；更新 `tools/index_catalog.json` 並以 `tools/build_index.py` 重建全站索引。</p></div>
+<div class="prompt-archive"><h4>🔹 [2026-11-18 08:52:00] [Gemini 4 Argon (Medium) / Antigravity] 新增「薩哈爾·尤瑟夫：把手機調成黑白模式治好腦霧的逆向神經術（第一期）」逐字稿整理與 Whisper_WebUI 來源標註</h4><p><strong>模型/Agent:</strong> Gemini 4 Argon (Medium) / Antigravity</p><p><strong>Prompt 原文:</strong></p><pre>C:\Users\User\Downloads\把手機調成黑白模式每年竟憑空多出15天清醒生命伯克利腦科學家治好腦霧的逆向神經術丨薩哈爾尤瑟夫丨第一期.txt  以同樣的方式整理這一篇
+
+繼續 以上兩篇文字是透過 https://github.com/joelhoty/Whisper_WebUI</pre><p><strong>變更摘要:</strong> 於 `AI/` 新增 `sahar_yousef_grayscale_brain_fog_transcript_1118.md` 與 `sahar_yousef_grayscale_brain_fog_transcript_1118.html`，整理柏克萊認知神經科學家薩哈爾·尤瑟夫博士（Dr. Sahar Yousef）訪談第一期 542 行逐字稿（含單核大腦與注意力殘留 Attention Residue、科技巨頭三步成癮公式与電擊獨處實驗、逆向神經科學數字衛生三招：黑白灰度模式 Grayscale Mode、物理隔離停車場、快遞簽收思維 VIP 白名單），附上 35 組同音錯別字與專有名詞修正對照表及 542 行原文行間勘誤標註；同時於兩篇逐字稿筆記補充標註語音轉文字工具來源為 `https://github.com/joelhoty/Whisper_WebUI`，並以 `tools/build_index.py` 重建全站索引。</p></div>
+<div class="prompt-archive"><h4>🔹 [2026-11-18 09:02:00] [Gemini 4 Argon (Medium) / Antigravity] 新增 `joelhoty/Whisper_WebUI` 語音轉錄成文字稿之架構剖析與實戰說明筆記</h4><p><strong>模型/Agent:</strong> Gemini 4 Argon (Medium) / Antigravity</p><p><strong>Prompt 原文:</strong></p><pre>進行語音轉錄成文字稿
+增加一篇使用這個repo的說明筆記</pre><p><strong>變更摘要:</strong> 於 `AI/` 新增 `whisper_webui_speech_to_text_guide_1118.md` 與 `whisper_webui_speech_to_text_guide_1118.html`，深入剖析 `https://github.com/joelhoty/Whisper_WebUI` 的工程改良（Colab Python 3.13 獨立 `venv` 隔離、CUDA 12.6 / PyTorch 2.8.0 配對、`av&lt;19`、`deps-v2` 預編譯 Wheel SHA256 驗證）、五階段轉錄流水線、三大 Whisper 引擎效能對比、Colab／本機／Python 批次腳本實作、前兩篇逐字稿錯誤型態覆盤與 `Initial Prompt` + LLM 兩階段勘誤工作流，並以 `tools/build_index.py` 更新全站索引。</p></div>
+<div class="prompt-archive"><h4>🔹 [2026-11-18 09:06:08] [GPT-6 (Codex) / Codex /root] 提交筆記更新並重建全站索引</h4><p><strong>模型/Agent:</strong> GPT-6 (Codex) / Codex /root</p><p><strong>Prompt 原文:</strong></p><pre>git commit and push</pre><p><strong>變更摘要:</strong> 提交三篇 AI 筆記（李飛飛逐字稿、薩哈爾·尤瑟夫逐字稿與 Whisper_WebUI 說明）的 Markdown／HTML、ec/1117-1 筆記的 Metadata 與 Prompt Archive 補充，以及索引分類設定；依工作區規範重建全站索引並進行提交及推送檢查。</p></div>
     </main>
     <script>
         let closedBeforePrint = [];
