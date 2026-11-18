@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-11-18 09:19:38 (UTC+8)
+> **最後更新時間**: 2026-11-18 12:00:08 (UTC+8)
 > **使用模型**: GPT-6 (Codex)
 > **執行 Agent**: Codex /root
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -15,12 +15,12 @@
 * `2026-11-18` | [🏛️ 黃叔精讀李飛飛：人類最強的提示詞工程師死了 2400 年（逐字稿整理與勘誤還原）](./AI/feifei_li_socrates_prompter_transcript_1118.html) · [MD](./AI/feifei_li_socrates_prompter_transcript_1118.md)
 * `2026-11-18` | [🧠 把手機調成黑白模式每年竟憑空多出 15 天清醒生命：柏克萊腦科學家治好腦霧的逆向神經術｜薩哈爾·尤瑟夫｜第一期](./AI/sahar_yousef_grayscale_brain_fog_transcript_1118.html) · [MD](./AI/sahar_yousef_grayscale_brain_fog_transcript_1118.md) · 📎 [mark_2005_no_task_left_behind.pdf](./AI/references/sahar_yousef_1118/mark_2005_no_task_left_behind.pdf)、[wilson_2014_just_think.pdf](./AI/references/sahar_yousef_1118/wilson_2014_just_think.pdf)、[ward_2017_brain_drain.pdf](./AI/references/sahar_yousef_1118/ward_2017_brain_drain.pdf)
 * `2026-11-18` | [🎙️ 使用 joelhoty/Whisper_WebUI 進行語音轉錄成文字稿：架構剖析、部署實戰與 AI 勘誤工作流指南](./AI/whisper_webui_speech_to_text_guide_1118.html) · [MD](./AI/whisper_webui_speech_to_text_guide_1118.md)
+* `2026-11-18` | [🚀 How Gemini 4 Argon & Carbon Were Built ft. DeepMind's Head of Gemini Product（中英對照與逐字稿勘誤還原）](./AI/gemini_4_argon_carbon_deepmind_transcript_1118.html) · [MD](./AI/gemini_4_argon_carbon_deepmind_transcript_1118.md)
 * `2026-11-17` | [程式碼導讀：1112-1.ino — ESP32 DHT 與 OLED 教學講義](./ec/AI_CodeReview/reviews/1112-1/CODE_REVIEW.html) `📁 AI_CodeReview/reviews/1112-1/` · [MD](./ec/AI_CodeReview/reviews/1112-1/CODE_REVIEW.md) · 📎 [1112-1.ino](./ec/AI_CodeReview/reviews/1112-1/1112-1.ino)
 * `2026-11-13` | [NodeMCU-32S (ESP32) + DHT 溫濕度 + SSD1306 128×64 OLED 符號與黃金三區版面設計 1112-1](./ec/nodemcu32s_dht_ssd1306_layout_1112.html) · [MD](./ec/nodemcu32s_dht_ssd1306_layout_1112.md) · 📎 [1112-1.ino](./ec/1112-1.ino)、[2026-11-12-1457-oled-display.jpg](./ec/2026-11-12-1457-oled-display.jpg)、[2026-11-12-1457-hardware-wiring.jpg](./ec/2026-11-12-1457-hardware-wiring.jpg)
 * `2026-11-12` | [尋找解決方案](./PBL_Agents/pbl/AGENTS.md)
 * `2026-11-12` | [YouTube 影片取得字幕並轉換成文字檔（.txt / .srt）完整解決方案指南](./PBL_Agents/pbl/youtube_subtitle_to_text_methods.html) · [MD](./PBL_Agents/pbl/youtube_subtitle_to_text_methods.md) · 📎 [oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope.srt](./PBL_Agents/pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope.srt)、[oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope.txt](./PBL_Agents/pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope.txt)、[oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope_timestamped.txt](./PBL_Agents/pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope_timestamped.txt)、[yt_sub_to_txt.py](./PBL_Agents/pbl/yt_sub_to_txt.py)、[gvi0OE5OzOk_14 GPU Architecture 1.srt](./PBL_Agents/pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201.srt)、[gvi0OE5OzOk_14 GPU Architecture 1.txt](./PBL_Agents/pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201.txt)、[gvi0OE5OzOk_14 GPU Architecture 1_timestamped.txt](./PBL_Agents/pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201_timestamped.txt)
 * `2026-11-12` | [PBL2 尋找解決方案規範 (AGENTS.md)](./PBL_Agents/pbl2/AGENTS.md) · 📎 [AGENTS.bak](./PBL_Agents/pbl2/AGENTS.bak)
-* `2026-11-12` | [解決學生上課滑手機問題：從腦科學機制、班級經營到數位教學轉化的完整解決方案指南](./PBL_Agents/pbl2/classroom_smartphone_management_solutions.html) · [MD](./PBL_Agents/pbl2/classroom_smartphone_management_solutions.md) · 📎 [classroom_focus_dashboard.py](./PBL_Agents/pbl2/classroom_focus_dashboard.py)
 
 ---
 
@@ -30,6 +30,7 @@
 * `2026-11-18` | [🏛️ 黃叔精讀李飛飛：人類最強的提示詞工程師死了 2400 年（逐字稿整理與勘誤還原）](./AI/feifei_li_socrates_prompter_transcript_1118.html) · [MD](./AI/feifei_li_socrates_prompter_transcript_1118.md)
 * `2026-11-18` | [🧠 把手機調成黑白模式每年竟憑空多出 15 天清醒生命：柏克萊腦科學家治好腦霧的逆向神經術｜薩哈爾·尤瑟夫｜第一期](./AI/sahar_yousef_grayscale_brain_fog_transcript_1118.html) · [MD](./AI/sahar_yousef_grayscale_brain_fog_transcript_1118.md) · 📎 [mark_2005_no_task_left_behind.pdf](./AI/references/sahar_yousef_1118/mark_2005_no_task_left_behind.pdf)、[wilson_2014_just_think.pdf](./AI/references/sahar_yousef_1118/wilson_2014_just_think.pdf)、[ward_2017_brain_drain.pdf](./AI/references/sahar_yousef_1118/ward_2017_brain_drain.pdf)
 * `2026-11-18` | [🎙️ 使用 joelhoty/Whisper_WebUI 進行語音轉錄成文字稿：架構剖析、部署實戰與 AI 勘誤工作流指南](./AI/whisper_webui_speech_to_text_guide_1118.html) · [MD](./AI/whisper_webui_speech_to_text_guide_1118.md)
+* `2026-11-18` | [🚀 How Gemini 4 Argon & Carbon Were Built ft. DeepMind's Head of Gemini Product（中英對照與逐字稿勘誤還原）](./AI/gemini_4_argon_carbon_deepmind_transcript_1118.html) · [MD](./AI/gemini_4_argon_carbon_deepmind_transcript_1118.md)
 * `2026-11-06` | [Markdown → Marp / Slidev：多格式轉換與互動式簡報網頁實作（1106 課堂）](./AI/md_marp_slidev_interactive_slides_1106.html) · [MD](./AI/md_marp_slidev_interactive_slides_1106.md)
 * `2026-10-30` | [Agent 與 VS Code 操作驗收與小論文大綱作業](./AI/1106_classwork.md)
 * `2026-10-21` | [Fooocus 影像生成課堂作業指引：Juggernaut XL 與 Voronoi LoRA 幾何細胞肖像實作](./AI/fooocus_voronoi_juggernaut_assignment.html) · [MD](./AI/fooocus_voronoi_juggernaut_assignment.md) · 📎 [civitai_145848150.jpeg](./AI/civitai_145848150.jpeg)

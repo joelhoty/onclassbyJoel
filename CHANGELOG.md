@@ -1,6 +1,6 @@
 # 📝 onclassbyJoel - 全站提示詞歷史與變更記錄 (CHANGELOG)
 
-> **最後更新時間**: 2026-11-18 09:19:38 (UTC+8)
+> **最後更新時間**: 2026-11-18 12:00:08 (UTC+8)
 > **使用模型**: GPT-6 (Codex)
 > **執行 Agent**: Codex /root
 
@@ -855,3 +855,19 @@ $code-review-for-learning 'C:\Users\User\Desktop\onclass\1112-1\1112-1.ino'
   git commit and push
   ```
 - **變更摘要**: 提交薩哈爾·尤瑟夫逐字稿筆記的文獻來源、查核摘要、八處段落補充、影片連結與三份 PDF 附件，包含同步更新的 Markdown、HTML、附件分類及全站索引；新增 `.gitattributes` 將 PDF 明確設為二進位檔，避免文字差異與換行處理影響原始附件。檢查原始逐字稿與既有歷史保留、PDF 可解析及索引連結有效後推送。
+
+### 🔹 [2026-11-18 11:49:00] [Gemini 4 Argon (Medium) / Antigravity] 新增「How Gemini 4 Argon & Carbon Were Built ft. DeepMind's Head of Gemini Product」中英對照與逐字稿勘誤還原筆記
+- **模型/Agent**: Gemini 4 Argon (Medium) / Antigravity
+- **Prompt 原文**:
+  ```text
+  'C:\Users\User\Downloads\How Gemini 4 Argon  Carbon were built ft. DeepMinds Head of Gemini Product.txt'  把逐字稿整理成文章，不添加其他資訊，保留原文，但是如果有需要更正錯字，可以根據上下文語意處理，如果是英文做成中英文對照的版本，分別儲存為md與html
+  ```
+- **變更摘要**: 於 `AI/` 新增 `gemini_4_argon_carbon_deepmind_transcript_1118.md` 與 `gemini_4_argon_carbon_deepmind_transcript_1118.html`，將 667 行英文逐字稿在不添加任何外部資訊的前提下，依《The Google Cloud Show》節目脈絡（開場導言、Google DeepMind 產品負責人 Tulsee Doshi 深度專訪、Billy/Luke/Molly 的 AI Studio 3D 西洋棋與 Firebase 賽車排行榜實測、Rody Davis 的 Antigravity 自訂 Subagents 軟體工廠示範）整理為中英對照文章；附 32 組語音辨識（ASR）同音錯字與專有名詞修正對照表（如 `Argonne / our gun / R gone` → `Argon`、`Full feed, though, she / Pulsi / tools he` → `Tulsee Doshi / Tulsee`、`anti-gravity / Enter gravity` → `Antigravity`、`FairWin / Farron` → `Fathom`、`for Trent rust` → `Fortran to Rust` 等），並於文末 100% 完整保留 667 行原始逐字稿與行間勘誤標註，同步更新全站索引。
+
+### 🔹 [2026-11-18 12:00:08] [GPT-6 (Codex) / Codex /root] 提交 Gemini 4 研發專訪逐字稿
+- **模型/Agent**: GPT-6 (Codex) / Codex /root
+- **Prompt 原文**:
+  ```text
+  git commit and push
+  ```
+- **變更摘要**: 提交 Gemini 4 Argon 與 Carbon 研發專訪的中英對照筆記（Markdown、HTML）及 AI 分類設定，同步產生全站索引與 HTML 變更紀錄。
