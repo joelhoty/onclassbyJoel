@@ -1,6 +1,7 @@
 {
  "ignore": [
   ".gitignore",
+  ".gitattributes",
   "I2C_simulation.html",
   "skills-lock.json",
   "INDEX.md",
@@ -1369,7 +1370,20 @@
     "AI/sahar_yousef_grayscale_brain_fog_transcript_1118.html",
     "AI/sahar_yousef_grayscale_brain_fog_transcript_1118.md"
    ],
-   "attachments": [],
+   "attachments": [
+    {
+     "path": "AI/references/sahar_yousef_1118/mark_2005_no_task_left_behind.pdf",
+     "title": "Mark 2005 工作中斷研究原文"
+    },
+    {
+     "path": "AI/references/sahar_yousef_1118/wilson_2014_just_think.pdf",
+     "title": "Wilson 2014 獨處思考研究與補充資料"
+    },
+    {
+     "path": "AI/references/sahar_yousef_1118/ward_2017_brain_drain.pdf",
+     "title": "Ward 2017 Brain Drain 原文（鏡像）"
+    }
+   ],
    "category": "AI"
   },
   {

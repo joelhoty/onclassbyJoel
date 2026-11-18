@@ -1,6 +1,6 @@
 # 📝 onclassbyJoel - 全站提示詞歷史與變更記錄 (CHANGELOG)
 
-> **最後更新時間**: 2026-11-18 09:06:08 (UTC+8)
+> **最後更新時間**: 2026-11-18 09:19:38 (UTC+8)
 > **使用模型**: GPT-6 (Codex)
 > **執行 Agent**: Codex /root
 
@@ -805,3 +805,53 @@ $code-review-for-learning 'C:\Users\User\Desktop\onclass\1112-1\1112-1.ino'
   git commit and push
   ```
 - **變更摘要**: 提交三篇 AI 筆記（李飛飛逐字稿、薩哈爾·尤瑟夫逐字稿與 Whisper_WebUI 說明）的 Markdown／HTML、ec/1117-1 筆記的 Metadata 與 Prompt Archive 補充，以及索引分類設定；依工作區規範重建全站索引並進行提交及推送檢查。
+
+### 🔹 [2026-11-18 09:14:47] [GPT-6 (Codex) / Codex /root] 補充影片文獻查證與下載
+- **模型/Agent**: GPT-6 (Codex) / Codex /root
+- **Prompt 原文**:
+
+```text
+'D:\CLASS_NOTE\AI\sahar_yousef_grayscale_brain_fog_transcript_1118.md'  這個影片的說明有以下參考資料來源 本期引用權威文獻與腦科學研究
+
+加州大學爾灣分校格洛麗亞·馬克教授（Prof. Gloria Mark）20年追蹤研究：揭示人類在單一屏幕上的平均專注時長從2004年的150秒斷崖式跌至47秒，且每次打斷平均需25分鐘才能恢復深度思考。
+
+
+
+明尼蘇達大學索菲·勒魯瓦教授（Prof. Sophie Leroy）：發表於《Organizational Behavior and Human Decision Processes》，提出「注意力殘留（Attentional Residue）」概念，證實未完成任務的切換會持續佔用大腦工作內存。
+
+
+
+弗吉尼亞大學蒂莫西·威爾遜教授（Prof. Timothy Wilson）與哈佛大學團隊：發表於《科學》（Science），證實面對15分鐘無刺激獨處時，高達2/3男性與1/4女性寧願主動點擊按鈕電擊自己也不願忍受無聊。
+
+
+
+北達科他大學霍爾特教授（Prof. Alex Holte）：發表於《Computers in Human Behavior》，隨機對照試驗證實開啟手機灰度模式可顯著降低屏幕使用時長與社交焦慮。
+
+
+
+德克薩斯大學奧斯汀分校阿德里安·沃德教授（Prof. Adrian Ward）：「腦力流失（Brain Drain）」研究，證實僅僅將關機或靜音的手機放在視線範圍內，就會顯著降低工作記憶容量與流體智力表現。
+
+查證並嘗試下載 找到原文連結
+
+附上影片連結 https://www.youtube.com/watch?v=wDBc5IarmEw&t=1139s
+```
+
+- **變更摘要**: 新增影片連結與五項研究的原文連結、摘要／全文查核及解讀界線；更正灰度研究期刊與焦慮類型，釐清 25 分鐘的測量意義。下載並核對 Mark、Wilson、Ward 三份原論文 PDF，同步更新 Markdown、HTML 與附件索引；記錄未成功取得的全文。
+
+### 🔹 [2026-11-18 09:18:55] [GPT-6 (Codex) / Codex /root] 補充查核錯誤與段落更正
+- **模型/Agent**: GPT-6 (Codex) / Codex /root
+- **Prompt 原文**:
+
+```text
+將查核錯誤訊息補充到筆記
+```
+
+- **變更摘要**: 在筆記開頭新增查核更正摘要表，於八處原文段落旁補充錯誤、證據界線或未完成核對狀態；同步更正流程圖四個研究節點與整理說明，保留原始逐字稿及歷史，更新 HTML 與全站索引。
+
+### 🔹 [2026-11-18 09:19:38] [GPT-6 (Codex) / Codex /root] 提交並推送文獻查核與更正
+- **模型/Agent**: GPT-6 (Codex) / Codex /root
+- **Prompt 原文**:
+  ```text
+  git commit and push
+  ```
+- **變更摘要**: 提交薩哈爾·尤瑟夫逐字稿筆記的文獻來源、查核摘要、八處段落補充、影片連結與三份 PDF 附件，包含同步更新的 Markdown、HTML、附件分類及全站索引；新增 `.gitattributes` 將 PDF 明確設為二進位檔，避免文字差異與換行處理影響原始附件。檢查原始逐字稿與既有歷史保留、PDF 可解析及索引連結有效後推送。

@@ -1,6 +1,6 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-11-18 09:06:08 (UTC+8)
+> **最後更新時間**: 2026-11-18 09:19:38 (UTC+8)
 > **使用模型**: GPT-6 (Codex)
 > **執行 Agent**: Codex /root
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
@@ -13,7 +13,7 @@
 
 * `2026-11-18` | [NodeMCU-32S (ESP32) + DHT22 + SEN0159 CO2 + SSD1306 OLED + Wi-Fi AJAX WebServer 智慧環境監測系統 1117-1](./ec/1117-1/note-1117.html) `📁 1117-1/` · [MD](./ec/1117-1/note-1117.md) · 📎 [1117-1.ino](./ec/1117-1/1117-1.ino)、[1117-1copy.txt](./ec/1117-1/1117-1copy.txt)、[1117.txt](./ec/1117-1/1117.txt)
 * `2026-11-18` | [🏛️ 黃叔精讀李飛飛：人類最強的提示詞工程師死了 2400 年（逐字稿整理與勘誤還原）](./AI/feifei_li_socrates_prompter_transcript_1118.html) · [MD](./AI/feifei_li_socrates_prompter_transcript_1118.md)
-* `2026-11-18` | [🧠 把手機調成黑白模式每年竟憑空多出 15 天清醒生命：柏克萊腦科學家治好腦霧的逆向神經術｜薩哈爾·尤瑟夫｜第一期](./AI/sahar_yousef_grayscale_brain_fog_transcript_1118.html) · [MD](./AI/sahar_yousef_grayscale_brain_fog_transcript_1118.md)
+* `2026-11-18` | [🧠 把手機調成黑白模式每年竟憑空多出 15 天清醒生命：柏克萊腦科學家治好腦霧的逆向神經術｜薩哈爾·尤瑟夫｜第一期](./AI/sahar_yousef_grayscale_brain_fog_transcript_1118.html) · [MD](./AI/sahar_yousef_grayscale_brain_fog_transcript_1118.md) · 📎 [mark_2005_no_task_left_behind.pdf](./AI/references/sahar_yousef_1118/mark_2005_no_task_left_behind.pdf)、[wilson_2014_just_think.pdf](./AI/references/sahar_yousef_1118/wilson_2014_just_think.pdf)、[ward_2017_brain_drain.pdf](./AI/references/sahar_yousef_1118/ward_2017_brain_drain.pdf)
 * `2026-11-18` | [🎙️ 使用 joelhoty/Whisper_WebUI 進行語音轉錄成文字稿：架構剖析、部署實戰與 AI 勘誤工作流指南](./AI/whisper_webui_speech_to_text_guide_1118.html) · [MD](./AI/whisper_webui_speech_to_text_guide_1118.md)
 * `2026-11-17` | [程式碼導讀：1112-1.ino — ESP32 DHT 與 OLED 教學講義](./ec/AI_CodeReview/reviews/1112-1/CODE_REVIEW.html) `📁 AI_CodeReview/reviews/1112-1/` · [MD](./ec/AI_CodeReview/reviews/1112-1/CODE_REVIEW.md) · 📎 [1112-1.ino](./ec/AI_CodeReview/reviews/1112-1/1112-1.ino)
 * `2026-11-13` | [NodeMCU-32S (ESP32) + DHT 溫濕度 + SSD1306 128×64 OLED 符號與黃金三區版面設計 1112-1](./ec/nodemcu32s_dht_ssd1306_layout_1112.html) · [MD](./ec/nodemcu32s_dht_ssd1306_layout_1112.md) · 📎 [1112-1.ino](./ec/1112-1.ino)、[2026-11-12-1457-oled-display.jpg](./ec/2026-11-12-1457-oled-display.jpg)、[2026-11-12-1457-hardware-wiring.jpg](./ec/2026-11-12-1457-hardware-wiring.jpg)
@@ -28,7 +28,7 @@
 
 ### 1. 🤖 AI / 機器學習與深度學習 (`AI/`)
 * `2026-11-18` | [🏛️ 黃叔精讀李飛飛：人類最強的提示詞工程師死了 2400 年（逐字稿整理與勘誤還原）](./AI/feifei_li_socrates_prompter_transcript_1118.html) · [MD](./AI/feifei_li_socrates_prompter_transcript_1118.md)
-* `2026-11-18` | [🧠 把手機調成黑白模式每年竟憑空多出 15 天清醒生命：柏克萊腦科學家治好腦霧的逆向神經術｜薩哈爾·尤瑟夫｜第一期](./AI/sahar_yousef_grayscale_brain_fog_transcript_1118.html) · [MD](./AI/sahar_yousef_grayscale_brain_fog_transcript_1118.md)
+* `2026-11-18` | [🧠 把手機調成黑白模式每年竟憑空多出 15 天清醒生命：柏克萊腦科學家治好腦霧的逆向神經術｜薩哈爾·尤瑟夫｜第一期](./AI/sahar_yousef_grayscale_brain_fog_transcript_1118.html) · [MD](./AI/sahar_yousef_grayscale_brain_fog_transcript_1118.md) · 📎 [mark_2005_no_task_left_behind.pdf](./AI/references/sahar_yousef_1118/mark_2005_no_task_left_behind.pdf)、[wilson_2014_just_think.pdf](./AI/references/sahar_yousef_1118/wilson_2014_just_think.pdf)、[ward_2017_brain_drain.pdf](./AI/references/sahar_yousef_1118/ward_2017_brain_drain.pdf)
 * `2026-11-18` | [🎙️ 使用 joelhoty/Whisper_WebUI 進行語音轉錄成文字稿：架構剖析、部署實戰與 AI 勘誤工作流指南](./AI/whisper_webui_speech_to_text_guide_1118.html) · [MD](./AI/whisper_webui_speech_to_text_guide_1118.md)
 * `2026-11-06` | [Markdown → Marp / Slidev：多格式轉換與互動式簡報網頁實作（1106 課堂）](./AI/md_marp_slidev_interactive_slides_1106.html) · [MD](./AI/md_marp_slidev_interactive_slides_1106.md)
 * `2026-10-30` | [Agent 與 VS Code 操作驗收與小論文大綱作業](./AI/1106_classwork.md)
