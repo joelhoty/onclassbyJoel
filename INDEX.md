@@ -1,7 +1,7 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-11-19 14:03:00 (UTC+8)
-> **使用模型**: Gemini 4 Neon
+> **最後更新時間**: 2026-11-20 07:35:00 (UTC+8)
+> **使用模型**: Gemini 4 Argon
 > **執行 Agent**: Antigravity
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 > **變更記錄**: [CHANGELOG.md](./CHANGELOG.md)
@@ -11,8 +11,8 @@
 
 ## 🆕 最近更新 (10 篇)
 
+* `2026-11-20` | [🔄 NodeMCU-32S × Agent 建議 ACR 實作與學習流程（整合實戰版）](./ec/ACR_recommended_workflow.html) · [MD](./ec/ACR_recommended_workflow.md)
 * `2026-11-19` | [NodeMCU-32S × Agent：從實作出發的 ACR 學習模式](./ec/ACR_b02.md)
-* `2026-11-19` | [🔄 NodeMCU-32S × Agent 建議 ACR 實作與學習流程（整合實戰版）](./ec/ACR_recommended_workflow.html) · [MD](./ec/ACR_recommended_workflow.md)
 * `2026-11-18` | [NodeMCU-32S (ESP32) + DHT22 + SEN0159 CO2 + SSD1306 OLED + Wi-Fi AJAX WebServer 智慧環境監測系統 1117-1](./ec/1117-1/note-1117.html) `📁 1117-1/` · [MD](./ec/1117-1/note-1117.md) · 📎 [1117-1.ino](./ec/1117-1/1117-1.ino)、[1117-1copy.txt](./ec/1117-1/1117-1copy.txt)、[1117.txt](./ec/1117-1/1117.txt)
 * `2026-11-18` | [🏛️ 黃叔精讀李飛飛：人類最強的提示詞工程師死了 2400 年（逐字稿整理與勘誤還原）](./AI/feifei_li_socrates_prompter_transcript_1118.html) · [MD](./AI/feifei_li_socrates_prompter_transcript_1118.md)
 * `2026-11-18` | [🧠 把手機調成黑白模式每年竟憑空多出 15 天清醒生命：柏克萊腦科學家治好腦霧的逆向神經術｜薩哈爾·尤瑟夫｜第一期](./AI/sahar_yousef_grayscale_brain_fog_transcript_1118.html) · [MD](./AI/sahar_yousef_grayscale_brain_fog_transcript_1118.md) · 📎 [mark_2005_no_task_left_behind.pdf](./AI/references/sahar_yousef_1118/mark_2005_no_task_left_behind.pdf)、[wilson_2014_just_think.pdf](./AI/references/sahar_yousef_1118/wilson_2014_just_think.pdf)、[ward_2017_brain_drain.pdf](./AI/references/sahar_yousef_1118/ward_2017_brain_drain.pdf)
@@ -72,7 +72,7 @@
 * `2026-09-26` | [電磁繼電器 SPDT 控制電路](./ec/relay_spdt_circuit_analysis.html) · [MD](./ec/relay_spdt_circuit_analysis.md) · 📎 [relay1.jpg](./ec/relay1.jpg)
 
 #### 🛠️ 開發流程與環境
-* `2026-11-19` | [🔄 NodeMCU-32S × Agent 建議 ACR 實作與學習流程（整合實戰版）](./ec/ACR_recommended_workflow.html) · [MD](./ec/ACR_recommended_workflow.md)
+* `2026-11-20` | [🔄 NodeMCU-32S × Agent 建議 ACR 實作與學習流程（整合實戰版）](./ec/ACR_recommended_workflow.html) · [MD](./ec/ACR_recommended_workflow.md)
 * `2026-10-20` | [Arduino 專案開發模式與實務標準流程 (SOP) 手冊](./ec/arduino_development_workflow_methodology.html) · [MD](./ec/arduino_development_workflow_methodology.md)
 * `2026-10-20` | [Arduino Uno 連接 I2C LCD 1602：HelloWorld 範例與 LiquidCrystal_I2C 物件方法全解析](./ec/arduino_i2c_lcd1602_helloworld_guide.html) · [MD](./ec/arduino_i2c_lcd1602_helloworld_guide.md) · 📎 [2026-10-20-142320.jpg](./ec/2026-10-20-142320.jpg)、[2026-10-20-143026.jpg](./ec/2026-10-20-143026.jpg)、[2026-10-20-150654_ide_helloworld.jpg](./ec/2026-10-20-150654_ide_helloworld.jpg)、[arduino_i2c_lcd1602_helloworld.ino](./ec/arduino_i2c_lcd1602_helloworld.ino)
 * `2026-10-01` | [Arduino IDE 開發環境與 I2C LCD 1602 實體接線指南](./ec/arduino_ide_i2c_lcd1602_guide.html) · [MD](./ec/arduino_ide_i2c_lcd1602_guide.md) · 📎 [2026-10-01-145140.jpg](./ec/2026-10-01-145140.jpg)、[i2c_lcd1602.ino](./ec/i2c_lcd1602.ino)

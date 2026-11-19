@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🔄 NodeMCU-32S × Agent 建議 ACR 實作與學習流程（整合實戰版）</title>
 
-    <!-- Prism 程式碼高亮 -->
+    <!-- Prism 程式碼語法標示 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
@@ -389,8 +389,8 @@
             </div>
         </div>
         <div class="meta-grid">
-            <div><strong>最後更新時間：</strong>2026-11-19 14:00:00 (UTC+8)</div>
-            <div><strong>使用模型：</strong>Gemini 4 Neon</div>
+            <div><strong>最後更新時間：</strong>2026-11-19 15:00:00 (UTC+8)</div>
+            <div><strong>使用模型：</strong>Gemini 4 Argon</div>
             <div><strong>執行 Agent：</strong>Antigravity</div>
             <div><strong>參考筆記：</strong>
                 <a href="./arduino_development_workflow_methodology.html">六階段開發 SOP</a> •
@@ -406,11 +406,11 @@
         <h2>📑 目錄</h2>
         <ol>
             <li><a href="#sec1">核心概念剖析：為什麼需要「實戰整合版」ACR 流程？</a></li>
-            <li><a href="#sec2">總覽流程圖：A → C → R 實戰閉環與多輪演進</a></li>
+            <li><a href="#sec2">總覽流程圖：A → C → R 實戰循環與多輪演進</a></li>
             <li><a href="#sec3">三階段標準作業流程（SOP）與歷次筆記對照</a></li>
-            <li><a href="#sec4">選做改寫與卡住時的證據回退機制</a></li>
+            <li><a href="#sec4">選做改寫與卡住時的退回排查機制</a></li>
             <li><a href="#sec5">實作與應用範例：四輪專案演進與可測試程式碼骨架</a></li>
-            <li><a href="#sec6">每輪必留的學習與工程證據（交付物清單）</a></li>
+            <li><a href="#sec6">每輪必留的學習與工程證據（檢核與交付清單）</a></li>
             <li><a href="#sec7">延伸思考：防禦性檢核表、AI 反模式與教學權衡</a></li>
             <li><a href="#archive">提示詞歷史與變更記錄 (Prompt Archive)</a></li>
         </ol>
@@ -420,7 +420,7 @@
     <section id="sec1">
         <h2>1. 核心概念剖析：為什麼需要「實戰整合版」ACR 流程？</h2>
         <p>在 <a href="./ACR_b02.md"><code>ACR_b02.md</code></a> 中，定義了以實作出發的 <strong>ACR（Agents → Coding → Review）</strong> 學習循環：由指導者建立可運作的起點與明確任務，學生透過 Agent 核對條件（<strong>A</strong>）、協作完成單一可驗收功能（<strong>C</strong>），最後從實機畫面出發「往下讀程式、往上懂系統」（<strong>R</strong>）並留下學習證據。</p>
-        <p>回顧我們在 <code>ec/</code> 工作區累積的實務經驗，早期純硬體實作的「<strong>六階段漸進式開發 SOP</strong>」（<a href="./arduino_development_workflow_methodology.html"><code>arduino_development_workflow_methodology</code></a>）與近期的 <strong>NodeMCU-32S 實作演進</strong>（<code>1110-1</code> → <code>1112-1</code> → <code>CODE_REVIEW</code> → <code>1117-1</code>），正好能無縫映射到 ACR 的每一個環節：</p>
+        <p>回顧我們在 <code>ec/</code> 工作區累積的實務經驗，早期純硬體實作的「<strong>六階段漸進式開發 SOP</strong>」（<a href="./arduino_development_workflow_methodology.html"><code>arduino_development_workflow_methodology</code></a>）與近期的 <strong>NodeMCU-32S 實作演進</strong>（<code>1110-1</code> → <code>1112-1</code> → <code>CODE_REVIEW</code> → <code>1117-1</code>），正好能無縫對應到 ACR 的每一個環節：</p>
 
         <div class="table-wrap">
             <table>
@@ -436,7 +436,7 @@
                     <tr>
                         <td><span class="badge badge-a">A｜Agents</span></td>
                         <td>核對條件、驗證基礎功能、單一元件先測再整合</td>
-                        <td><strong>硬體先行與俯拍存證</strong>（3.3V/5V、共地、腳位絲印）、<strong>官方範例單元隔離測試</strong>（「不同時測兩件未知事物」）、<strong>I2C Scanner / 晶片型號核對</strong>（SSD1306 vs SH1106、ADC1 vs ADC2）</td>
+                        <td><strong>硬體先行與拍照留存</strong>（3.3V/5V、共地、腳位標示）、<strong>官方範例單元隔離測試</strong>（「不同時測兩件未知事物」）、<strong>I2C Scanner / 晶片型號核對</strong>（SSD1306 vs SH1106、ADC1 vs ADC2）</td>
                         <td><a href="./arduino_development_workflow_methodology.html">六階段 SOP</a>、<a href="./nodemcu32s_dht_ssd1306_layout_1112.html">1112-1</a>、<a href="./1117-1/note-1117.html">1117-1</a></td>
                     </tr>
                     <tr>
@@ -454,7 +454,7 @@
                     <tr>
                         <td><span class="badge badge-warn">Record</span></td>
                         <td>留下實作證據、自己的解釋與下一步想法</td>
-                        <td><strong>多模態文檔歸檔</strong>（Markdown + HTML + 實拍圖 + 程式快照 <code>.ino</code> + Prompt Archive + 索引更新與 Git 版本控制）</td>
+                        <td><strong>多模態文件與筆記歸檔</strong>（Markdown + HTML + 實拍照片 + 程式快照 <code>.ino</code> + Prompt Archive + 索引更新與 Git 版本控制）</td>
                         <td><a href="./arduino_development_workflow_methodology.html">六階段 SOP</a>、<code>AGENTS.md</code></td>
                     </tr>
                 </tbody>
@@ -464,24 +464,24 @@
         <div class="dual-grid">
             <div class="dual-item">
                 <h4>↓ 往下讀程式（Code &amp; Data Flow）</h4>
-                <p>追蹤單一數據的生命週期：感測器讀值 → 濾波/防呆 → 變數 → 條件判斷 <code>if</code> → 顯示/API 輸出；拆解魔術數字與專有名稱（如 <code>_1_HW_I2C</code>、Glyph <code>67</code>、門檻 <code>30°C</code>）。</p>
+                <p>追蹤單筆資料的傳遞過程：感測器讀值 → 濾波/防呆 → 變數 → 條件判斷 <code>if</code> → 顯示/API 輸出；拆解魔術數字與專有名稱（如 <code>_1_HW_I2C</code>、Glyph <code>67</code>、門檻 <code>30°C</code>）。</p>
             </div>
             <div class="dual-item">
                 <h4>↑ 往上懂系統（Hardware &amp; System Limits）</h4>
-                <p>追問底層電氣與使用邊界：ESP32 開 Wi-Fi 為何不能用 <code>ADC2</code>？加熱型 CO2 感測器為何接 <code>5V VIN</code> 且需預熱？內網無外網時為何禁用 CDN？感測失敗時畫面如何避免誤導？</p>
+                <p>追問底層電氣與使用邊界：ESP32 開 Wi-Fi 為何不能用 <code>ADC2</code>？加熱型 CO2 感測器為何接 <code>5V VIN</code> 且需預熱？區域網路無對外連線時為何不宜依賴外部 CDN？感測失敗時畫面如何避免誤導？</p>
             </div>
         </div>
     </section>
 
     <!-- Section 2 -->
     <section id="sec2">
-        <h2>2. 總覽流程圖：A → C → R 實戰閉環與多輪演進</h2>
+        <h2>2. 總覽流程圖：A → C → R 實戰循環與多輪演進</h2>
         <p>延續 <code>ACR_b02.md</code> 的實線主循環與虛線選做改寫，並融入硬體單元測試、結構化 Review 與多模態歸檔節點：</p>
         <div class="mermaid-box">
             <div class="mermaid">
 flowchart TB
     guide(["🎯 任務啟動&lt;br/&gt;指導者交代本輪單一需求、可改範圍與驗收證據"])
-    A["A · Agents｜建立可信的起點&lt;br/&gt;1. 硬體核對與拍照存證（3.3V/5V、共地、I2C/ADC1、晶片型號）&lt;br/&gt;2. 環境與程式庫盤點（板型、函式庫版本、待查證項目）&lt;br/&gt;3. 單元隔離測試（各元件單獨跑官方範例並確認輸出）"]
+    A["A · Agents｜建立可信的起點&lt;br/&gt;1. 硬體核對與拍照留存（3.3V/5V、共地、I2C/ADC1、晶片型號）&lt;br/&gt;2. 環境與程式庫盤點（板型、函式庫版本、待查證項目）&lt;br/&gt;3. 單元隔離測試（各元件單獨跑官方範例並確認輸出）"]
     C["C · Coding｜小步增量協作與實測&lt;br/&gt;1. 界定可視結果與最小修改範圍（保留原功能、標記假設）&lt;br/&gt;2. 先寫預測表，再用固定輸入測邊界（29/30/31°C）後還原&lt;br/&gt;3. 確認新舊功能皆通過並備份上一版 .ino"]
     R["R · Review｜往下讀程式 × 往上懂系統&lt;br/&gt;1. 先寫自己的解釋（我的預測）並指認程式區段&lt;br/&gt;2. 往下拆解：區段地圖、資料流、關鍵語法與魔術數字&lt;br/&gt;3. 往上追問：軟硬體配合、異常處理（NaN/斷線）與使用限制"]
     record["📝 Record｜留存學習與工程證據&lt;br/&gt;實測對照表 + 自己的解釋 + 下一步想法 + MD/HTML/Git 歸檔"]
@@ -516,9 +516,9 @@ flowchart TB
             <h3><span class="badge badge-a">階段 A</span> Agents：硬體先行、環境核對與單元隔離驗證</h3>
             <p><strong>核心原則</strong>：「<strong>不要同時測試兩件未知的事物</strong>」，軟體必須建立在已驗證的電氣與環境起點上。</p>
             <ol>
-                <li><strong>硬體先行與實體拍照存證</strong>：斷電接線，先查晶片型號與電壓（ESP32 GPIO 僅耐壓 <code>3.3V</code>；加熱型 SEN0159 接 <code>5V VIN</code> 並共地）；核對腳位衝突（Wi-Fi 與 <code>ADC2</code> 互斥，類比改接 <code>ADC1</code> 如 <code>GPIO 32</code>；I2C 預設 <code>SDA=21, SCL=22</code>）；手機俯拍線色與模組背面型號（<code>SSD1306</code> vs <code>SH1106</code>）。</li>
-                <li><strong>環境與程式庫盤點</strong>：記錄板型（NodeMCU-32S）、核心版本、函式庫版本（<code>U8g2</code>、<code>DHT_Unified</code>、<code>Adafruit_Sensor</code>）與 Serial 鮑率（<code>115200</code>），請 Agent 列出已確認與待查證清單。</li>
-                <li><strong>單一元件隔離測試</strong>：先單獨跑感測器範例（Serial Monitor 觀察實測變化），再單獨跑 OLED 範例；若沿用既有配置，重現上一輪成功輸出即可。</li>
+                <li><strong>硬體先行與實體拍照留存</strong>：斷電接線，先查晶片型號與電壓（ESP32 GPIO 僅耐壓 <code>3.3V</code>；加熱型 SEN0159 接 <code>5V VIN</code> 並共地）；核對腳位衝突（Wi-Fi 與 <code>ADC2</code> 互斥，類比改接 <code>ADC1</code> 如 <code>GPIO 32</code>；I2C 預設 <code>SDA=21, SCL=22</code>）；手機俯拍線色、排針標示與模組背面型號（<code>SSD1306</code> vs <code>SH1106</code>）。</li>
+                <li><strong>環境與程式庫盤點</strong>：記錄板型（NodeMCU-32S）、核心版本、函式庫版本（<code>U8g2</code>、<code>DHT_Unified</code>、<code>Adafruit_Sensor</code>）與序列埠鮑率（<code>115200</code>），請 Agent 列出已確認與待查證清單。</li>
+                <li><strong>單一元件隔離測試</strong>：先單獨跑感測器範例（於序列監控視窗觀察實測變化），再單獨跑 OLED 範例；若沿用既有配置，重現上一輪成功輸出即可。</li>
             </ol>
 
             <div class="code-wrapper prompt-box">
@@ -528,7 +528,7 @@ flowchart TB
                 </div>
                 <pre><code>這是我目前的開發板、硬體接線、俯拍重點與已安裝程式庫資訊：[附上板型/腳位/程式庫/基礎範例]。
 1. 請對照範例與接線，列出我上電前必須核對的電氣與設定項目（包含電壓準位、腳位衝突如 ADC1/ADC2、驅動 IC 差異如 SSD1306/SH1106），並標出資料中缺少的待查證資訊。
-2. 請分別給我感測器與顯示器的「單一元件隔離測試」步驟，以及通過時在 Serial Monitor / OLED 上應該看到的明確輸出。
+2. 請分別給我感測器與顯示器的「單一元件隔離測試」步驟，以及通過時在序列監控視窗（Serial Monitor）與 OLED 上應該看到的明確輸出。
 我會先核對實體接線並回報實測結果，全部通過後再進行整合。</code></pre>
             </div>
             <div class="done-box">✅ <strong>A 階段完成標準</strong>：能重現基礎輸出、保存接線紀錄與基礎程式快照，並明確列出哪些硬體/環境條件已驗證通過。</div>
@@ -536,11 +536,11 @@ flowchart TB
 
         <!-- Phase C -->
         <div class="phase-card phase-c">
-            <h3><span class="badge badge-c">階段 C</span> Coding：小步增量、先預測再實測與版控留底</h3>
+            <h3><span class="badge badge-c">階段 C</span> Coding：小步增量、先預測再實測與版本留存</h3>
             <p><strong>核心原則</strong>：「<strong>一次只加一項可驗收的功能</strong>」，先寫預測再實測，任何改動都保留可回復的上一版。</p>
             <ol>
-                <li><strong>將需求轉為可視化驗收條件與最小修改範圍</strong>：明定「新增什麼」與「必須保留什麼」；涉及 WebServer 或動畫時，明確要求 <code>millis()</code> 非阻塞排程取代 <code>delay()</code>；涉及 OLED 排版先驗證像素座標。</li>
-                <li><strong>要求 Agent 交回「四件套」</strong>：(a) 可編譯完整程式與註解、(b) 修改位置與前後差異、(c) 尚未確認的假設、(d) 可還原的固定輸入測試方式。</li>
+                <li><strong>將需求轉為可視化驗收條件與最小修改範圍</strong>：明定「新增什麼」與「必須保留什麼」；涉及 WebServer 或動畫時，明確要求以 <code>millis()</code> 非阻塞排程取代 <code>delay()</code>；涉及 OLED 排版時先驗證像素座標。</li>
+                <li><strong>要求 Agent 交回「四項必要內容」</strong>：(a) 可編譯完整程式與註解、(b) 修改位置與前後差異、(c) 尚未確認的假設、(d) 可還原的固定輸入測試方式。</li>
                 <li><strong>先寫預測表，再實機驗證</strong>：先預測邊界輸入（<code>29/30/31°C</code> 與 <code>NAN</code>），再實測比對。測完後<strong>務必恢復真實感測器讀取</strong>並確認新舊功能皆正常。</li>
             </ol>
 
@@ -588,7 +588,7 @@ flowchart TB
 
     <!-- Section 4 -->
     <section id="sec4">
-        <h2>4. 選做改寫與卡住時的證據回退機制</h2>
+        <h2>4. 選做改寫與卡住時的退回排查機制</h2>
         <h3>4.1 選做改寫（Review → C 的微循環）</h3>
         <ol>
             <li><strong>用 Review 證據定義新需求</strong>：例如把門檻從 <code>&gt;= 30.0</code> 改為嚴格大於 <code>&gt; 30.0</code>。</li>
@@ -603,7 +603,7 @@ flowchart TB
                 <thead>
                     <tr>
                         <th style="width: 30%;">遇到的異常現象</th>
-                        <th style="width: 14%;">回退階段</th>
+                        <th style="width: 14%;">退回／停留階段</th>
                         <th style="width: 56%;">立即執行的證據排查動作</th>
                     </tr>
                 </thead>
@@ -619,7 +619,7 @@ flowchart TB
                         <td>查 DATA 腳位與上拉電阻；確認取樣間隔 ≥ 2000 ms（DHT22）或 ≥ 1500 ms（DHT11）。</td>
                     </tr>
                     <tr>
-                        <td>開啟 Wi-Fi 後類比感測器讀值異常或卡死</td>
+                        <td>開啟 Wi-Fi 後類比感測器讀值異常或當機</td>
                         <td><strong>回到 A</strong></td>
                         <td>檢查是否誤接 ESP32 <code>ADC2</code> 腳位；改接 <code>ADC1</code>（如 <code>GPIO 32</code>）並確認感測器供電（如加熱器改接 <code>5V VIN</code>）。</td>
                     </tr>
@@ -629,7 +629,7 @@ flowchart TB
                         <td>立即切回上一版可運作 <code>.ino</code> 確認硬體沒壞，縮小程式碼差異，帶著「操作 + 預期 + 實測 + 錯誤訊息」回報 Agent。</td>
                     </tr>
                     <tr>
-                        <td>網頁打不開或跑馬燈每 2 秒卡頓一次</td>
+                        <td>網頁打不開或跑馬燈每 2 秒停頓一次</td>
                         <td><strong>留在 C</strong></td>
                         <td>檢查 <code>loop()</code> 是否殘留阻塞式 <code>delay(2000)</code>，改用 <code>millis()</code> 非阻塞排程確保 <code>server.handleClient()</code> 高頻輪詢。</td>
                     </tr>
@@ -667,9 +667,9 @@ flowchart TB
                     <tr>
                         <td><strong>Round 1</strong></td>
                         <td><strong>基礎感測與顯示</strong><br/><a href="./arduino_development_workflow_methodology.html">六階段 SOP</a></td>
-                        <td>俯拍接線、官方範例單測 LCD/OLED 與 DHT</td>
+                        <td>拍照記錄接線、官方範例單測 LCD/OLED 與 DHT</td>
                         <td>整併兩模組、加 <code>isnan()</code> 防呆、空格覆寫防閃爍</td>
-                        <td>理解單匯流排取樣週期與 <code>lcd.clear()</code> 閃爍成因</td>
+                        <td>理解單線感測器取樣週期與 <code>lcd.clear()</code> 閃爍成因</td>
                     </tr>
                     <tr>
                         <td><strong>Round 2</strong></td>
@@ -687,10 +687,10 @@ flowchart TB
                     </tr>
                     <tr>
                         <td><strong>Round 4</strong></td>
-                        <td><strong>多感測器擴充與離線儀表板</strong><br/><a href="./1117-1/note-1117.html">1117-1</a></td>
+                        <td><strong>多感測器擴充與區網離線儀表板</strong><br/><a href="./1117-1/note-1117.html">1117-1</a></td>
                         <td><strong>新增 SEN0159 必回 A</strong>：接 <code>5V VIN</code> + <code>GPIO 32 (ADC1)</code> 單測電壓</td>
-                        <td>加入 5 次移動平均、對數換算與零 CDN 原生 Canvas 雙軸圖</td>
-                        <td>理解 Wi-Fi 與 ADC2 衝突、MG-811 預熱特性與內網離線設計</td>
+                        <td>加入 5 次移動平均、對數換算與免外部 CDN 的原生 Canvas 雙軸折線圖</td>
+                        <td>理解 Wi-Fi 與 ADC2 衝突、MG-811 預熱特性與區網離線設計</td>
                     </tr>
                 </tbody>
             </table>
@@ -742,7 +742,7 @@ flowchart TD
 #include &lt;DHT_U.h&gt;
 
 // ---------- 1. 硬體腳位與門檻常數 ----------
-#define DHTPIN                16          // DHT22 單匯流排接於 GPIO 16
+#define DHTPIN                16          // DHT22 單線資料腳接於 GPIO 16
 #define DHTTYPE               DHT22       // 感測器型號（若為 DHT11 請改此處）
 const float TEMP_THRESHOLD  = 30.0f;      // 本輪自訂提醒門檻（°C）
 const unsigned long READ_MS = 2000UL;     // DHT22 最小安全取樣週期（2 秒）
@@ -818,7 +818,7 @@ float acquireTemperature() {
 #else
   sensors_event_t event;
   dht.temperature().getEvent(&amp;event);
-  return event.temperature; // 若讀取失敗，Adafruit 庫會回傳 NAN
+  return event.temperature; // 若讀取失敗，Adafruit 程式庫會回傳 NAN
 #endif
 }
 
@@ -833,7 +833,7 @@ void setup() {
 
 void loop() {
   unsigned long now = millis();
-  // 非阻塞排程：每 2 秒更新一次，未來可直接插入 server.handleClient() 不卡頓
+  // 非阻塞排程：每 2 秒更新一次，未來可直接加入 server.handleClient() 而不產生延遲
   if (now - lastReadTime &gt;= READ_MS) {
     lastReadTime = now;
     currentTemp  = acquireTemperature();
@@ -875,7 +875,7 @@ void loop() {
 
     <!-- Section 6 -->
     <section id="sec6">
-        <h2>6. 每輪必留的學習與工程證據（交付物清單）</h2>
+        <h2>6. 每輪必留的學習與工程證據（檢核與交付清單）</h2>
         <div class="table-wrap">
             <table>
                 <thead>
@@ -926,19 +926,19 @@ void loop() {
                 </thead>
                 <tbody>
                     <tr><td><strong>ESP32 ADC 與 Wi-Fi</strong></td><td>開啟 Wi-Fi 後類比讀值失效</td><td>類比感測器一律使用 <strong><code>ADC1</code></strong>（GPIO 32~39），避開被 Wi-Fi 射頻佔用的 <code>ADC2</code>。</td></tr>
-                    <tr><td><strong>電源與耐壓</strong></td><td>加熱型感測器拉垮 ESP32 不斷重啟，或高壓燒腳</td><td>高耗電模組（如 SEN0159）接 <code>5V (VIN)</code> 並共地；確認回傳至 ESP32 GPIO 的訊號不超過 <code>3.3V</code>。</td></tr>
-                    <tr><td><strong>OLED 驅動 IC</strong></td><td>1.3" 面板畫面左移 2px、最右側出現亮線</td><td>檢查背面絲印與驅動 IC，將 <code>U8G2_SSD1306_...</code> 切換為 <code>U8G2_SH1106_...</code>。</td></tr>
-                    <tr><td><strong>多任務時序</strong></td><td>網頁連線逾時或 OLED 動畫卡頓</td><td><code>loop()</code> 嚴禁長 <code>delay()</code>，改用 <code>millis()</code> 非阻塞排程，同時遵守 DHT 2 秒取樣下限。</td></tr>
-                    <tr><td><strong>封閉內網相依</strong></td><td>教室內網無對外連線，網頁圖表整片空白</td><td>內嵌 WebServer 儀表板優先採用零外部 CDN 依賴的原生 HTML5 Canvas / SVG（參考 <a href="./1117-1/note-1117.html">1117-1</a>）。</td></tr>
-                    <tr><td><strong>AI 假設飄移</strong></td><td>Agent 順手改掉原本腳位或刪掉既有功能</td><td>每次 Prompt 明確宣告「保留清單」與「標記未確認假設」，上傳前必做差異比對（Diff）。</td></tr>
+                    <tr><td><strong>電源與耐壓</strong></td><td>加熱型感測器耗電過大導致 ESP32 不斷重開機，或訊號電壓過高燒毀腳位</td><td>高耗電模組（如 SEN0159）接 <code>5V (VIN)</code> 並共地；確認回傳至 ESP32 GPIO 的訊號不超過 <code>3.3V</code>。</td></tr>
+                    <tr><td><strong>OLED 驅動 IC</strong></td><td>1.3" 面板畫面左移 2px、最右側出現亮線</td><td>檢查背面型號標示與驅動 IC，將 <code>U8G2_SSD1306_...</code> 切換為 <code>U8G2_SH1106_...</code>。</td></tr>
+                    <tr><td><strong>多任務時序</strong></td><td>網頁連線逾時或 OLED 動畫停頓不流暢</td><td><code>loop()</code> 嚴禁長 <code>delay()</code>，改用 <code>millis()</code> 非阻塞排程，同時遵守 DHT 2 秒取樣下限。</td></tr>
+                    <tr><td><strong>封閉區網相依性</strong></td><td>教室區域網路無對外連線，網頁圖表整片空白</td><td>內嵌 WebServer 儀表板優先採用免外部 CDN 依賴的原生 HTML5 Canvas / SVG（參考 <a href="./1117-1/note-1117.html">1117-1</a>）。</td></tr>
+                    <tr><td><strong>AI 假設偏移</strong></td><td>Agent 順手改掉原本腳位或刪掉既有功能</td><td>每次 Prompt 明確宣告「保留清單」與「標記未確認假設」，上傳前必做差異比對（Diff）。</td></tr>
                 </tbody>
             </table>
         </div>
 
         <h3>7.2 AI 協作常見反模式（Anti-Patterns）與修正對策</h3>
         <ol>
-            <li><strong>「一次貼上全部需求，讓 Agent 吐出 500 行」</strong>：出錯時無法定位硬體或邏輯問題。<strong>對策</strong>：嚴守「A 單元隔離 → C 單一增量」，超出範圍就拆到下一輪。</li>
-            <li><strong>「把靜態讀碼當成實機驗證」</strong>：註解、門檻與型號未實測前都只是待查證假設。<strong>對策</strong>：以實機輸出與固定輸入對照表為唯一驗收依據。</li>
+            <li><strong>「一次貼上全部需求，讓 Agent 直接產生 500 行程式」</strong>：出錯時無法定位硬體或邏輯問題。<strong>對策</strong>：嚴守「A 單元隔離 → C 單一增量」，超出範圍就拆到下一輪。</li>
+            <li><strong>「把靜態讀程式當成實機驗證」</strong>：註解、門檻與型號未實測前都只是待查證假設。<strong>對策</strong>：以實機輸出與固定輸入對照表為唯一驗收依據。</li>
             <li><strong>「跳過『我的預測』直接叫 Agent 解釋整支程式」</strong>：容易產生看懂的錯覺。<strong>對策</strong>：C 階段先填預測、R 階段先寫自己的解釋，再請 Agent 給定位提示。</li>
         </ol>
 
@@ -984,6 +984,22 @@ void loop() {
         </div>
         <ul>
             <li><strong>變更摘要</strong>：修正第 2 節總覽流程圖因 Mermaid Dagre 引擎對「<code>subgraph</code> 搭配循環回邊 (<code>record --&gt; guide</code>)」產生排序反轉而使 R 區塊跑到最上方的問題；改採無 <code>subgraph</code> 之單層階段節點結構，確保圖形嚴格由上而下呈現「任務啟動 → A · Agents → C · Coding → R · Review → Record（含選做改寫與下一輪循環）」，並同步更新 Markdown、HTML 與全站索引。</li>
+        </ul>
+
+        <h3>🔹 [2026-11-19 15:00:00] [Gemini 4 Argon / Antigravity] 校對並調整全文用語以符合台灣繁體中文習慣</h3>
+        <ul>
+            <li><strong>模型/Agent</strong>：Gemini 4 Argon / Antigravity</li>
+            <li><strong>Prompt 原文</strong>：</li>
+        </ul>
+        <div class="code-wrapper">
+            <div class="code-header">
+                <span>text</span>
+                <button class="copy-btn" onclick="copyCode(this)">📋 複製</button>
+            </div>
+            <pre><code>確認'D:\CLASS_NOTE\ec\ACR_recommended_workflow.html'  的文字敘述，符合台灣繁體中文習慣用語</code></pre>
+        </div>
+        <ul>
+            <li><strong>變更摘要</strong>：全面檢視並修正非台灣慣用詞彙與口語表達（如將「閉環」改為「循環」、「文檔」改為「文件與筆記」、「絲印」改為「腳位標示／背面型號標示」、「四件套」改為「四項必要內容」、「回退」改為「退回排查」、「卡死／卡頓」改為「當機／停頓／延遲」、「單匯流排」改為「單線資料腳／單線感測器」、「Adafruit 庫」改為「Adafruit 程式庫」、「拉垮 ESP32 不斷重啟或高壓燒腳」改為「耗電過大導致 ESP32 不斷重開機或訊號電壓過高燒毀腳位」、「靜態讀碼」改為「靜態讀程式」等），並同步更新 <code>ACR_recommended_workflow.md</code> 與全站索引。</li>
         </ul>
     </section>
 </div>

@@ -1,7 +1,7 @@
 # 📝 onclassbyJoel - 全站提示詞歷史與變更記錄 (CHANGELOG)
 
-> **最後更新時間**: 2026-11-19 14:03:00 (UTC+8)
-> **使用模型**: Gemini 4 Neon
+> **最後更新時間**: 2026-11-20 07:35:00 (UTC+8)
+> **使用模型**: Gemini 4 Argon
 > **執行 Agent**: Antigravity
 
 ---
@@ -895,3 +895,19 @@ $code-review-for-learning 'C:\Users\User\Desktop\onclass\1112-1\1112-1.ino'
   git commit and push
   ```
 - **變更摘要**: 提交 `ec/ACR_b02.md` 與新彙整之 `ec/ACR_recommended_workflow.md` / `ec/ACR_recommended_workflow.html`（含修正後之 A → C → R 總覽流程圖）、更新 `tools/index_catalog.json` 與全站索引（`INDEX.md`、`index.html`、`changelog.html`、`CHANGELOG.md`），並推送至遠端儲存庫。
+
+### 🔹 [2026-11-19 15:00:00] [Gemini 4 Argon / Antigravity] 校對並調整 ACR 流程筆記全文用語以符合台灣繁體中文習慣
+- **模型/Agent**: Gemini 4 Argon / Antigravity
+- **Prompt 原文**:
+  ```text
+  確認'D:\CLASS_NOTE\ec\ACR_recommended_workflow.html'  的文字敘述，符合台灣繁體中文習慣用語
+  ```
+- **變更摘要**: 全面檢視 `ec/ACR_recommended_workflow.html` 與 `ec/ACR_recommended_workflow.md`，將非台灣慣用詞彙與口語（如「閉環」、「文檔」、「絲印」、「四件套」、「回退」、「卡死／卡頓」、「單匯流排」、「Adafruit 庫」、「拉垮／燒腳」、「靜態讀碼」等）修正為符合台灣電子電路與資訊教學習慣之繁體中文表述，並重建全站索引。
+
+### 🔹 [2026-11-20 07:35:00] [Gemini 4 Argon / Antigravity] 提交台灣繁體中文用語校對更新並重建全站索引
+- **模型/Agent**: Gemini 4 Argon / Antigravity
+- **Prompt 原文**:
+  ```text
+  git commit and push
+  ```
+- **變更摘要**: 提交 `ec/ACR_recommended_workflow.html` 與 `ec/ACR_recommended_workflow.md` 之台灣繁體中文慣用語校對更新，同步重建全站索引（`INDEX.md`、`index.html`、`changelog.html`、`CHANGELOG.md`）並推送至遠端儲存庫。
