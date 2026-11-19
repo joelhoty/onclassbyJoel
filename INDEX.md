@@ -1,8 +1,8 @@
 # 📚 onclassbyJoel - 課程筆記與專題目錄總覽 (INDEX)
 
-> **最後更新時間**: 2026-11-18 12:00:08 (UTC+8)
-> **使用模型**: GPT-6 (Codex)
-> **執行 Agent**: Codex /root
+> **最後更新時間**: 2026-11-19 14:03:00 (UTC+8)
+> **使用模型**: Gemini 4 Neon
+> **執行 Agent**: Antigravity
 > **GitHub 儲存庫**: [joelhoty/onclassbyJoel](https://github.com/joelhoty/onclassbyJoel)
 > **變更記錄**: [CHANGELOG.md](./CHANGELOG.md)
 > **注意**: 本檔由 `tools/build_index.py` 產生，請勿手動修改。
@@ -11,6 +11,8 @@
 
 ## 🆕 最近更新 (10 篇)
 
+* `2026-11-19` | [NodeMCU-32S × Agent：從實作出發的 ACR 學習模式](./ec/ACR_b02.md)
+* `2026-11-19` | [🔄 NodeMCU-32S × Agent 建議 ACR 實作與學習流程（整合實戰版）](./ec/ACR_recommended_workflow.html) · [MD](./ec/ACR_recommended_workflow.md)
 * `2026-11-18` | [NodeMCU-32S (ESP32) + DHT22 + SEN0159 CO2 + SSD1306 OLED + Wi-Fi AJAX WebServer 智慧環境監測系統 1117-1](./ec/1117-1/note-1117.html) `📁 1117-1/` · [MD](./ec/1117-1/note-1117.md) · 📎 [1117-1.ino](./ec/1117-1/1117-1.ino)、[1117-1copy.txt](./ec/1117-1/1117-1copy.txt)、[1117.txt](./ec/1117-1/1117.txt)
 * `2026-11-18` | [🏛️ 黃叔精讀李飛飛：人類最強的提示詞工程師死了 2400 年（逐字稿整理與勘誤還原）](./AI/feifei_li_socrates_prompter_transcript_1118.html) · [MD](./AI/feifei_li_socrates_prompter_transcript_1118.md)
 * `2026-11-18` | [🧠 把手機調成黑白模式每年竟憑空多出 15 天清醒生命：柏克萊腦科學家治好腦霧的逆向神經術｜薩哈爾·尤瑟夫｜第一期](./AI/sahar_yousef_grayscale_brain_fog_transcript_1118.html) · [MD](./AI/sahar_yousef_grayscale_brain_fog_transcript_1118.md) · 📎 [mark_2005_no_task_left_behind.pdf](./AI/references/sahar_yousef_1118/mark_2005_no_task_left_behind.pdf)、[wilson_2014_just_think.pdf](./AI/references/sahar_yousef_1118/wilson_2014_just_think.pdf)、[ward_2017_brain_drain.pdf](./AI/references/sahar_yousef_1118/ward_2017_brain_drain.pdf)
@@ -19,8 +21,6 @@
 * `2026-11-17` | [程式碼導讀：1112-1.ino — ESP32 DHT 與 OLED 教學講義](./ec/AI_CodeReview/reviews/1112-1/CODE_REVIEW.html) `📁 AI_CodeReview/reviews/1112-1/` · [MD](./ec/AI_CodeReview/reviews/1112-1/CODE_REVIEW.md) · 📎 [1112-1.ino](./ec/AI_CodeReview/reviews/1112-1/1112-1.ino)
 * `2026-11-13` | [NodeMCU-32S (ESP32) + DHT 溫濕度 + SSD1306 128×64 OLED 符號與黃金三區版面設計 1112-1](./ec/nodemcu32s_dht_ssd1306_layout_1112.html) · [MD](./ec/nodemcu32s_dht_ssd1306_layout_1112.md) · 📎 [1112-1.ino](./ec/1112-1.ino)、[2026-11-12-1457-oled-display.jpg](./ec/2026-11-12-1457-oled-display.jpg)、[2026-11-12-1457-hardware-wiring.jpg](./ec/2026-11-12-1457-hardware-wiring.jpg)
 * `2026-11-12` | [尋找解決方案](./PBL_Agents/pbl/AGENTS.md)
-* `2026-11-12` | [YouTube 影片取得字幕並轉換成文字檔（.txt / .srt）完整解決方案指南](./PBL_Agents/pbl/youtube_subtitle_to_text_methods.html) · [MD](./PBL_Agents/pbl/youtube_subtitle_to_text_methods.md) · 📎 [oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope.srt](./PBL_Agents/pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope.srt)、[oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope.txt](./PBL_Agents/pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope.txt)、[oIk3R-sMX5o_Chip design from the bottom up – Reiner Pope_timestamped.txt](./PBL_Agents/pbl/oIk3R-sMX5o_Chip%20design%20from%20the%20bottom%20up%20–%20Reiner%20Pope_timestamped.txt)、[yt_sub_to_txt.py](./PBL_Agents/pbl/yt_sub_to_txt.py)、[gvi0OE5OzOk_14 GPU Architecture 1.srt](./PBL_Agents/pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201.srt)、[gvi0OE5OzOk_14 GPU Architecture 1.txt](./PBL_Agents/pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201.txt)、[gvi0OE5OzOk_14 GPU Architecture 1_timestamped.txt](./PBL_Agents/pbl/gvi0OE5OzOk_14%20GPU%20Architecture%201_timestamped.txt)
-* `2026-11-12` | [PBL2 尋找解決方案規範 (AGENTS.md)](./PBL_Agents/pbl2/AGENTS.md) · 📎 [AGENTS.bak](./PBL_Agents/pbl2/AGENTS.bak)
 
 ---
 
@@ -72,6 +72,7 @@
 * `2026-09-26` | [電磁繼電器 SPDT 控制電路](./ec/relay_spdt_circuit_analysis.html) · [MD](./ec/relay_spdt_circuit_analysis.md) · 📎 [relay1.jpg](./ec/relay1.jpg)
 
 #### 🛠️ 開發流程與環境
+* `2026-11-19` | [🔄 NodeMCU-32S × Agent 建議 ACR 實作與學習流程（整合實戰版）](./ec/ACR_recommended_workflow.html) · [MD](./ec/ACR_recommended_workflow.md)
 * `2026-10-20` | [Arduino 專案開發模式與實務標準流程 (SOP) 手冊](./ec/arduino_development_workflow_methodology.html) · [MD](./ec/arduino_development_workflow_methodology.md)
 * `2026-10-20` | [Arduino Uno 連接 I2C LCD 1602：HelloWorld 範例與 LiquidCrystal_I2C 物件方法全解析](./ec/arduino_i2c_lcd1602_helloworld_guide.html) · [MD](./ec/arduino_i2c_lcd1602_helloworld_guide.md) · 📎 [2026-10-20-142320.jpg](./ec/2026-10-20-142320.jpg)、[2026-10-20-143026.jpg](./ec/2026-10-20-143026.jpg)、[2026-10-20-150654_ide_helloworld.jpg](./ec/2026-10-20-150654_ide_helloworld.jpg)、[arduino_i2c_lcd1602_helloworld.ino](./ec/arduino_i2c_lcd1602_helloworld.ino)
 * `2026-10-01` | [Arduino IDE 開發環境與 I2C LCD 1602 實體接線指南](./ec/arduino_ide_i2c_lcd1602_guide.html) · [MD](./ec/arduino_ide_i2c_lcd1602_guide.md) · 📎 [2026-10-01-145140.jpg](./ec/2026-10-01-145140.jpg)、[i2c_lcd1602.ino](./ec/i2c_lcd1602.ino)
@@ -102,6 +103,7 @@
 * `2026-09-08` | [紅色 LED 限流手冊](./ec/紅色%20LED%20限流電阻工程手冊與計算工具.pdf)
 
 #### 📻 其他主題
+* `2026-11-19` | [NodeMCU-32S × Agent：從實作出發的 ACR 學習模式](./ec/ACR_b02.md)
 * `2026-09-26` | [車用收音機事件廣播 14 頁 Marp 簡報 (Tech Theme)](./ec/car_radio_traffic_broadcast_rds_ta_tunnel_slides.html) · [MD](./ec/car_radio_traffic_broadcast_rds_ta_tunnel.marp.md) · 📎 [marp-theme-tech.css](./ec/marp-theme-tech.css)
 * `2026-09-24` | [車用收音機路況／事件廣播：隧道插播、RDS-TA 與相關技術](./ec/car_radio_traffic_broadcast_rds_ta_tunnel.html) · [MD](./ec/car_radio_traffic_broadcast_rds_ta_tunnel.md)
 

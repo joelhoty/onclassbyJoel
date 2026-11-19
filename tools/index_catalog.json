@@ -1403,6 +1403,25 @@
    ],
    "attachments": [],
    "category": "AI"
+  },
+  {
+   "title": "NodeMCU-32S × Agent：從實作出發的 ACR 學習模式",
+   "files": [
+    "ec/ACR_b02.md"
+   ],
+   "attachments": [],
+   "category": "ec",
+   "group": "other"
+  },
+  {
+   "title": "🔄 NodeMCU-32S × Agent 建議 ACR 實作與學習流程（整合實戰版）",
+   "files": [
+    "ec/ACR_recommended_workflow.html",
+    "ec/ACR_recommended_workflow.md"
+   ],
+   "attachments": [],
+   "category": "ec",
+   "group": "flow"
   }
  ],
  "date_overrides": {

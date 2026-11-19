@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔄 NodeMCU-32S × Agent 建議 ACR 實作與學習流程（整合實戰版）</title>
+
+    <!-- Prism 程式碼高亮 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <!-- Mermaid 流程圖支援 -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose' });
+    </script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #dbeafe;
+            --accent-green: #16a34a;
+            --accent-amber: #d97706;
+            --accent-purple: #7c3aed;
+            --accent-red: #dc2626;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 10px 25px -5px rgba(15, 23, 42, 0.12);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.78;
+            padding: 2rem 1rem 4rem;
+        }
+
+        .container {
+            max-width: 1120px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #2563eb 100%);
+            color: #ffffff;
+            padding: 2.2rem 2rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 1.8rem;
+            box-shadow: var(--shadow-lg);
+            border-bottom: 4px solid #38bdf8;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        h1 {
+            font-size: 1.85rem;
+            font-weight: 800;
+            line-height: 1.35;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            color: #cbd5e1;
+            font-size: 1rem;
+            margin-top: 0.4rem;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.65rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.55rem 1.05rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.18s ease;
+        }
+
+        .btn-pdf {
+            background: #f59e0b;
+            color: #0f172a;
+        }
+        .btn-pdf:hover { background: #fbbf24; transform: translateY(-1px); }
+
+        .btn-md {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .btn-md:hover { background: rgba(255, 255, 255, 0.25); }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.6rem 1.2rem;
+            background: rgba(15, 23, 42, 0.35);
+            padding: 0.95rem 1.2rem;
+            border-radius: var(--radius-md);
+            font-size: 0.88rem;
+            color: #e2e8f0;
+        }
+
+        .meta-grid a { color: #93c5fd; text-decoration: none; }
+        .meta-grid a:hover { text-decoration: underline; }
+
+        /* TOC */
+        .toc {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--primary);
+            border-radius: var(--radius-md);
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1.8rem;
+            box-shadow: var(--shadow);
+        }
+
+        .toc h2 {
+            font-size: 1.1rem;
+            margin-bottom: 0.7rem;
+            border: none;
+            padding: 0;
+            color: var(--primary-dark);
+        }
+
+        .toc ol {
+            padding-left: 1.35rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+            gap: 0.35rem 1.5rem;
+        }
+
+        .toc a { color: var(--text-main); text-decoration: none; font-size: 0.94rem; }
+        .toc a:hover { color: var(--primary); text-decoration: underline; }
+
+        /* Sections */
+        section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.8rem 2rem;
+            margin-bottom: 1.6rem;
+            box-shadow: var(--shadow);
+        }
+
+        h2 {
+            font-size: 1.42rem;
+            color: #0f172a;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        h3 {
+            font-size: 1.16rem;
+            color: var(--primary-dark);
+            margin: 1.4rem 0 0.7rem;
+        }
+
+        h4 {
+            font-size: 1.02rem;
+            color: #334155;
+            margin: 1.1rem 0 0.55rem;
+        }
+
+        p { margin-bottom: 0.85rem; }
+
+        ul, ol {
+            padding-left: 1.45rem;
+            margin-bottom: 0.95rem;
+        }
+
+        li { margin-bottom: 0.4rem; }
+
+        a { color: var(--primary); }
+
+        code {
+            background: #f1f5f9;
+            color: #be123c;
+            padding: 0.12rem 0.38rem;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, "Courier New", monospace;
+            font-size: 0.9em;
+        }
+
+        /* Callout / Phase Cards */
+        .phase-card {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.3rem 1.5rem;
+            margin-bottom: 1.3rem;
+            background: #fafcff;
+        }
+        .phase-a { border-left: 5px solid #2563eb; }
+        .phase-c { border-left: 5px solid #16a34a; }
+        .phase-r { border-left: 5px solid #7c3aed; }
+
+        .badge {
+            display: inline-block;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-right: 0.4rem;
+            vertical-align: middle;
+        }
+        .badge-a { background: #dbeafe; color: #1e40af; }
+        .badge-c { background: #dcfce7; color: #166534; }
+        .badge-r { background: #ede9fe; color: #5b21b6; }
+        .badge-warn { background: #fef3c7; color: #92400e; }
+
+        .callout {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary);
+            padding: 0.95rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .done-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-left: 4px solid var(--accent-green);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-top: 0.85rem;
+            font-size: 0.94rem;
+        }
+
+        /* Tables */
+        .table-wrap {
+            overflow-x: auto;
+            margin: 1rem 0 1.2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 0.65rem 0.85rem;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        tr:nth-child(even) td { background: #f8fafc; }
+
+        /* Mermaid container */
+        .mermaid-box {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.2rem;
+            margin: 1rem 0 1.3rem;
+            overflow-x: auto;
+            text-align: center;
+        }
+
+        /* Code & Prompt blocks with Copy button */
+        .code-wrapper {
+            position: relative;
+            margin: 0.9rem 0 1.2rem;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid #334155;
+            background: #1e293b;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0f172a;
+            color: #cbd5e1;
+            padding: 0.45rem 0.9rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .copy-btn {
+            background: #334155;
+            color: #f8fafc;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            padding: 0.25rem 0.7rem;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .copy-btn:hover { background: #475569; }
+        .copy-btn.copied { background: #16a34a; border-color: #16a34a; color: #fff; }
+
+        .code-wrapper pre {
+            margin: 0 !important;
+            padding: 1rem 1.1rem !important;
+            overflow-x: auto;
+            font-size: 0.87rem;
+            line-height: 1.6;
+        }
+
+        .code-wrapper pre code {
+            background: transparent;
+            color: #e2e8f0;
+            padding: 0;
+        }
+
+        .prompt-box {
+            border-color: #93c5fd;
+            background: #0f172a;
+        }
+        .prompt-box .code-header {
+            background: #1e3a8a;
+            color: #eff6ff;
+        }
+
+        /* Dual direction grid */
+        .dual-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .dual-item {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1rem 1.2rem;
+            background: #f8fafc;
+        }
+
+        /* Print / PDF */
+        @media print {
+            body { background: #ffffff; padding: 0; font-size: 11pt; }
+            .action-btns, .copy-btn { display: none !important; }
+            header { background: #1e3a8a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            section, .phase-card { box-shadow: none; break-inside: avoid-page; }
+            .code-wrapper { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="header-top">
+            <div>
+                <h1>🔄 NodeMCU-32S × Agent 建議 ACR 實作與學習流程</h1>
+                <p class="subtitle">以 <code>ACR_b02.md</code> 為核心架構，整合歷次硬體 SOP、聯網實作、結構化 Code Review 與多感測器經驗</p>
+            </div>
+            <div class="action-btns">
+                <button class="btn btn-pdf" onclick="window.print()">🖨️ 匯出成 PDF</button>
+                <a class="btn btn-md" href="./ACR_recommended_workflow.md">📄 Markdown 原檔</a>
+                <a class="btn btn-md" href="./ACR_b02.md">📘 ACR_b02 架構</a>
+            </div>
+        </div>
+        <div class="meta-grid">
+            <div><strong>最後更新時間：</strong>2026-11-19 14:00:00 (UTC+8)</div>
+            <div><strong>使用模型：</strong>Gemini 4 Neon</div>
+            <div><strong>執行 Agent：</strong>Antigravity</div>
+            <div><strong>參考筆記：</strong>
+                <a href="./arduino_development_workflow_methodology.html">六階段開發 SOP</a> •
+                <a href="./nodemcu32s_dht_ssd1306_weather_1110.html">1110-1</a> •
+                <a href="./nodemcu32s_dht_ssd1306_layout_1112.html">1112-1</a> •
+                <a href="./AI_CodeReview/reviews/1112-1/CODE_REVIEW.html">CODE_REVIEW</a> •
+                <a href="./1117-1/note-1117.html">1117-1</a>
+            </div>
+        </div>
+    </header>
+
+    <nav class="toc">
+        <h2>📑 目錄</h2>
+        <ol>
+            <li><a href="#sec1">核心概念剖析：為什麼需要「實戰整合版」ACR 流程？</a></li>
+            <li><a href="#sec2">總覽流程圖：A → C → R 實戰閉環與多輪演進</a></li>
+            <li><a href="#sec3">三階段標準作業流程（SOP）與歷次筆記對照</a></li>
+            <li><a href="#sec4">選做改寫與卡住時的證據回退機制</a></li>
+            <li><a href="#sec5">實作與應用範例：四輪專案演進與可測試程式碼骨架</a></li>
+            <li><a href="#sec6">每輪必留的學習與工程證據（交付物清單）</a></li>
+            <li><a href="#sec7">延伸思考：防禦性檢核表、AI 反模式與教學權衡</a></li>
+            <li><a href="#archive">提示詞歷史與變更記錄 (Prompt Archive)</a></li>
+        </ol>
+    </nav>
+
+    <!-- Section 1 -->
+    <section id="sec1">
+        <h2>1. 核心概念剖析：為什麼需要「實戰整合版」ACR 流程？</h2>
+        <p>在 <a href="./ACR_b02.md"><code>ACR_b02.md</code></a> 中，定義了以實作出發的 <strong>ACR（Agents → Coding → Review）</strong> 學習循環：由指導者建立可運作的起點與明確任務，學生透過 Agent 核對條件（<strong>A</strong>）、協作完成單一可驗收功能（<strong>C</strong>），最後從實機畫面出發「往下讀程式、往上懂系統」（<strong>R</strong>）並留下學習證據。</p>
+        <p>回顧我們在 <code>ec/</code> 工作區累積的實務經驗，早期純硬體實作的「<strong>六階段漸進式開發 SOP</strong>」（<a href="./arduino_development_workflow_methodology.html"><code>arduino_development_workflow_methodology</code></a>）與近期的 <strong>NodeMCU-32S 實作演進</strong>（<code>1110-1</code> → <code>1112-1</code> → <code>CODE_REVIEW</code> → <code>1117-1</code>），正好能無縫映射到 ACR 的每一個環節：</p>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 14%;">ACR 階段</th>
+                        <th style="width: 24%;"><code>ACR_b02.md</code> 核心定位</th>
+                        <th style="width: 40%;">整合自歷次筆記的實戰做法</th>
+                        <th style="width: 22%;">對應參考筆記</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge badge-a">A｜Agents</span></td>
+                        <td>核對條件、驗證基礎功能、單一元件先測再整合</td>
+                        <td><strong>硬體先行與俯拍存證</strong>（3.3V/5V、共地、腳位絲印）、<strong>官方範例單元隔離測試</strong>（「不同時測兩件未知事物」）、<strong>I2C Scanner / 晶片型號核對</strong>（SSD1306 vs SH1106、ADC1 vs ADC2）</td>
+                        <td><a href="./arduino_development_workflow_methodology.html">六階段 SOP</a>、<a href="./nodemcu32s_dht_ssd1306_layout_1112.html">1112-1</a>、<a href="./1117-1/note-1117.html">1117-1</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-c">C｜Coding</span></td>
+                        <td>協作改寫單一可驗收功能、先預測再實測、留存上一版</td>
+                        <td><strong>最小增量整併</strong>（標頭檔、物件、時序）、<strong>固定輸入邊界測試</strong>（29/30/31°C）、<strong>非阻塞排程</strong>（<code>millis()</code> 取代 <code>delay()</code>）、<strong>UI 幾何驗證與防閃爍/防呆</strong>（<code>isnan()</code>）</td>
+                        <td><a href="./nodemcu32s_dht_ssd1306_weather_1110.html">1110-1</a>、<a href="./nodemcu32s_dht_ssd1306_layout_1112.html">1112-1</a>、<a href="./1117-1/note-1117.html">1117-1</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-r">R｜Review</span></td>
+                        <td>從實機結果「往下追程式、往上懂系統」，提出改善想法</td>
+                        <td><strong>13 節結構化程式碼導讀</strong>（先寫「我的預測」→ 區段地圖 → 函式庫/魔術數字拆解 → 資料流追蹤 → 區分「靜態推演」與「實機查證」→ 只提建議不亂改）</td>
+                        <td><a href="./AI_CodeReview/reviews/1112-1/CODE_REVIEW.html">CODE_REVIEW (1112-1)</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-warn">Record</span></td>
+                        <td>留下實作證據、自己的解釋與下一步想法</td>
+                        <td><strong>多模態文檔歸檔</strong>（Markdown + HTML + 實拍圖 + 程式快照 <code>.ino</code> + Prompt Archive + 索引更新與 Git 版本控制）</td>
+                        <td><a href="./arduino_development_workflow_methodology.html">六階段 SOP</a>、<code>AGENTS.md</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="dual-grid">
+            <div class="dual-item">
+                <h4>↓ 往下讀程式（Code &amp; Data Flow）</h4>
+                <p>追蹤單一數據的生命週期：感測器讀值 → 濾波/防呆 → 變數 → 條件判斷 <code>if</code> → 顯示/API 輸出；拆解魔術數字與專有名稱（如 <code>_1_HW_I2C</code>、Glyph <code>67</code>、門檻 <code>30°C</code>）。</p>
+            </div>
+            <div class="dual-item">
+                <h4>↑ 往上懂系統（Hardware &amp; System Limits）</h4>
+                <p>追問底層電氣與使用邊界：ESP32 開 Wi-Fi 為何不能用 <code>ADC2</code>？加熱型 CO2 感測器為何接 <code>5V VIN</code> 且需預熱？內網無外網時為何禁用 CDN？感測失敗時畫面如何避免誤導？</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2 -->
+    <section id="sec2">
+        <h2>2. 總覽流程圖：A → C → R 實戰閉環與多輪演進</h2>
+        <p>延續 <code>ACR_b02.md</code> 的實線主循環與虛線選做改寫，並融入硬體單元測試、結構化 Review 與多模態歸檔節點：</p>
+        <div class="mermaid-box">
+            <div class="mermaid">
+flowchart TB
+    guide(["🎯 任務啟動&lt;br/&gt;指導者交代本輪單一需求、可改範圍與驗收證據"])
+    A["A · Agents｜建立可信的起點&lt;br/&gt;1. 硬體核對與拍照存證（3.3V/5V、共地、I2C/ADC1、晶片型號）&lt;br/&gt;2. 環境與程式庫盤點（板型、函式庫版本、待查證項目）&lt;br/&gt;3. 單元隔離測試（各元件單獨跑官方範例並確認輸出）"]
+    C["C · Coding｜小步增量協作與實測&lt;br/&gt;1. 界定可視結果與最小修改範圍（保留原功能、標記假設）&lt;br/&gt;2. 先寫預測表，再用固定輸入測邊界（29/30/31°C）後還原&lt;br/&gt;3. 確認新舊功能皆通過並備份上一版 .ino"]
+    R["R · Review｜往下讀程式 × 往上懂系統&lt;br/&gt;1. 先寫自己的解釋（我的預測）並指認程式區段&lt;br/&gt;2. 往下拆解：區段地圖、資料流、關鍵語法與魔術數字&lt;br/&gt;3. 往上追問：軟硬體配合、異常處理（NaN/斷線）與使用限制"]
+    record["📝 Record｜留存學習與工程證據&lt;br/&gt;實測對照表 + 自己的解釋 + 下一步想法 + MD/HTML/Git 歸檔"]
+    revise["🔁 選做：挑一項 Review 發現回到 C&lt;br/&gt;先預測 → 最小修改 → 同組資料重測"]
+    recheck["🔍 檢視前後差異與重測證據"]
+
+    guide --> A
+    A --> C
+    C --> R
+    R --> record
+    R -. "選做（有時間且為單一改善目標）" .-> revise
+    revise -.-> recheck
+    recheck -.-> record
+    record -->|"下一輪新任務（若有新元件/接線必回 A）"| guide
+
+    classDef core fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#1e3a5f
+    classDef optional fill:#fef9c3,stroke:#ca8a04,stroke-width:2px,color:#713f12,stroke-dasharray:5 3
+    classDef startend fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+    class A,C,R core
+    class revise,recheck optional
+    class guide,record startend
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3 -->
+    <section id="sec3">
+        <h2>3. 三階段標準作業流程（SOP）與歷次筆記對照</h2>
+
+        <!-- Phase A -->
+        <div class="phase-card phase-a">
+            <h3><span class="badge badge-a">階段 A</span> Agents：硬體先行、環境核對與單元隔離驗證</h3>
+            <p><strong>核心原則</strong>：「<strong>不要同時測試兩件未知的事物</strong>」，軟體必須建立在已驗證的電氣與環境起點上。</p>
+            <ol>
+                <li><strong>硬體先行與實體拍照存證</strong>：斷電接線，先查晶片型號與電壓（ESP32 GPIO 僅耐壓 <code>3.3V</code>；加熱型 SEN0159 接 <code>5V VIN</code> 並共地）；核對腳位衝突（Wi-Fi 與 <code>ADC2</code> 互斥，類比改接 <code>ADC1</code> 如 <code>GPIO 32</code>；I2C 預設 <code>SDA=21, SCL=22</code>）；手機俯拍線色與模組背面型號（<code>SSD1306</code> vs <code>SH1106</code>）。</li>
+                <li><strong>環境與程式庫盤點</strong>：記錄板型（NodeMCU-32S）、核心版本、函式庫版本（<code>U8g2</code>、<code>DHT_Unified</code>、<code>Adafruit_Sensor</code>）與 Serial 鮑率（<code>115200</code>），請 Agent 列出已確認與待查證清單。</li>
+                <li><strong>單一元件隔離測試</strong>：先單獨跑感測器範例（Serial Monitor 觀察實測變化），再單獨跑 OLED 範例；若沿用既有配置，重現上一輪成功輸出即可。</li>
+            </ol>
+
+            <div class="code-wrapper prompt-box">
+                <div class="code-header">
+                    <span>💬 建議 A 階段首問模板</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 複製</button>
+                </div>
+                <pre><code>這是我目前的開發板、硬體接線、俯拍重點與已安裝程式庫資訊：[附上板型/腳位/程式庫/基礎範例]。
+1. 請對照範例與接線，列出我上電前必須核對的電氣與設定項目（包含電壓準位、腳位衝突如 ADC1/ADC2、驅動 IC 差異如 SSD1306/SH1106），並標出資料中缺少的待查證資訊。
+2. 請分別給我感測器與顯示器的「單一元件隔離測試」步驟，以及通過時在 Serial Monitor / OLED 上應該看到的明確輸出。
+我會先核對實體接線並回報實測結果，全部通過後再進行整合。</code></pre>
+            </div>
+            <div class="done-box">✅ <strong>A 階段完成標準</strong>：能重現基礎輸出、保存接線紀錄與基礎程式快照，並明確列出哪些硬體/環境條件已驗證通過。</div>
+        </div>
+
+        <!-- Phase C -->
+        <div class="phase-card phase-c">
+            <h3><span class="badge badge-c">階段 C</span> Coding：小步增量、先預測再實測與版控留底</h3>
+            <p><strong>核心原則</strong>：「<strong>一次只加一項可驗收的功能</strong>」，先寫預測再實測，任何改動都保留可回復的上一版。</p>
+            <ol>
+                <li><strong>將需求轉為可視化驗收條件與最小修改範圍</strong>：明定「新增什麼」與「必須保留什麼」；涉及 WebServer 或動畫時，明確要求 <code>millis()</code> 非阻塞排程取代 <code>delay()</code>；涉及 OLED 排版先驗證像素座標。</li>
+                <li><strong>要求 Agent 交回「四件套」</strong>：(a) 可編譯完整程式與註解、(b) 修改位置與前後差異、(c) 尚未確認的假設、(d) 可還原的固定輸入測試方式。</li>
+                <li><strong>先寫預測表，再實機驗證</strong>：先預測邊界輸入（<code>29/30/31°C</code> 與 <code>NAN</code>），再實測比對。測完後<strong>務必恢復真實感測器讀取</strong>並確認新舊功能皆正常。</li>
+            </ol>
+
+            <div class="code-wrapper prompt-box">
+                <div class="code-header">
+                    <span>💬 建議 C 階段首問模板</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 複製</button>
+                </div>
+                <pre><code>請以我附上這份已在 NodeMCU-32S 實測通過的程式為起點：[附上基礎 .ino 與硬體摘要]。
+本輪只新增一項功能：[描述看得見的結果，例如：有效溫度 &gt;= 30°C 時在 OLED 顯示提醒，低於 30°C 關閉]。
+限制條件：
+1. 保留現有接線、程式庫、原本的溫濕度/序列輸出與非阻塞排程架構。
+2. 請交回：(a) 可編譯完整程式與註解、(b) 修改位置與前後差異、(c) 尚未確認的假設、(d) 一種可透過單一旗標切換、方便還原的固定輸入測試方式（用來測 29/30/31°C 與異常值）。
+我會先檢查差異並寫下預測，再編譯上傳與實測。</code></pre>
+            </div>
+            <div class="done-box">✅ <strong>C 階段完成標準</strong>：完成「預測 vs 實測」對照表、恢復感測器實測正常、備份修改前/後兩個可編譯版本（如 <code>v1_base.ino</code> 與 <code>v2_alert.ino</code>）。</div>
+        </div>
+
+        <!-- Phase R -->
+        <div class="phase-card phase-r">
+            <h3><span class="badge badge-r">階段 R</span> Review：從實作觀察「往下讀程式、往上懂系統」</h3>
+            <p><strong>核心原則</strong>：「<strong>先有自己的解釋，再請 Agent 給定位提示；區分靜態推演與實機證據</strong>」（整合 <code>ACR_b02.md</code> 與 <code>CODE_REVIEW.md</code>）。</p>
+            <ol>
+                <li><strong>步驟 0：先寫「我的預測 / 我的解釋」</strong>：挑一筆實機觀察，先自己找相關區段並說出推論，再向 Agent 求證。</li>
+                <li><strong>往下拆解</strong>：建立區段地圖、追蹤單筆資料流（讀值 → <code>isnan()</code> → 變數 → <code>if</code> → 顯示）、破解魔術數字（如 <code>_1_HW_I2C</code>、Glyph <code>67</code>、人為門檻）。</li>
+                <li><strong>往上追問</strong>：釐清程式庫職責、硬體限制（DHT 2 秒間隔、MG-811 預熱、ADC2 衝突）與異常處理（<code>NAN</code> 或斷線是否誤導使用者）。</li>
+                <li><strong>只提單一可驗證改善建議</strong>：不讓 Agent 直接重寫整份程式，由學生決定是否走選做改寫或留待下一輪。</li>
+            </ol>
+
+            <div class="code-wrapper prompt-box">
+                <div class="code-header">
+                    <span>💬 建議 R 階段首問模板</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 複製</button>
+                </div>
+                <pre><code>我剛剛實測 [輸入條件，例如 30°C] 時，在 OLED/網頁上觀察到 [實際現象]。
+我自己的解釋是：[先寫一兩句自己的推論與懷疑的程式位置]。
+請依以下規則協助我做 Review（不要直接改寫整份程式）：
+1. 【往下】先只指出我應該檢查的區段、函式與關鍵條件（含不直覺的常數或 API），等我追蹤完再補充細節。
+2. 【往上】幫我檢查程式是否有處理感測器讀取失敗(NaN)、逾時或硬體限制，並明確區分「從程式碼可確認的行為」與「必須靠實機測試才能查證的行為」。
+3. 若發現值得改善的地方，請只提供 1 項最優先建議與其驗收方式，等我決定後再討論改寫。</code></pre>
+            </div>
+            <div class="done-box">✅ <strong>R 階段完成標準</strong>：能用自己的話解釋「一筆資料流 + 一個關鍵判斷 + 一項軟硬體限制」，並記下 1 個待查證問題或改善想法。</div>
+        </div>
+    </section>
+
+    <!-- Section 4 -->
+    <section id="sec4">
+        <h2>4. 選做改寫與卡住時的證據回退機制</h2>
+        <h3>4.1 選做改寫（Review → C 的微循環）</h3>
+        <ol>
+            <li><strong>用 Review 證據定義新需求</strong>：例如把門檻從 <code>&gt;= 30.0</code> 改為嚴格大於 <code>&gt; 30.0</code>。</li>
+            <li><strong>先預測哪一筆測試值會改變</strong>：在 <code>29 / 30 / 31°C</code> 中，只有 <code>30°C</code> 從開啟變關閉。</li>
+            <li><strong>最小修改 + 同組資料重測</strong>：驗證「該變的有變、不該變的沒壞」。</li>
+            <li><strong>邊界規則</strong>：若涉及<strong>新增元件或改動接線</strong>，不可走選做微循環，必須進入<strong>下一輪階段 A</strong>。</li>
+        </ol>
+
+        <h3>4.2 卡住時回到有證據的地方（整合排錯矩陣）</h3>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 30%;">遇到的異常現象</th>
+                        <th style="width: 14%;">回退階段</th>
+                        <th style="width: 56%;">立即執行的證據排查動作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>OLED 不亮、全黑、畫面左移 2px 或右側有雜訊線</td>
+                        <td><strong>回到 A</strong></td>
+                        <td>斷電查供電/共地與 SDA(21)/SCL(22)；跑 I2C Scanner 查位址（<code>0x3C</code>/<code>0x27</code>）；檢查 1.3" 面板是否需把 <code>SSD1306</code> 改為 <code>SH1106</code> 建構子。</td>
+                    </tr>
+                    <tr>
+                        <td>DHT 頻繁回傳 <code>NaN</code> 或數值不更新</td>
+                        <td><strong>回到 A / C</strong></td>
+                        <td>查 DATA 腳位與上拉電阻；確認取樣間隔 ≥ 2000 ms（DHT22）或 ≥ 1500 ms（DHT11）。</td>
+                    </tr>
+                    <tr>
+                        <td>開啟 Wi-Fi 後類比感測器讀值異常或卡死</td>
+                        <td><strong>回到 A</strong></td>
+                        <td>檢查是否誤接 ESP32 <code>ADC2</code> 腳位；改接 <code>ADC1</code>（如 <code>GPIO 32</code>）並確認感測器供電（如加熱器改接 <code>5V VIN</code>）。</td>
+                    </tr>
+                    <tr>
+                        <td>新功能未通過，或原本正常的功能壞掉</td>
+                        <td><strong>留在 C</strong></td>
+                        <td>立即切回上一版可運作 <code>.ino</code> 確認硬體沒壞，縮小程式碼差異，帶著「操作 + 預期 + 實測 + 錯誤訊息」回報 Agent。</td>
+                    </tr>
+                    <tr>
+                        <td>網頁打不開或跑馬燈每 2 秒卡頓一次</td>
+                        <td><strong>留在 C</strong></td>
+                        <td>檢查 <code>loop()</code> 是否殘留阻塞式 <code>delay(2000)</code>，改用 <code>millis()</code> 非阻塞排程確保 <code>server.handleClient()</code> 高頻輪詢。</td>
+                    </tr>
+                    <tr>
+                        <td>程式能跑，但 Review 看不懂或 Agent 解釋與實測不符</td>
+                        <td><strong>留在 R</strong></td>
+                        <td>核對雙方看的是否為同一份 <code>.ino</code> 版本與硬體條件；從一筆看得見的輸出出發，要求 Agent 一次只給下一個函式位置。</td>
+                    </tr>
+                    <tr>
+                        <td>想一次加三個功能（換面板 + 加 CO2 + 網頁折線圖）</td>
+                        <td><strong>回到指導者</strong></td>
+                        <td>拆分為多輪 ACR，本輪只選一項有明確驗收條件的目標，其餘記入「下一輪想法」。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Section 5 -->
+    <section id="sec5">
+        <h2>5. 實作與應用範例：四輪真實專案演進路徑與可測試程式碼</h2>
+        <h3>5.1 歷次筆記對應的四輪 ACR 演進路線</h3>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">輪次</th>
+                        <th style="width: 24%;">專案里程碑</th>
+                        <th style="width: 22%;">本輪 A（驗證起點）</th>
+                        <th style="width: 22%;">本輪 C（單一增量與實測）</th>
+                        <th style="width: 22%;">本輪 R（往下 × 往上收穫）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Round 1</strong></td>
+                        <td><strong>基礎感測與顯示</strong><br/><a href="./arduino_development_workflow_methodology.html">六階段 SOP</a></td>
+                        <td>俯拍接線、官方範例單測 LCD/OLED 與 DHT</td>
+                        <td>整併兩模組、加 <code>isnan()</code> 防呆、空格覆寫防閃爍</td>
+                        <td>理解單匯流排取樣週期與 <code>lcd.clear()</code> 閃爍成因</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Round 2</strong></td>
+                        <td><strong>NodeMCU-32S 介面重構與條件提醒</strong><br/><a href="./ACR_b02.md">ACR_b02</a> / <a href="./nodemcu32s_dht_ssd1306_layout_1112.html">1112-1</a></td>
+                        <td>核對 ESP32 3.3V、I2C(21/22)、DHT(GPIO 16) 與 OLED 驅動 IC</td>
+                        <td>規劃 128×64 三區版面、加入門檻提醒/跑馬燈與固定輸入測試</td>
+                        <td>用 <a href="./AI_CodeReview/reviews/1112-1/CODE_REVIEW.html">CODE_REVIEW</a> 拆解座標、Glyph 編碼與 <code>&gt;=</code> 邊界</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Round 3</strong></td>
+                        <td><strong>Wi-Fi DHCP 與 WebServer 聯網</strong><br/><a href="./nodemcu32s_dht_ssd1306_weather_1110.html">1110-1</a></td>
+                        <td>沿用 Round 2 硬體，單測 Wi-Fi 連上 <code>ite-eng</code> 取得 DHCP IP</td>
+                        <td>以 <code>millis()</code> 取代 <code>delay()</code>，新增 <code>/</code> 網頁與 JSON API</td>
+                        <td>理解 TCP 輪詢為何怕 <code>delay()</code> 阻塞，以及雙端狀態同步</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Round 4</strong></td>
+                        <td><strong>多感測器擴充與離線儀表板</strong><br/><a href="./1117-1/note-1117.html">1117-1</a></td>
+                        <td><strong>新增 SEN0159 必回 A</strong>：接 <code>5V VIN</code> + <code>GPIO 32 (ADC1)</code> 單測電壓</td>
+                        <td>加入 5 次移動平均、對數換算與零 CDN 原生 Canvas 雙軸圖</td>
+                        <td>理解 Wi-Fi 與 ADC2 衝突、MG-811 預熱特性與內網離線設計</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>5.2 ACR 標準實作範本：可切換「固定輸入測試」的非阻塞溫度提醒骨架</h3>
+        <h4>程式邏輯流程圖</h4>
+        <div class="mermaid-box">
+            <div class="mermaid">
+flowchart TD
+    S(["啟動 setup()"]) --> INIT["初始化 Serial(115200)、OLED 與 DHT"]
+    INIT --> LOOP["進入 loop() 非阻塞主迴圈"]
+    LOOP --> CHK_T{"millis() - lastRead &gt;= 2000ms?"}
+    CHK_T -- 否 --> LOOP
+    CHK_T -- 是 --> MODE{"USE_FIXED_TEST_INPUT == 1 ?"}
+    MODE -- "是（C 階段邊界測試）" --> FIX["依序輪播固定測試值&lt;br/&gt;29.0 → 30.0 → 31.0 → NAN"]
+    MODE -- "否（正常實機模式）" --> REAL["呼叫 dht.temperature().getEvent()&lt;br/&gt;取得真實感測溫度"]
+    FIX --> VALID{"isnan(temp) 讀取無效？"}
+    REAL --> VALID
+    VALID -- 是 --> ERR["alertOn = false&lt;br/&gt;顯示 Sensor Error（避免舊值誤導）"]
+    VALID -- 否 --> COND{"temp &gt;= TEMP_THRESHOLD (30.0)?"}
+    COND -- 是 --> ON["alertOn = true（開啟高溫提醒）"]
+    COND -- 否 --> OFF["alertOn = false（關閉提醒）"]
+    ERR --> OUT["更新 OLED 畫面與 Serial 記錄"]
+    ON --> OUT
+    OFF --> OUT
+    OUT --> LOOP
+            </div>
+        </div>
+
+        <h4>範例程式碼（<code>acr_temp_alert_template.ino</code>）</h4>
+        <div class="code-wrapper">
+            <div class="code-header">
+                <span>💻 C++ / Arduino — NodeMCU-32S + DHT22 + U8g2 OLED（支援固定輸入測試與一鍵還原）</span>
+                <button class="copy-btn" onclick="copyCode(this)">📋 複製程式碼</button>
+            </div>
+            <pre><code class="language-cpp">// ============================================================================
+// acr_temp_alert_template.ino — ACR 階段 C 標準示範骨架
+// 功能：非阻塞讀取溫度，當有效溫度 >= 30.0°C 時於 OLED 顯示高溫提醒
+// 特色：內建 USE_FIXED_TEST_INPUT 測試開關，方便驗證 29 / 30 / 31°C 與 NAN 邊界
+// 硬體：NodeMCU-32S | DHT22 -> GPIO 16 | OLED I2C -> SDA(21), SCL(22)
+// ============================================================================
+
+#include &lt;Arduino.h&gt;
+#include &lt;Wire.h&gt;
+#include &lt;U8g2lib.h&gt;
+#include &lt;Adafruit_Sensor.h&gt;
+#include &lt;DHT.h&gt;
+#include &lt;DHT_U.h&gt;
+
+// ---------- 1. 硬體腳位與門檻常數 ----------
+#define DHTPIN                16          // DHT22 單匯流排接於 GPIO 16
+#define DHTTYPE               DHT22       // 感測器型號（若為 DHT11 請改此處）
+const float TEMP_THRESHOLD  = 30.0f;      // 本輪自訂提醒門檻（°C）
+const unsigned long READ_MS = 2000UL;     // DHT22 最小安全取樣週期（2 秒）
+
+// ---------- 2. C 階段「可還原固定輸入測試」開關 ----------
+// 1 = 啟用固定輸入輪播（依序測試 29.0, 30.0, 31.0, NAN）
+// 0 = 恢復真實 DHT 感測器讀取（交付前務必改回 0 並實機複測！）
+#define USE_FIXED_TEST_INPUT  1
+
+// ---------- 3. 驅動物件初始化 ----------
+// 注意：若使用 1.3 吋 SH1106 面板且出現右邊雜訊線，請改用 U8G2_SH1106_...
+U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+DHT_Unified dht(DHTPIN, DHTTYPE);
+
+// ---------- 4. 共享狀態變數 ----------
+unsigned long lastReadTime = 0;
+float currentTemp          = NAN;
+bool  isTempAlert          = false;
+
+#if USE_FIXED_TEST_INPUT
+const float TEST_CASES[]   = {29.0f, 30.0f, 31.0f, NAN};
+const int   TEST_COUNT     = sizeof(TEST_CASES) / sizeof(TEST_CASES[0]);
+int         testIndex      = 0;
+#endif
+
+// 判斷是否觸發提醒（Review 選做改寫時，只需聚焦修改此函式的 >= 條件）
+bool evaluateTempAlert(float tempC) {
+  if (isnan(tempC)) {
+    return false; // 讀取失敗時不可誤觸高溫提醒
+  }
+  return (tempC &gt;= TEMP_THRESHOLD);
+}
+
+// 繪製 OLED 畫面（採 U8g2 Page Buffer 分頁繪圖，節省 RAM）
+void renderOLED(float tempC, bool alertOn) {
+  u8g2.firstPage();
+  do {
+    u8g2.setFont(u8g2_font_helvB12_tf);
+    u8g2.setCursor(0, 18);
+    if (isnan(tempC)) {
+      u8g2.print("T: Sensor ERR");
+    } else {
+      u8g2.print("T: ");
+      u8g2.print(tempC, 1);
+      u8g2.print(" C");
+    }
+
+    // 繪製分隔線與提醒狀態列
+    u8g2.drawHLine(0, 28, 128);
+    u8g2.setFont(u8g2_font_8x13_mf);
+    u8g2.setCursor(0, 46);
+    if (isnan(tempC)) {
+      u8g2.print("STATUS: CHECK DHT");
+    } else if (alertOn) {
+      u8g2.print("ALERT: &gt;= 30.0 C!");
+    } else {
+      u8g2.print("STATUS: NORMAL");
+    }
+
+    // 底部提示目前是否為測試模式，避免忘記還原
+    u8g2.setFont(u8g2_font_6x10_tf);
+    u8g2.setCursor(0, 62);
+    u8g2.print(USE_FIXED_TEST_INPUT ? "MODE: FIXED TEST" : "MODE: LIVE SENSOR");
+  } while (u8g2.nextPage());
+}
+
+// 取得溫度（依編譯旗標切換固定測試值或真實感測器）
+float acquireTemperature() {
+#if USE_FIXED_TEST_INPUT
+  float val = TEST_CASES[testIndex];
+  testIndex = (testIndex + 1) % TEST_COUNT;
+  return val;
+#else
+  sensors_event_t event;
+  dht.temperature().getEvent(&amp;event);
+  return event.temperature; // 若讀取失敗，Adafruit 庫會回傳 NAN
+#endif
+}
+
+void setup() {
+  Serial.begin(115200);
+  delay(200);
+  u8g2.begin();
+  u8g2.enableUTF8Print();
+  dht.begin();
+  Serial.println(F("[ACR] System ready."));
+}
+
+void loop() {
+  unsigned long now = millis();
+  // 非阻塞排程：每 2 秒更新一次，未來可直接插入 server.handleClient() 不卡頓
+  if (now - lastReadTime &gt;= READ_MS) {
+    lastReadTime = now;
+    currentTemp  = acquireTemperature();
+    isTempAlert  = evaluateTempAlert(currentTemp);
+
+    // 輸出序列監控證據，方便填寫「預測 vs 實測」對照表
+    Serial.print(F("Temp="));
+    if (isnan(currentTemp)) Serial.print(F("NAN"));
+    else Serial.print(currentTemp, 1);
+    Serial.print(F(" | Alert="));
+    Serial.println(isTempAlert ? F("ON") : F("OFF"));
+
+    renderOLED(currentTemp, isTempAlert);
+  }
+}</code></pre>
+        </div>
+
+        <h4>對應之 C 階段「預測 vs 實測」核對表範例</h4>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>測試項目</th>
+                        <th>輸入值</th>
+                        <th>初版（<code>&gt;= 30.0</code>）預期</th>
+                        <th>選做改寫（<code>&gt; 30.0</code>）預期</th>
+                        <th>實機觀察與備註</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>邊界下方</td><td><code>29.0°C</code></td><td>關閉 (<code>NORMAL</code>)</td><td>關閉 (<code>NORMAL</code>)</td><td>確認低於門檻不誤報</td></tr>
+                    <tr><td>剛好等於門檻</td><td><code>30.0°C</code></td><td><strong>開啟 (<code>ALERT</code>)</strong></td><td><strong>關閉 (<code>NORMAL</code>)</strong></td><td>驗證 <code>&gt;=</code> 與 <code>&gt;</code> 差異的核心證據</td></tr>
+                    <tr><td>邊界上方</td><td><code>31.0°C</code></td><td>開啟 (<code>ALERT</code>)</td><td>開啟 (<code>ALERT</code>)</td><td>確認超過門檻正確提醒</td></tr>
+                    <tr><td>感測異常</td><td><code>NAN</code></td><td>關閉 (<code>CHECK DHT</code>)</td><td>關閉 (<code>CHECK DHT</code>)</td><td>確認不顯示過期舊值、不誤報高溫</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Section 6 -->
+    <section id="sec6">
+        <h2>6. 每輪必留的學習與工程證據（交付物清單）</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 24%;">證據類別</th>
+                        <th style="width: 54%;">學生 / 開發者須交付的具體內容</th>
+                        <th style="width: 22%;">儲存形式</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1. 硬體與起點證據（A）</strong></td>
+                        <td>接線俯拍照、腳位對照表、板型與程式庫版本、單一元件測試通過畫面。</td>
+                        <td><code>.jpg</code> + 筆記表格</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2. 實作與驗證證據（C）</strong></td>
+                        <td>修改前／後可編譯 <code>.ino</code>、預測 vs 實測對照表、恢復真實感測器的運作畫面。</td>
+                        <td><code>.ino</code> 快照 + 測試表</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3. 雙向解釋證據（R）</strong></td>
+                        <td><strong>往下</strong>：指認關鍵程式與資料流；<strong>往上</strong>：說出對應的元件限制或使用情境，並區分「已實測」與「待查證」。</td>
+                        <td>短句筆記 / 程式碼導讀</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4. 下一步與軌跡（Record）</strong></td>
+                        <td>1 個待查證問題或下一輪改善想法（含驗收方式）；若已做選做改寫，附上前後差異與重測結果；文末增補 Prompt Archive 並更新索引。</td>
+                        <td><code>.md</code> + <code>.html</code> + Git</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Section 7 -->
+    <section id="sec7">
+        <h2>7. 延伸思考與進階主題：防禦性檢核表、AI 反模式與教學權衡</h2>
+        <h3>7.1 跨專案防禦性工程檢核表（彙整自歷次 <code>ec/</code> 實戰地雷）</h3>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">面向</th>
+                        <th style="width: 34%;">常見地雷現象</th>
+                        <th style="width: 46%;">防禦做法（建議直接寫入階段 A/C 檢核）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>ESP32 ADC 與 Wi-Fi</strong></td><td>開啟 Wi-Fi 後類比讀值失效</td><td>類比感測器一律使用 <strong><code>ADC1</code></strong>（GPIO 32~39），避開被 Wi-Fi 射頻佔用的 <code>ADC2</code>。</td></tr>
+                    <tr><td><strong>電源與耐壓</strong></td><td>加熱型感測器拉垮 ESP32 不斷重啟，或高壓燒腳</td><td>高耗電模組（如 SEN0159）接 <code>5V (VIN)</code> 並共地；確認回傳至 ESP32 GPIO 的訊號不超過 <code>3.3V</code>。</td></tr>
+                    <tr><td><strong>OLED 驅動 IC</strong></td><td>1.3" 面板畫面左移 2px、最右側出現亮線</td><td>檢查背面絲印與驅動 IC，將 <code>U8G2_SSD1306_...</code> 切換為 <code>U8G2_SH1106_...</code>。</td></tr>
+                    <tr><td><strong>多任務時序</strong></td><td>網頁連線逾時或 OLED 動畫卡頓</td><td><code>loop()</code> 嚴禁長 <code>delay()</code>，改用 <code>millis()</code> 非阻塞排程，同時遵守 DHT 2 秒取樣下限。</td></tr>
+                    <tr><td><strong>封閉內網相依</strong></td><td>教室內網無對外連線，網頁圖表整片空白</td><td>內嵌 WebServer 儀表板優先採用零外部 CDN 依賴的原生 HTML5 Canvas / SVG（參考 <a href="./1117-1/note-1117.html">1117-1</a>）。</td></tr>
+                    <tr><td><strong>AI 假設飄移</strong></td><td>Agent 順手改掉原本腳位或刪掉既有功能</td><td>每次 Prompt 明確宣告「保留清單」與「標記未確認假設」，上傳前必做差異比對（Diff）。</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>7.2 AI 協作常見反模式（Anti-Patterns）與修正對策</h3>
+        <ol>
+            <li><strong>「一次貼上全部需求，讓 Agent 吐出 500 行」</strong>：出錯時無法定位硬體或邏輯問題。<strong>對策</strong>：嚴守「A 單元隔離 → C 單一增量」，超出範圍就拆到下一輪。</li>
+            <li><strong>「把靜態讀碼當成實機驗證」</strong>：註解、門檻與型號未實測前都只是待查證假設。<strong>對策</strong>：以實機輸出與固定輸入對照表為唯一驗收依據。</li>
+            <li><strong>「跳過『我的預測』直接叫 Agent 解釋整支程式」</strong>：容易產生看懂的錯覺。<strong>對策</strong>：C 階段先填預測、R 階段先寫自己的解釋，再請 Agent 給定位提示。</li>
+        </ol>
+
+        <h3>7.3 教學導入權衡（初學者 vs 進階專題）</h3>
+        <div class="callout">
+            <ul>
+                <li><strong>初學者（第一、二輪）</strong>：指導者提供可運作起點程式、標準首問模板與測試表，聚焦「對照差異、固定輸入測試、說出一筆資料怎麼走到畫面」。</li>
+                <li><strong>進階專題（第三、四輪以上）</strong>：由學生自擬本輪任務與 Prompt，指導者改為把關「範圍是否過大、驗收條件是否具體、新增硬體是否先回 A 驗證」。</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Prompt Archive -->
+    <section id="archive">
+        <h2>📝 提示詞歷史與變更記錄 (Prompt Archive)</h2>
+        <h3>🔹 [2026-11-19 13:33:00] [Gemini 4 Neon / Antigravity] 依據 ACR_b02 架構並整合歷次筆記彙整建議 ACR 流程</h3>
+        <ul>
+            <li><strong>模型/Agent</strong>：Gemini 4 Neon / Antigravity</li>
+            <li><strong>Prompt 原文</strong>：</li>
+        </ul>
+        <div class="code-wrapper">
+            <div class="code-header">
+                <span>text</span>
+                <button class="copy-btn" onclick="copyCode(this)">📋 複製</button>
+            </div>
+            <pre><code>@[ec/ACR_b02.md] 根據這個架構 參考之前的筆記 彙整建議的ACR流程</code></pre>
+        </div>
+        <ul>
+            <li><strong>變更摘要</strong>：以 <code>ec/ACR_b02.md</code> 的 A → C → R（含選做改寫與證據留存）為核心骨架，整合 <code>ec/arduino_development_workflow_methodology.md</code>、<code>ec/nodemcu32s_dht_ssd1306_weather_1110.md</code>、<code>ec/nodemcu32s_dht_ssd1306_layout_1112.md</code>、<code>ec/AI_CodeReview/reviews/1112-1/CODE_REVIEW.md</code> 及 <code>ec/1117-1/note-1117.md</code> 的實戰經驗，產出建議 ACR 實作與學習流程 Markdown 與互動 HTML 版本（含 Mermaid 流程圖、Prompt 模板、可切換固定輸入測試之非阻塞程式碼骨架、排錯回退矩陣、防禦性檢核表與 PDF 匯出按鈕）。</li>
+        </ul>
+
+        <h3>🔹 [2026-11-19 14:00:00] [Gemini 4 Neon / Antigravity] 修正總覽流程圖 Mermaid 排版方向（避免從 R 開始）</h3>
+        <ul>
+            <li><strong>模型/Agent</strong>：Gemini 4 Neon / Antigravity</li>
+            <li><strong>Prompt 原文</strong>：</li>
+        </ul>
+        <div class="code-wrapper">
+            <div class="code-header">
+                <span>text</span>
+                <button class="copy-btn" onclick="copyCode(this)">📋 複製</button>
+            </div>
+            <pre><code>總覽流程圖：A → C → R 實戰閉環與多輪演進 的流程演進，圖形設計方向 a-&gt;c-&gt;r 大致不變，但目前看起來會以R開始</code></pre>
+        </div>
+        <ul>
+            <li><strong>變更摘要</strong>：修正第 2 節總覽流程圖因 Mermaid Dagre 引擎對「<code>subgraph</code> 搭配循環回邊 (<code>record --&gt; guide</code>)」產生排序反轉而使 R 區塊跑到最上方的問題；改採無 <code>subgraph</code> 之單層階段節點結構，確保圖形嚴格由上而下呈現「任務啟動 → A · Agents → C · Coding → R · Review → Record（含選做改寫與下一輪循環）」，並同步更新 Markdown、HTML 與全站索引。</li>
+        </ul>
+    </section>
+</div>
+
+<script>
+    function copyCode(btn) {
+        const wrapper = btn.closest('.code-wrapper');
+        const codeEl = wrapper.querySelector('code');
+        const text = codeEl.innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            const orig = btn.innerText;
+            btn.innerText = '✅ 已複製';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.innerText = orig;
+                btn.classList.remove('copied');
+            }, 1800);
+        });
+    }
+</script>
+</body>
+</html>

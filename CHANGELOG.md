@@ -1,8 +1,8 @@
 # 📝 onclassbyJoel - 全站提示詞歷史與變更記錄 (CHANGELOG)
 
-> **最後更新時間**: 2026-11-18 12:00:08 (UTC+8)
-> **使用模型**: GPT-6 (Codex)
-> **執行 Agent**: Codex /root
+> **最後更新時間**: 2026-11-19 14:03:00 (UTC+8)
+> **使用模型**: Gemini 4 Neon
+> **執行 Agent**: Antigravity
 
 ---
 
@@ -871,3 +871,27 @@ $code-review-for-learning 'C:\Users\User\Desktop\onclass\1112-1\1112-1.ino'
   git commit and push
   ```
 - **變更摘要**: 提交 Gemini 4 Argon 與 Carbon 研發專訪的中英對照筆記（Markdown、HTML）及 AI 分類設定，同步產生全站索引與 HTML 變更紀錄。
+
+### 🔹 [2026-11-19 13:35:00] [Gemini 4 Neon / Antigravity] 彙整 NodeMCU-32S × Agent 建議 ACR 實作與學習流程
+- **模型/Agent**: Gemini 4 Neon / Antigravity
+- **Prompt 原文**:
+  ```text
+  @[ec/ACR_b02.md] 根據這個架構 參考之前的筆記 彙整建議的ACR流程
+  ```
+- **變更摘要**: 於 `ec/` 新增 `ACR_recommended_workflow.md` 與 `ACR_recommended_workflow.html`，依據 `ec/ACR_b02.md` 之 A → C → R 學習循環架構，整合歷次電子電路實戰筆記（`arduino_development_workflow_methodology.md`、`nodemcu32s_dht_ssd1306_weather_1110.md`、`nodemcu32s_dht_ssd1306_layout_1112.md`、`AI_CodeReview/reviews/1112-1/CODE_REVIEW.md`、`1117-1/note-1117.md`），產出含 Mermaid 流程圖、三階段標準 Prompt 模板、可切換固定輸入測試之非阻塞程式碼骨架、排錯回退矩陣、四輪演進路線與防禦性檢核表之完整建議流程，並同步重建全站索引。
+
+### 🔹 [2026-11-19 14:00:00] [Gemini 4 Neon / Antigravity] 修正 ACR 總覽流程圖 Mermaid 排版反轉問題
+- **模型/Agent**: Gemini 4 Neon / Antigravity
+- **Prompt 原文**:
+  ```text
+  總覽流程圖：A → C → R 實戰閉環與多輪演進 的流程演進，圖形設計方向 a->c->r 大致不變，但目前看起來會以R開始
+  ```
+- **變更摘要**: 修正 `ec/ACR_recommended_workflow.md` 與 `ec/ACR_recommended_workflow.html` 第 2 節總覽流程圖因 `subgraph` 結合循環回邊 (`record --> guide`) 導致 Mermaid Dagre 引擎反轉排序使 R 排在最上方的問題；改為單層階段節點結構以確保嚴格由上而下呈現「任務啟動 → A → C → R → Record」，並重建全站索引。
+
+### 🔹 [2026-11-19 14:03:00] [Gemini 4 Neon / Antigravity] 提交 ACR 實作與學習流程筆記並重建全站索引
+- **模型/Agent**: Gemini 4 Neon / Antigravity
+- **Prompt 原文**:
+  ```text
+  git commit and push
+  ```
+- **變更摘要**: 提交 `ec/ACR_b02.md` 與新彙整之 `ec/ACR_recommended_workflow.md` / `ec/ACR_recommended_workflow.html`（含修正後之 A → C → R 總覽流程圖）、更新 `tools/index_catalog.json` 與全站索引（`INDEX.md`、`index.html`、`changelog.html`、`CHANGELOG.md`），並推送至遠端儲存庫。
